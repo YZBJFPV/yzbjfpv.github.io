@@ -1,28 +1,82 @@
 <!DOCTYPE html>
 <html>
-<head>
-<title>YZBJFPV</title>
-<link rel="stylesheet" type="text/css" href="styles.css"></head>
-<body>
- <div class="container">
-    <h1>无人机天线厂家</h1>
-    <p>GNSS高精度四臂螺旋天线四星全频RTK天线</p>
-    <div class="image-gallery">
-     <img src="https://img520.com/TT7WJu.png"alt="加微信:HGM2002326了解更多">
-     <img src="https://img520.com/0TtgeE.jpg"alt="加微信:HGM2002326了解更多">
-     <img src="https://img520.com/Lo7oqB.png" alt="加微信:HGM2002326了解更多">
-</div>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquer>
-<script>
-  $(document).ready(function(){
-   $(".image-gallery img").click(function(){
-    var imageUrl=$(this).attr("src");
-    
-    $(".lightbox").fadeIn();
-  });
-});
-</script>
-</div>
-<div class="lightbox"></diy>
-</body>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<style>
+			*{
+				margin: 0px;
+				padding: 0px;
+			}
+			html{
+				background-color: #000000;
+			}
+			/* 父元素 3d效果需要一个父元素放置镜头 */
+			#app{
+				width:133px ;
+				height:200px;
+				perspective: 1000px;/*镜头距离*/
+				margin:150px auto;/*上下150px 左右水平居中*/
+				border: 1px solid red;/*中间的红框效果*/
+			}
+			/* 存放图片的父元素 */
+			#app>#content{
+				width: 100%;
+				height: 100%;
+				position: relative;/*设置为相对定位 子元素需要使用绝对定位来设置位置*/
+				transform-style: preserve-3d;/*设置为3d效果*/
+				transform: rotateX(-12deg);/*沿着x轴旋转(图片的底边) 旋转某个角度 否则所有图片在一个平面*/
+			}
+			/*设置图片的css样式*/
+			#app>#content>img{
+				top:0px;
+				left: 0px;
+				position: absolute;/*参考父元素位置 设置绝对位置*/
+				box-shadow: 1px 1px 20px #ff62f0;
+				border-radius: 10px;
+				-webkit-box-reflect: below 5px ;/*图片倒影 图片下方*/
+				
+			}
+		</style>
+		<script src="js/jquery-3.5.1.min.js"></script>
+	</head>
+	<body>
+		<div id="app">
+			<div id="content">
+				
+			</div>
+		</div>
+		<script>
+			$(function(){
+				for(let i=0;i<11;i++){
+					// 设置虚拟dom 添加图片 
+					$('<img src="images/'+ (i+1) +'.jpg">').css({
+						transition: '1s '+ (i*0.3) +'s',//每张图片设置一个延时时间,依次显示
+					}).appendTo($('#content'))
+				}
+				/*设置底面的倒影*/
+				$('<div></div>').css({
+					width:'800px',
+					height:'800px',
+					background:'-webkit-radial-gradient(center center,400px 400px,#ff6260 ,rgba(0,0,0,0.1) )',
+					position:'absolute',/*参照父元素位置 必须有 不然就是单独的div*/
+					left:'50%',
+					top:'100%',
+					transform:'translateX(-50%) translateY(-50%) rotateX(90deg)',
+					'border-radius':'400px',
+				}).appendTo($('#content'))/*父元素为content*/
+				
+				/*根据图片的索引设置他的位置 y是图片的高 沿y旋转 让他形成一个圆
+				  沿z轴平移 使图片散开*/
+				for(let i=0;i<11;i++){
+					const r= 360/11*i
+					$('#app>#content>img').eq(i).css({
+						transform:'rotateY(' +r+ 'deg) translateZ(400px)',
+					})
+				}
+			})
+		</script>
+	</body>
 </html>
+
+
