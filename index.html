@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <!-- <link rel="shortcut icon" href="/favicon.ico" /> -->
+    <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+    <title>YZ战争YZ War(多人FPS射击页游)</title>
+    <meta
+      name="viewport"
+      content="width=device-width,initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no"
+    />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="full-screen" content="true" />
+    <meta name="screen-orientation" content="portrait" />
+    <meta property="og:type" content="image" />
+    <meta
+      property="og:image"
+      content="//cdn.xidayun.com/localwar/localwar.jpeg"
+    />
+    <meta name="x5-fullscreen" content="true" />
+    <meta name="360-fullscreen" content="true" />
+    <meta
+      name="description"
+      content="局部战争Local War(多人FPS射击页游),多人FPS页游,多人枪战游戏,多人休闲小游戏,局部战争页游,局部战争online"
+    />
+    <meta
+      name="keywords"
+      content="休闲多人游戏,多人FPS,多人网页游戏,多人网页FPS游戏"
+    />
+    <script
+      async
+      data-ad-frequency-hint="9s"
+      data-adbreak-test="on"
+      src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8916019518364143"
+      crossorigin="anonymous"
+    ></script>
+    <style>
+      html,
+      body {
+        -ms-touch-action: none;
+        background-repeat: no-repeat;
+        background-color: #fff;
+        background-size: 100%;
+        background-position: center;
+        padding: 0;
+        border: 0;
+        margin: 0;
+        /* height: 100%; */
+        width: 100%;
+        /* overflow: hidden; */
+        background: #333;
+      }
+
+      .game-view {
+        background: #000;
+        /* position: absolute; */
+        top: 0;
+        left: 0;
+        bottom: 0;
+        right: 0;
+        margin: auto;
+
+        z-index: 9;
+      }
+
+      .fullScreenBtn {
+        position: absolute;
+        bottom: 10px;
+        right: 10px;
+        background-color: transparent;
+        border: 1px solid #fff;
+        color: #fff;
+        padding: 4px 6px;
+        border-radius: 4px;
+      }
+
+      .game-frame {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        border: 0px solid;
+      }
+
+      body {
+        width: 100%;
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+
+      .showpanel {
+        color: #fff;
+        padding: 5px;
+        margin: 20px auto;
+        border-radius: 4px;
+        border: 1px solid #fff;
+        line-height: 32px;
+      }
+
+      .showpanel a {
+        color: rgb(4, 186, 241);
+      }
+
+      .game-title {
+        color: #fff;
+        text-align: center;
+      }
+
+      .ad_panel {
+        background-color: #fff;
+        padding: 5px;
+      }
+
+      .ad_panel a {
+        padding: 3px 4px;
+        color: rgba(10, 144, 233, 0.822);
+      }
+
+      .ba-text {
+        color: #fff;
+      }
+
+      .video_close_btn {
+        float: right;
+        cursor: pointer;
+      }
+
+      .ad_video_panel {
+        position: fixed;
+        width: 1000px;
+        height: 600px;
+        margin: auto;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        color: #fff;
+        background-color: #333;
+        border-radius: 5px;
+        padding: 20px;
+      }
+
+      .ad_video_bg {
+        position: fixed;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.7);
+      }
+
+      .ad_video_panel iframe {
+        width: 100%;
+        height: 100%;
+        border: 1px solid #fff;
+      }
+      .ad-win-cention {
+        line-height: 30px;
+      }
+
+      a {
+        color: rgb(4, 186, 241);
+      }
+
+      .ad-title-h {
+        font-weight: bold;
+        font-size: 18px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <h2 class="game-title">
+      《YZ战争 YZ War》多人FPS射击页游(www.yzbjfpv.top)
+    </h2>
+    <!-- 广告1 -->
+    <!-- <script async src="" 
+    </script> -->
+
+    <div class="game-view" id="game-view">
+      <iframe class="game-frame" id="_iframe"></iframe>
+      <button class="fullScreenBtn" id="fullScreenBtn" onclick="changeScreen()">
+        进入全屏
+      </button>
+    </div>
+
+    <div class="showpanel">
+      Language:中文|<a href="./index_en.html">English</a><br />
+      Windows用户推荐Edge浏览器，Mac用户推荐Chrome浏览器。<br />
+      可以点击【进入全屏】按钮，将游戏画面置顶铺满窗口<br />
+      如有相关反馈，欢迎加入YZ-FLIGHT<br />
+      <a
+        target="_blank"
+        href="https://space.bilibili.com/42235915?spm_id_from=333.1007.0.0"
+        >@YZFlight</a
+      >（www.yzbjfpv.top）
+    </div>
+    <!-- <script src="https://ksk.srbzw.cn/jhc.php?id=3837"></script> -->
+    <!-- <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8916019518364143"
+        crossorigin="anonymous"></script>
+    <ins class="adsbygoogle" style="display:inline-block;width:1200px;height:200px"
+        data-ad-client="ca-pub-8916019518364143" data-ad-slot="8314281705"></ins>
+    <script>
+        (adsbygoogle = window.adsbygoogle || []).push({});
+    </script> -->
+    <!-- <span class="ba-text"><a href="http://www.miitbeian.gov.cn/">YZBJFPV版权没有</a></span> -->
+    
+    <script>
+      function getUrlString() {
+        let search = window.location.search;
+        if (search.indexOf("?") != -1) {
+          search += "&v=" + Date.now();
+        } else {
+          search += "?v=" + Date.now();
+        }
+        return search;
+      }
+
+      var url = "https://h5-preview.4399api.com/html5/preview/ht3117604_ccddff1dd517fe3d788332fdf8b76ba8/build_cn.html"
+
+      document.getElementById("_iframe").src = url + getUrlString();
+      var _hmt = _hmt || [];
+      (function() {
+        var hm = document.createElement("script");
+        hm.src = "https://hm.baidu.com/hm.js?15fc9d89634b1af04e0b9e1a7f0b3012";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+      })();
+    </script>
+    
+    <!-- <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8916019518364143"
+        crossorigin="anonymous"></script> -->
+  </body>
+  <script>
+    var publisher = "web";
+    var isFullscreen = false;
+
+    setRize();
+
+    if (navigator.language != "zh-CN") {
+      // 跳转到英文网站
+      location.href = "./index_en.html";
+    }
+
+    if (
+      location.href.indexOf("127.0.0.1") == -1 &&
+      location.href.indexOf("http://") != -1
+    ) {
+      location.href = location.href.replace("http://", "https://");
+    }
+
+    function changeScreen() {
+      isFullscreen = !isFullscreen;
+      document.getElementById("fullScreenBtn").innerHTML = isFullscreen
+        ? "退出全屏"
+        : "点击全屏";
+      setRize();
+    }
+
+    function isPhone() {
+      if (/Mobi|Android/i.test(navigator.userAgent)) {
+        return true;
+      }
+      return false;
+    }
+
+    if (isPhone()) {
+      // changeScreen()
+      window.location.href = "./index_phone.html";
+    }
+
+    window.addEventListener("resize", function() {
+      setRize();
+    });
+
+
+    var afg = {};
+    window.adsbygoogle = window.adsbygoogle || [];
+    afg.adBreak = window.adConfig = function(o) {
+      adsbygoogle.push(o);
+    };
+    var _showAdFn;
+    var onReady = function() {
+      console.log("准备好了");
+    };
+    // Config the ad setup
+    adConfig({
+      // https://developers.google.com/ad-placement/docs/preload-ads
+      preloadAdBreaks: "on",
+      // https://developers.google.com/ad-placement/docs/manual-sequence
+      onReady: onReady,
+    });
+
+    function goAD() {
+      afg.adBreak({
+        type: "reward",
+        name: "play-on",
+        beforeReward: function(showAdFn) {
+          console.log("showAdFn", showAdFn);
+          _showAdFn = showAdFn;
+        },
+        adViewed: function() {
+          console.log("观看完成");
+          _showAdFn = null;
+          document.getElementById("_iframe").contentWindow.postMessage(
+            {
+              rewardedVideoAdSuccess: true,
+            },
+            "*"
+          );
+        },
+        adDismissed: function() {
+          console.log("未观看完成");
+          _showAdFn = null;
+          document.getElementById("_iframe").contentWindow.postMessage(
+            {
+              rewardedVideoAdSuccess: false,
+            },
+            "*"
+          );
+        },
+        adBreakDone: function(placementInfo) {},
+      });
+      setTimeout(function() {
+        if (!_showAdFn) {
+          goAD();
+        } else {
+          _showAdFn();
+        }
+      }, 100);
+    }
+
+    window.addEventListener("message", function(event) {
+      console.log("iframe消息", event.data);
+      if (event.data && event.data.param && event.data.param.href) {
+          document.getElementById("_iframe").src = url + event.data.param.href
+      }
+      if (event.data && event.data.param && event.data.param.publisher) {
+        document.getElementById("_iframe").contentWindow.postMessage(
+          {
+            publisher,
+          },
+          "*"
+        );
+      }
+      if (
+        event.data &&
+        event.data.param &&
+        event.data.param.showRewardedVideoAd
+      ) {
+        goAD();
+      }
+    });
+
+    //   document.getElementById("_iframe").src="egret/index.html"+getUrlString()
+
+    function setRize() {
+      var w_width = window.innerWidth;
+      var w_height = window.innerHeight;
+      var w_size = w_width / w_height;
+      var v_size = 1920 / 1080;
+      var view = document.getElementById("game-view");
+      var viewBody = document.body;
+      if (isFullscreen) {
+        if (w_size > v_size) {
+          view.style.height = "100vh";
+          view.style.width = 100 * v_size + "vh";
+        } else if (w_size < v_size) {
+          view.style.width = "100vw";
+          view.style.height = 100 / v_size + "vw";
+        } else {
+          view.style.width = "100vw";
+          view.style.height = "100vh";
+        }
+        view.style.position = "absolute";
+        view.style.zIndex = "9";
+        viewBody.style.overflow = "hidden";
+      } else {
+        view.style.position = "relative";
+        view.style.width = "1200px";
+        view.style.height = "675px";
+        view.style.zIndex = "0";
+        viewBody.style.overflow = "auto";
+      }
+    }
+  </script>
+</html>
