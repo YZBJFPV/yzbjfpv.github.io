@@ -1,0 +1,1495 @@
+<html xmlns="http://www.w3.org/1999/xhtml"><head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>首页-北京帅贩太学亚大实验学校</title>
+  <link rel="stylesheet" href="/r/cms/www/default/css/jSlider.css">
+  <link rel="stylesheet" href="/r/cms/www/default/css/index.css?time=" +="" new="" date().gettime()="">
+  <meta name="title" content="北京师范大学亚太实验学校">
+  <meta name="keywords" content="北京师范大学亚太实验学校, 北师大, 亚太学校, 昌平初中">
+  <meta name="description" content="北京师范大学亚太实验学校">
+  <link rel="stylesheet" href="/r/cms/www/default/swiper@7/swiper-bundle.min.css">
+  <link rel="stylesheet" href="/r/cms/www/default/css/bootstrap-4.1.3.min.css">
+  <style>
+    .swiper-pagination-bullet {
+      background-color: rgba(255, 255, 255);
+      opacity: 0.5;
+    }
+
+    .swiper-pagination-bullet-active {
+      background-color: rgba(62, 124, 57);
+      opacity: 1;
+    }
+  </style>
+<link rel="icon" type="image/x-icon" href="https://yatai-oss.yataischool.net/cms/u/cms/www/202303/141559428p8f.ico"></head>
+
+<body>
+  <script src="/r/cms/www/default/swiper@7/swiper-bundle.min.js"> </script>
+  <!-- 顶部导航 -->
+<link rel="stylesheet" href="/r/cms/www/default/css/reset.css">
+<link rel="stylesheet" href="/r/cms/www/default/css/header.css?time=" +="" new="" date().gettime()="">
+<link rel="stylesheet" href="/r/cms/www/default/icon/iconfont.css">
+<link rel="stylesheet" href="/r/cms/www/default/fonts/iconfont.css">
+
+<link rel="stylesheet" href="/r/cms/www/default/css/password.css">
+<link rel="stylesheet" href="/r/cms/www/default/css/jquery.my-message.1.1.css">
+
+<script>
+	localStorage.setItem('base', '');
+</script>
+
+<!-- IE兼容ES6基本语法 -->
+<!-- <script src="js/browser.min.js"></script> -->
+<!-- 转换 Iterator、Generator、Set、Maps、Proxy、Reflect、
+Symbol、Promise等语法 -->
+<!-- <script src="js/browser-polyfill.min.js"></script> -->
+<!-- ======== -->
+<!-- <script src="/r/cms/www/default/js/flexible.js"></script> -->
+<script src="/r/cms/www/default/js/jquery-1.12.4.js"></script>
+<script src="/r/cms/www/default/js/sm.js"></script>
+<script src="/r/cms/www/default/js/crypto-js.js"></script>
+<script src="/r/cms/www/default/js/jquery.my-message.1.1.js"></script>
+<script src="/r/cms/www/default/js/jquery.validate.js"></script>
+<script src="/r/cms/www/default/js/jquery.page.js"></script>
+<script src="/r/cms/www/default/js/chinese.js"></script>
+<script src="/r/cms/www/default/js/public.js" type="text/javascript" charset="utf-8"></script>
+<script src="/r/cms/www/default/js/app.js"></script><div class="m-message" style="top:10px;right:10px;left:10px;width:calc(100%-10px10px);bottom:10px"></div>
+<script src="/r/cms/www/default/js/permCheck.js" type="text/javascript" charset="utf-8"></script>
+<script src="/r/cms/www/default/js/siteSurver.js"></script>
+<script>
+	setTimeout(function() {
+					siteInitTime(getUrlArg('errorLink'));
+			}, 500);
+	$.extend($.validator.messages, {
+    required: "必选字段",
+    remote: "请修正该字段",
+    email: "请输入正确格式的电子邮件",
+    url: "请输入合法的网址",
+    date: "请输入合法的日期",
+    dateISO: "请输入合法的日期 (ISO).",
+    number: "请输入合法的数字",
+    digits: "只能输入整数",
+    creditcard: "请输入合法的信用卡号",
+    equalTo: "请再次输入相同的值",
+    accept: "请输入拥有合法后缀名的字符串",
+    maxlength: $.validator.format("请输入一个长度最多是 {0} 的字符串"),
+    minlength: $.validator.format("请输入一个长度最少是 {0} 的字符串"),
+    rangelength: $.validator.format("请输入一个长度介于 {0} 和 {1} 之间的字符串"),
+    range: $.validator.format("请输入一个介于 {0} 和 {1} 之间的值"),
+    max: $.validator.format("请输入一个最大为 {0} 的值"),
+    min: $.validator.format("请输入一个最小为 {0} 的值")
+});
+</script>
+
+<!-- 顶1部 -->
+
+<script type="text/javascript">
+
+	$(function() {
+		// GOV.yuyinInit("","true");
+		// register-sso
+		function isSsoLogin (){
+			var openSso = 'false';
+			if(openSso == 'true'){
+				$('.register-sso').css('display','inline-block');
+				$('.header .typeArea .navbar ul li').css('margin-left','50px');
+			} else {
+				$('.register-sso').css('display','none');
+				$('.header .typeArea .navbar ul li').css('margin-left','40px');
+			}
+
+		}
+		// isSsoLogin();
+	})
+</script>
+
+<div class="header headerBox" style="background: none;">
+	<div class="header_nav_box">
+		<div class="barrierBed none"></div>
+		<div class="header_nav">
+			<!-- 搜索隐藏模块展开 -->
+			<div class="search-show none">
+				<div class="search-top">
+					<div class="box">
+						<div class="title">
+							<input type="text" maxlength="150" id="headerKeyword" placeholder="请输入你要查找的内容">
+							<i onclick="upSearch()" class="iconfont iconsousuo1 searchcss"></i>
+						</div>
+						<i class="iconfont iconguanbi"></i>
+						<!-- <div class="hotBot">
+							<div class="text">词</div>
+							<ul>
+								<li><a rel="noopener noreferrer" onclick="upSearch('世纪剧院')" rel="noopener noreferrer" target='_blank' rel="noopener noreferrer">世纪剧院</a></li>
+								<li><a rel="noopener noreferrer" onclick="upSearch('元旦')" rel="noopener noreferrer" target='_blank' rel="noopener noreferrer">元旦</a></li>
+								<li><a rel="noopener noreferrer" onclick="upSearch('郭慧')" rel="noopener noreferrer" target='_blank' rel="noopener noreferrer">郭慧</a></li>
+								<li><a rel="noopener noreferrer" onclick="upSearch('缴费')" rel="noopener noreferrer" target='_blank' rel="noopener noreferrer">缴费</a></li>
+								<li><a rel="noopener noreferrer" onclick="upSearch('USAP美国五项全能')" rel="noopener noreferrer" target='_blank' rel="noopener noreferrer">USAP美国五项全能</a></li>
+								<li><a rel="noopener noreferrer" onclick="upSearch('课题 药')" rel="noopener noreferrer" target='_blank' rel="noopener noreferrer">课题 药</a></li>
+								<li><a rel="noopener noreferrer" onclick="upSearch('课题')" rel="noopener noreferrer" target='_blank' rel="noopener noreferrer">课题</a></li>
+								<li><a rel="noopener noreferrer" onclick="upSearch('中医药')" rel="noopener noreferrer" target='_blank' rel="noopener noreferrer">中医药</a></li>
+								<li><a rel="noopener noreferrer" onclick="upSearch('中医药实验室')" rel="noopener noreferrer" target='_blank' rel="noopener noreferrer">中医药实验室</a></li>
+								<li><a rel="noopener noreferrer" onclick="upSearch('药 实验室')" rel="noopener noreferrer" target='_blank' rel="noopener noreferrer">药 实验室</a></li>
+								<div class="clearfix"></div>
+							</ul>
+						</div> -->
+					</div>
+				</div>
+			</div>
+			<div class="typeArea">
+				<div class="logo logo-index" style="display: block;">
+					<a rel="noopener noreferrer" href="/"><img src="/r/cms/www/default/images/index/logo-white.png" alt=""></a>
+				</div>
+				<div class="logo logo-children" style="display: none;">
+					<a rel="noopener noreferrer" href="/"><img src="/r/cms/www/default/images/index/logo-black.png" alt=""></a>
+				</div>
+				<div class="navbar navbar-index" id="navbarList">
+					<!--给0初始值是为了方便首页页面非栏目内容页面不报错-->
+					<!--这一段是为了获取当前内容栏目所在的顶层栏目所在顶层栏目的序号位置-->
+					<!--如果当前栏目位置原本是在第二行，则少取一个，将当前访问栏目放最后-->
+					<ul>
+						<!--如果当前栏目位置原本是在第二行，则少取一个，取第一行-->
+							
+							<li>
+							<a rel="noopener noreferrer" href="/gywm.jhtml" id="276" class="text-color">学校概况</a>
+							</li>
+							
+							<li>
+							<a rel="noopener noreferrer" href="/mddj1.jhtml" id="245" class="text-color">党建工作</a>
+							</li>
+							
+							<li>
+							<a rel="noopener noreferrer" href="/jxky.jhtml" id="206" class="text-color">教育科研</a>
+							</li>
+							
+							<li>
+							<a rel="noopener noreferrer" href="/jsfz.jhtml" id="246" class="text-color">教师发展</a>
+							</li>
+							
+							<li>
+							<a rel="noopener noreferrer" href="/tdjs.jhtml" id="247" class="text-color">学生风采</a>
+							</li>
+							
+							<li>
+							<a rel="noopener noreferrer" href="/sqfw.jhtml" id="249" class="text-color">校园服务</a>
+							</li>
+							
+							<li>
+							<a rel="noopener noreferrer" href="/xyh1.jhtml" id="345" class="text-color">校友会</a>
+							</li>
+							
+							<li>
+							<a rel="noopener noreferrer" href="/zszp.jhtml" id="250" class="text-color">招生招聘</a>
+							</li>
+						
+						<!-- <li class="moreBox" style="display: block;">
+							<div>
+								<span class="pointer moreH">更多</span>
+								<i class="iconfont  iconfanhui-copy-copy-copy-copy icoH"></i>
+								<i class="iconfont  iconfanhui-copy-copy-copy-copy1 none icoH"></i>
+							</div>
+						</li> -->
+						<li style="margin-right: 0px;margin-left: 35px;">
+							<i class="search iconfont iconsousuo1 pointer text-color"></i>
+						</li>
+						<li>
+							<a href="/admin/" target="_blank" rel="noopener noreferrer"><span class="text-color">登录</span></a>
+							
+						</li>
+					</ul>
+					<div style="position: absolute; top: 100px; display: none; height: 1px; padding-top: 0px; margin-top: 0px; padding-bottom: 0px; margin-bottom: 0px;" id="navContent">
+						<div style="position: relative;">
+							<div class="text-wrapper_25_nav flex-col" id="childNavList"><span class="text_100_nav"><a href="/tdjs.jhtml">团队建设</a></span><span class="text_100_nav"><a href="/xsjllf.jhtml">交流来访</a></span><span class="text_100_nav"><a href="/xsst.jhtml">社团活动</a></span><span class="text_100_nav"><a href="/hjxx.jhtml">学生获奖</a></span></div>
+							<div style="position: absolute;right: 200px;top: 0px;">
+								<div class="group_15_nav flex-col">
+									<span class="text_99_nav" id="navName">学生风采</span>
+									<!-- <div class="block_15_nav flex-col"></div> -->
+									<span class="paragraph_12_nav" id="txtMap">具备正向的学习动机，在多元化课程引导下自主学习，获取学科知识的同时获得核心素养的培养。</span>
+									<div class="text-wrapper_26_nav flex-col">
+										<a rel="noopener noreferrer" class="text_105_nav" id="checkDetail" href="/tdjs.jhtml">查看更多</a>
+									</div>
+								</div>
+							</div>
+							<div style="position: absolute;left: 315px;top: 0px;">
+								<div class="group_16_nav flex-col">
+									<div id="navImage" style="position: relative;padding-top: 50%;"><img src="https://yatai-oss.yataischool.net/cms/u/cms/www/202303/27104524ox3i.jpg?x-oss-process=image/resize,w_600/quality,q_90"></div>
+									<span class="paragraph_13_nav" id="txtMap2">我们努力培养每一个学生都能成为身心健康、扎实学识、智慧理性、自主自觉、全面发展的人。</span>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<!-- 右边 -->
+				<div class="function">
+					<!-- <div class="conceal" style="right: 115px;">
+	
+						<div class="typeface">
+							<div class="lineH"></div>
+							<span>简体</span>
+							<i class="iconfont iconfanhui-copy-copy-copy-copy"></i>
+							<i class="iconfont iconfanhui-copy-copy-copy-copy1 none"  ></i>
+							<div class="font-show none">
+								<div class="background pointer">
+									<a rel="noopener noreferrer">简体</a>
+								</div>
+								<div class="background1 pointer">
+									<a rel="noopener noreferrer">繁体</a>
+								</div>
+							</div>
+						</div>
+						<div class="lineH"></div>
+					</div> -->
+					<!-- <i class="search iconfont iconsousuo1 pointer"></i> -->
+					<!-- <a class="register-sso" title="注册" href="/register.htm"><i class=" iconfont iconicon_line_edit-1_24" ></i></a> -->
+					<!-- <span class="stateUser"></span> -->
+					<!-- <a rel="noopener noreferrer" href="/rss" rel="noopener noreferrer"><i class="network iconfont iconrss-line pointer"></i></a> -->
+				</div>
+			</div>
+		</div>
+		<div class="headerLine"></div>
+		<div class="moreBox1" style="height: 293px; display: none; padding-top: 0px; margin-top: 0px; padding-bottom: 0px; margin-bottom: 0px;">
+			<div class="moreBox1_container">
+				<!-- <div class="block_14_nav">
+					<div class="group_15_nav flex-col">
+						<span class="text_99_nav" id="navName">关于我们</span>
+						<div class="block_15_nav flex-col"></div>
+						<span class="paragraph_12_nav" id="txtMap"></span>
+						<div class="text-wrapper_26_nav flex-col" >
+							<a rel="noopener noreferrer" class="text_105_nav" id="checkDetail">查看更多</a>
+						</div>
+					</div>
+					<div>
+						<div class="text-wrapper_25_nav flex-col" id="childNavList"></div>
+						<div class="group_16_nav flex-col">
+							<div id="navImage"></div>
+							<span class="paragraph_13_nav" id="txtMap2"></span>
+						</div>
+					</div>
+				</div> -->
+			</div>
+
+			<!-- <div class="block_16_nav flex-row">
+				<div class="text-wrapper_26_nav flex-col">
+					<a rel="noopener noreferrer" class="text_105_nav" id="checkDetail">查看更多</a>
+				</div>
+				<div class="text-wrapper_27_nav flex-col justify-between">
+					<span class="text_106_nav"></span>
+					<span class="text_107_nav"></span>
+				</div>
+				<span class="paragraph_13_nav" id="txtMap2"></span>
+			</div> -->
+			
+			<!-- <div class="font-show2">
+				<div class=" pointer">
+					<a rel="noopener noreferrer" href="/yxz.jhtml" target="_blank" >影像志</a>
+				</div>
+				<div class=" pointer">
+					<a rel="noopener noreferrer" href="/xlview.jhtml" target="_blank" >校历</a>
+				</div>
+				<div class=" pointer">
+					<a rel="noopener noreferrer" href="/sybanner.jhtml" target="_blank" >首页banner</a>
+				</div>
+				<div class=" pointer">
+					<a rel="noopener noreferrer" href="/mzsp1.jhtml" target="_blank" >每周食谱</a>
+				</div>
+				<div class=" pointer">
+					<a rel="noopener noreferrer" href="/zxly.jhtml" target="_blank" >在线留言</a>
+				</div>
+				<div class=" pointer">
+					<a rel="noopener noreferrer" href="/kyxm.jhtml" target="_blank" >科研项目</a>
+				</div>
+				<div class=" pointer">
+					<a rel="noopener noreferrer" href="/syzjh.jhtml" target="_blank" >首页组件化</a>
+				</div>
+				<div class=" pointer">
+					<a rel="noopener noreferrer" href="/xsyg.jhtml" target="_blank" >校史沿革</a>
+				</div>
+				<div class=" pointer">
+					<a rel="noopener noreferrer" href="/qrtx.jhtml" target="_blank" >高一新生完成清单</a>
+				</div>
+				<div class=" pointer">
+					<a rel="noopener noreferrer" href="/sytztc.jhtml" target="_blank" >首页通知弹窗</a>
+				</div>
+			</div> -->
+			<!--第二行展示的后面的栏目 排除第一行展示的栏目且不是当前栏目-->
+		</div>
+	</div>
+	<div id="goTop" class="pointer">
+		<span>返回<br>顶部</span>
+		<i class="iconfont iconjiantousvg"></i>
+	</div>
+	<!-- 侧边栏 -->
+	<div class="box_10 pointer" style="display: none;">
+		<a rel="noopener noreferrer" href="/zsxx.jhtml">
+		  <div class="section_7 flex-row">
+			  <div class="image-text_22 flex-col justify-between">
+					<img class="label_7" referrerpolicy="no-referrer" src="/r/cms/www/default/images/index/floating_zs.png">
+					<span class="text-group_17">
+						招生
+						<br>
+						专栏
+					</span>
+				</div>
+			</div>
+			<div class="block_14"></div>
+		</a>
+		<div class="section_7 flex-row">
+			<div class="image-text_23 flex-col justify-between">
+				<img class="image_11" referrerpolicy="no-referrer" src="/r/cms/www/default/images/index/floating_wechat.png">
+				<span class="text-group_18">
+					微信
+					<br>
+					平台
+				</span>
+			</div>
+			<div class="popover-content-qrcode">
+				<img src="/r/cms/www/default/images/index/floating_qr_wechat.png" alt="">
+			</div>
+		</div>
+		<div class="block_14"></div>
+		<div class="section_7 flex-row">
+			<div class="image-text_24 flex-col justify-between">
+				<img class="image_12" referrerpolicy="no-referrer" src="/r/cms/www/default/images/index/floating_weibo.png">
+				<span class="text-group_19">
+					微博
+					<br>
+					平台
+				</span>
+			</div>
+			<div class="popover-content-qrcode">
+				<img src="/r/cms/www/default/images/index/floating_qr_weibo.png" alt="">
+			</div>
+		</div>
+		<div class="block_14"></div>
+		<div class="section_7 flex-row">
+			<div class="image-text_25 flex-col justify-between">
+				<img class="thumbnail_4" referrerpolicy="no-referrer" src="/r/cms/www/default/images/index/floating_wechat_video.png">
+				<span class="text-group_20">视频号</span>
+			</div>
+			<div class="popover-content-qrcode">
+				<img src="/r/cms/www/default/images/index/floating_qr_wechat_video.png" alt="">
+			</div>
+		</div>
+		<div class="block_14"></div>
+		<div class="section_7 flex-row">
+			<div class="image-text_26 flex-col justify-between">
+				<img class="image_13" referrerpolicy="no-referrer" src="/r/cms/www/default/images/index/floating_tel.png">
+				<span class="text-group_21">
+					接诉
+					<br>
+					即办
+				</span>
+			</div>
+			<div class="popover-content-tel">
+				<span class="triangle-right">010-69755002</span>
+			</div>
+		</div>
+		<div class="block_14"></div>
+		<a rel="noopener noreferrer" href="/zxly.jhtml">
+			<div class="section_7 flex-row">
+				<div class="image-text_27 flex-col justify-between">
+					<img class="label_8" referrerpolicy="no-referrer" src="/r/cms/www/default/images/index/floating_zxly.png">
+					<span class="text-group_22">
+						在线
+						<br>
+						留言
+					</span>
+				</div>
+			</div>
+			<div class="block_14"></div>
+		</a>
+		<div class="section_7 flex-row" id="backTop">
+			<div class="image-text_28 flex-col justify-between">
+				<img class="label_9" referrerpolicy="no-referrer" src="/r/cms/www/default/images/index/floating_back2top.png">
+				<span class="text-group_23">
+					回到
+					<br>
+					顶部
+				</span>
+			</div>
+		</div>
+	</div>
+
+	<div class="mian-all">
+		<div class="all-dig"></div>
+		<div class="all-showHide">
+			<p>修改密码</p>
+			<div class="showHide-input">
+				<div>
+					<label>
+						<span>*</span>
+						旧密码：
+						<input id="oldPass" maxlength="50" type="password" placeholder="请输入旧密码">
+					</label>
+				</div>
+				<div>
+					<label>
+						<span>*</span>
+						新密码：
+						<input id="newPass" maxlength="50" type="password" placeholder="请输入新密码">
+					</label>
+				</div>
+				<div>
+					<label>
+						<span>*</span> 确认新密码：
+						<input id="PlqStr" maxlength="50" type="password" placeholder="请再次输入新密码">
+					</label>
+				</div>
+			</div>
+			<div class="all-add">
+				<button id="addPassWord">完成</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script>
+	
+	// 头部悬浮定位
+	var sTop = 0;
+	$(window).scroll(function(){
+	    sTop = $(this).scrollTop();
+		if(sTop > 0){
+	    // $(".header").css({"position":"fixed","top":"0"});
+			$(".header").css('background','#ffffff')
+			$('.logo-index').css('display','none')
+			$('.logo-children').css('display','block')
+			// $('.header .typeArea .navbar ul li .text-color').css('color','#333333')
+			$('.navbar').removeClass('navbar-index').addClass('navbar-children')
+			$('.header').removeClass('headerBox');
+
+		}else{
+			// $(".header").css({"position":"relative"});
+			$(".header").css('background','none')
+			$('.logo-index').css('display','block')
+			$('.logo-children').css('display','none')
+			$('.header').addClass('headerBox');
+			// $('.header .typeArea .navbar ul li .text-color').css('color','#ffffff')
+			$('.navbar').removeClass('navbar-children').addClass('navbar-index')
+	  }
+	});
+
+	// 设置cookie
+	function setTCookie(c_name, value, expiredays) {
+		var d = new Date();
+		d.setTime(d.getTime() + (expiredays*24*60*60*1000));
+		var expires = "expires="+d.toUTCString();
+		document.cookie = c_name + "=" + value + "; " + expires+"; path=/";//path=/是根路径
+	}
+	//获取cookie
+	function getTCookie(cname) {
+		var name = cname + "=";
+		var ca = document.cookie.split(';');
+		for(var i=0; i<ca.length; i++) {
+			var c = ca[i];
+			while (c.charAt(0)==' ') c = c.substring(1);
+			if (c.indexOf(name) != -1) return c.substring(name.length, c.length);
+		}
+		return "";
+	}
+	// 清除cookie
+	function clearTCookie(name) {
+		setTCookie(name, "", -1);
+	}
+
+	// 加载地址图标
+	var linkTag = $('<link rel="icon" type="image/x-icon" href="https://yatai-oss.yataischool.net/cms/u/cms/www/202303/141559428p8f.ico"/>');
+	$($('head')[0]).append(linkTag);
+
+	function getAuthToken() {
+        let cookies = document.cookie.split(";");
+        var str = "";
+        for(let i = 1;i<cookies.length;i++){
+					let cookie = cookies[i]
+            if (cookie.trim().startsWith("AUTHTOKEN")) {
+                console.log(cookie)
+                str = cookie.trim().replace("AUTHTOKEN=", "")
+                break
+            }
+        }
+        return str;
+    }
+
+	function quitLogin() {
+		var authToken = getAuthToken()
+		
+		console.log(document.cookie)
+		api.POST('/logout', {authToken:authToken}, function (result) {
+			if (result.code === 200) {
+				myMessage.add(result.message, 'success');
+				localStorage.setItem('JEECMS-Auth-Token', '');
+				window.localStorage.setItem('paidUser',false)
+				clearTCookie('rememberMe');
+				console.log(getTCookie('rememberMe'))
+				userLoad()
+				if(window.location.href.indexOf("member-vipcenter") != -1 ){
+					document.getElementById('loginUrl').click();
+				}
+			} else {
+				myMessage.add(result.message, 'error');
+			}
+		})
+	}
+
+	function userLoad() {
+		$(".stateUser").load("/csi-loginStatus.htm")
+	}
+	userLoad()
+
+	$('.stateUser').on('mouseenter', function () {
+		$('.stateUser ul').stop().slideDown(500);
+	});
+	if($('.font-show2 div').length===0){
+		$('.moreBox').addClass('none')
+		$('.icoH').addClass('none')
+		$('.lineH').eq(0).addClass('none')
+	}
+	$('.stateUser').on('mouseleave', function () {
+		$('.stateUser ul').stop().slideUp(500);
+	});
+	$('.moreBox').on("mouseover",function(){$('.moreBox1').stop().slideDown(500);$('.icoH').eq(0).addClass('none');$('.icoH').eq(1).removeClass('none')})
+	$('.moreBox').on("mouseout",function(){$('.moreBox1').stop().slideUp(500);$('.icoH').eq(1).addClass('none');$('.icoH').eq(0).removeClass('none')})
+	// $('.moreBox1').on("mouseover",function(){$('.moreBox1').stop().slideDown(500);$('.icoH').eq(0).addClass('none');$('.icoH').eq(1).removeClass('none')})
+	// $('.moreBox1').on("mouseout",function(){$('.moreBox1').stop().slideUp(500);$("#navContent").stop().slideUp(500);$('.icoH').eq(1).addClass('none');$('.icoH').eq(0).removeClass('none')})
+	// 顶部样式变化
+	$('.header').on('mouseenter', '', function() {//绑定鼠标进入事件
+		$(".header").css('background','#ffffff')
+		$('.logo-index').css('display','none')
+		$('.logo-children').css('display','block')
+		$('.navbar').removeClass('navbar-index').addClass('navbar-children')
+		$('.header').removeClass('headerBox');
+
+	});
+
+	$('.header').on('mouseleave', '', function() {//绑定鼠标划出事件
+		if(sTop == 0){
+			$(".header").css('background','none')
+			$('.logo-index').css('display','block')
+			$('.logo-children').css('display','none')
+			$('.header').addClass('headerBox');
+			$('.navbar').removeClass('navbar-children').addClass('navbar-index')
+		}
+		$('.moreBox1').stop().slideUp(500);$("#navContent").stop().slideUp(500);
+	});
+	// 菜单
+	$("#navbarList ul li a").on("mouseover",function(){
+		let parentId = $(this).context.id
+		if (!parentId) {
+			return
+		}
+		let _that =  $(this)
+		$('.moreBox1').stop().slideDown(500);
+		api.GET('/channel/list', {
+					parentId: parentId
+				}, function(res) {
+					let str = ''
+					if (res.code == 200) {
+						let list = res.data
+						list.map((item,index) => {
+							if(index==0 && parentId != 250){
+								_that.attr('href',item.url)
+								$("#checkDetail").attr("href", item.url)
+							}
+							if(index==0 && parentId == 250){
+								item.url = '/zszc1.jhtml?id=305'
+							}
+							str = str + '<span class="text_100_nav"><a href='+item.url+'>'+item.name+'</a></span>'
+						})
+						$("#childNavList").html(str)
+					}
+				})
+				api.GET('/channel/get', {
+					id: parentId
+				}, function(res) {
+					if (res.code == 200) {
+						console.log(res.data)
+						$("#navName").html(res.data.name)
+						if(parentId == 250){
+							// $("#checkDetail").attr("href", res.data.url)
+							_that.attr('href','/zszc1.jhtml?id=305')
+							$("#checkDetail").attr("href", '/zszc1.jhtml?id=305')
+						}
+						let leftTxt = res.data.txtMap.txt
+						if (leftTxt != undefined && leftTxt != null) {
+							let tmp = leftTxt.replace(/<[^<>]+>/g, '')
+							if (tmp.length > 100) {
+								tmp = tmp.substring(0, 100)
+								tmp += '...'
+							}
+							$("#txtMap").html(tmp)
+						} else {
+							$("#txtMap").html("")
+						}
+						let rightTxt = res.data.txtMap.txt2
+						if (rightTxt != undefined && rightTxt != null) {
+							$("#txtMap2").html(rightTxt.replace(/<[^<>]+>/g, ''))
+						} else {
+							$("#txtMap2").html("")
+						}
+						$("#navImage").html('<img src='+res.data.attr.titleImg.resUrl+'?x-oss-process=image/resize,w_600/quality,q_90 />')
+					}
+				})
+				$("#navContent").stop().slideDown(500)
+	})
+	
+	$(function(){
+		if(localStorage.getItem('typeface') && localStorage.getItem('typeface')=='简体'){
+			$('.typeface>span').text('简体');
+			zh_tran('s')
+		}else if(localStorage.getItem('typeface') && localStorage.getItem('typeface')=='繁体'){
+			$('.typeface>span').text('繁体');
+			zh_tran('t')
+		}else{
+			$('.typeface>span').text('简体');
+			zh_tran('s')
+		}
+		
+	})
+	$('.typeface .background a').on('click', function () {
+		$('.typeface>span').text('简体');
+		$(this).css('color', '#E30B20');
+		$('.typeface .background1 a').css('color', '#333');
+		localStorage.setItem('typeface','简体');
+		zh_tran('s')
+	});
+	$('.typeface .background1 a').on('click', function () {
+		$('.typeface>span').text('繁体');
+		$(this).css('color', '#E30B20');
+		$('.typeface .background a').css('color', '#333');
+		localStorage.setItem('typeface','繁体');
+		zh_tran('t')
+	});
+
+
+	function upSearch(q) {
+		var keyWords = q?encodeURI(q):''
+		var inpVal = encodeURI($('#headerKeyword').val())
+		var headerKeyword = keyWords||inpVal
+		window.open('/search.htm?q=' + headerKeyword);
+	}
+
+	$("#headerKeyword").keypress(function (e) {
+		if (e.which == 13) {
+			var headerKeyword = encodeURI($('#headerKeyword').val())
+			window.open('/search.htm?q=' + headerKeyword);
+		}
+	});
+
+
+	//简体繁体切换
+	$('.typeface').on('mouseenter', function () {
+		$('.typeface .iconfanhui-copy-copy-copy-copy').addClass('none');
+		$('.typeface .iconfanhui-copy-copy-copy-copy1').removeClass('none');
+	});
+	$('.typeface').on('mouseleave', function () {
+		$('.typeface .iconfanhui-copy-copy-copy-copy1').addClass('none');
+		$('.typeface .iconfanhui-copy-copy-copy-copy').removeClass('none');
+	});
+	$(function () {
+		/*固定*/
+		var sTop = 0;
+		$(window).scroll(function () {
+			sTop = $(this).scrollTop();
+			if (sTop > 60) {
+				// $('#goTop').show()
+				$(".box_10").show()
+			} else {
+				// $('#goTop').hide()
+				$(".box_10").hide()
+			}
+		});
+
+		$('#backTop').click(function () {
+			$body = (window.opera) ? (document.compatMode == "CSS1Compat" ? $('html') : $('body')) : $(
+					'html,body');
+			$body.animate({
+				scrollTop: 0
+			}, 0);
+		});
+
+	})
+</script>
+<a id="loginUrl" href="/login" style="display: none" target="_self"></a>
+  <!--顶部导航 over-->
+  <!-- 大中部整体模块 -->
+  <div class="section">
+    <div class="typeArea">
+      <!-- 轮播图模块 -->
+      <!-- <div class="lunbo">
+                  <div class="banner" id="b04" style="height: 23.68rem;">
+                      <ul>
+                          <li style="height: 600px;background-image: url(https://yatai-oss.yataischool.net/cms/u/cms/www/202303/30092501ui2z.jpeg);background-size: 100% 100%;">
+                          </li>
+                      </ul>
+                  </div>
+              </div> -->
+      <div class="lunbo">
+        <div class="swiper-1 swiper-initialized swiper-horizontal swiper-pointer-events" style="position: absolute;top: 0;left: 0;height: 100%;width: 100%;">
+          <div class="swiper-wrapper" id="swiper-wrapper-c4f0a0742ab2205e" aria-live="off" style="transition-duration: 0ms; transform: translate3d(-4800px, 0px, 0px);"><div class="swiper-slide swiper-slide-duplicate swiper-slide-duplicate-active" style="height: 100%; background-image: url(&quot;https://yatai-oss.yataischool.net/cms/u/cms/www/202404/15142504y66e.jpg?x-oss-process=image/resize,w_1920/quality,q_90&quot;); background-size: cover; width: 1200px;" data-swiper-slide-index="3" role="group" aria-label="4 / 4">
+            </div>
+            <div class="swiper-slide swiper-slide-duplicate-next" style="height: 100%; background-image: url(&quot;https://yatai-oss.yataischool.net/cms/u/cms/www/202409/09163659cnrj.jpg?x-oss-process=image/resize,w_1920/quality,q_90&quot;); background-size: cover; width: 1200px;" data-swiper-slide-index="0" role="group" aria-label="1 / 4">
+            </div>
+            <div class="swiper-slide" style="height: 100%; background-image: url(&quot;https://yatai-oss.yataischool.net/cms/u/cms/www/202404/151425024m17.jpg?x-oss-process=image/resize,w_1920/quality,q_90&quot;); background-size: cover; width: 1200px;" data-swiper-slide-index="1" role="group" aria-label="2 / 4">
+            </div>
+            <div class="swiper-slide swiper-slide-prev" style="height: 100%; background-image: url(&quot;https://yatai-oss.yataischool.net/cms/u/cms/www/202404/151434055hno.jpg?x-oss-process=image/resize,w_1920/quality,q_90&quot;); background-size: cover; width: 1200px;" data-swiper-slide-index="2" role="group" aria-label="3 / 4">
+            </div>
+            <div class="swiper-slide swiper-slide-active" style="height: 100%; background-image: url(&quot;https://yatai-oss.yataischool.net/cms/u/cms/www/202404/15142504y66e.jpg?x-oss-process=image/resize,w_1920/quality,q_90&quot;); background-size: cover; width: 1200px;" data-swiper-slide-index="3" role="group" aria-label="4 / 4">
+            </div>
+          <div class="swiper-slide swiper-slide-duplicate swiper-slide-next" style="height: 100%; background-image: url(&quot;https://yatai-oss.yataischool.net/cms/u/cms/www/202409/09163659cnrj.jpg?x-oss-process=image/resize,w_1920/quality,q_90&quot;); background-size: cover; width: 1200px;" data-swiper-slide-index="0" role="group" aria-label="1 / 4">
+            </div></div>
+          <div class="swiper-pagination swiper-pagination-bullets swiper-pagination-horizontal"><span class="swiper-pagination-bullet"></span><span class="swiper-pagination-bullet"></span><span class="swiper-pagination-bullet"></span><span class="swiper-pagination-bullet swiper-pagination-bullet-active" aria-current="true"></span></div>
+        <span class="swiper-notification" aria-live="assertive" aria-atomic="true"></span></div>  
+        <div class="swiper-button-next swiper-button-next-1" tabindex="0" role="button" aria-label="Next slide" aria-controls="swiper-wrapper-c4f0a0742ab2205e"></div>
+        <div class="swiper-button-prev swiper-button-prev-1" tabindex="0" role="button" aria-label="Previous slide" aria-controls="swiper-wrapper-c4f0a0742ab2205e"></div>
+      </div>
+      <div id="m_news">
+        <!-- 热点要闻模块 -->
+        <div class="hot block_17 flex-col">
+          <div class="block_container container-bottom">
+            <div class="text-group_24 flex-col">
+              <p class="text_2">新闻动态</p>
+              <p class="text_1">News&nbsp;Information</p>
+            </div>
+            <div class="box_11 flex-row">
+              <div class="box_12">
+                <a href="/dj/2692.jhtml">
+                  <div class="image_1_box" style="width: 100%;height: auto;overflow: hidden;">
+                    <img class="image_1" referrerpolicy="no-referrer" src="https://yatai-oss.yataischool.net/cms/u/cms/www/202404/2615381722n5.jpeg?x-oss-process=image/resize,w_1920/quality,q_90">
+                  </div>
+                  <div class="group_3 flex-col">
+                    <div class="text-group_25 flex-col justify-between">
+                      <span class="text_3">
+党建创新——西城区两新党建实践案例：创建“明德”党建品牌，践行立德树人使命                      </span>
+                      <span class="text_4">
+文章转自人民日报客户端                      </span>
+                    </div>
+                    <div class="section_1 flex-col"></div>
+                    <div class="box_13 flex-row justify-between">
+                      <span class="text_5">2024.04.26</span>
+                      <div class="text-wrapper_1 flex-col">
+                        <span class="text_6">查看详情</span>
+                      </div>
+                    </div>
+                  </div>
+                </a>
+              </div>
+
+              <!-- 右侧热点排行 -->
+              <div class="ranking">
+                <ul id="hotList">
+                  <a href="/jyjx1/2933.jhtml">
+                    <li>
+                      <div class="rank-img fl" style="background-image: url(https://yatai-oss.yataischool.net/u/cms/www/202410/17100747vszv.png?x-oss-process=image/resize,w_1920/quality,q_90);">
+                        <!--  
+                                    <img src="https://yatai-oss.yataischool.net/u/cms/www/202410/17100747vszv.png" alt="">
+ -->
+                      </div>
+                      <div class="block_flex">
+                        <p class="text fl news-title-text">九年级新学期教育教学工作研讨会顺利召开</p>
+                        <span class="text_4">
+此次九年级教育教学工作研讨会的顺利召开，不仅为教师们提供了交流学习、...                        </span>
+                        <div class="block_4 flex-col">
+                          <img class="image_3" referrerpolicy="no-referrer" src="https://yatai-oss.yataischool.net/cms/u/cms/www/202304/021857278g7c.png">
+                        </div>
+                        <div class="box_16 flex-row justify-between">
+                          <span class="text_5">2024.10.13</span>
+                          <div class="text-wrapper_1 flex-col">
+                            <span class="text_6">查看详情</span>
+                          </div>
+                        </div>
+                      </div>
+                    </li>
+                  </a>
+
+                  <a href="/jyjx1/2926.jhtml">
+                    <li>
+                      <div class="rank-img fl" style="background-image: url(https://yatai-oss.yataischool.net/u/cms/www/202410/17074723rmv9.png?x-oss-process=image/resize,w_1920/quality,q_90);">
+                        <!--  
+                                    <img src="https://yatai-oss.yataischool.net/u/cms/www/202410/17074723rmv9.png" alt="">
+ -->
+                      </div>
+                      <div class="block_flex">
+                        <p class="text fl news-title-text">学前部召开新学期家委会会议</p>
+                        <span class="text_4">
+新学期伊始，北京师范大学亚太实验学校学前部召开了家委会会议。此次会议...                        </span>
+                        <div class="block_4 flex-col">
+                          <img class="image_3" referrerpolicy="no-referrer" src="https://yatai-oss.yataischool.net/cms/u/cms/www/202304/02193343ofk9.png">
+                        </div>
+                        <div class="box_16 flex-row justify-between">
+                          <span class="text_5">2024.10.12</span>
+                          <div class="text-wrapper_1 flex-col">
+                            <span class="text_6">查看详情</span>
+                          </div>
+                        </div>
+                      </div>
+                    </li>
+                  </a>
+
+                  <a href="/jyjx1/2932.jhtml">
+                    <li>
+                      <div class="rank-img fl" style="background-image: url(https://yatai-oss.yataischool.net/u/cms/www/202410/17094836xrk9.png?x-oss-process=image/resize,w_1920/quality,q_90);">
+                        <!--  
+                                    <img src="https://yatai-oss.yataischool.net/u/cms/www/202410/17094836xrk9.png" alt="">
+ -->
+                      </div>
+                      <div class="block_flex">
+                        <p class="text fl news-title-text">九年级举办树立科学学习观班会展示活动</p>
+                        <span class="text_4">
+此次活动以“九年级树立科学学习观班会展示”为主题，围绕立德树人这一根...                        </span>
+                        <div class="block_4 flex-col">
+                          <img class="image_3" referrerpolicy="no-referrer" src="https://yatai-oss.yataischool.net/cms/u/cms/www/202304/0219335127mx.png">
+                        </div>
+                        <div class="box_16 flex-row justify-between">
+                          <span class="text_5">2024.10.11</span>
+                          <div class="text-wrapper_1 flex-col">
+                            <span class="text_6">查看详情</span>
+                          </div>
+                        </div>
+                      </div>
+                    </li>
+                  </a>
+
+                  <a href="/jyjx1/2927.jhtml">
+                    <li>
+                      <div class="rank-img fl" style="background-image: url(https://yatai-oss.yataischool.net/u/cms/www/202410/17080659z5fp.png?x-oss-process=image/resize,w_1920/quality,q_90);">
+                        <!--  
+                                    <img src="https://yatai-oss.yataischool.net/u/cms/www/202410/17080659z5fp.png" alt="">
+ -->
+                      </div>
+                      <div class="block_flex">
+                        <p class="text fl news-title-text">小学部二、三、四年级家长会顺利召开</p>
+                        <span class="text_4">
+学校小学部分别为二、三、四年级的学生家长精心筹备并召开了家长会。这一...                        </span>
+                        <div class="block_4 flex-col">
+                          <img class="image_3" referrerpolicy="no-referrer" src="https://yatai-oss.yataischool.net/cms/u/cms/www/202304/021934467gvt.png">
+                        </div>
+                        <div class="box_16 flex-row justify-between">
+                          <span class="text_5">2024.10.10</span>
+                          <div class="text-wrapper_1 flex-col">
+                            <span class="text_6">查看详情</span>
+                          </div>
+                        </div>
+                      </div>
+                    </li>
+                  </a>
+
+                </ul>
+              </div>
+            </div>
+            <div class="text-wrapper_6 flex-col">
+              <a class="text_23" rel="noopener noreferrer" href="/ytxw.jhtml">查看更多</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div id="m_eduresearch">
+        <!-- 教育科研 -->
+        <div class="group_8_wrapper">
+          <div class="group_8_container">
+            <div class="group_8">
+              <div class="group_8_child">
+                <img src="https://yatai-oss.yataischool.net/cms/u/cms/www/202304/0219222885al.png" alt="" style="position: absolute;top: 0;left: 0;width:auto;height: 100%;">
+                <div class="group_8_content flex-row">
+                  <div class="list_1 flex-col">
+                    <div class="text-group_26 flex-col justify-between">
+                      <span class="text_24">教育科研</span>
+                      <span class="text_25">Educational&nbsp;Research</span>
+                    </div>
+                    <span class="text_27">
+                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;学校科研部以“探索教育教学规律、提升立德树人实效”为核心目标，以“传承学校严谨、专业、科学的办学精神，发展和巩固学校办学成果、特色，不断提升教师研究水平和教育实践能力，提高学校学术品质和核心竞争力”为主要任务，协同学校教育教学、教研和培训，充分发挥教育科研对教师专业成长和学校内涵发展的引领、支持和服务功能。
+                    </span>
+                    <div class="text-wrapper_7 flex-col">
+                      <a class="text_41" rel="noopener noreferrer" href="/kyxm.jhtml">查看更多</a>
+                    </div>
+                  </div>
+                  <div class="list_2 flex-row">
+                    <div class="list-item-box">
+                      <a rel="noopener noreferrer" href="/kyxm/2867.jhtml">
+                        <div class="list-items_2-0 flex-col" style="background-image: url(/r/cms/www/default/images/index/list-items_2-0.png);">
+                          <div class="text-group_27-0 flex-col">
+                            <span class="paragraph_8-0">
+                              《小学拔尖创新人才培养课程整体设计与落实》
+                            </span>
+                            <span class="paragraph_9-0">
+                              
+                            </span>
+                          </div>
+                          <div class="text-wrapper_18-0 flex-col">
+                            <span class="text_87-0">查看详情</span>
+                          </div>
+                        </div>
+                      </a>
+                    </div>
+                    <div class="list-item-box">
+                      <a rel="noopener noreferrer" href="/kyxm/2866.jhtml">
+                        <div class="list-items_2-0 flex-col" style="background-image: url(/r/cms/www/default/images/index/list-items_2-1.png);">
+                          <div class="text-group_27-0 flex-col">
+                            <span class="paragraph_8-0">
+                              《依托常态体育课促进拔尖创新人才培养的实践探索》
+                            </span>
+                            <span class="paragraph_9-0">
+                              
+                            </span>
+                          </div>
+                          <div class="text-wrapper_18-0 flex-col">
+                            <span class="text_87-0">查看详情</span>
+                          </div>
+                        </div>
+                      </a>
+                    </div>
+                    <div class="list-item-box">
+                      <a rel="noopener noreferrer" href="/kyxm/2865.jhtml">
+                        <div class="list-items_2-0 flex-col" style="background-image: url(/r/cms/www/default/images/index/list-items_2-2.png);">
+                          <div class="text-group_27-0 flex-col">
+                            <span class="paragraph_8-0">
+                              《基于创新素养培育的初中跨学科主题学习探索与实践》
+                            </span>
+                            <span class="paragraph_9-0">
+                              
+                            </span>
+                          </div>
+                          <div class="text-wrapper_18-0 flex-col">
+                            <span class="text_87-0">查看详情</span>
+                          </div>
+                        </div>
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div id="m_notice">
+        <!-- 通知公告 -->
+        <div class="block_17">
+          <div class="block_container">
+            <div class="block_17_content">
+              <div class="text-group_28 flex-col justify-between">
+                <span class="text_31">通知公告</span>
+                <span class="text_32">Notice</span>
+              </div>
+              <div class="box_20 flex-row justify-evenly">
+                <a href="/tzgg/2937.jhtml">
+                  <div class="group_10 flex-col">
+                    <div class="box_21 flex-row">
+                      <span class="paragraph_3">
+                        北京师范大学亚太实验学校外停车场二、三期地面、四期停车场路面及停车场南侧东延路面维修草坪铺设施工
+                      </span>
+                      <!-- <div class="image-text_15 flex-row">
+                                <div class="text-group_29 flex-col">
+                                  <span class="text_33">11.05</span>
+                                  <span class="text_34">2024</span>
+                                  <img class="thumbnail_1" referrerpolicy="no-referrer" src="/r/cms/www/default/images/index/label_3.png">
+                                </div>
+                              </div> -->
+                    </div>
+                    <div class="box_22 flex-row">
+                      <span class="paragraph_4">
+                        北京师范大学亚太实验学校外停车场二、三期地面、四期停车场路面及停车场南侧东延路面维修草坪铺设施工本项目经校务会审批通过，拟通过比选方式确定服务供应商，现进行公告，符合条件的单位可报名参加比选。一、比选单位：&nbsp;北京师范大学亚太实验学校二、项目名称：北京师范大学亚太实验学校外停车场二、三期地面、四期停车场路面及停车场南侧东延路面维修草坪铺设施工三、项目基本情况及要求：停车场二、三期地面用绿色草坪铺装约13000平米，四期停车场路面及停车场南侧东延路面使用大地色铺设约5000平米。铺装质保一年四、项目预算金额：50万以内五、资质要求：企业注册资本：200万元以上（含）。六、报名、踏勘：1.报名时间：2024年11月7日8:00-2024年11月7日12:002.报名要求：报名时须携带①营业执照复印件；②法人授权委托书（格式见附件1，需附委托人及被委托人身份证复印件）；③上一年度财务审计报告复印件（或提供以下三项：财务报表、银行出具的资信证明材料复印件、近半年任意一个月的依法缴纳税收的证明（纳税凭证）复印件）；④未被列入“信用中国”网站(www.creditchina.gov.cn)记录失信被执行人查询结果；⑤参选人近三年（至比选日）无骗取中标、被限制投标、违约行为、重大责任事故承诺书（格式自拟）；⑥资质文件（如本公告资质要求处有明确要求，则需提供相应支撑材料）。（以上材料加盖公章）；3.报名登记：参加报名时参选人需填写《比选报名登记表》（格式见附件2）并携带报名材料进行现场核查。七、响应文件编制、装订及密封1.响应文件封面(注明比选项目名称、参选人单位名称及日期并加盖公章)。2.响应报价（人民币：元；加盖公章）。3.技术部分：①项目实施团队配置；②项目方案；③项目进度、质量保证及售后服务承诺。4.①营业执照复印件；②法人授权委托书（格式见附件1）；③上一年度财务审计报告复印件（或提供以下三项：财务报表、银行出具的资信证明材料复印件、近半年任意一个月的依法缴纳税收的证明（纳税凭证）复印件）；④未被列入“信用中国”网站(www.creditchina.gov.cn)记录失信被执行人查询结果；⑤参选人近三年（至比选日）无骗取中标、被限制投标、违约行为、重大责任事故承诺书（格式自拟）；⑥资质文件（如本公告资质要求处有明确要求，则需提供相应支撑材料）。5.附相关业绩明细并加盖公章，并提供合同关键信息或项目履约（验收）合格评价证明文件。6. 参选人按“1至5” 编制顺序将响应文件装订成册，并加盖骑缝章。7.响应文件需提供一正三副，并在封面标明“正本”和“副本”；8.装订成册的响应文件正、副本装入文件袋并用封条密封，在封条与文件袋接缝处加盖参选人公章，用“A4”纸打印比选项目名称，参选人单位名称、法定代表人或授权代理人签名、联系电话及日期等信息并粘贴在密封袋上。八、响应文件递交1.响应文件递交时间：2024年11月11日上午8:30-9：00；2.比选时间：2024年11月11日上午9:00；3.地点：北京师范大学亚太实验学校。九、比选评选1.学校成立比选小组；2.&nbsp;本次采购采用综合评分法，即响应文件满足比选公告全部实质性要求通过资格核查且得分最高者确定为中选候选人。具体详见《比选评分表》（附件3）；3.学校将在确定比选结果后5个工作日内在学校网站进行公示。十、比选纪律出现下列情况参选人将被永久列入黑名单：1.成交候选人因自身原因未能按规定签订合同；2.参选人采用不正当手段骗取中选；3.其他违背相关法律法规的行为。十一、其它凡对本次比选事宜提出询问的，请以邮件或电话的的形式与北京师范大学亚太实验学校联系：联系人：刘老师联系电话：010-81939850邮箱地址：1194393456@qq.com&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;北京师范大学亚太实验学校2024年10月30日&nbsp;附件1：法人授权委托书&nbsp;&nbsp;法定代表人/负责人授权书&nbsp;&nbsp;&nbsp;兹授权&nbsp;&nbsp;&nbsp;（授权代理人姓名） &nbsp;&nbsp;代表本公司就（项目名称） &nbsp;&nbsp;&nbsp;的比选响应，以本公司名义处理一切与之有关的事务。　　本授权书于__________年_____月______日生效，特此声明。&nbsp;法定代表人/负责人签字或盖章：_______________________________被授权人签字或盖章：_______________________________公司盖章：_______________________________附：被授权人姓名：_______________职　　　　务：_______________电　　　　话：_______________&nbsp;附：法人及被授权人的身份证明：有效的身份证正反面复印件，或有效的护照复印件。附件2：比选报名登记表比选报名登记表基本信息项目名称参选单位名称法定代表人授权代理人授权代理人联系方式电子邮箱报名材料核查材料是否提供（√/×）营业执照且满足公告要求法人授权委托书（需附委托人及被委托人身份证复印件）上一年度财务审计报告复印件（或提供以下三项：财务报表、银行出具的资信证明材料复印件、近半年任意一个月的依法缴纳税收的证明（纳税凭证）复印件）未被列入“信用中国”网站(www.creditchina.gov.cn)记录失信被执行人查询结果投标人近三年（至比选日）无骗取中标、被限制投标、违约行为、重大责任事故承诺书（格式自拟）参选单位法定代表人/授权代理人:核查人员（两人，含部门主任）：&nbsp;&nbsp; 附件3：比选评分表比选评分表项目名称：序号项目内容分值打分原则1资格营业执照且满足公告要求√/×未提供或不符合要求取消参加比选的资格2法人授权委托书（需附委托人及被委托人身份证复印件）√/×未提供或不符合要求取消参加比选的资格3上一年度财务审计报告复印件（或提供以下三项：财务报表、银行出具的资信证明材料复印件、近半年任意一个月的依法缴纳税收的证明（纳税凭证）复印件）√/×未提供或不符合要求取消参加比选的资格4未被列入“信用中国”网站(www.creditchina.gov.cn)记录失信被执行人查询结果√/×未提供或不符合要求取消参加比选的资格5参选人近三年（至比选日）无骗取中标、被限制投标、违约行为、重大责任事故承诺书（格式自拟）√/×未提供或不符合要求取消参加比选的资格1商务部分近三年同类业绩20每提供1个得4分（与中小学校相关得6分）满分20分。需提供合同关键信息或项目履约（验收）合格评价证明文件作为得分依据。2技术部分项目实施团队配置10根据服务团队人员的配置情况(提供近一年单位人员社保缴纳记录）、分工情况及人员所持证书情况进行评比，优得8-10分;中得5-7分；差得0-5分。(不提供得0分)3项目方案30对方案做全面分析阐述。优得20-30分;中得10-20分；差得0-10分。(不提供得0分)4项目进度、质量保证及售后服务10提供进度和质量保证及售后服务的承诺(提供承诺函，格式自拟)，得10分。（未承诺不得分）5价格部分报价30报价最低得满分，（最低响应报价/响应报价）*该项总分值(四舍五入后取整）总得分100注：比选小组根据评分标准对资格审查合格的响应文件进行综合比较与评价，汇总每个供应商的得分（评审总得分分值按四舍五入原则取整）。按评审最终得分由高到低顺序排列，排名第一的供应商成为成交供应商（出现并列第一的情况，则依次将报价得分高低、技术部分得分高低、商务部分得分高低作为确定中选候选人的标准，直至选出中选候选人）。 工 程 施 工&nbsp;合 同&nbsp;甲方：北京师范大学亚太实验学校 &nbsp;乙方：根据《中华人民共和国民法典》有关规定和运动场建造工程有关要求，结合学校工程的具体情况，为明确责任，保证施工，经双方协商一致，签订本合同。第一条、&nbsp;工程项目一、工程名称：&nbsp;二、工程地址：三、工程施工范围和内容：&nbsp;第二条、&nbsp;工程期限&nbsp;&nbsp;合同签订后根据甲方要求（具备施工条件且无不可抵抗力因素下）正式开工，&nbsp;&nbsp;天完工（从正式开工日开始计算）。第三条、&nbsp;工程造价（一）&nbsp;工程造价明细：总计：&nbsp;&nbsp;&nbsp;元。人民币大写：&nbsp;&nbsp;。（二）付款方式：工程完工，甲乙双方根据实际铺装面积进行验收，验收合格后取得竣工验收单，乙方为甲方提供验收面积总工程款95%的增值税发票，甲方在收到发票后向乙方支付该部分款项。剩余的5%为工程质保金，本工程质保期为壹年，无施工和产品质量问题的情况下，质保期满后支付质量保修金。如实际铺装面积与合同约定面积不一致，以实际铺装面积进行结算，付款方式（包括付款条件及付款比例) 按上述约定计算执行。第四条、&nbsp;不可抗力1、签约双方中的任何一方，由于战争或严重的火灾、水灾、地震、风雨和其他不可抗力事件而影响合同履行时，受事件妨碍的一方对这种不能履行或延迟履行不负责，如遇到以上事件则施工工期顺延。2、受不可抗力事件妨碍的一方应立即通知另一方，并以书面形式向另一方提出有关政府机关或商会所出具的证明，以证明事件的存在；当不可抗力事件终止或消除时，受不可抗力事件妨碍的一方应立即通知另一方。第五条、&nbsp;工程监督乙方供应的主要材料经甲方认可后方可使用，甲方对主要材料厂家进行考察，甲方有权监督工程材料及施工质量，如不合规定，通知乙方返工重做，乙方应当立即返工，其费用及损失概由乙方负担。第六条、&nbsp;工地管理1、乙方派&nbsp;&nbsp;，联系电话：&nbsp;&nbsp;，身份证号码：&nbsp;&nbsp;&nbsp;为工地负责人常驻工地，督导施工，所有工人之管理及饮食等均由其负责。确定的工地负责人，乙方应以书面形式在开工前通知甲方，施工期间，乙方若更换工地负责人须经甲方同意，若甲方认为乙方工地负责人或其他管理人员工作明显不称职时，有权提出批评，如甲方认为有必要更换上述人员，将以书面形式通知乙方，乙方在三天内更换上述人员。2、乙方工人应严守施工现场管理制度，如有规定外行为触犯地方治安条例，所引起的纠纷，概由乙方负责，与甲方无关。影响到甲方正常工作或给甲方造成严重影响的，应当由乙方向甲方赔偿所有损失。3、乙方应当自行施工，不得将本工程转包或者变相转包。乙方如有与甲方认可或委托的其他施工单位相互委托事项或产生纠纷时，应自行协商解决，费用自理，或由甲方协调。4、甲方向乙方提供材料、设备的存放、现场施工用临电、临水等，并派尚跃新，联系电话：13511031427，身份证号码：11010519650128775X为甲方代表全面负责工程质量。第七条、&nbsp;工程责任1、本工程验收接管前，现有已完成成品及未完之材料等皆归乙方保管和维护，如保管不当而导致损失，概由乙方负责。2、工程的建筑、花木，乙方应善加保护，如需拆除需经甲方同意，并于完工时修复。3、现场已竣工的工程成品保护，乙方应妥善维护，如发生损坏，乙方除应当进行原状修复外，还应当承担相应的赔偿责任。4、现场施工导致场地及其他财物受损，乙方应当遵循原状修复及按照实际损失赔偿的原则，对甲方承担相应责任。第八条、&nbsp;工地清理施工中产生的垃圾，应在当日内清除至甲方指定地点，由乙方负责清运。未能在当日清除时，甲方将按施工管理处罚条例处置。工程完工后，所有工地废料、杂物及临时设备等，由乙方负责清运至政府指定处，相关费用由乙方承担，否则甲方将雇工代为清理，并由当期工程价款中扣除该项费用。第九条、竣工验收、结算与保修&nbsp;&nbsp;&nbsp;&nbsp;1、乙方在工程竣工前两日将验收日期以书面形式通知甲方届时验收，如甲方不能按时参加验收，须提前通知乙方再行商定验收日期。2、竣工工程验收合格，从验收之日起，乙方向甲方移交完毕，如甲方不能按时接管，致使验收后的工程发生非因乙方造成的损失，应由甲方承担。3、在进行竣工工程验收中，如发现工程质量不符合规定，乙方应负责无偿修理或返工、更换，并在双方议定的措施和期限内完成，经验收合格后，再进行移交。所需全部费用由乙方承担。4、工程未经验收，甲方提前使用或擅自动用，由此而发生的质量或其他问题，由甲方承担责任。5、工程竣工验收合格后，乙方对施工的工程质量负责免费保修贰年。在保修期内确因乙方造成的质量问题，乙方应负责无偿修理、更换。保修期满后乙方有责任对本合同的货物提供及时有偿的服务，维修合同由双方另行签定。第十条、违约责任1、因乙方原因而导致工程不能按期完工，甲方有权要求乙方进行补偿。2、因为甲方单方付款原因而导致工程不能按期完工，乙方不负任何责任。3、合同签订后，乙方按合同要求准备施工材料，做好施工前准备工作，但甲方须在正式进场前一周通知乙方。4、如果甲方因自己的原因不能按合同付款，乙方有权停止施工，且甲方前期所付款项作为赔偿乙方的损失，不给予退回。第十一条、解决纠纷方式因履行本合同发生的争议，由甲乙双方协商解决，协商不成的，依法向工程所在地人民法院起诉。第十二条、本合同一式肆份，甲乙双方各持贰份，至双方签字盖章之日起生效。传真件具有同等法律效益。合同文件内的天数，除另有说明外，按日历天数计算。&nbsp;甲方：北京师范大学亚太实验学校 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;乙方：账号：0200064909014405256 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;开户银行：地址： &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;账户：纳税识别号：1211010273512264XT &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;户名：法人或获授权代表签署： &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;法人或获授权代表签署：电话：010-81939850　　　　　　　　&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;电话： 2024年&nbsp;&nbsp;&nbsp;月&nbsp;&nbsp;日&nbsp;附件一：&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;建设工程廉政责任书甲方：&nbsp;北京师范大学亚太实验学校 (以下简称甲方）乙方：&nbsp;&nbsp;(以下简称乙方）为加强建设工程廉政建设，规范建设工程各项活动中甲乙双方的行为，防止谋取不正当利益的违法违纪现象的发生，保护国家、集体和当事人的合法权益，根据国家有关工程建设的法律法规和廉政建设的有关规定，订立本廉政责任书。一、双方的责任1.1 应严格遵守国家关于建设工程的有关法律、法规，相关政策，以及廉政建设的各项规定。1.2 严格执行建设工程合同文件，自觉按合同办事。1.3 各项活动必须坚持公开、公平、公正、诚信、透明的原则（除法律法规另有规定者外），不得为获取不正当的利益，损害国家、集体和对方利益，不得违反建设工程管理的规章制度。1.4 发现对方在业务活动中有违规、违纪、违法行为的，应及时提醒对方，情节严重的，应向其上级主管部门或纪检监察、司法等有关机关举报。二、甲方责任甲方的领导和从事该建设工程项目的工作人员，在工程建设的事前、事中、事后应遵守以下规定：2.1不得向乙方和相关单位索要或接受回扣、礼金、有价证券、贵重物品和好处费、感谢费等。2.2 不得在乙方和相关单位报销任何应由甲方或个人支付的费用。2.3 不得要求、暗示或接受乙方和相关单位为个人装修住房、婚丧嫁娶、配偶子女的工作安排以及出国（境）、旅游等提供方便。2.4 不得参加有可能影响公正执行公务的乙方和相关单位的宴请、健身、娱乐等活动。2.5 不得向乙方和相关单位介绍或为配偶、子女、亲属参与同甲方工程建设管理合同有关的业务活动；不得以任何理由要求乙方和相关单位使用某种产品、材料和设备。三、乙方责任应与甲方保持正常的业务交往，按照有关法律法规和程序开展业务工作，严格执行工程建设的有关方针、政策，执行工程建设强制性标准，并遵守以下规定：3.1 不得以任何理由向甲方及其工作人员索要、接受或赠送礼金、有价证券、贵重物品及回扣、好处费、感谢费等。3.2不得以任何理由为甲方和相关单位报销应由对方或个人支付的费用。3.3不得接受或暗示为甲方、相关单位或个人装修住房、婚丧嫁娶、配偶子女的工作安排以及出国（境）、旅游等提供方便。3.4不得以任何理由为甲方、相关单位或个人组织有可能影响公正执行公务的宴请、健身、娱乐等活动。四、违约责任4.1甲方工作人员有违反本责任书第一、二条责任行为的，依据有关法律、法规给予处理；涉嫌犯罪的，移交司法机关追究刑事责任；给乙方单位造成经济损失的，应予以赔偿。4.2 乙方工作人员有违反本责任书第一、三条责任行为的，依据有关法律法规处理；涉嫌犯罪的，移交司法机关追究刑事责任；给甲方单位造成经济损失的，应予以赔偿。4.3 本责任书作为建设工程合同的组成部分，与建设工程合同具有同等法律效力。经双方签署后立即生效。五、责任书有效期：本责任书的有效期为双方签署之日起至该工程项目竣工验收合格时止。&nbsp;甲方：（盖章） &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;乙方：（盖章）&nbsp;&nbsp;&nbsp;&nbsp;2024年 &nbsp;月 &nbsp;日&nbsp;附件二： &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;安全生产协议书甲方：北京师范大学亚太实验学校(以下简称甲方）乙方：&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(以下简称乙方）为贯彻“安全第一、预防为主”的方针，确保在校期间的施工安全，依照国家、北京市的有关法规和政策，甲、乙双方经充分协商，特签订本安全生产协议书。一、本安全生产协议书作为本合同的附件，与该合同具有同等效力。二、乙方的法定代表人、项目经理、安全生产负责人、工地的现场安全员应对本工程安全生产工作各负其责。三、根据《北京市建设工程文明安全施工管理规定》的有关要求，甲方有权审查乙方安全管理体制是否符合市、区政府及有关主管部门的规定，有权向乙方提出安全施工的要求以及日常施工现场的督促检查。四、乙方在承包工程施工中，必须根据设计图纸和施工规范，针对工程特点编制施工组织设计和落实相应的安全措施，健全安全管理体制，组织有关安全知识学习，安全教育等活动，建立各项安全操作规程、安全生产责任制和安全检查制度。五、乙方在施工中要认真执行《北京市建设工程施工现场管理办法》、《北京市建设工程施工现场安全防护基本标准》、《北京市建设工程施工现场管理基本标准》、《北京市建设工程施工现场环境保护工作基本标准》、《北京市建设工程施工现场保卫工作基本标准》、《北京市建设工程施工现场管理补充生活设施及卫生防疫管理标准》、《北京市建设工程施工现场文明安全施工补充标准》、工地安全管理的有关规定。甲方将严格执行上述各项标准作为施工过程中安全检查和安全奖惩的依据。六、乙方施工的电工、焊工、起重吊运指挥等特殊工种必须按国家《特种作业人员安全技术培训考核管理规定》持有劳动部门签发的有效操作证件上岗，严禁无证、违章操作；施工机具中的受压容器、电气设备必须具有符合安全要求的保护设施。七、乙方在施工过程中，必须注意对地下管线及周围绿化和地面构筑物的保护。乙方要采取合理施工方案严格施工工艺，加强对地下管线和地面构造物的监控量测，及时采取有效措施保证地下管线和地表构筑物的安全。如遇有不明情况，应及时向有关部门联系，采取有效保护措施，在施工过程中造成的地下管线和地表构造物的损坏，由乙方承担全部责任。八、乙方在施工过程中，应认真组织审核甲方下发的图纸，并严格按审核后的图纸及相应的国家有关标准施工，不允许随意改变施工工艺和工法，否则出现的任何施工质量和安全问题都将由乙方承担全部责任。九、若在施工过程中发生人员伤亡（含刑事案件）、火灾、爆炸等事故，乙方必须立即按有关规定及时上报甲方及其政府主管部门，事故责任以及事故损失均由乙方负责。&nbsp;&nbsp;&nbsp;&nbsp;十、本协议未尽事宜，依据有关法规，规章处理，法规、规章没有明确规定的，经双方协商处理解决。十一、本协议自签订之日起生效。&nbsp;甲方： &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;乙方：&nbsp;项目安全负责人： &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;现场安全负责人： &nbsp;&nbsp;2024年 &nbsp;月&nbsp;&nbsp;日&nbsp;附件三：&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;治安防火协议书工&nbsp;程&nbsp;名&nbsp;称：&nbsp;&nbsp;甲方（全称）：&nbsp;北京师范大学亚太实验学校 (以下简称甲方）&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;乙方（全称）：&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(以下简称乙方）为保证安全施工的顺利进行，防止治安事件和火灾事故的发生甲、乙双方经协商同意特签订定本《治安防火协议书》。 一、甲方的责任与义务 1、甲方必须按照国家有关法律、法规协助乙方做好治安消防工作。 2、甲方要及时向乙方人员进行有关治安法规、防火知识的教育和宣传。 3、甲方制定相应的管理制度，对乙方进行有效监督、管理、发现问题及时予以纠正。 4、甲方要配备必要的消防器材和各种标牌。 5、发生治安事件或火灾事故，甲方应配合有关方面的调查，总结教训，做出内部处理意见。 二、乙方的责任与义务 1、乙方在甲方的指导下，按照国家有关法律、法规的要求做好治安消防工作。 2、乙方要保证本方人员服从甲方管理，配合甲方工作，并经常组织法规知识和防火知识的学习。 3、乙方要配合甲方成立义务消防队伍，并定期组织有效培训。 4、乙方对甲方检查中提出的问题必须及时整改，乙方人员须自觉做到“治安防火十不准” 三、治安防火十不准 1、不准赌博、酗酒闹事、传播国家法规明令禁止的刊物和打架斗殴。 2、不准偷盗国家、集体和他人财物。 3、不准蓄意破坏集体或他人财物。 4、工程内不准私自住人，工地内不准私留非本单位人员夜宿。 5、不准容留包庇违法犯罪人员，不得把工地做为自己的犯罪窝点。 6、施工现场严禁吸烟，动火要开取动火证，不准私自用火。 7、不准把消防器材挪做它用。 8、不得私自存放易燃、易爆物品。 9、不准私自用电热器具。 10、不准用煤火取暖。 四、违约责任 1、乙方人员如发生十不准或违反国家法律法规的行为，甲方可视情节情况给予警告、罚款处理。 2、因乙方人员违反十不准，发生治安案件或火灾事故，甲方有权让乙方赔偿全部经济损失，并追加经济损失总额相等的罚款，触犯刑法的将送交公安机关处理。 五、本协议自签字之日起生效，至解除劳务合同终止。本协议一式肆份，甲、乙双方各执贰份，具有同等的法律效力。 &nbsp;甲方： &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;乙方：&nbsp;项目安全负责人： &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;现场安全负责人： &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2024年&nbsp;&nbsp;&nbsp;月&nbsp;&nbsp;日&nbsp;&nbsp;
+                          <!-- <p style="margin-top:20px;margin-botto... -->
+                      </span>
+                    </div>
+                    <div class="section_3"></div>
+                    <div class="text_35 flex-row justify-between">
+                      <div>查看详情</div>
+                      <div>2024.11.05</div>
+                    </div>
+                  </div>
+                </a>
+                <a href="/tzgg/2936.jhtml">
+                  <div class="group_10 flex-col">
+                    <div class="box_21 flex-row">
+                      <span class="paragraph_3">
+                        比选公告
+北京师范大学亚太实验学校
+外停车场二、三期地面、四期停车场路面及停车场南侧东延路面维修草坪铺设施工
+                      </span>
+                      <!-- <div class="image-text_15 flex-row">
+                                <div class="text-group_29 flex-col">
+                                  <span class="text_33">11.04</span>
+                                  <span class="text_34">2024</span>
+                                  <img class="thumbnail_1" referrerpolicy="no-referrer" src="/r/cms/www/default/images/index/label_3.png">
+                                </div>
+                              </div> -->
+                    </div>
+                    <div class="box_22 flex-row">
+                      <span class="paragraph_4">
+                        本项目经校务会审批通过，拟通过比选方式确定服务供应商，现进行公告，符合条件的单位可报名参加比选。一、比选单位：&nbsp;北京师范大学亚太实验学校二、项目名称：北京师范大学亚太实验学校外停车场二、三期地面、四期停车场路面及停车场南侧东延路面维修草坪铺设施工三、项目基本情况及要求：停车场二、三期地面用绿色草坪铺装约13000平米，四期停车场路面及停车场南侧东延路面使用大地色铺设约5000平米。铺装质保一年四、项目预算金额：50万以内五、资质要求：1.企业注册资本：200万元以上（含）。2.资质：具有相关资质证明六、报名、踏勘：1.报名时间：2024年11月4日8:00-2024年11月4日12:002.报名要求：报名时须携带①营业执照复印件；②法人授权委托书（格式见附件1，需附委托人及被委托人身份证复印件）；③上一年度财务审计报告复印件（或提供以下三项：财务报表、银行出具的资信证明材料复印件、近半年任意一个月的依法缴纳税收的证明（纳税凭证）复印件）；④未被列入“信用中国”网站(www.creditchina.gov.cn)记录失信被执行人查询结果；⑤参选人近三年（至比选日）无骗取中标、被限制投标、违约行为、重大责任事故承诺书（格式自拟）；⑥资质文件（如本公告资质要求处有明确要求，则需提供相应支撑材料）。（以上材料加盖公章）；3.报名登记：参加报名时参选人需填写《比选报名登记表》（格式见附件2）并携带报名材料进行现场核查。七、响应文件编制、装订及密封1.响应文件封面(注明比选项目名称、参选人单位名称及日期并加盖公章)。2.响应报价（人民币：元；加盖公章）。3.技术部分：①项目实施团队配置；②项目方案；③项目进度、质量保证及售后服务承诺。4.①营业执照复印件；②法人授权委托书（格式见附件1）；③上一年度财务审计报告复印件（或提供以下三项：财务报表、银行出具的资信证明材料复印件、近半年任意一个月的依法缴纳税收的证明（纳税凭证）复印件）；④未被列入“信用中国”网站(www.creditchina.gov.cn)记录失信被执行人查询结果；⑤参选人近三年（至比选日）无骗取中标、被限制投标、违约行为、重大责任事故承诺书（格式自拟）；⑥资质文件（如本公告资质要求处有明确要求，则需提供相应支撑材料）。5.附相关业绩明细并加盖公章，并提供合同关键信息或项目履约（验收）合格评价证明文件。6. 参选人按“1至5” 编制顺序将响应文件装订成册，并加盖骑缝章。7.响应文件需提供一正三副，并在封面标明“正本”和“副本”；8.装订成册的响应文件正、副本装入文件袋并用封条密封，在封条与文件袋接缝处加盖参选人公章，用“A4”纸打印比选项目名称，参选人单位名称、法定代表人或授权代理人签名、联系电话及日期等信息并粘贴在密封袋上。八、响应文件递交1.响应文件递交时间：2024年11月7日上午8:30-9：00；2.比选时间：2024年11月7日上午9:00；3.地点：北京师范大学亚太实验学校。九、比选评选1.学校成立比选小组；2.&nbsp;本次采购采用综合评分法，即响应文件满足比选公告全部实质性要求通过资格核查且得分最高者确定为中选候选人。具体详见《比选评分表》（附件3）；3.学校将在确定比选结果后5个工作日内在学校网站进行公示。十、比选纪律出现下列情况参选人将被永久列入黑名单：1.成交候选人因自身原因未能按规定签订合同；2.参选人采用不正当手段骗取中选；3.其他违背相关法律法规的行为。十一、其它凡对本次比选事宜提出询问的，请以邮件或电话的的形式与北京师范大学亚太实验学校联系：联系人：刘老师联系电话：010-81939850邮箱地址：1194393456@qq.com&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;北京师范大学亚太实验学校2024年10月30日
+                          <!-- <p style="margin-bottom: 10px;text-ind... -->
+                      </span>
+                    </div>
+                    <div class="section_3"></div>
+                    <div class="text_35 flex-row justify-between">
+                      <div>查看详情</div>
+                      <div>2024.11.04</div>
+                    </div>
+                  </div>
+                </a>
+                <a href="/tzgg/2925.jhtml">
+                  <div class="group_10 flex-col">
+                    <div class="box_21 flex-row">
+                      <span class="paragraph_3">
+                        北京师范大学亚太实验学校戏剧《宝船》灯光、音响中标公告
+                      </span>
+                      <!-- <div class="image-text_15 flex-row">
+                                <div class="text-group_29 flex-col">
+                                  <span class="text_33">10.12</span>
+                                  <span class="text_34">2024</span>
+                                  <img class="thumbnail_1" referrerpolicy="no-referrer" src="/r/cms/www/default/images/index/label_3.png">
+                                </div>
+                              </div> -->
+                    </div>
+                    <div class="box_22 flex-row">
+                      <span class="paragraph_4">
+                        我校于2024年10月1日在校园网发布的“北京师范大学亚太实验学校戏剧《宝船》灯光音响”项目比选公告，学校评审委员会通过“初审”、“评标”及“终审”最终审定该项目中标单位为“北京世纪飞宇文化发展有限公司”。特此公告！北京师范大学亚太实验学校学生活动中心2024年10月12日
+                          <!-- <p style="margin: 5px 0px; padding: 0p... -->
+                      </span>
+                    </div>
+                    <div class="section_3"></div>
+                    <div class="text_35 flex-row justify-between">
+                      <div>查看详情</div>
+                      <div>2024.10.12</div>
+                    </div>
+                  </div>
+                </a>
+              </div>
+              <div class="text-wrapper_6 flex-col">
+                <a class="text_23" rel="noopener noreferrer" href="/tzgg.jhtml">查看更多</a>
+              </div>
+            </div>
+            <img class="image_7" referrerpolicy="no-referrer" src="https://yatai-oss.yataischool.net/cms/u/cms/www/202304/02192235tccg.png" "="">
+          </div>
+        </div>
+      </div>
+      <div id="m_gallery">
+        <!-- 影像志 -->
+        <div class="block_17">
+          <div class="block_container">
+            <div class="group_12 flex-col" style="background-image:url(https://yatai-oss.yataischool.net/cms/u/cms/www/202304/11155752nx3g.jpg)">
+              <div class="group_13 flex-col">
+                <div class="box_24 flex-row">
+                  <div class="text-group_32">
+                    <p class="text_43">影像志</p>
+                    <p class="text_42">Image&nbsp;Chronicle</p>
+                  </div>
+                </div>
+                <div class="swiper-2-box">
+                  <div class="swiper-2 swiper-initialized swiper-horizontal swiper-pointer-events">
+                    <div class="swiper-wrapper" id="yxz-list-wrapper" aria-live="polite" style="transition-duration: 0ms; transform: translate3d(-742px, 0px, 0px);"><div class="swiper-slide swiper-slide-duplicate" data-swiper-slide-index="8" role="group" aria-label="9 / 10" style="width: 291px; margin-right: 80px;"><a rel="noopener noreferrer" href="/yxz.jhtml" style="width: 100%;height: 100%;"><div class="group_14 flex-col" id="group_14_hover"><div class="box_7 flex-col" style="background-image: url(https://yatai-oss.yataischool.net/cms/u/cms/www/202304/13003347gx07.jpg?x-oss-process=image/resize,w_600/quality,q_90);background-size: cover;"><div class="yxz-tip"><span>图片</span></div></div></div></a></div><div class="swiper-slide swiper-slide-duplicate swiper-slide-prev" data-swiper-slide-index="9" role="group" aria-label="10 / 10" style="width: 291px; margin-right: 80px;"><a rel="noopener noreferrer" href="/yxz.jhtml" style="width: 100%;height: 100%;"><div class="group_14 flex-col" id="group_14_hover"><div class="box_7 flex-col" style="background-image: url(https://yatai-oss.yataischool.net/cms/u/cms/www/202304/20140459mi58.jpg?x-oss-process=image/resize,w_600/quality,q_90);background-size: cover;"><div class="text-wrapper_12 flex-col" id="group_14_hover_view"><span class="text_44">梦想启航    ——高中部风采</span></div><div class="yxz-tip"><span>视频</span></div></div></div></a></div><div class="swiper-slide swiper-slide-active" data-swiper-slide-index="0" role="group" aria-label="1 / 10" style="width: 291px; margin-right: 80px;"><a rel="noopener noreferrer" href="/yxz.jhtml" style="width: 100%;height: 100%;"><div class="group_14 flex-col" id="group_14_hover"><div class="box_7 flex-col" style="background-image: url(https://yatai-oss.yataischool.net/cms/u/cms/www/202404/18113439tdvo.jpg?x-oss-process=image/resize,w_600/quality,q_90);background-size: cover;"><div class="text-wrapper_12 flex-col" id="group_14_hover_view"><span class="text_44">中医药实验室内的探索实践</span></div><div class="yxz-tip"><span>图片</span></div></div></div></a></div><div class="swiper-slide swiper-slide-next" data-swiper-slide-index="1" role="group" aria-label="2 / 10" style="width: 291px; margin-right: 80px;"><a rel="noopener noreferrer" href="/yxz.jhtml" style="width: 100%;height: 100%;"><div class="group_14 flex-col" id="group_14_hover"><div class="box_7 flex-col" style="background-image: url(https://yatai-oss.yataischool.net/cms/u/cms/www/202404/18145917httk.jpg?x-oss-process=image/resize,w_600/quality,q_90);background-size: cover;"><div class="text-wrapper_12 flex-col" id="group_14_hover_view"><span class="text_44">校园文化专题片</span></div><div class="yxz-tip"><span>视频</span></div></div></div></a></div><div class="swiper-slide" data-swiper-slide-index="2" role="group" aria-label="3 / 10" style="width: 291px; margin-right: 80px;"><a rel="noopener noreferrer" href="/yxz.jhtml" style="width: 100%;height: 100%;"><div class="group_14 flex-col" id="group_14_hover"><div class="box_7 flex-col" style="background-image: url(https://yatai-oss.yataischool.net/cms/u/cms/www/202404/18113344k73k.jpg?x-oss-process=image/resize,w_600/quality,q_90);background-size: cover;"><div class="text-wrapper_12 flex-col" id="group_14_hover_view"><span class="text_44">生物实验室内揭秘生命奥秘</span></div><div class="yxz-tip"><span>图片</span></div></div></div></a></div><div class="swiper-slide" data-swiper-slide-index="3" role="group" aria-label="4 / 10" style="width: 291px; margin-right: 80px;"><a rel="noopener noreferrer" href="/yxz.jhtml" style="width: 100%;height: 100%;"><div class="group_14 flex-col" id="group_14_hover"><div class="box_7 flex-col" style="background-image: url(https://yatai-oss.yataischool.net/cms/u/cms/www/202404/18143356bleq.jpg?x-oss-process=image/resize,w_600/quality,q_90);background-size: cover;"><div class="text-wrapper_12 flex-col" id="group_14_hover_view"><span class="text_44">社团专题片</span></div><div class="yxz-tip"><span>视频</span></div></div></div></a></div><div class="swiper-slide" data-swiper-slide-index="4" role="group" aria-label="5 / 10" style="width: 291px; margin-right: 80px;"><a rel="noopener noreferrer" href="/yxz.jhtml" style="width: 100%;height: 100%;"><div class="group_14 flex-col" id="group_14_hover"><div class="box_7 flex-col" style="background-image: url(https://yatai-oss.yataischool.net/cms/u/cms/www/202404/18113242g3nn.jpg?x-oss-process=image/resize,w_600/quality,q_90);background-size: cover;"><div class="text-wrapper_12 flex-col" id="group_14_hover_view"><span class="text_44">地球环境实验室内     探索</span></div><div class="yxz-tip"><span>图片</span></div></div></div></a></div><div class="swiper-slide" data-swiper-slide-index="5" role="group" aria-label="6 / 10" style="width: 291px; margin-right: 80px;"><a rel="noopener noreferrer" href="/yxz.jhtml" style="width: 100%;height: 100%;"><div class="group_14 flex-col" id="group_14_hover"><div class="box_7 flex-col" style="background-image: url(https://yatai-oss.yataischool.net/cms/u/cms/www/202404/17114829dhvt.jpg?x-oss-process=image/resize,w_600/quality,q_90);background-size: cover;"><div class="text-wrapper_12 flex-col" id="group_14_hover_view"><span class="text_44">以航拍视角    沉浸式尽览校</span></div><div class="yxz-tip"><span>视频</span></div></div></div></a></div><div class="swiper-slide" data-swiper-slide-index="6" role="group" aria-label="7 / 10" style="width: 291px; margin-right: 80px;"><a rel="noopener noreferrer" href="/yxz.jhtml" style="width: 100%;height: 100%;"><div class="group_14 flex-col" id="group_14_hover"><div class="box_7 flex-col" style="background-image: url(https://yatai-oss.yataischool.net/cms/u/cms/www/202304/130033105axj.jpg?x-oss-process=image/resize,w_600/quality,q_90);background-size: cover;"><div class="yxz-tip"><span>图片</span></div></div></div></a></div><div class="swiper-slide" data-swiper-slide-index="7" role="group" aria-label="8 / 10" style="width: 291px; margin-right: 80px;"><a rel="noopener noreferrer" href="/yxz.jhtml" style="width: 100%;height: 100%;"><div class="group_14 flex-col" id="group_14_hover"><div class="box_7 flex-col" style="background-image: url(https://yatai-oss.yataischool.net/cms/u/cms/www/202304/20141618c1iq.jpg?x-oss-process=image/resize,w_600/quality,q_90);background-size: cover;"><div class="text-wrapper_12 flex-col" id="group_14_hover_view"><span class="text_44">探秘中草药博物馆    邂逅草</span></div><div class="yxz-tip"><span>视频</span></div></div></div></a></div><div class="swiper-slide" data-swiper-slide-index="8" role="group" aria-label="9 / 10" style="width: 291px; margin-right: 80px;"><a rel="noopener noreferrer" href="/yxz.jhtml" style="width: 100%;height: 100%;"><div class="group_14 flex-col" id="group_14_hover"><div class="box_7 flex-col" style="background-image: url(https://yatai-oss.yataischool.net/cms/u/cms/www/202304/13003347gx07.jpg?x-oss-process=image/resize,w_600/quality,q_90);background-size: cover;"><div class="yxz-tip"><span>图片</span></div></div></div></a></div><div class="swiper-slide swiper-slide-duplicate-prev" data-swiper-slide-index="9" role="group" aria-label="10 / 10" style="width: 291px; margin-right: 80px;"><a rel="noopener noreferrer" href="/yxz.jhtml" style="width: 100%;height: 100%;"><div class="group_14 flex-col" id="group_14_hover"><div class="box_7 flex-col" style="background-image: url(https://yatai-oss.yataischool.net/cms/u/cms/www/202304/20140459mi58.jpg?x-oss-process=image/resize,w_600/quality,q_90);background-size: cover;"><div class="text-wrapper_12 flex-col" id="group_14_hover_view"><span class="text_44">梦想启航    ——高中部风采</span></div><div class="yxz-tip"><span>视频</span></div></div></div></a></div><div class="swiper-slide swiper-slide-duplicate swiper-slide-duplicate-active" data-swiper-slide-index="0" role="group" aria-label="1 / 10" style="width: 291px; margin-right: 80px;"><a rel="noopener noreferrer" href="/yxz.jhtml" style="width: 100%;height: 100%;"><div class="group_14 flex-col" id="group_14_hover"><div class="box_7 flex-col" style="background-image: url(https://yatai-oss.yataischool.net/cms/u/cms/www/202404/18113439tdvo.jpg?x-oss-process=image/resize,w_600/quality,q_90);background-size: cover;"><div class="text-wrapper_12 flex-col" id="group_14_hover_view"><span class="text_44">中医药实验室内的探索实践</span></div><div class="yxz-tip"><span>图片</span></div></div></div></a></div><div class="swiper-slide swiper-slide-duplicate swiper-slide-duplicate-next" data-swiper-slide-index="1" role="group" aria-label="2 / 10" style="width: 291px; margin-right: 80px;"><a rel="noopener noreferrer" href="/yxz.jhtml" style="width: 100%;height: 100%;"><div class="group_14 flex-col" id="group_14_hover"><div class="box_7 flex-col" style="background-image: url(https://yatai-oss.yataischool.net/cms/u/cms/www/202404/18145917httk.jpg?x-oss-process=image/resize,w_600/quality,q_90);background-size: cover;"><div class="text-wrapper_12 flex-col" id="group_14_hover_view"><span class="text_44">校园文化专题片</span></div><div class="yxz-tip"><span>视频</span></div></div></div></a></div></div>
+                  <span class="swiper-notification" aria-live="assertive" aria-atomic="true"></span></div>
+                  <div class="swiper-button-next swiper-button-next-2" tabindex="0" role="button" aria-label="Next slide" aria-controls="swiper-wrapper-c4f0a0742ab2205e"></div>
+                  <div class="swiper-button-prev swiper-button-prev-2" tabindex="0" role="button" aria-label="Previous slide" aria-controls="swiper-wrapper-c4f0a0742ab2205e"></div>
+                </div>
+                <div class="box_26 flex-row">
+                  <div class="text-wrapper_13 flex-col">
+                    <a class="text_45" rel="noopener noreferrer" href="/yxz.jhtml">查看更多</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="block_17">
+    <div class="block_container">
+      <div class="box_27 flex-row">
+        <div class="image-text_17 flex-row">
+          <img class="label_3" referrerpolicy="no-referrer" src="/r/cms/www/default/images/index/label_3.png">
+          <a target="_blank" rel="noopener noreferrer" class="text-group_10" href="/xlview.jhtml">校历</a>
+        </div>
+        <div class="image-text_18 flex-row">
+          <img class="label_4" referrerpolicy="no-referrer" src="/r/cms/www/default/images/index/label_4.png">
+          <a target="_blank" rel="noopener noreferrer" class="text-group_11" href="/mzsp1.jhtml">每周食谱</a>
+        </div>
+        <div class="image-text_18 flex-row">
+          <img class="image_2" referrerpolicy="no-referrer" src="/r/cms/www/default/images/index/image_2.png">
+          <a target="_blank" rel="noopener noreferrer" class="text-group_12" href="/tszy1.jhtml">图书资源</a>
+        </div>
+        <div class="image-text_18 flex-row">
+          <img class="label_6_1" referrerpolicy="no-referrer" src="/r/cms/www/default/images/index/label_7.png">
+          <a target="_blank" rel="noopener noreferrer" class="text-group_13" href="https://dnkt.iquizoo.com/">大脑课堂</a>
+        </div>
+        <div class="image-text_18 flex-row">
+          <img class="label_5" referrerpolicy="no-referrer" src="/r/cms/www/default/images/index/label_5.png">
+          <a target="_blank" rel="noopener noreferrer" class="text-group_13" href="https://passport.seiue.com/login?school_id=380">选课系统</a>
+        </div>
+        <div class="image-text_18 flex-row" style="display:none;">
+          <img class="label_5_1" referrerpolicy="no-referrer" src="/r/cms/www/default/images/index/label_2.png">
+          <a target="_blank" rel="noopener noreferrer" class="text-group_13" href="https://www.zhixue.com/login.html">智慧学习平台</a>
+        </div>
+        
+      </div>
+      <!-- <div class="text-wrapper_20 flex-row">
+        <a target="_blank" rel="noopener noreferrer" href="http://jw.beijing.gov.cn/" class="text_46">北京市西城区教育委员会</a>
+        <a target="_blank" rel="noopener noreferrer" href="https://www.xcjyyxw.cn/" class="text_46">西城研修网</a>
+        <a target="_blank" rel="noopener noreferrer" href="https://cmis.bjedu.cn/#/login"
+          class="text_46">北京市中小学学籍管理平台</a>
+        <a target="_blank" rel="noopener noreferrer" href="https://zhsz.bjedu.cn/web/login/index"
+          class="text_46">学生综合素质评价平台</a>
+        <a target="_blank" rel="noopener noreferrer" href="https://gzzp.bjedu.cn:9003/#/Login"
+          class="text_46">北京市普通高中学生综合素质评价平台</a>
+        <a target="_blank" rel="noopener noreferrer" href="https://www.zhixue.com/login.html" class="text_46">智慧学习平台</a>
+      </div> -->
+    </div>
+  </div>
+  <!-- 底部导航 -->
+<link rel="stylesheet" type="text/css" href="/r/cms/www/default/css/footer.css?time=" +="" new="" date().gettime()="">
+<div class="footer">
+	<div class="footer_container">
+		<div class="box_9 flex-col">
+			<div class="group_17 flex-row">
+					<div class="section_15 flex-col">
+						<div class="image-text_21">
+								<img class="image_8" referrerpolicy="no-referrer" src="/r/cms/www/default/images/index/logo-ft.png">
+						</div>
+						<div class="text_52" style="margin-top: 15px;">
+							<span class="text_88">网址：</span>
+							<span class="text_89">www.yataischool.net</span>
+						</div>
+						<div class="text_52">地址：北京市昌平区北七家镇曹碾村西北</div>
+						<div class="text_52">媒体业务联络：微信号tyxdtt</div>
+						<div class="text_52">
+							<span class="text_90">招生电话：</span>
+							<span class="text_91">
+								中学&nbsp;010-69759602/69759603/69759867/69759868
+							</span>
+						</div>
+						<div class="text_52">
+							<span class="text_90"></span>
+							<span class="text_93">
+								幼小&nbsp;010-81939901/69758871/69758872/69758873
+							</span>
+						</div>
+						<div class="text_52">
+							<span class="text_94">意见与监督电话：</span>
+							<span class="text_95">010-69755002</span>
+							<span class="text_96">（工作日</span>
+							<span class="text_97">9:00</span>
+							<span class="text_98">-</span>
+							<span class="text_99">17:00</span>
+							<span class="text_100">）</span>
+						</div>
+						<div class="text_52">
+							<span class="text_101">邮箱：</span>
+							<span class="text_102">yataixuexiao@bnuaps.net</span>
+						</div>
+						<div class="block_12 flex-col"></div>
+						<div class="group_19 flex-row">
+							<div class="text-group_33 flex-col justify-between">
+								<span class="text_52">
+									Copyright&nbsp;©&nbsp;2023&nbsp;All&nbsp;Rights&nbsp;Reserved.&nbsp;&nbsp;
+								</span>
+								<div class="text_52">
+									<span class="text_103">
+										北京师范大学亚太实验学校&nbsp;版权所有&nbsp;
+									</span>
+									<a class="text_104" style="color: #fff;" href="https://beian.miit.gov.cn/">京 ICP备05038853</a>
+								</div>
+							</div>
+							<img class="label_6" referrerpolicy="no-referrer" src="/r/cms/www/default/images/index/label-6.png">
+						</div>
+					</div>
+					<div style="height: 100%;">
+						<div class="text-group_34">
+							<div class="text_58">快速链接</div>
+							<div class="flex-col">
+								<span class="text_59">教师</span>
+								<a target="_blank" rel="noopener noreferrer" href="https://www.ttcdw.cn/h/spec/xcsjyxt/" class="text_60">北京市西城区教育党校</a>
+								<a target="_blank" rel="noopener noreferrer" href="https://www.xcjyyxw.cn/" class="text_60">西城研修网</a>
+								<a target="_blank" rel="noopener noreferrer" href="http://jw.beijing.gov.cn/" class="text_60">北京市西城区教育委员会</a>
+								<a target="_blank" rel="noopener noreferrer" href="https://cmis.bjedu.cn/#/login" class="text_60">北京市中小学学籍管理平台</a>
+							</div>
+							<div class="flex-col">
+								<span class="text_59">学生</span>
+								<a target="_blank" rel="noopener noreferrer" href="https://reading.smartedu.cn/" class="text_60">国家智慧教育读书平台</a>
+								<a target="_blank" rel="noopener noreferrer" href="https://zhsz.bjedu.cn/web/login/index" class="text_60">学生综合素质评价平台</a>
+								<a target="_blank" rel="noopener noreferrer" href="https://gzzp.bjedu.cn:9003/#/Login" class="text_60">北京市普通高中学生综合素质评价平台</a>
+							</div>
+						</div>
+					</div>
+				<!-- <div class="text-wrapper_21 flex-col">
+					<span class="text_59">学校</span>
+					<a rel="noopener noreferrer" href="/xxgk2.jhtml" class="text_60">学校概况</a>
+					<a rel="noopener noreferrer" href="/xsyg.jhtml" class="text_60">校史沿革</a>
+					<a rel="noopener noreferrer" href="/xywh.jhtml" class="text_60">校园文化</a>
+					<a rel="noopener noreferrer" href="/ryzs.jhtml" class="text_60">荣誉展示</a>
+					<a rel="noopener noreferrer" href="/zzjg.jhtml" class="text_60">组织结构</a>
+					<a rel="noopener noreferrer" href="/xydl1.jhtml" class="text_60">校园导览</a>
+				</div>
+				<div class="text-wrapper_22 flex-col">
+					<span class="text_66">教师</span>
+					<a rel="noopener noreferrer" href="/jsfc.jhtml" class="text_60">教师风采</a>
+					<a rel="noopener noreferrer" href="/rcpy.jhtml" class="text_60">人才培养</a>
+					<a rel="noopener noreferrer" href="/xzry.jhtml" class="text_60">教师荣誉</a>
+				</div>
+				<div class="text-wrapper_23 flex-col">
+					<span class="text_70">学生</span>
+					<a rel="noopener noreferrer" href="/tdjs.jhtml" class="text_60">团队建设</a>
+					<a rel="noopener noreferrer" href="/hjxx.jhtml" class="text_60">获奖信息</a>
+					<a rel="noopener noreferrer" href="/xsst.jhtml" class="text_60">学生社团</a>
+				</div>
+				<div class="text-group_34 flex-col">
+					<span class="text_74">校友</span>
+					<a rel="noopener noreferrer" href="" class="text_60">校友活动</a>
+				</div> -->
+				<div class="image_9_box">
+					<img class="image_9" referrerpolicy="no-referrer" src="/r/cms/www/default/images/index/image-9.png">
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script src="/r/cms/www/default/js/front.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript">
+	$(function(){
+		console.log(new Date())
+		var date = new Date()
+		$(".new-date").html(date.getFullYear());
+		$(".blogroll").css("right",(405-(($(".blogroll").width())/2)));
+		$('.body-top-nav .link').on('mouseenter',function(){
+		    $('.blogroll').show()
+		})
+		$('.body-top-nav .link').on('mouseleave',function(){
+		    $('.blogroll').hide()
+		})
+		$('.blogroll').on('mouseleave',function(){
+		    $('.blogroll').hide()
+		});
+		$('.statistics .clicks li').click(function(){
+			var index = $(this).index();
+			$('.statistics .clicks li a').removeClass('reds');
+			$(this).find('a').addClass('reds');
+			$(".statistics .click-content .quantity").eq(index).removeClass("none").siblings().addClass("none");
+		});
+	});
+	$(function () {
+		Cms.siteFlow(""); 
+	});
+</script>
+  <!--底部导航 over-->
+<link href="/r/cms/www/default/css/select2.min.css" rel="stylesheet">
+<style>
+  .btn-primary.confirm-btn {
+    background-color: #3E7C39;
+    border-color: #3E7C39;
+  }
+  .modal-header {
+    background-color: #3E7C39 !important;
+  }
+  .nd-content {
+    text-align: center;
+    font-size: 1.3rem;
+  }
+  .modal-content {
+    border: 0px solid rgba(0,0,0,0);
+  }
+  .modal-footer {
+    justify-content: center;
+  }
+  .modal-dialog {
+    margin: 20rem auto;
+  }
+</style>
+<!-- <div class="btnlogin" id="btnSelectResume">投递简历</div> -->
+<div style="display:none;" class="btnlogin" id="btnSelectResume" data-toggle="modal" data-target="#pushResumeDialog">通知</div>
+<!-- <input type="file" id="loadResumeFile" name="file" style="display:none" accept=".docx,.doc,.pdf"> -->
+<div id="tipPushResume"></div>
+<div class="modal fade" id="pushResumeDialog" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" style="color: white;">通 知</h5>
+        <button type="button" class="close" data-dismiss="modal" style="color: white;">×</button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div id="dialogMessage" class="form-group nd-content"></div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary confirm-btn" id="confirmPushResume">点击查看</button>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="/r/cms/www/default/js/bootstrap-4.1.3.min.js"></script>
+<script src="/r/cms/www/default/js/select2.full.min.js"></script>
+<script type="text/javascript">
+  $(document).ready(function () {
+
+    // $("#pushResumeDialog").modal('show') 
+
+    function getPageContent (channelIds) {
+      var page = 1
+      console.log(page, 'yeshu')
+      $.ajax({
+        type: 'get',
+        url: '/content/page?channelIds=' + channelIds + '&page=' + page,
+        //dataType: 'json',
+        cache: false,
+        processData: false,
+        async: true,
+        contentType: false,
+        headers: {
+          'JEECMS-Auth-Token': localStorage.getItem('JEECMS-Auth-Token')
+        },
+        success: function (result) {
+          if (result.code != 200) {
+            $("#pushResumeDialog").modal('hide')
+            return
+          }
+          var songNum = result.data.totalElements
+          if (result.data.content && result.data.content.length > 0) {
+            var dialogModel = result.data.content[0]
+            console.log('dialogModel', dialogModel)
+            $("#dialogMessage").text(dialogModel.title)
+            
+            $("#pushResumeDialog").modal('show')
+            // 投递简历
+            $("#confirmPushResume").click(function () {
+              console.log('onclick click')
+              window.location.href = dialogModel.attr.extraContent.value
+            })
+          } else {
+            $("#pushResumeDialog").modal('hide')
+          }
+          // result
+        },
+        error: function (xhr, textStatus, errorThrown) {
+          $("#pushResumeDialog").modal('hide')
+        }
+      })
+    }
+
+    getPageContent('414')
+  })
+</script>
+  <!-- 底部模块 -->
+  <script src="/r/cms/www/default/js/jquery.jSlider.js"></script>
+  <script src="/r/cms/www/default/js/unslider.min.js"></script>
+  <script src="/r/cms/www/default/js/index.js"></script>
+  <script type="text/javascript">
+    $.ajax({
+      type: 'get',
+      url: '/content/list?channelIds=290&count=20',
+      cache: false,
+      processData: false,
+      async: false,
+      contentType: false,
+      headers: {
+        'JEECMS-Auth-Token': localStorage.getItem('JEECMS-Auth-Token')
+      },
+      success: function (result) {
+        var galleryArr = []
+        var videoArr = []
+        var defArr = []
+        if (result.code == 200) {
+          var rdata = result.data
+          if (rdata) {
+            for (var i = 0; i < rdata.length; i++) {
+              if (rdata[i].modelId == 17 && videoArr.length < 5) {
+                videoArr.push(rdata[i])
+              }
+            }
+            for (var i = 0; i < rdata.length; i++) {
+              if (rdata[i].modelId != 17 && defArr.length < (10 - videoArr.length)) {
+                defArr.push(rdata[i])
+              }
+            }
+          }
+        }
+        var v = 0
+        var d = 0
+        while (v < videoArr.length || d < defArr.length) {
+          if (d < defArr.length) {
+            galleryArr.push(defArr[d++])
+          }
+          if (v < videoArr.length) {
+            galleryArr.push(videoArr[v++])
+          }
+        }
+        var eleYxz = ""
+        for (var i = 0; i < galleryArr.length; i++) {
+          var ele = galleryArr[i]
+          var eleImgUrl = ele.modelId == 17 ? ele.attr.contentVideoCover.resUrl : ele.attr.contentImg.resUrl
+          eleImgUrl = eleImgUrl + "?x-oss-process=image/resize,w_600/quality,q_90"
+          console.log('galleryArr.ele', galleryArr[i])
+          eleYxz += '<div class="swiper-slide">'
+          eleYxz += '<a rel="noopener noreferrer" href="/yxz.jhtml" style="width: 100%;height: 100%;">'
+          eleYxz += '<div class="group_14 flex-col" id="group_14_hover">'
+          eleYxz += '<div class="box_7 flex-col" style="background-image: url(' + eleImgUrl + ');background-size: cover;">'
+          if (ele.title && ele.title != '-') {
+            eleYxz += '<div class="text-wrapper_12 flex-col" id="group_14_hover_view">'
+            eleYxz += '<span class="text_44">'
+            eleYxz += ele.title.substring(0, 15)
+            eleYxz += '</span>'
+            eleYxz += '</div>'
+          }
+          eleYxz += '<div class="yxz-tip"><span>' + (ele.modelId == 17 ? '视频' : '图片') + '</span></div>'
+          eleYxz += '</div>'
+          eleYxz += '</div>'
+          eleYxz += '</a>'
+          eleYxz += '</div>'
+        }
+        $("#yxz-list-wrapper").html(eleYxz)
+      },
+      error: function (xhr, textStatus, errorThrown) {
+
+      }
+    })
+
+    $(document).ready(function (e) {
+      // 获取html 字号大小
+      console.log($('html').css('font-size'))
+      var unslider04 = $('#b04').unslider({
+        dots: true,
+        fluid: true,
+      }),
+        data04 = unslider04.data('unslider')
+
+      $('.unslider-arrow04').click(function () {
+        var fn = this.className.split(' ')[1]
+        data04[fn]()
+      })
+      var lenBo = $('#b05').find('li').length
+      var unslider05 = $('#b05').unslider({
+        dots: lenBo > 1 ? true : false
+      }),
+        data05 = unslider05.data('unslider')
+      var swiper2 = new Swiper(".swiper-2", {
+        slidesPerView: 2,
+        slidesPerGroup: 2,
+        spaceBetween: 80,
+        loop: true,
+        // cssMode: true,
+        navigation: {
+          nextEl: ".swiper-button-next",
+          prevEl: ".swiper-button-prev",
+        },
+        mousewheel: true,
+        keyboard: true,
+      })
+      var swiper1 = new Swiper(".swiper-1", {
+        loop: true,
+        autoplay: {
+          delay: 15000,    // 自动播放间隔，单位ms
+          disableOnInteraction: false, // 值为false表示用户操作swiper之后，不会停止播放，值true停止
+        },
+        pagination: {
+          el: ".swiper-pagination",
+        },
+        navigation: {
+          nextEl: ".swiper-button-next",
+          prevEl: ".swiper-button-prev",
+        },
+      })
+    });
+  </script>
+
+
+
+
+</body></html>
