@@ -1,0 +1,76 @@
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>文字冒险游戏</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            color: #333;
+            text-align: center;
+            margin: 0;
+            padding: 20px;
+        }
+        #game-container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        h1 {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+        p {
+            font-size: 1em;
+            margin: 10px 0;
+        }
+        input[type="number"], button {
+            padding: 10px;
+            margin: 5px 0;
+            font-size: 1em;
+        }
+        #result {
+            font-size: 1.2em;
+            color: #007BFF;
+        }
+    </style>
+</head>
+<body>
+    <div>
+        <h1>文字冒险游戏</h1>
+        <p>你站在一个十字路口，前方有三条路。</p>
+        <p>1. 沿着小路前进。</p>
+        <p>2. 进入森林探索。</p>
+        <p>3. 回到城镇寻求帮助。</p>
+        <button>选择1</button>
+        <button>选择2</button>
+        <button>选择3</button>
+        <p></p>
+    </div>
+
+    <script>
+        function choice(option) {
+            let result = "";
+            if (option == '1') {
+                result = "你沿着小路前进，遇到了一位迷路的旅者。
+1. 帮助他找到回家的路。
+2. 继续前行，不打扰他。";
+            } else if (option == '2') {
+                result = "你进入了森林，发现了一条隐藏的小径。
+1. 跟随小径深入森林。
+2. 在森林中休息一下。";
+            } else if (option == '3') {
+                result = "你回到了城镇，找到了一位老商人。
+1. 询问关于小镇的历史。
+2. 向老商人购买一些补给。";
+            }
+            document.getElementById('result').innerText = result;
+        }
+    </script>
+</body>
+</html>
