@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YZ生日快乐</title>
+    <!-- 动态背景粒子 -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+    <!-- 高级动画库 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'PingFang SC', '微软雅黑', sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            overflow: hidden;
+            background: #0d0d0d; /* 初始背景色 */
+            transition: background 0.5s ease;
+        }
+
+        .dynamic-bg {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+
+        .祝福容器 {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+            padding: 50px 20px;
+            color: white;
+        }
+
+        .动态标题 {
+            font-size: 4em;
+            color: #ff6b6b;
+            margin-bottom: 30px;
+            animation: bounce 1.5s infinite;
+            background-clip: text;
+            -webkit-background-clip: text;
+            background-image: linear-gradient(45deg, #ff6b6b, #ffd166);
+            color: transparent;
+        }
+
+        .祝福语 {
+            font-size: 1.2em;
+            line-height: 1.8;
+            max-width: 800px;
+            margin: 0 auto;
+            color: #f0f0f0;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 1s forwards 0.5s;
+        }
+
+        .蛋糕动画 {
+            position: absolute;
+            font-size: 2.5em;
+            color: #ffd166;
+            opacity: 0.9;
+            pointer-events: none;
+            animation: fall 3s linear infinite;
+        }
+
+        /* 高级蛋糕动画 */
+        @keyframes fall {
+            0% {
+                transform: translateY(-10vh) rotate(0deg) scale(1);
+                opacity: 1;
+            }
+            70% {
+                transform: translateY(80vh) rotate(720deg) scale(1.2);
+                opacity: 0.8;
+            }
+            100% {
+                transform: translateY(120vh) rotate(1080deg) scale(0.5);
+                opacity: 0;
+            }
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 动态背景画布 -->
+    <canvas class="dynamic-bg" id="bgCanvas"></canvas>
+    
+    <div class="祝福容器">
+        <h1 class="动态标题 animate__animated animate__bounce">🎉 YZ生日快乐！ 🎉</h1>
+        <p class="祝福语">
+            在这特别的日子里，愿所有美好如期而至<br><br>
+            🌟 每一岁都奔走在自己的热爱里<br>
+            🍰 生活常温暖，日子总温柔<br>
+            ✨ 眼底有星光，心中有山海<br><br>
+            专属你的生日祝福：<br>
+            平安喜乐，万事胜意，未来可期❤️
+        </p>
+    </div>
+
+    <!-- 生日歌 -->
+    <audio id="birthdayMusic" autoplay loop>
+        <source src="https://assets.mixkit.co/active_storage/sfx/2465/2465-preview.mp3" type="audio/mp3">
+    </audio>
+
+    <script>
+        // 动态背景粒子效果
+        const bgCanvas = document.getElementById('bgCanvas');
+        const ctx = bgCanvas.getContext('2d');
+        bgCanvas.width = window.innerWidth;
+        bgCanvas.height = window.innerHeight;
+
+        class Particle {
+            constructor(x, y, size, color) {
+                this.x = x;
+                this.y = y;
+                this.size = size;
+                this.color = color;
+                this.speedX = Math.random() * 3 - 1.5;
+                this.speedY = Math.random() * 3 - 1.5;
+                this.alpha = 1;
+            }
+
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+                this.size *= 0.98;
+                this.alpha *= 0.95;
+                if (this.size < 0.5) {
+                    this.reset();
+                }
+            }
+
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(${this.color[0]}, ${this.color[1]}, ${this.color[2]}, ${this.alpha})`;
+                ctx.fill();
+            }
+
+            reset() {
+                this.x = Math.random() * bgCanvas.width;
+                this.y = Math.random() * -100;
+                this.size = Math.random() * 2 + 1;
+                this.color = [
+                    Math.floor(Math.random() * 255),
+                    Math.floor(Math.random() * 255),
+                    Math.floor(Math.random() * 255)
+                ];
+                this.speedX = Math.random() * 3 - 1.5;
+                this.speedY = Math.random() * 2 + 2;
+                this.alpha = 1;
+            }
+        }
+
+        const particles = [];
+        for (let i = 0; i < 200; i++) {
+            particles.push(new Particle(
+                Math.random() * bgCanvas.width,
+                Math.random() * bgCanvas.height,
+                Math.random() * 2 + 1
+            ));
+        }
+
+        function animateBg() {
+            requestAnimationFrame(animateBg);
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+            ctx.fillRect(0, 0, bgCanvas.width, bgCanvas.height);
+            particles.forEach(particle => {
+                particle.update();
+                particle.draw();
+            });
+        }
+        animateBg();
+
+        // 蛋糕动画生成器
+        function createCake() {
+            const cake = document.createElement('div');
+            cake.className = '蛋糕动画';
+            cake.textContent = '🎂';
+            
+            const x = Math.random() * window.innerWidth;
+            const rotation = Math.random() * 360;
+            
+            cake.style.left = `${x}px`;
+            cake.style.animationDelay = `${Math.random() * 2}s`;
+            cake.style.transform = `rotate(${rotation}deg)`;
+            
+            document.body.appendChild(cake);
+            
+            setTimeout(() => cake.remove(), 3000);
+        }
+
+        setInterval(createCake, 150);
+
+        // 点击屏幕触发 confetti 特效
+        window.addEventListener('click', () => {
+            confetti({
+                particleCount: 100,
+                spread: 180,
+                startVelocity: 30,
+                shapes: ['star', 'circle'],
+                colors: ['#ff6b6b', '#ffd166', '#8ac926', '#36a2eb']
+            });
+            document.body.style.background = `linear-gradient(45deg, 
+                rgba(${Math.random()*255}, ${Math.random()*255}, ${Math.random()*255}, 0.8), 
+                rgba(${Math.random()*255}, ${Math.random()*255}, ${Math.random()*255}, 0.6))`;
+        });
+    </script>
+</body>
+</html>
