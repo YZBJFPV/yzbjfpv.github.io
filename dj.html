@@ -333,15 +333,34 @@
         <footer>
             <div class="footer-content">
                 <p>此页面为纪念杜江老师永久保留，愿老师的精神永远传承</p>
-                <a href="yzbjfpv.github.io" class="permanent-link" target="_blank">永久链接：yzbjfpv.github.io</a>
+                <a href="yzbjfpv.github.io/dj.html" class="permanent-link" target="_blank">永久链接：yzbjfpv.github.io/dj.html</a>
                 <p style="margin-top: 10px; font-size: 0.9rem;">杜江老师，2025年6月9日永远离开了我们，但您的教诲和笑容，将永远留在我们心中</p>
             </div>
         </footer>
     </div>
 
     <script>
-        // 轮播图自动播放
+        // 音频自动播放功能
         document.addEventListener('DOMContentLoaded', function() {
+            // 创建音频元素并设置属性
+            const audio = document.createElement('audio');
+            audio.src = 'https://er-sycdn.kuwo.cn/e9083924128f62024b62e2cda8f2483e/684aca8b/resource/30106/trackmedia/M500004aErA5365SBP.mp3?bitrate$128&from=vip';
+            audio.loop = true; // 循环播放
+            audio.autoplay = true; // 自动播放
+            audio.muted = false; // 取消静音（如需静音可设为true）
+            audio.style.display = 'none'; // 隐藏音频元素
+            
+            // 处理移动端自动播放限制
+            document.addEventListener('touchstart', function() {
+                audio.play().catch(e => {
+                    console.log('移动端自动播放受限，请手动操作页面以激活音频', e);
+                });
+            }, {once: true});
+            
+            // 将音频元素添加到文档中
+            document.body.appendChild(audio);
+            
+            // 轮播图功能
             const carouselInner = document.getElementById('carouselInner');
             const carouselItems = document.querySelectorAll('.carousel-item');
             let currentIndex = 0;
@@ -349,9 +368,7 @@
             const slideInterval = 4000; // 4秒切换一次
             
             function showSlide(index) {
-                // 计算平移距离，确保当前图片显示
                 let translateValue = -index * 100;
-                // 如果是移动端，可能需要调整显示数量
                 if (window.innerWidth < 768) {
                     translateValue = -index * 100;
                 }
@@ -363,20 +380,16 @@
                 showSlide(currentIndex);
             }
             
-            // 启动自动轮播
             const slideIntervalId = setInterval(nextSlide, slideInterval);
             
-            // 鼠标悬停时暂停轮播
             document.querySelector('.carousel').addEventListener('mouseenter', function() {
                 clearInterval(slideIntervalId);
             });
             
-            // 鼠标离开时继续轮播
             document.querySelector('.carousel').addEventListener('mouseleave', function() {
                 setInterval(nextSlide, slideInterval);
             });
             
-            // 窗口大小改变时重新计算布局
             window.addEventListener('resize', function() {
                 showSlide(currentIndex);
             });
