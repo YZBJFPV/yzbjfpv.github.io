@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>怀念杜江老师 - 永远的地理老师</title>
+    <title>怀念杜江老师</title>
     <style>
         * {
             margin: 0;
@@ -16,7 +16,7 @@
             background-color: #f8f5f0;
             color: #333;
             line-height: 1.6;
-            background-image: url('');
+            background-image: url('https://img520.com/3VSr5U.jpeg');
             background-size: cover;
             background-attachment: fixed;
             background-position: center;
@@ -36,16 +36,6 @@
             padding: 40px 20px;
             margin-bottom: 30px;
             position: relative;
-            opacity: 0;
-            transform: translateY(30px);
-            animation: fadeInUp 1s ease forwards;
-        }
-        
-        @keyframes fadeInUp {
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
         }
         
         h1 {
@@ -55,12 +45,6 @@
             text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
             position: relative;
             display: inline-block;
-            animation: titlePulse 3s infinite;
-        }
-        
-        @keyframes titlePulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.05); box-shadow: 0 0 15px rgba(231, 76, 60, 0.5); }
         }
         
         h1::after {
@@ -72,19 +56,6 @@
             width: 100px;
             height: 3px;
             background-color: #e74c3c;
-            animation: underlineGrow 1s ease forwards, pulseLine 3s infinite;
-            opacity: 0;
-        }
-        
-        @keyframes underlineGrow {
-            to {
-                opacity: 1;
-            }
-        }
-        
-        @keyframes pulseLine {
-            0%, 100% { width: 100px; }
-            50% { width: 120px; }
         }
         
         .subtitle {
@@ -92,19 +63,10 @@
             color: #555;
             max-width: 800px;
             margin: 0 auto;
-            opacity: 0;
-            transform: translateY(20px);
-            animation: fadeInUp 1s ease 0.3s forwards;
         }
         
         .photo-gallery {
             margin: 60px 0;
-            opacity: 0;
-            transform: translateY(30px);
-        }
-        
-        .photo-gallery.visible {
-            animation: fadeInUp 1s ease forwards;
         }
         
         .section-title {
@@ -115,19 +77,6 @@
             border-bottom: 3px solid #3498db;
             display: inline-block;
             position: relative;
-            opacity: 0;
-            transform: translateX(-20px);
-        }
-        
-        .section-title.visible {
-            animation: fadeInRight 0.8s ease forwards;
-        }
-        
-        @keyframes fadeInRight {
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
         }
         
         .section-title::after {
@@ -135,54 +84,24 @@
             position: absolute;
             bottom: -3px;
             left: 0;
-            width: 0;
+            width: 100%;
             height: 3px;
             background-color: #2980b9;
-            animation: titleUnderline 1.5s ease forwards;
-        }
-        
-        @keyframes titleUnderline {
-            to {
-                width: 100%;
-            }
         }
         
         .photo-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 25px;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 30px;
             margin-top: 25px;
-            opacity: 0;
-            transform: translateY(20px);
-        }
-        
-        .photo-grid.visible {
-            animation: fadeInUp 0.8s ease 0.2s forwards;
         }
         
         .photo-item {
             overflow: hidden;
             border-radius: 12px;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
             transition: all 0.4s ease;
-            opacity: 0;
-            transform: translateY(15px);
-            position: relative;
-            overflow: hidden;
         }
-        
-        .photo-item.visible {
-            opacity: 1;
-            transform: translateY(0);
-            transition: all 0.6s ease;
-        }
-        
-        .photo-item:nth-child(1).visible { animation-delay: 0.1s; }
-        .photo-item:nth-child(2).visible { animation-delay: 0.2s; }
-        .photo-item:nth-child(3).visible { animation-delay: 0.3s; }
-        .photo-item:nth-child(4).visible { animation-delay: 0.4s; }
-        .photo-item:nth-child(5).visible { animation-delay: 0.5s; }
-        .photo-item:nth-child(6).visible { animation-delay: 0.6s; }
         
         .photo-item:hover {
             transform: translateY(-10px) scale(1.03);
@@ -192,30 +111,14 @@
         
         .photo-item img {
             width: 100%;
-            height: auto;
+            height: 350px;
             display: block;
             transition: transform 0.6s ease;
-            transform-origin: center;
+            object-fit: cover;
         }
         
         .photo-item:hover img {
             transform: scale(1.08);
-        }
-        
-        .photo-item::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(to bottom, transparent, rgba(0,0,0,0.3));
-            opacity: 0;
-            transition: opacity 0.4s ease;
-        }
-        
-        .photo-item:hover::before {
-            opacity: 1;
         }
         
         .caption {
@@ -224,27 +127,10 @@
             font-size: 1.05rem;
             color: #444;
             font-weight: 500;
-            position: relative;
-            z-index: 1;
-            opacity: 0;
-            transform: translateY(10px);
-            transition: all 0.4s ease 0.1s;
-        }
-        
-        .photo-item:hover .caption {
-            opacity: 1;
-            transform: translateY(0);
         }
         
         .carousel-section {
             margin: 60px 0;
-            position: relative;
-            opacity: 0;
-            transform: translateY(30px);
-        }
-        
-        .carousel-section.visible {
-            animation: fadeInUp 1s ease forwards;
         }
         
         .carousel-title {
@@ -266,12 +152,11 @@
             width: 80px;
             height: 3px;
             background-color: #3498db;
-            animation: underlineGrow 1s ease forwards;
         }
         .carousel-container {
             position: relative;
             overflow: hidden;
-            max-width: 1100px;
+            max-width: 1200px;
             margin: 0 auto;
         }
         
@@ -282,32 +167,17 @@
         }
         
         .carousel-item {
-            min-width: 300px;
-            margin: 0 15px;
-            opacity: 0.6;
-            transform: scale(0.9);
-            transition: all 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+            min-width: 400px;
+            margin: 0 20px;
             border-radius: 12px;
             overflow: hidden;
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-        }
-        
-        .carousel-item.active {
-            opacity: 1;
-            transform: scale(1);
             box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
-            z-index: 2;
         }
         
         .carousel-item img {
             width: 100%;
             height: auto;
             display: block;
-            transition: transform 0.8s ease;
-        }
-        
-        .carousel-item.active img {
-            transform: scale(1.02);
         }
         
         .carousel-dots {
@@ -346,13 +216,7 @@
             cursor: pointer;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
             transition: all 0.3s ease;
-            opacity: 0;
-            transform: translateY(-50%) scale(0.8);
-        }
-        
-        .carousel-container:hover .carousel-arrow {
-            opacity: 1;
-            transform: translateY(-50%) scale(1);
+            z-index: 10;
         }
         
         .carousel-arrow:hover {
@@ -375,10 +239,7 @@
             padding: 40px;
             border-radius: 12px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
-            opacity: 0;
-            transform: scale(0.95);
             position: relative;
-            overflow: hidden;
         }
         
         .memory-section::before {
@@ -391,25 +252,12 @@
             background: linear-gradient(to bottom, #2ecc71, #3498db);
         }
         
-        .memory-section.visible {
-            animation: fadeInScale 1s ease forwards;
-        }
-        
-        @keyframes fadeInScale {
-            to {
-                opacity: 1;
-                transform: scale(1);
-            }
-        }
-        
         .memory-title {
             font-size: 1.6rem;
             color: #2ecc71;
             margin-bottom: 20px;
             position: relative;
             padding-left: 30px;
-            opacity: 0;
-            transform: translateX(-20px);
         }
         
         .memory-title::before {
@@ -417,28 +265,12 @@
             position: absolute;
             left: 0;
             color: #2ecc71;
-            animation: pulse 2s infinite;
-        }
-        
-        .memory-title.visible {
-            animation: fadeInRight 0.8s ease forwards;
-        }
-        
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.2); }
         }
         
         .memory-content {
             font-size: 1.15rem;
             color: #444;
             line-height: 2;
-            opacity: 0;
-            transform: translateY(20px);
-        }
-        
-        .memory-content.visible {
-            animation: fadeInUp 0.8s ease 0.2s forwards;
         }
         
         footer {
@@ -448,9 +280,6 @@
             background-color: rgba(0, 0, 0, 0.7);
             color: white;
             border-radius: 12px;
-            opacity: 0;
-            transform: translateY(30px);
-            animation: fadeInUp 1s ease 0.5s forwards;
         }
         
         .footer-content {
@@ -495,159 +324,37 @@
             }
             
             .photo-grid {
-                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+                grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
                 gap: 20px;
             }
             
             .carousel-item {
-                min-width: 220px;
-                margin: 0 10px;
+                min-width: 280px;
+                margin: 0 15px;
             }
             
             .memory-section {
                 padding: 30px 20px;
             }
             
-            .footer-content {
-                padding: 0 20px;
+            .photo-item img {
+                height: 280px;
             }
         }
         
         @media (max-width: 480px) {
             .carousel-item {
-                min-width: 180px;
+                min-width: 220px;
+                margin: 0 10px;
             }
             
             .photo-item img {
-                height: 200px;
-                object-fit: cover;
+                height: 220px;
             }
-        }
-        
-        /* 加载状态样式 */
-        .loading-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(255, 255, 255, 0.9);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 9999;
-            transition: opacity 0.5s ease;
-        }
-        
-        .loading-spinner {
-            width: 70px;
-            height: 70px;
-            border: 7px solid #f3f3f3;
-            border-top: 7px solid #e74c3c;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            position: relative;
-        }
-        
-        .loading-spinner::before, .loading-spinner::after {
-            content: '';
-            position: absolute;
-            border-radius: 50%;
-        }
-        
-        .loading-spinner::before {
-            width: 70px;
-            height: 70px;
-            border: 7px solid #f3f3f3;
-            border-top: 7px solid #3498db;
-            animation: spin 2s linear infinite;
-        }
-        
-        .loading-spinner::after {
-            width: 70px;
-            height: 70px;
-            border: 7px solid #f3f3f3;
-            border-top: 7px solid #2ecc71;
-            animation: spin 3s linear infinite;
-        }
-        
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        
-        /* 音频控制样式 */
-        .audio-control {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            background-color: rgba(0, 0, 0, 0.6);
-            border-radius: 50%;
-            width: 70px;
-            height: 70px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            color: white;
-            cursor: pointer;
-            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
-            z-index: 99;
-            transition: all 0.3s ease;
-            opacity: 0;
-            transform: translateY(20px);
-            animation: pulseScale 2s infinite;
-        }
-        
-        @keyframes pulseScale {
-            0%, 100% { transform: translateY(20px) scale(1); }
-            50% { transform: translateY(15px) scale(1.05); }
-        }
-        
-        .audio-control.visible {
-            opacity: 1;
-            transform: translateY(0);
-            animation: none;
-        }
-        
-        .audio-control:hover {
-            background-color: #e74c3c;
-            transform: translateY(-3px) scale(1.05);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
-        }
-        
-        .audio-icon {
-            font-size: 28px;
-            transition: transform 0.3s ease;
-        }
-        
-        .audio-control.paused .audio-icon {
-            transform: rotate(0deg);
-        }
-        
-        .audio-control.playing .audio-icon {
-            transform: rotate(360deg);
-        }
-        
-        .audio-control.paused .audio-icon:before {
-            content: "▶";
-        }
-        
-        .audio-control.playing .audio-icon:before {
-            content: "||";
         }
     </style>
 </head>
 <body>
-    <!-- 加载遮罩层 -->
-    <div class="loading-overlay" id="loadingOverlay">
-        <div class="loading-spinner"></div>
-    </div>
-    
-    <!-- 音频控制按钮 -->
-    <div class="audio-control" id="audioControl">
-        <div class="audio-icon"></div>
-    </div>
-
     <div class="container">
         <header>
             <h1>怀念杜江老师</h1>
@@ -755,6 +462,9 @@
                         <img src="https://img520.com/MPpFmd.jpeg" alt="同学怀念">
                     </div>
                     <div class="carousel-item">
+                        <img src="https://img520.com/MPpFmd.jpeg" alt="同学怀念">
+                    </div>
+                    <div class="carousel-item">
                         <img src="https://img520.com/bjDgOj.jpeg" alt="同学怀念">
                     </div>
                 </div>
@@ -766,29 +476,25 @@
             </div>
             <div class="carousel-dots" id="carouselDots"></div>
         </section>
-        
-        <section class="memory-section" id="memorySection">
+
+<section class="memory-section" id="memorySection">
             <h2 class="memory-title">我们的地理课时光</h2>
             <div class="memory-content">
-                <p>杜老师的课堂总是充满欢乐与知识，他用生动的案例让我们领略到地理的魅力。</p>
-                <p>还记得那次讲解地形地貌，他亲手制作模型，让我们直观感受大自然的鬼斧神工。</p>
+                <p>【此文段正在征集稿件】</p>
+                <p>「稿件要求:不借助ai工具 自己写的 稿件请发送至微信号YGWFK2024 每个稿件均收录 大于50字 小于300字」</p>
             </div>
         </section>
-        
-        <footer>
+
+<footer>
             <div class="footer-content">
-                <p>愿杜老师在另一个世界一切安好，您的教诲我们永远铭记于心。</p>
-                <p class="version-info">网页版本: 2025.6.14 第三版</p>
+                <p>愿地理杜江老师在另一个世界一切安好，您的教诲我们永远铭记于心。</p>
+                <p class="version-info">版本: 2025.6.14-Version3.0 Powered by YZ </p>
             </div>
         </footer>
     </div>
 
-    <script>
+<script>
         document.addEventListener('DOMContentLoaded', function() {
-            // 显示加载完成后的内容
-            document.getElementById('loadingOverlay').style.display = 'none';
-
-            // 轮播图相关代码
             const carousel = document.getElementById('carousel');
             const carouselItems = document.querySelectorAll('.carousel-item');
             const carouselDots = document.getElementById('carouselDots');
@@ -800,70 +506,36 @@
                 carouselItems.forEach((_, index) => {
                     const dot = document.createElement('div');
                     dot.classList.add('dot');
-                    if (index === currentIndex) {
-                        dot.classList.add('active');
-                    }
-                    dot.addEventListener('click', () => {
-                        showSlide(index);
-                    });
+                    if (index === currentIndex) dot.classList.add('active');
+                    dot.addEventListener('click', () => showSlide(index));
                     carouselDots.appendChild(dot);
                 });
             }
 
             function showSlide(index) {
                 carouselItems.forEach((item, i) => {
-                    if (i === index) {
-                        item.classList.add('active');
-                        carouselDots.children[i].classList.add('active');
-                    } else {
-                        item.classList.remove('active');
-                        carouselDots.children[i].classList.remove('active');
-                    }
+                    i === index ? item.classList.add('active') : item.classList.remove('active');
+                    carouselDots.children[i].classList.toggle('active', i === index);
                 });
                 currentIndex = index;
-                const translateX = -index * 730; // 根据实际调整单个轮播项宽度
-                carousel.style.transform = `translateX(${translateX}px)`;
+                carousel.style.transform = `translateX(-${index * 440}px)`;
             }
 
             function nextSlide() {
-                const nextIndex = (currentIndex + 1) % carouselItems.length;
-                showSlide(nextIndex);
+                showSlide((currentIndex + 1) % carouselItems.length);
             }
 
             function prevSlide() {
-                const prevIndex = (currentIndex - 1 + carouselItems.length) % carouselItems.length;
-                showSlide(prevIndex);
+                showSlide((currentIndex - 1 + carouselItems.length) % carouselItems.length);
             }
 
             prevArrow.addEventListener('click', prevSlide);
             nextArrow.addEventListener('click', nextSlide);
-
             createDots();
-
-            // 自动轮播
-            setInterval(nextSlide, 750);
-
-            // 图片动画相关代码
-            const photoItems = document.querySelectorAll('.photo-item');
-            photoItems.forEach((item, index) => {
-                setTimeout(() => {
-                    item.classList.add('visible');
-                }, index * 100);
-            });
-
-            const sections = document.querySelectorAll('.photo-gallery, .carousel-section, .memory-section');
-            sections.forEach((section) => {
-                const observer = new IntersectionObserver((entries) => {
-                    entries.forEach((entry) => {
-                        if (entry.isIntersecting) {
-                            section.classList.add('visible');
-                            observer.unobserve(section);
-                        }
-                    });
-                });
-                observer.observe(section);
-            });
+            setInterval(nextSlide, 1500); // 1.5秒自动切换
         });
     </script>
+
 </body>
 </html>
+                
