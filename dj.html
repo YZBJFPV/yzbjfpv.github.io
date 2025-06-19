@@ -352,6 +352,16 @@
                 height: 220px;
             }
         }
+        
+        /* 音乐插件隐藏样式 */
+        .music-container {
+            position: fixed;
+            left: -9999px;
+            top: -9999px;
+            width: 1px;
+            height: 1px;
+            overflow: hidden;
+        }
     </style>
 </head>
 <body>
@@ -360,6 +370,11 @@
             <h1>怀念杜江老师</h1>
             <p class="subtitle">一位幽默、负责的地理老师，永远活在我们心中</p>
         </header>
+        
+        <!-- 隐藏的音乐插件容器 -->
+        <div class="music-container">
+            <embed src="//music.163.com/style/swf/widget.swf?sid=1959190717&type=2&auto=1&width=320&height=66" width="340" height="86" allowNetworking="all">
+        </div>
         
         <section class="photo-gallery" id="gallery1">
             <h2 class="section-title">办公室里的杜老师</h2>
@@ -462,9 +477,6 @@
                         <img src="https://img520.com/MPpFmd.jpeg" alt="同学怀念">
                     </div>
                     <div class="carousel-item">
-                        <img src="https://img520.com/MPpFmd.jpeg" alt="同学怀念">
-                    </div>
-                    <div class="carousel-item">
                         <img src="https://img520.com/bjDgOj.jpeg" alt="同学怀念">
                     </div>
                 </div>
@@ -487,8 +499,8 @@
 
 <footer>
             <div class="footer-content">
-                <p>愿地理杜江老师在另一个世界一切安好，您的教诲我们永远铭记于心。</p>
-                <p class="version-info">版本: 2025.6.14-Version3.0 Powered by YZ </p>
+                <p>愿47岁的地理杜江老师在另一个世界一切安好</p>
+                <p class="version-info">版本: 2025.6.19-Version3.1 </p>
             </div>
         </footer>
     </div>
@@ -538,4 +550,3 @@
 
 </body>
 </html>
-                
