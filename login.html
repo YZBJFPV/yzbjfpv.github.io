@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>登录|八(6)结业式🎓</title>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.2/dist/gsap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/build/three.min.js"></script>
+    <style>
+        body {
+            background: linear-gradient(135deg, #001f3f, #800080);
+            min-height: 100vh;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .login-card {
+            background: rgba(255,255,255,0.08);
+            border: 3px solid rgba(255,255,255,0.5);
+            border-radius: 40px;
+            padding: 50px 80px;
+            max-width: 95%;
+            box-shadow: 0 0 50px rgba(255,255,255,0.6);
+            position: relative;
+            z-index: 2;
+        }
+        .form-input {
+            background: rgba(255,255,255,0.1);
+            border: 3px solid rgba(255,255,255,0.6);
+            border-radius: 28px;
+            padding: 15px 30px;
+            font-size: 18px;
+            color: #fff;
+            width: 100%;
+        }
+        .btn-primary {
+            background: rgba(255,255,255,0.1);
+            border: 3px solid rgba(255,255,255,0.6);
+            border-radius: 28px;
+            padding: 15px 0;
+            font-size: 20px;
+            color: white;
+            width: 100%;
+            cursor: pointer;
+        }
+        .title-animation {
+            background: linear-gradient(90deg, #ff00ff, #00ffff);
+            -webkit-background-clip: text;
+            color: transparent;
+            font-size: 2.5rem;
+            animation: breathe 4s infinite;
+        }
+        @keyframes breathe { 0%,100%{transform:scale(1);} 50%{transform:scale(1.1);} }
+    </style>
+</head>
+<body>
+    <div id="threejs-container" style="position:fixed;width:100%;height:100%;top:0;left:0;z-index:1;"></div>
+    <div class="login-card">
+        <h2 class="title-animation text-center mb-8">八(6)班结业式🎓</h2>
+        <form id="login-form" class="space-y-6">
+            <input type="text" class="form-input" placeholder="用户名">
+            <input type="password" class="form-input" placeholder="密码">
+            <button type="submit" class="btn-primary">登录</button>
+        </form>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // 背景渐变
+            const bgColors = ['linear-gradient(135deg, #001f3f, #800080)', 'linear-gradient(135deg, #165DFF, #40E0D0)'];
+            let i = 0;
+            setInterval(() => {
+                gsap.to(document.body, {background: bgColors[i], duration: 1, ease: 'power2'});
+                i = (i + 1) % bgColors.length;
+            }, 3000);
+
+            // Three.js 初始化
+            const container = document.getElementById('threejs-container');
+            const scene = new THREE.Scene();
+            const camera = new THREE.PerspectiveCamera(75, innerWidth/innerHeight, 0.1, 1000);
+            const renderer = new THREE.WebGLRenderer({alpha: true, antialias: true});
+            renderer.setSize(innerWidth, innerHeight);
+            container.appendChild(renderer.domElement);
+            camera.position.z = 5;
+
+            // 粒子系统
+            const geometry = new THREE.BufferGeometry();
+            const particles = 200;
+            const pos = new Float32Array(particles * 3);
+            for (let i = 0; i < particles; i++) {
+                const p = i * 3;
+                pos[p] = (Math.random() - 0.5) * 5;
+                pos[p+1] = (Math.random() - 0.5) * 5;
+                pos[p+2] = (Math.random() - 0.5) * 5;
+            }
+            geometry.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+            const material = new THREE.PointsMaterial({size: 0.05, color: 0xff00ff, transparent: true, opacity: 0.8});
+            const points = new THREE.Points(geometry, material);
+            scene.add(points);
+
+            // 动画循环
+            function animate() {
+                requestAnimationFrame(animate);
+                points.rotation.x += 0.001;
+                points.rotation.y += 0.001;
+                renderer.render(scene, camera);
+            }
+            animate();
+
+            // 触发烟花
+            function fireworks(x, y) {
+                const pos = geometry.attributes.position;
+                for (let i = 0; i < particles; i++) {
+                    const p = i * 3;
+                    pos.getX(i, pos[p] = (Math.random() - 0.5) * 0.5);
+                    pos.getY(i, pos[p+1] = (Math.random() - 0.5) * 0.5);
+                }
+                pos.needsUpdate = true;
+                gsap.to(points.scale, {x: 10, y: 10, z: 10, duration: 2, ease: 'power2.out', onComplete: () => points.scale.set(1,1,1)});
+            }
+
+            // 登录逻辑
+            const form = document.getElementById('login-form');
+            form.addEventListener('submit', e => {
+                e.preventDefault();
+                const pass = form.querySelector('input[type="password"]').value;
+                if (pass === '86') {
+                    fireworks(innerWidth/2, innerHeight/2);
+                    setTimeout(() => location.href = 'https://yzbjfpv.top/86.html', 2000);
+                }
+            });
+
+            // 点击触发烟花
+            document.body.addEventListener('click', e => {
+                if (!e.target.closest('.login-card')) fireworks(e.clientX, e.clientY);
+            });
+
+            // 自动烟花
+            setInterval(() => {
+                fireworks(Math.random() * innerWidth, Math.random() * innerHeight);
+            }, 5000);
+        });
+    </script>
+</body>
+</html>
