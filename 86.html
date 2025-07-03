@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>2025届八(6)班结业式</title>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.2/dist/gsap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/build/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/piexel@0.1.2/build/piexel.min.js"></script>
+    <style>
+        body {margin:0;overflow:hidden;background:#000;height:100vh;display:flex;justify-content:center;align-items:center}
+        .title {position:relative;z-index:2;font-size:clamp(2rem,10vw,5rem);font-weight:900;text-align:center;margin:0;}
+        .title span {background:linear-gradient(90deg,#ff00ff,#00ffff,#ff00ff);-webkit-background-clip:text;color:transparent;display:inline-block;}
+    </style>
+</head>
+<body>
+    <div id="particles" style="position:fixed;width:100%;height:100%;top:0;left:0;z-index:1;"></div>
+    <h1 class="title">
+        <span>2025届八年级六班结业式</span>
+    </h1>
+
+    <script>
+        // 背景粒子动画 - 使用Piexel库
+        document.addEventListener('DOMContentLoaded', () => {
+            // 初始化背景粒子
+            new Piexel({
+                el: document.getElementById('particles'),
+                particles: {
+                    number: { value: 80, density: { enable: true, value_area: 800 } },
+                    color: { value: "#ff00ff" },
+                    shape: { type: "circle" },
+                    opacity: { value: 0.5, random: true },
+                    size: { value: 3, random: true },
+                    line_linked: {
+                        enable: true, distance: 150, color: "#00ffff", opacity: 0.2, width: 1
+                    },
+                    move: {
+                        enable: true, speed: 1, direction: "none", random: true, straight: false, out_mode: "out", bounce: false
+                    }
+                },
+                interactivity: {
+                    detect_on: "canvas",
+                    events: {
+                        onhover: { enable: true, mode: "grab" },
+                        onclick: { enable: true, mode: "push" },
+                        resize: true
+                    },
+                    modes: {
+                        grab: { distance: 140, line_linked: { opacity: 0.5 } },
+                        push: { particles_nb: 3 }
+                    }
+                },
+                retina_detect: true
+            });
+
+            // 标题动态效果
+            const title = document.querySelector('.title span');
+            gsap.to(title, {
+                scale: 1.1,
+                repeat: -1,
+                yoyo: true,
+                ease: 'power2.inOut',
+                duration: 3
+            });
+
+            // Three.js 烟花系统
+            const scene = new THREE.Scene();
+            const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            document.body.appendChild(renderer.domElement);
+            camera.position.z = 5;
+
+            // 生成烟花粒子
+            function createFirework(x, y) {
+                const geometry = new THREE.BufferGeometry();
+                const particles = 150;
+                const pos = new Float32Array(particles * 3);
+                const color = new Float32Array(particles * 3);
+                
+                for (let i = 0; i < particles; i++) {
+                    const p = i * 3;
+                    pos[p] = (Math.random() - 0.5) * 0.5;
+                    pos[p + 1] = (Math.random() - 0.5) * 0.5;
+                    pos[p + 2] = 0;
+                    
+                    // 随机彩虹色
+                    const hue = Math.random() * 360;
+                    const c = new THREE.Color(`hsl(${hue}, 100%, 70%)`);
+                    color[p] = c.r;
+                    color[p + 1] = c.g;
+                    color[p + 2] = c.b;
+                }
+                
+                geometry.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+                geometry.setAttribute('color', new THREE.BufferAttribute(color, 3));
+                
+                const material = new THREE.PointsMaterial({
+                    size: 0.05,
+                    vertexColors: true,
+                    transparent: true,
+                    opacity: 0.8
+                });
+                
+                const points = new THREE.Points(geometry, material);
+                scene.add(points);
+                
+                // 屏幕坐标转3D坐标
+                const vector = new THREE.Vector3();
+                vector.set(
+                    (x / window.innerWidth) * 2 - 1,
+                    -(y / window.innerHeight) * 2 + 1,
+                    0.5
+                );
+                vector.unproject(camera);
+                const direction = vector.sub(camera.position).normalize();
+                
+                // 发射动画
+                gsap.to(points.scale, {
+                    x: 12,
+                    y: 12,
+                    z: 12,
+                    duration: 2,
+                    ease: 'power2.out',
+                    onComplete: () => {
+                        scene.remove(points);
+                    }
+                });
+            }
+
+            // 自动播放烟花
+            setInterval(() => {
+                const x = Math.random() * window.innerWidth;
+                const y = Math.random() * window.innerHeight;
+                createFirework(x, y);
+            }, 3000);
+
+            // 点击触发烟花
+            document.body.addEventListener('click', (e) => {
+                createFirework(e.clientX, e.clientY);
+            });
+
+            // 窗口Resize适配
+            window.addEventListener('resize', () => {
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(window.innerWidth, window.innerHeight);
+            });
+        });
+    </script>
+</body>
+</html>
