@@ -403,7 +403,7 @@
                 });
             }, 1000);
 
-            // Three.js 初始化 - 更丰富的粒子效果
+            // Three.js 初始化 - 全屏覆盖的粒子效果
             const container = document.getElementById('threejs-container');
             const scene = new THREE.Scene();
             const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
@@ -412,24 +412,30 @@
             container.appendChild(renderer.domElement);
             camera.position.z = 5;
 
-            // 更多粒子
-            const particlesCount = 500;
+            // 减少粒子数量，分散分布
+            const particlesCount = 800; // 减少到800个粒子
             const geometry = new THREE.BufferGeometry();
             const pos = new Float32Array(particlesCount * 3);
+            const velocities = new Float32Array(particlesCount * 3); // 存储每个粒子的速度
             
-            // 随机位置但分布更均匀
+            // 更广泛的分布范围
             for (let i = 0; i < particlesCount; i++) {
                 const p = i * 3;
-                pos[p] = (Math.random() - 0.5) * 20;
-                pos[p+1] = (Math.random() - 0.5) * 20;
-                pos[p+2] = (Math.random() - 0.5) * 20;
+                pos[p] = (Math.random() - 0.5) * 40; // 范围扩展到±20，更加分散
+                pos[p+1] = (Math.random() - 0.5) * 40;
+                pos[p+2] = (Math.random() - 0.5) * 40;
+                
+                // 为每个粒子设置初始速度
+                velocities[p] = (Math.random() - 0.5) * 0.02;
+                velocities[p+1] = (Math.random() - 0.5) * 0.02;
+                velocities[p+2] = (Math.random() - 0.5) * 0.005;
             }
             
             geometry.setAttribute('position', new THREE.BufferAttribute(pos, 3));
             
             // 多彩粒子材质
             const material = new THREE.PointsMaterial({
-                size: 0.08, 
+                size: 0.1, // 增加粒子大小，让单个粒子更明显
                 transparent: true,
                 opacity: 0.8,
                 color: 0xffffff,
@@ -439,26 +445,106 @@
             const points = new THREE.Points(geometry, material);
             scene.add(points);
 
-            // 粒子动画 - 更快的运动速度
+            // 添加粒子连接线
+            const lineGeometry = new THREE.BufferGeometry();
+            const lineVertices = new Float32Array(particlesCount * 3);
+            
+            // 粒子连接线材质
+            const lineMaterial = new THREE.LineBasicMaterial({
+                color: 0xffffff,
+                transparent: true,
+                opacity: 0.2
+            });
+            
+            const lines = new THREE.LineSegments(lineGeometry, lineMaterial);
+            scene.add(lines);
+
+            // 粒子动画 - 自由随机移动
             function animate() {
                 requestAnimationFrame(animate);
                 
-                // 旋转速度加倍
-                points.rotation.x += 0.002;
-                points.rotation.y += 0.002;
+                // 缓慢旋转整个粒子系统
+                points.rotation.x += 0.0005;
+                points.rotation.y += 0.0005;
                 
-                // 粒子随机移动
+                // 粒子自由移动，不再重置位置
                 const pos = geometry.attributes.position;
                 for (let i = 0; i < particlesCount; i++) {
                     const p = i * 3;
-                    pos.array[p] += (Math.random() - 0.5) * 0.01;
-                    pos.array[p+1] += (Math.random() - 0.5) * 0.01;
+                    
+                    // 应用速度移动粒子
+                    pos.array[p] += velocities[p];
+                    pos.array[p+1] += velocities[p+1];
+                    pos.array[p+2] += velocities[p+2];
+                    
+                    // 轻微随机加速度，让运动更自然
+                    velocities[p] += (Math.random() - 0.5) * 0.0001;
+                    velocities[p+1] += (Math.random() - 0.5) * 0.0001;
+                    velocities[p+2] += (Math.random() - 0.5) * 0.00005;
+                    
+                    // 限制最大速度
+                    const maxSpeed = 0.03;
+                    const speed = Math.sqrt(
+                        velocities[p] * velocities[p] + 
+                        velocities[p+1] * velocities[p+1] + 
+                        velocities[p+2] * velocities[p+2]
+                    );
+                    
+                    if (speed > maxSpeed) {
+                        velocities[p] *= maxSpeed / speed;
+                        velocities[p+1] *= maxSpeed / speed;
+                        velocities[p+2] *= maxSpeed / speed;
+                    }
                 }
                 pos.needsUpdate = true;
+                
+                // 更新连接线
+                updateLines();
                 
                 renderer.render(scene, camera);
             }
             animate();
+
+            // 更新粒子之间的连接线
+            function updateLines() {
+                const positions = geometry.attributes.position.array;
+                const linePositions = lineGeometry.attributes.position;
+                
+                let index = 0;
+                const threshold = 2.5; // 增加阈值，让粒子更容易连接
+                
+                // 简化版：只连接相邻的粒子
+                for (let i = 0; i < particlesCount - 1; i++) {
+                    const i3 = i * 3;
+                    const j3 = (i + 1) * 3;
+                    
+                    // 计算距离
+                    const dx = positions[i3] - positions[j3];
+                    const dy = positions[i3+1] - positions[j3+1];
+                    const dz = positions[i3+2] - positions[j3+2];
+                    const distance = Math.sqrt(dx * dx + dy * dy + dz * dz);
+                    
+                    if (distance < threshold) {
+                        lineVertices[index++] = positions[i3];
+                        lineVertices[index++] = positions[i3+1];
+                        lineVertices[index++] = positions[i3+2];
+                        
+                        lineVertices[index++] = positions[j3];
+                        lineVertices[index++] = positions[j3+1];
+                        lineVertices[index++] = positions[j3+2];
+                    }
+                }
+                
+                if (linePositions) {
+                    linePositions.copyArray(lineVertices);
+                    linePositions.needsUpdate = true;
+                } else {
+                    lineGeometry.setAttribute('position', new THREE.BufferAttribute(lineVertices, 3));
+                }
+                
+                // 动态调整线条的可见顶点数量
+                lineGeometry.setDrawRange(0, index / 3);
+            }
 
             // 窗口大小调整
             window.addEventListener('resize', () => {
@@ -467,44 +553,13 @@
                 renderer.setSize(window.innerWidth, window.innerHeight);
             });
 
-            // 更丰富的烟花效果
-            function fireworks(x, y) {
-                const pos = geometry.attributes.position;
-                const centerX = (x / window.innerWidth - 0.5) * 10;
-                const centerY = (0.5 - y / window.innerHeight) * 10;
-                
-                // 从点击位置向外爆炸
-                for (let i = 0; i < particlesCount; i++) {
-                    const p = i * 3;
-                    const angle = Math.random() * Math.PI * 2;
-                    const radius = Math.random() * 0.5;
-                    
-                    pos.array[p] = centerX + Math.cos(angle) * radius;
-                    pos.array[p+1] = centerY + Math.sin(angle) * radius;
-                }
-                pos.needsUpdate = true;
-                
-                // 随机颜色变化
-                material.color.setHSL(Math.random(), 1, 0.7);
-                
-                // 爆炸动画
-                gsap.to(points.scale, {
-                    x: 15, y: 15, z: 15, 
-                    duration: 1.5, 
-                    ease: 'power2.out', 
-                    onComplete: () => {
-                        points.scale.set(1,1,1);
-                        material.color.set(0xffffff);
-                    }
-                });
-            }
-
             // 登录逻辑
             const form = document.getElementById('login-form');
             form.addEventListener('submit', e => {
                 e.preventDefault();
                 const pass = form.querySelector('input[type="password"]').value;
                 if (pass === 'YZBJFPV') {
+                    // 点击登录时保留烟花效果
                     fireworks(window.innerWidth/2, window.innerHeight/2);
                     setTimeout(() => location.href = 'https://yzbjfpv.top/20250709.html', 1000);
                 }
@@ -512,6 +567,7 @@
             
             // 游客登录
             document.getElementById('visitorLogin').addEventListener('click', () => {
+                // 点击游客登录时保留烟花效果
                 fireworks(window.innerWidth/2, window.innerHeight/2);
                 setTimeout(() => location.href = 'https://yzbjfpv.top/20250709.html', 1000);
             });
@@ -530,6 +586,41 @@
                     Math.random() * window.innerHeight
                 );
             }, 3000);
+
+            // 烟花效果保持不变
+            function fireworks(x, y) {
+                const pos = geometry.attributes.position;
+                const centerX = (x / window.innerWidth - 0.5) * 10;
+                const centerY = (0.5 - y / window.innerHeight) * 10;
+                
+                // 从点击位置向外爆炸
+                for (let i = 0; i < particlesCount; i++) {
+                    const p = i * 3;
+                    const angle = Math.random() * Math.PI * 2;
+                    const radius = Math.random() * 1.5;
+                    
+                    // 只修改部分粒子位置，使效果更自然
+                    if (i % 3 === 0) {
+                        pos.array[p] = centerX + Math.cos(angle) * radius;
+                        pos.array[p+1] = centerY + Math.sin(angle) * radius;
+                    }
+                }
+                pos.needsUpdate = true;
+                
+                // 随机颜色变化
+                material.color.setHSL(Math.random(), 1, 0.7);
+                
+                // 爆炸动画
+                gsap.to(points.scale, {
+                    x: 20, y: 20, z: 20,
+                    duration: 2, 
+                    ease: 'power2.out', 
+                    onComplete: () => {
+                        points.scale.set(1,1,1);
+                        material.color.set(0xffffff);
+                    }
+                });
+            }
         });
     </script>
 </body>
