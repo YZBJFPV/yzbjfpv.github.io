@@ -4,16 +4,60 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>首页｜Flyz远征飞官方网站</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
     
+    <!-- 自定义Tailwind配置 -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#165DFF',
+                        secondary: '#FF7D00',
+                        dark: '#1D2129',
+                        light: '#F2F3F5'
+                    },
+                    fontFamily: {
+                        inter: ['Inter', 'system-ui', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .content-auto {
+                content-visibility: auto;
+            }
+            .nav-gradient {
+                background: linear-gradient(90deg, rgba(22,93,255,0.9) 0%, rgba(29,33,41,0.95) 100%);
+            }
+            .hero-gradient {
+                background: linear-gradient(135deg, #165DFF 0%, #0A2463 100%);
+            }
+            .hover-lift {
+                transition: transform 0.3s ease, box-shadow 0.3s ease;
+            }
+            .hover-lift:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+            }
+            .case-card {
+                transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            }
+            .case-card:hover {
+                transform: scale(1.03);
+            }
+        }
+    </style>
+
     <!-- 动态标题样式 -->
     <style>
-        nav { position: relative; min-height: 66px; }
         .dynamic-title {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
             font-family: 'Segoe UI', sans-serif;
             font-size: 6vw;
             font-weight: 700;
@@ -24,7 +68,6 @@
             color: transparent;
             letter-spacing: 1px;
             animation: gradient-scroll 5s linear infinite;
-            z-index: 1;
         }
         
         @media (max-width: 768px) {
@@ -32,111 +75,109 @@
         }
 
         @keyframes gradient-scroll { 0% { background-position: 0% 50%; } 100% { background-position: 400% 50%; } }
-        
-        .navbar { background: #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.1); position: relative; }
-        .logo-img { width: 120px; }
-        .feature-card { box-shadow: 0 4px 6px rgba(0,0,0,0.05); border-radius: 8px; }
-        
-        /* 语言切换按钮样式 */
-        .lang-switch {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            z-index: 100;
-        }
-        .lang-btn {
-            background: transparent;
-            border: none;
-            font-size: 14px;
-            cursor: pointer;
-            color: #333;
-        }
     </style>
-
-    <!-- 开源翻译库（非官方，仅供演示） -->
-    <script src="https://cdn.jsdelivr.net/gh/embraceware/translate@master/translate.min.js"></script>
 </head>
-<body>
-    <!-- 语言切换按钮 -->
-    <div class="lang-switch">
-        <button class="lang-btn" id="zh-CN">中文</button> / 
-        <button class="lang-btn" id="en-US">英文</button>
-    </div>
-
+<body class="font-inter bg-light text-dark m-0 p-0 overflow-x-hidden">
     <div id="particles-js" style="position:absolute;top:0;left:0;width:100%;height:100vh;z-index:-1;"></div>
 
-    <nav class="navbar navbar-expand-lg navbar-light sticky-top">
-        <div class="container-fluid">
-            <div class="dynamic-title" data-translate="yes">官方网站</div>
-            
-            <a class="navbar-brand" href="#"><img src="https://img520.com/UIGuUV.jpeg" alt="Flyz FPV穿越机电池 logo" class="logo-img" data-translate="yes"></a>
-            <div class="navbar-nav ms-auto">
-                <a class="nav-link active" href="https://yzbjfpv.top/20250709.html" data-translate="yes">首页</a>
-                <a class="nav-link" href="http://yzflight.xyz" data-translate="yes">下载中心</a>
-                <a class="nav-link" href="https://shop500685313.taobao.com" data-translate="yes">严选商城</a>
-                <a class="nav-link" href="https://yzbjfpv.top/fix.html" data-translate="yes">维修专区</a>
-                <a class="nav-link" href="https://yzbjfpv.top/wxtalk.html" data-translate="yes">加我WX</a>
+    <!-- 导航栏 -->
+    <header id="navbar" class="fixed w-full top-0 z-50 transition-all duration-300">
+        <nav class="nav-gradient py-4 px-6 md:px-12">
+            <div class="container mx-auto flex justify-between items-center">
+                <!-- Logo -->
+                <a href="https://yzbjfpv.top/20250709.html" class="flex items-center space-x-2">
+                    <img src="https://img520.com/UIGuUV.jpeg" alt="Flyz远征飞Logo" 
+                         class="h-10 w-auto object-contain rounded-md hover-lift"
+                         onerror="this.onerror=null;this.src='https://picsum.photos/40/40'">
+                    <span class="text-white font-bold text-xl hidden md:inline">Flyz远征飞</span>
+                </a>
+                
+                <!-- 桌面导航 -->
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="https://yzbjfpv.top/20250709.html" class="text-white hover:text-secondary transition-colors duration-300">
+                        <i class="fa fa-home mr-2"></i>首页
+                    </a>
+                    <a href="http://yzflight.xyz" class="text-white hover:text-secondary transition-colors duration-300">
+                        <i class="fa fa-download mr-2"></i>下载中心
+                    </a>
+                    <a href="https://shop500685313.taobao.com/" class="text-white hover:text-secondary transition-colors duration-300">
+                        <i class="fa fa-shopping-bag mr-2"></i>严选商城
+                    </a>
+                    <a href="https://yzbjfpv.top/fix.html" class="text-white hover:text-secondary transition-colors duration-300">
+                        <i class="fa fa-wrench mr-2"></i>维修专区
+                    </a>
+                    <a href="https://yzbjfpv.top/wxtalk.html" class="text-white hover:text-secondary transition-colors duration-300">
+                        <i class="fa fa-user-plus mr-2"></i>加我WX
+                    </a>
+                </div>
+                
+                <!-- 移动端菜单按钮 -->
+                <button id="menu-toggle" class="md:hidden text-white focus:outline-none">
+                    <i class="fa fa-bars text-2xl"></i>
+                </button>
+            </div>
+        </nav>
+        
+        <!-- 移动端导航菜单 -->
+        <div id="mobile-menu" class="hidden bg-dark/95 md:hidden">
+            <div class="container mx-auto py-4 px-6 flex flex-col space-y-4">
+                <a href="https://yzbjfpv.top/20250709.html" class="text-white hover:text-secondary transition-colors duration-300 py-2">
+                    <i class="fa fa-home mr-2"></i>首页
+                </a>
+                <a href="http://yzflight.xyz" class="text-white hover:text-secondary transition-colors duration-300 py-2">
+                    <i class="fa fa-download mr-2"></i>下载中心
+                </a>
+                <a href="https://shop500685313.taobao.com/" class="text-white hover:text-secondary transition-colors duration-300 py-2">
+                    <i class="fa fa-shopping-bag mr-2"></i>严选商城
+                </a>
+                <a href="https://yzbjfpv.top/fix.html" class="text-white hover:text-secondary transition-colors duration-300 py-2">
+                    <i class="fa fa-wrench mr-2"></i>维修专区
+                </a>
+                <a href="https://yzbjfpv.top/wxtalk.html" class="text-white hover:text-secondary transition-colors duration-300 py-2">
+                    <i class="fa fa-user-plus mr-2"></i>加我WX
+                </a>
             </div>
         </div>
-    </nav>
+    </header>
 
     <!-- 新增视频模块（导航栏下方） -->
-    <div style="position: relative; width: 100%; height: 600px; overflow: hidden; margin: 30px 0;">
-        <!-- B站视频嵌入 -->
-        <iframe 
-            src="https://player.bilibili.com/player.html?bvid=BV1MWjgzvEED&autoplay=0&muted=1" 
-            style="width: 100%; height: 100%; border: none;" 
-            allowfullscreen
-            allow="autoplay; fullscreen"
-        ></iframe>
-        
-        <!-- 半透明淡灰色文字层 -->
-        <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; z-index: 1;">
-            <p style="
-                color: #333; 
-                background: rgba(240, 240, 240, 0.9);  /* 淡灰色背景 */
-                padding: 12px 24px; 
-                border-radius: 25px; 
-                font-size: 20px; 
-                line-height: 1.3; 
-                box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-            ">
-                PokRC•Flyz远征飞联名<br>远航高性能电池测评
-            </p>
+    <div class="pt-16 w-full bg-hero-gradient">
+        <div class="relative w-full aspect-video overflow-hidden">
+            <!-- B站视频嵌入 - 带声音自动播放 -->
+            <iframe 
+                src="https://player.bilibili.com/player.html?bvid=BV1MWjgzvEED&autoplay=1&dm=0" 
+                style="width: 100%; height: 100%; border: none; position: absolute; top: 0; left: 0;" 
+                allowfullscreen
+                allow="autoplay; fullscreen; encrypted-media"
+            ></iframe>
         </div>
     </div>
 
-    <div class="container my-5">
-        <h2 class="text-center mb-4" data-translate="yes">Pokrc × Flyz联名 | FPV穿越机远航电池</h2>
-        <div class="row g-4">
-            <div class="col-md-4">
-                <div class="feature-card p-3">
-                    <h4 class="text-primary" data-translate="yes">核心配置</h4>
-                    <p data-translate="yes">21700电芯 | FPV长航时专用<br>35C持续放电（峰值40C）</p>
-                </div>
+    <div class="container my-5 px-4">
+        <h2 class="text-center mb-4 text-3xl font-bold text-primary">Pokrc × Flyz联名 | FPV穿越机远航电池</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="bg-white rounded-xl p-6 shadow-md hover-lift">
+                <h4 class="text-primary font-bold mb-2">核心配置</h4>
+                <p>21700特供电芯 | FPV高爆发远航专用<br>35C瞬时放电 肆意花飞</p>
             </div>
-            <div class="col-md-4">
-                <div class="feature-card p-3">
-                    <h4 class="text-primary" data-translate="yes">定制方案</h4>
-                    <p data-translate="yes">1-8S电压组合 | 电芯类型可选<br>FPV机架接口适配</p>
-                </div>
+            <div class="bg-white rounded-xl p-6 shadow-md hover-lift">
+                <h4 class="text-primary font-bold mb-2">定制方案</h4>
+                <p>1-16S电压组合 | 电芯参数可选<br>FPV设备供电接口适配</p>
             </div>
-            <div class="col-md-4">
-                <div class="feature-card p-3">
-                    <h4 class="text-primary" data-translate="yes">易用设计</h4>
-                    <p data-translate="yes">集成电压显示 | 单芯状态实时查</p>
-                </div>
+            <div class="bg-white rounded-xl p-6 shadow-md hover-lift">
+                <h4 class="text-primary font-bold mb-2">易用设计</h4>
+                <p>集成电压显示 | 单芯状态实时查 不惧过放过充</p>
             </div>
         </div>
     </div>
 
     <footer class="bg-light p-4 mt-5">
         <div class="container text-center">
-            <p data-translate="yes">© 2025 Flyz远征飞官方网站 首页V3.0.6版</p>
-            <p data-translate="yes">我们的口号是：为方便模友而生</p>
+            <p>© 2025 Flyz远征飞官方网站 首页V3.0.7版</p>
+            <p>我们的口号是：为方便模友而生</p>
             <div class="mt-3">
-                <a href="https://b23.tv/JXuI9QA" data-translate="yes">哔哩哔哩｜Flyz远征飞</a> / 
-                <a href="http://yzbjfpv.top/oldindex.html" data-translate="yes">旧版网站｜2024年8月</a>
+                <a href="https://b23.tv/JXuI9QA">哔哩哔哩｜Flyz远征飞官方账号</a> / 
+                <a href="http://yzflight.github.io/dudu.html">网站定制案例｜嘟嘟电池官网</a>
             </div>
         </div>
     </footer>
@@ -154,43 +195,38 @@
         });
     </script>
 
-    <!-- 语言切换逻辑 -->
     <script>
-        // 初始化语言（默认中文）
-        let currentLang = 'zh-CN';
-        document.documentElement.lang = currentLang;
+        // 导航栏滚动效果
+        window.addEventListener('scroll', function() {
+            const navbar = document.getElementById('navbar');
+            if (window.scrollY > 50) {
+                navbar.classList.add('py-2');
+                navbar.classList.remove('py-4');
+                navbar.classList.add('shadow-lg');
+            } else {
+                navbar.classList.add('py-4');
+                navbar.classList.remove('py-2');
+                navbar.classList.remove('shadow-lg');
+            }
+        });
 
-        // 翻译函数（基于开源库）
-        function translateElements() {
-            const elements = document.querySelectorAll('[data-translate="yes"]');
-            elements.forEach(element => {
-                const text = element.textContent;
-                // 简单示例：中文转英文（实际需更复杂逻辑）
-                if (currentLang === 'en-US') {
-                    element.textContent = translate(text, { to: 'en' }); // 调用开源库翻译
-                } else {
-                    element.textContent = text; // 恢复原文
-                }
+        // 移动端菜单切换
+        document.getElementById('menu-toggle').addEventListener('click', function() {
+            const mobileMenu = document.getElementById('mobile-menu');
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        // 平滑滚动
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+                // 关闭移动端菜单
+                document.getElementById('mobile-menu').classList.add('hidden');
             });
-        }
-
-        // 切换语言按钮事件
-        document.getElementById('zh-CN').addEventListener('click', () => {
-            currentLang = 'zh-CN';
-            document.documentElement.lang = currentLang;
-            translateElements();
         });
-
-        document.getElementById('en-US').addEventListener('click', () => {
-            currentLang = 'en-US';
-            document.documentElement.lang = currentLang;
-            translateElements();
-        });
-
-        // 页面加载时执行翻译
-        translateElements();
     </script>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
