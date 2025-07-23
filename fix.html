@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>维修专区｜Flyz远征飞官方网站</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- 自定义Tailwind配置 -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#165DFF',
+                        secondary: '#FF7D00',
+                        dark: '#1D2129',
+                        light: '#F2F3F5'
+                    },
+                    fontFamily: {
+                        inter: ['Inter', 'system-ui', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .content-auto {
+                content-visibility: auto;
+            }
+            .nav-gradient {
+                background: linear-gradient(90deg, rgba(22,93,255,0.9) 0%, rgba(29,33,41,0.95) 100%);
+            }
+            .hero-gradient {
+                background: linear-gradient(135deg, #165DFF 0%, #0A2463 100%);
+            }
+            .hover-lift {
+                transition: transform 0.3s ease, box-shadow 0.3s ease;
+            }
+            .hover-lift:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+            }
+            .case-card {
+                transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            }
+            .case-card:hover {
+                transform: scale(1.03);
+            }
+        }
+    </style>
+</head>
+<body class="font-inter bg-light text-dark">
+    <!-- 导航栏 -->
+    <header id="navbar" class="fixed w-full top-0 z-50 transition-all duration-300">
+        <nav class="nav-gradient py-4 px-6 md:px-12">
+            <div class="container mx-auto flex justify-between items-center">
+                <!-- Logo -->
+                <a href="https://yzbjfpv.top/20250709.html" class="flex items-center space-x-2">
+                    <img src="https://img520.com/UIGuUV.jpeg" alt="Flyz远征飞Logo" 
+                         class="h-10 w-auto object-contain rounded-md hover-lift"
+                         onerror="this.onerror=null;this.src='https://picsum.photos/40/40'">
+                    <span class="text-white font-bold text-xl hidden md:inline">Flyz远征飞</span>
+                </a>
+                
+                <!-- 桌面导航 -->
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="https://yzbjfpv.top/20250709.html" class="text-white hover:text-secondary transition-colors duration-300">
+                        <i class="fa fa-home mr-2"></i>首页
+                    </a>
+                    <a href="http://yzflight.xyz" class="text-white hover:text-secondary transition-colors duration-300">
+                        <i class="fa fa-download mr-2"></i>下载中心
+                    </a>
+                    <a href="https://shop500685313.taobao.com/" class="text-white hover:text-secondary transition-colors duration-300">
+                        <i class="fa fa-shopping-bag mr-2"></i>严选商城
+                    </a>
+                    <a href="https://yzbjfpv.top/fix.html" class="text-secondary font-medium border-b-2 border-secondary pb-1">
+                        <i class="fa fa-wrench mr-2"></i>维修专区
+                    </a>
+                    <a href="https://yzbjfpv.top/wxtalk.html" class="text-white hover:text-secondary transition-colors duration-300">
+                        <i class="fa fa-user-plus mr-2"></i>加入我们
+                    </a>
+                </div>
+                
+                <!-- 移动端菜单按钮 -->
+                <button id="menu-toggle" class="md:hidden text-white focus:outline-none">
+                    <i class="fa fa-bars text-2xl"></i>
+                </button>
+            </div>
+        </nav>
+        
+        <!-- 移动端导航菜单 -->
+        <div id="mobile-menu" class="hidden bg-dark/95 md:hidden">
+            <div class="container mx-auto py-4 px-6 flex flex-col space-y-4">
+                <a href="https://yzbjfpv.top/20250709.html" class="text-white hover:text-secondary transition-colors duration-300 py-2">
+                    <i class="fa fa-home mr-2"></i>首页
+                </a>
+                <a href="http://yzflight.xyz" class="text-white hover:text-secondary transition-colors duration-300 py-2">
+                    <i class="fa fa-download mr-2"></i>下载中心
+                </a>
+                <a href="https://shop500685313.taobao.com/" class="text-white hover:text-secondary transition-colors duration-300 py-2">
+                    <i class="fa fa-shopping-bag mr-2"></i>严选商城
+                </a>
+                <a href="https://yzbjfpv.top/fix.html" class="text-secondary font-medium py-2">
+                    <i class="fa fa-wrench mr-2"></i>维修专区
+                </a>
+                <a href="https://yzbjfpv.top/wxtalk.html" class="text-white hover:text-secondary transition-colors duration-300 py-2">
+                    <i class="fa fa-user-plus mr-2"></i>加入我们
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- 维修专区英雄区域 -->
+    <section class="pt-28 pb-16 hero-gradient text-white">
+        <div class="container mx-auto px-6 md:px-12">
+            <div class="flex flex-col md:flex-row items-center">
+                <div class="md:w-1/2 mb-10 md:mb-0">
+                    <h1 class="text-[clamp(2rem,5vw,3.5rem)] font-bold leading-tight mb-6">
+                        专业<span class="text-secondary">维修师傅</span>团队
+                    </h1>
+                    <p class="text-xl md:text-2xl mb-8 text-white/80">
+                        汇聚业内资深航模维修专家，精准解决各类设备故障，让您的飞行装备重焕活力
+                    </p>
+                    <div class="flex flex-wrap gap-4">
+                        <a href="#mechanics" class="bg-secondary hover:bg-secondary/90 text-white font-bold py-3 px-8 rounded-full transition-all duration-300 hover-lift">
+                            <i class="fa fa-users mr-2"></i>浏览师傅
+                        </a>
+                        <a href="#platform-statement" class="bg-white/10 hover:bg-white/20 text-white font-bold py-3 px-8 rounded-full transition-all duration-300 hover-lift">
+                            <i class="fa fa-file-text mr-2"></i>平台声明
+                        </a>
+                    </div>
+                </div>
+                <div class="md:w-1/2 flex justify-center">
+                    <img src="https://picsum.photos/600/400?random=3" alt="航模维修展示" 
+                         class="rounded-lg shadow-2xl hover-lift max-w-full h-auto">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 维修师傅展示区域 -->
+    <section id="mechanics" class="py-16 bg-white">
+        <div class="container mx-auto px-6 md:px-12">
+            <div class="text-center mb-16">
+                <h2 class="text-[clamp(1.5rem,3vw,2.5rem)] font-bold mb-4">资深维修师傅</h2>
+                <p class="text-gray-600 text-lg max-w-3xl mx-auto">每位师傅均拥有5年以上航模维修经验，精通各类主流设备维修技术</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+                <!-- 维修师傅1 -->
+                <div class="bg-light rounded-xl overflow-hidden shadow-lg hover-lift">
+                    <div class="relative">
+                        <img src="https://picsum.photos/600/300?random=10" alt="张师傅" class="w-full h-56 object-cover">
+                        <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-dark/80 to-transparent p-4">
+                            <h3 class="text-white text-2xl font-bold">张师傅</h3>
+                            <p class="text-white/80">飞控系统维修专家</p>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <div class="mb-4">
+                            <h4 class="font-bold text-lg mb-2 flex items-center">
+                                <i class="fa fa-star text-yellow-400 mr-2"></i>擅长领域
+                            </h4>
+                            <div class="flex flex-wrap gap-2">
+                                <span class="bg-primary/10 text-primary px-3 py-1 rounded-full text-sm">飞控调试</span>
+                                <span class="bg-primary/10 text-primary px-3 py-1 rounded-full text-sm">固件修复</span>
+                                <span class="bg-primary/10 text-primary px-3 py-1 rounded-full text-sm">传感器校准</span>
+                                <span class="bg-primary/10 text-primary px-3 py-1 rounded-full text-sm">PID参数优化</span>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <h4 class="font-bold text-lg mb-2 flex items-center">
+                                <i class="fa fa-trophy text-yellow-500 mr-2"></i>维修案例
+                            </h4>
+                            <ul class="text-gray-600 space-y-2">
+                                <li><i class="fa fa-check-circle text-primary mr-2"></i>大疆N3飞控无响应修复</li>
+                                <li><i class="fa fa-check-circle text-primary mr-2"></i>F450机架飞控校准漂移问题</li>
+                                <li><i class="fa fa-check-circle text-primary mr-2"></i>穿越机PID参数优化调试</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="mb-6">
+                            <h4 class="font-bold text-lg mb-2 flex items-center">
+                                <i class="fa fa-clock-o text-primary mr-2"></i>维修经验
+                            </h4>
+                            <p class="text-gray-600">8年航模维修经验，累计修复设备超过3000台</p>
+                        </div>
+                        
+                        <div class="flex items-center justify-between">
+                            <a href="tel:13800138001" class="flex items-center text-primary hover:text-primary/80 font-medium transition-colors">
+                                <i class="fa fa-phone mr-2"></i>电话咨询
+                            </a>
+                            <a href="https://yzbjfpv.top/wxtalk.html" class="bg-primary hover:bg-primary/90 text-white font-bold py-2 px-6 rounded-full transition-all duration-300">
+                                预约维修
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 维修师傅2 -->
+                <div class="bg-light rounded-xl overflow-hidden shadow-lg hover-lift">
+                    <div class="relative">
+                        <img src="https://picsum.photos/600/300?random=11" alt="李师傅" class="w-full h-56 object-cover">
+                        <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-dark/80 to-transparent p-4">
+                            <h3 class="text-white text-2xl font-bold">李师傅</h3>
+                            <p class="text-white/80">电机与电调维修专家</p>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <div class="mb-4">
+                            <h4 class="font-bold text-lg mb-2 flex items-center">
+                                <i class="fa fa-star text-yellow-400 mr-2"></i>擅长领域
+                            </h4>
+                            <div class="flex flex-wrap gap-2">
+                                <span class="bg-primary/10 text-primary px-3 py-1 rounded-full text-sm">电机维修</span>
+                                <span class="bg-primary/10 text-primary px-3 py-1 rounded-full text-sm">电调调试</span>
+                                <span class="bg-primary/10 text-primary px-3 py-1 rounded-full text-sm">动力系统匹配</span>
+                                <span class="bg-primary/10 text-primary px-3 py-1 rounded-full text-sm">电池维护</span>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <h4 class="font-bold text-lg mb-2 flex items-center">
+                                <i class="fa fa-trophy text-yellow-500 mr-2"></i>维修案例
+                            </h4>
+                            <ul class="text-gray-600 space-y-2">
+                                <li><i class="fa fa-check-circle text-primary mr-2"></i>无刷电机卡顿修复</li>
+                                <li><i class="fa fa-check-circle text-primary mr-2"></i>电调烧损更换与调试</li>
+                                <li><i class="fa fa-check-circle text-primary mr-2"></i>动力系统整体升级优化</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="mb-6">
+                            <h4 class="font-bold text-lg mb-2 flex items-center">
+                                <i class="fa fa-clock-o text-primary mr-2"></i>维修经验
+                            </h4>
+                            <p class="text-gray-600">6年航模动力系统维修经验，精通各类电机电调品牌</p>
+                        </div>
+                        
+                        <div class="flex items-center justify-between">
+                            <a href="tel:13900139001" class="flex items-center text-primary hover:text-primary/80 font-medium transition-colors">
+                                <i class="fa fa-phone mr-2"></i>电话咨询
+                            </a>
+                            <a href="https://yzbjfpv.top/wxtalk.html" class="bg-primary hover:bg-primary/90 text-white font-bold py-2 px-6 rounded-full transition-all duration-300">
+                                预约维修
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 维修师傅3 -->
+                <div class="bg-light rounded-xl overflow-hidden shadow-lg hover-lift">
+                    <div class="relative">
+                        <img src="https://picsum.photos/600/300?random=12" alt="王师傅" class="w-full h-56 object-cover">
+                        <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-dark/80 to-transparent p-4">
+                            <h3 class="text-white text-2xl font-bold">王师傅</h3>
+                            <p class="text-white/80">航拍设备维修专家</p>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <div class="mb-4">
+                            <h4 class="font-bold text-lg mb-2 flex items-center">
+                                <i class="fa fa-star text-yellow-400 mr-2"></i>擅长领域
+                            </h4>
+                            <div class="flex flex-wrap gap-2">
+                                <span class="bg-primary/10 text-primary px-3 py-1 rounded-full text-sm">云台维修</span>
+                                <span class="bg-primary/10 text-primary px-3 py-1 rounded-full text-sm">相机调试</span>
+                                <span class="bg-primary/10 text-primary px-3 py-1 rounded-full text-sm">图传系统</span>
+                                <span class="bg-primary/10 text-primary px-3 py-1 rounded-full text-sm">GPS定位</span>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <h4 class="font-bold text-lg mb-2 flex items-center">
+                                <i class="fa fa-trophy text-yellow-500 mr-2"></i>维修案例
+                            </h4>
+                            <ul class="text-gray-600 space-y-2">
+                                <li><i class="fa fa-check-circle text-primary mr-2"></i>云台抖动修复与校准</li>
+                                <li><i class="fa fa-check-circle text-primary mr-2"></i>图传信号弱问题解决</li>
+                                <li><i class="fa fa-check-circle text-primary mr-2"></i>GPS定位漂移修复</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="mb-6">
+                            <h4 class="font-bold text-lg mb-2 flex items-center">
+                                <i class="fa fa-clock-o text-primary mr-2"></i>维修经验
+                            </h4>
+                            <p class="text-gray-600">7年航拍设备维修经验，专注高端航拍器材维修</p>
+                        </div>
+                        
+                        <div class="flex items-center justify-between">
+                            <a href="tel:13700137001" class="flex items-center text-primary hover:text-primary/80 font-medium transition-colors">
+                                <i class="fa fa-phone mr-2"></i>电话咨询
+                            </a>
+                            <a href="https://yzbjfpv.top/wxtalk.html" class="bg-primary hover:bg-primary/90 text-white font-bold py-2 px-6 rounded-full transition-all duration-300">
+                                预约维修
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 维修案例展示 -->
+    <section class="py-16 bg-gray-50">
+        <div class="container mx-auto px-6 md:px-12">
+            <div class="text-center mb-16">
+                <h2 class="text-[clamp(1.5rem,3vw,2.5rem)] font-bold mb-4">精选维修案例</h2>
+                <p class="text-gray-600 text-lg max-w-3xl mx-auto">真实维修案例展示，见证我们的专业维修技术与服务质量</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- 案例1 -->
+                <div class="bg-white rounded-xl overflow-hidden shadow-lg case-card">
+                    <img src="https://picsum.photos/600/400?random=20" alt="飞控维修案例" class="w-full h-48 object-cover">
+                    <div class="p-6">
+                        <div class="flex items-center mb-3">
+                            <span class="bg-secondary/10 text-secondary text-sm font-medium px-3 py-1 rounded-full">飞控系统</span>
+                            <span class="ml-auto text-gray-500 text-sm">张师傅维修</span>
+                        </div>
+                        <h3 class="text-xl font-bold mb-2">大疆A3飞控无响应修复</h3>
+                        <p class="text-gray-600 mb-4">设备进水导致飞控主板短路，通过专业清洗、元件更换与系统重装，恢复正常功能。</p>
+                        <a href="#" class="text-primary hover:text-primary/80 font-medium flex items-center transition-colors">
+                            查看详情 <i class="fa fa-arrow-right ml-2"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- 案例2 -->
+                <div class="bg-white rounded-xl overflow-hidden shadow-lg case-card">
+                    <img src="https://picsum.photos/600/400?random=21" alt="电机维修案例" class="w-full h-48 object-cover">
+                    <div class="p-6">
+                        <div class="flex items-center mb-3">
+                            <span class="bg-secondary/10 text-secondary text-sm font-medium px-3 py-1 rounded-full">电机维修</span>
+                            <span class="ml-auto text-gray-500 text-sm">李师傅维修</span>
+                        </div>
+                        <h3 class="text-xl font-bold mb-2">XXD电机卡顿修复</h3>
+                        <p class="text-gray-600 mb-4">电机轴承磨损导致运行卡顿异响，更换高精度轴承并重新平衡校准，恢复最佳性能。</p>
+                        <a href="#" class="text-primary hover:text-primary/80 font-medium flex items-center transition-colors">
+                            查看详情 <i class="fa fa-arrow-right ml-2"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- 案例3 -->
+                <div class="bg-white rounded-xl overflow-hidden shadow-lg case-card">
+                    <img src="https://picsum.photos/600/400?random=22" alt="云台维修案例" class="w-full h-48 object-cover">
+                    <div class="p-6">
+                        <div class="flex items-center mb-3">
+                            <span class="bg-secondary/10 text-secondary text-sm font-medium px-3 py-1 rounded-full">云台维修</span>
+                            <span class="ml-auto text-gray-500 text-sm">王师傅维修</span>
+                        </div>
+                        <h3 class="text-xl font-bold mb-2">悟2云台抖动修复</h3>
+                        <p class="text-gray-600 mb-4">云台轴臂变形导致拍摄抖动，通过精密校正与参数重新校准，恢复稳定拍摄效果。</p>
+                        <a href="#" class="text-primary hover:text-primary/80 font-medium flex items-center transition-colors">
+                            查看详情 <i class="fa fa-arrow-right ml-2"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 平台声明区域 -->
+    <section id="platform-statement" class="py-16 bg-white">
+        <div class="container mx-auto px-6 md:px-12">
+            <div class="max-w-3xl mx-auto bg-light rounded-xl p-8 shadow-lg">
+                <h2 class="text-[clamp(1.5rem,3vw,2rem)] font-bold mb-6 text-primary text-center">平台声明</h2>
+                
+                <div class="space-y-4 text-gray-700">
+                    <p>1. Flyz远征飞官网展示的维修师傅均经过专业资质审核，具备相应维修技能与经验，但平台不对维修结果做全额担保，具体维修效果以实际情况为准。</p>
+                    
+                    <p>2. 维修服务价格由维修师傅根据设备故障情况与维修难度独立报价，Flyz远征飞官网仅提供信息展示服务，不参与价格制定。</p>
+                    
+                    <p>3. 维修过程中涉及的零件更换，建议使用原厂或认证配件，相关质量保证由配件供应商与维修师傅共同负责。</p>
+                    
+                    <p>4. 维修服务产生的纠纷，Flyz远征飞官网可提供协调服务，但最终责任划分需遵循相关法律法规与双方约定。</p>
+                    
+                    <p>5. 客户在选择维修服务时，应与维修师傅明确维修范围、价格、周期与质保期限等关键信息，建议保留相关沟通记录。</p>
+                    
+                    <p>6. Flyz远征飞官网对维修师傅的信息进行定期更新，但无法保证实时准确性，如有变动请以实际沟通为准。</p>
+                    
+                    <p>7. 如发现维修师傅存在违规操作或服务质量问题，欢迎向平台总监投诉举报，我们将根据调查结果采取相应处理措施并给予赔偿。</p>
+                </div>
+                
+                <div class="mt-8 pt-6 border-t border-gray-300 text-center">
+                    <p class="text-gray-600">如有任何疑问，欢迎联系Flyz远征飞官网微信：YGWFK2024</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 联系咨询区域 -->
+    <section class="py-16 bg-primary/5">
+        <div class="container mx-auto px-6 md:px-12">
+            <div class="text-center mb-16">
+                <h2 class="text-[clamp(1.5rem,3vw,2.5rem)] font-bold mb-4">维修咨询</h2>
+                <p class="text-gray-600 text-lg max-w-3xl mx-auto">如有任何维修相关问题，欢迎通过以下方式联系我们</p>
+            </div>
+            
+            <div class="flex flex-col md:flex-row justify-center gap-10">
+                <div class="bg-white rounded-xl p-6 shadow-lg flex items-center w-full md:w-auto hover-lift">
+                    <div class="bg-primary/10 p-4 rounded-full mr-4">
+                        <i class="fa fa-phone text-primary text-2xl"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-lg mb-1">总监</h3>
+                        <p class="text-gray-600">微信ID:YGWFK2024</p>
+                        <p class="text-gray-500 text-sm">节假日全天在线</p>
+                    </div>
+                </div>
+                
+                <div class="bg-white rounded-xl p-6 shadow-lg flex items-center w-full md:w-auto hover-lift">
+                    <div class="bg-primary/10 p-4 rounded-full mr-4">
+                        <i class="fa fa-envelope text-primary text-2xl"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-lg mb-1">客服</h3>
+                        <p class="text-gray-600">微信ID:only127856</p>
+                        <p class="text-gray-500 text-sm">节假日全天在线</p>
+                    </div>
+                </div>
+                
+                <div class="bg-white rounded-xl p-6 shadow-lg flex items-center w-full md:w-auto hover-lift">
+                    <div class="bg-primary/10 p-4 rounded-full mr-4">
+                        <i class="fa fa-weixin text-primary text-2xl"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-lg mb-1">微信咨询</h3>
+                        <p class="text-gray-600">FlyzRepair</p>
+                        <p class="text-gray-500 text-sm">添加客服微信</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // 导航栏滚动效果
+        window.addEventListener('scroll', function() {
+            const navbar = document.getElementById('navbar');
+            if (window.scrollY > 50) {
+                navbar.classList.add('py-2');
+                navbar.classList.remove('py-4');
+                navbar.classList.add('shadow-lg');
+            } else {
+                navbar.classList.add('py-4');
+                navbar.classList.remove('py-2');
+                navbar.classList.remove('shadow-lg');
+            }
+        });
+
+        // 移动端菜单切换
+        document.getElementById('menu-toggle').addEventListener('click', function() {
+            const mobileMenu = document.getElementById('mobile-menu');
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        // 平滑滚动
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+                // 关闭移动端菜单
+                document.getElementById('mobile-menu').classList.add('hidden');
+            });
+        });
+    </script>
+</body>
+</html>
