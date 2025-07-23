@@ -5,17 +5,102 @@
     <title>登录|Flyz远征飞官网</title>
     <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.2/dist/gsap.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/build/three.min.js"></script>
+    <!-- Font Awesome -->
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    
     <style>
         body {
-            background: linear-gradient(135deg, #001f3f, #800080);
-            min-height: 100vh;
             margin: 0;
+            min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
             position: relative;
             overflow: hidden;
+            padding-top: 80px; /* 为导航栏留出空间 */
         }
+        
+        /* 导航栏样式 */
+        #navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 100;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-gradient {
+            background: linear-gradient(90deg, rgba(22,93,255,0.9) 0%, rgba(29,33,41,0.95) 100%);
+            padding: 1rem 6rem;
+        }
+        
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: white;
+            text-decoration: none;
+        }
+        
+        .logo img {
+            height: 40px;
+            border-radius: 5px;
+        }
+        
+        .logo-text {
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+        
+        .nav-link {
+            color: white;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: color 0.3s ease;
+        }
+        
+        .nav-link:hover {
+            color: #FF7D00;
+        }
+        
+        .menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+        
+        .mobile-menu {
+            display: none;
+            background: rgba(29,33,41,0.95);
+            padding: 1rem;
+        }
+        
+        .mobile-nav-links {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        /* 登录卡片样式 */
         .login-card {
             background: rgba(255,255,255,0.08);
             border: 3px solid rgba(255,255,255,0.5);
@@ -52,7 +137,7 @@
             -webkit-background-clip: text;
             color: transparent;
             font-size: 2.5rem;
-            animation: breathe 4s infinite;
+            animation: breathe 2s infinite;
             text-align: center;
             margin-bottom: 40px;
         }
@@ -120,10 +205,116 @@
             color: black;
             font-size: 16px;
         }
+        
+        /* 弹窗样式 */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            font-size: 1.2rem;
+            text-align: center;
+            animation: pop 0.3s;
+        }
+        
+        @keyframes pop {
+            0% { transform: scale(0.8); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        
+        /* 响应式调整 */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+            
+            .menu-toggle {
+                display: block;
+            }
+            
+            .mobile-menu.active {
+                display: block;
+            }
+            
+            .login-card {
+                padding: 30px 40px;
+            }
+        }
     </style>
 </head>
 <body style="background: linear-gradient(135deg, rgb(22, 93, 255), rgb(64, 224, 208));">
-    <div id="threejs-container" style="position:fixed;width:100%;height:100%;top:0;left:0;z-index:1;"><canvas width="820" height="1028" style="display: block; width: 820px; height: 1028px;"></canvas></div>
+    <!-- 导航栏 -->
+    <header id="navbar">
+        <nav class="nav-gradient">
+            <div class="nav-container">
+                <!-- Logo -->
+                <a href="#" class="logo">
+                    <img src="https://img520.com/UIGuUV.jpeg" alt="Flyz远征飞Logo" 
+                         onerror="this.onerror=null;this.src='https://picsum.photos/40/40'">
+                    <span class="logo-text">Flyz远征飞</span>
+                </a>
+                
+                <!-- 桌面导航 -->
+                <div class="nav-links">
+                    <a href="#" class="nav-link nav-item">
+                        <i class="fa fa-home mr-2"></i>首页
+                    </a>
+                    <a href="#" class="nav-link nav-item">
+                        <i class="fa fa-download mr-2"></i>下载中心
+                    </a>
+                    <a href="#" class="nav-link nav-item">
+                        <i class="fa fa-shopping-bag mr-2"></i>严选商城
+                    </a>
+                    <a href="#" class="nav-link nav-item">
+                        <i class="fa fa-wrench mr-2"></i>维修专区
+                    </a>
+                    <a href="#" class="nav-link nav-item">
+                        <i class="fa fa-user-plus mr-2"></i>加我WX
+                    </a>
+                </div>
+                
+                <!-- 移动端菜单按钮 -->
+                <button class="menu-toggle" id="menuToggle">
+                    <i class="fa fa-bars"></i>
+                </button>
+            </div>
+        </nav>
+        
+        <!-- 移动端导航菜单 -->
+        <div class="mobile-menu" id="mobileMenu">
+            <div class="mobile-nav-links">
+                <a href="#" class="nav-link nav-item">
+                    <i class="fa fa-home mr-2"></i>首页
+                </a>
+                <a href="#" class="nav-link nav-item">
+                    <i class="fa fa-download mr-2"></i>下载中心
+                </a>
+                <a href="#" class="nav-link nav-item">
+                    <i class="fa fa-shopping-bag mr-2"></i>严选商城
+                </a>
+                <a href="#" class="nav-link nav-item">
+                    <i class="fa fa-wrench mr-2"></i>维修专区
+                </a>
+                <a href="#" class="nav-link nav-item">
+                    <i class="fa fa-user-plus mr-2"></i>加我WX
+                </a>
+            </div>
+        </div>
+    </header>
+    
+    <div id="threejs-container" style="position:fixed;width:100%;height:100%;top:0;left:0;z-index:1;"></div>
     
     <!-- 广告容器 -->
     <div class="ad-container" id="adContainer">
@@ -139,6 +330,13 @@
         </div>
     </div>
     
+    <!-- 登录弹窗 -->
+    <div class="modal" id="loginModal">
+        <div class="modal-content">
+            <p>请先登录哦~</p>
+        </div>
+    </div>
+    
     <div class="login-card">
         <h2 class="title-animation">Flyz远征飞</h2>
         <form id="login-form" class="space-y-6">
@@ -151,6 +349,31 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
+            // 导航菜单切换
+            const menuToggle = document.getElementById('menuToggle');
+            const mobileMenu = document.getElementById('mobileMenu');
+            
+            menuToggle.addEventListener('click', () => {
+                mobileMenu.classList.toggle('active');
+            });
+            
+            // 导航项点击事件 - 显示登录提示
+            const navItems = document.querySelectorAll('.nav-item');
+            const loginModal = document.getElementById('loginModal');
+            
+            navItems.forEach(item => {
+                item.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    // 显示弹窗
+                    loginModal.style.display = 'flex';
+                    
+                    // 3秒后隐藏弹窗
+                    setTimeout(() => {
+                        loginModal.style.display = 'none';
+                    }, 2000);
+                });
+            });
+            
             // 广告弹出动画
             setTimeout(() => {
                 const ad = document.getElementById('adContainer');
@@ -162,57 +385,118 @@
                 document.getElementById('adContainer').style.right = '-400px';
             });
             
-            // 背景渐变
-            const bgColors = ['linear-gradient(135deg, #001f3f, #800080)', 'linear-gradient(135deg, #165DFF, #40E0D0)'];
-            let i = 0;
+            // 更快的背景渐变动画 (1秒切换一次)
+            const bgColors = [
+                'linear-gradient(135deg, rgb(22, 93, 255), rgb(64, 224, 208))',
+                'linear-gradient(135deg, #165DFF, #36d7b7)',
+                'linear-gradient(135deg, #4ecdc4, #0A2463)',
+                'linear-gradient(135deg, #36d7b7, #165DFF)'
+            ];
+            
+            let colorIndex = 0;
             setInterval(() => {
-                gsap.to(document.body, {background: bgColors[i], duration: 1, ease: 'power2'});
-                i = (i + 1) % bgColors.length;
-            }, 3000);
+                colorIndex = (colorIndex + 1) % bgColors.length;
+                gsap.to(document.body, {
+                    background: bgColors[colorIndex], 
+                    duration: 1, 
+                    ease: 'power2'
+                });
+            }, 1000);
 
-            // Three.js 初始化
+            // Three.js 初始化 - 更丰富的粒子效果
             const container = document.getElementById('threejs-container');
             const scene = new THREE.Scene();
-            const camera = new THREE.PerspectiveCamera(75, innerWidth/innerHeight, 0.1, 1000);
+            const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
             const renderer = new THREE.WebGLRenderer({alpha: true, antialias: true});
-            renderer.setSize(innerWidth, innerHeight);
+            renderer.setSize(window.innerWidth, window.innerHeight);
             container.appendChild(renderer.domElement);
             camera.position.z = 5;
 
-            // 粒子系统
+            // 更多粒子
+            const particlesCount = 500;
             const geometry = new THREE.BufferGeometry();
-            const particles = 200;
-            const pos = new Float32Array(particles * 3);
-            for (let i = 0; i < particles; i++) {
+            const pos = new Float32Array(particlesCount * 3);
+            
+            // 随机位置但分布更均匀
+            for (let i = 0; i < particlesCount; i++) {
                 const p = i * 3;
-                pos[p] = (Math.random() - 0.5) * 5;
-                pos[p+1] = (Math.random() - 0.5) * 5;
-                pos[p+2] = (Math.random() - 0.5) * 5;
+                pos[p] = (Math.random() - 0.5) * 20;
+                pos[p+1] = (Math.random() - 0.5) * 20;
+                pos[p+2] = (Math.random() - 0.5) * 20;
             }
+            
             geometry.setAttribute('position', new THREE.BufferAttribute(pos, 3));
-            const material = new THREE.PointsMaterial({size: 0.05, color: 0xff00ff, transparent: true, opacity: 0.8});
+            
+            // 多彩粒子材质
+            const material = new THREE.PointsMaterial({
+                size: 0.08, 
+                transparent: true,
+                opacity: 0.8,
+                color: 0xffffff,
+                blending: THREE.AdditiveBlending
+            });
+            
             const points = new THREE.Points(geometry, material);
             scene.add(points);
 
-            // 动画循环
+            // 粒子动画 - 更快的运动速度
             function animate() {
                 requestAnimationFrame(animate);
-                points.rotation.x += 0.001;
-                points.rotation.y += 0.001;
+                
+                // 旋转速度加倍
+                points.rotation.x += 0.002;
+                points.rotation.y += 0.002;
+                
+                // 粒子随机移动
+                const pos = geometry.attributes.position;
+                for (let i = 0; i < particlesCount; i++) {
+                    const p = i * 3;
+                    pos.array[p] += (Math.random() - 0.5) * 0.01;
+                    pos.array[p+1] += (Math.random() - 0.5) * 0.01;
+                }
+                pos.needsUpdate = true;
+                
                 renderer.render(scene, camera);
             }
             animate();
 
-            // 触发烟花
+            // 窗口大小调整
+            window.addEventListener('resize', () => {
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(window.innerWidth, window.innerHeight);
+            });
+
+            // 更丰富的烟花效果
             function fireworks(x, y) {
                 const pos = geometry.attributes.position;
-                for (let i = 0; i < particles; i++) {
+                const centerX = (x / window.innerWidth - 0.5) * 10;
+                const centerY = (0.5 - y / window.innerHeight) * 10;
+                
+                // 从点击位置向外爆炸
+                for (let i = 0; i < particlesCount; i++) {
                     const p = i * 3;
-                    pos.getX(i, pos[p] = (Math.random() - 0.5) * 0.5);
-                    pos.getY(i, pos[p+1] = (Math.random() - 0.5) * 0.5);
+                    const angle = Math.random() * Math.PI * 2;
+                    const radius = Math.random() * 0.5;
+                    
+                    pos.array[p] = centerX + Math.cos(angle) * radius;
+                    pos.array[p+1] = centerY + Math.sin(angle) * radius;
                 }
                 pos.needsUpdate = true;
-                gsap.to(points.scale, {x: 10, y: 10, z: 10, duration: 2, ease: 'power2.out', onComplete: () => points.scale.set(1,1,1)});
+                
+                // 随机颜色变化
+                material.color.setHSL(Math.random(), 1, 0.7);
+                
+                // 爆炸动画
+                gsap.to(points.scale, {
+                    x: 15, y: 15, z: 15, 
+                    duration: 1.5, 
+                    ease: 'power2.out', 
+                    onComplete: () => {
+                        points.scale.set(1,1,1);
+                        material.color.set(0xffffff);
+                    }
+                });
             }
 
             // 登录逻辑
@@ -221,28 +505,31 @@
                 e.preventDefault();
                 const pass = form.querySelector('input[type="password"]').value;
                 if (pass === 'YZBJFPV') {
-                    fireworks(innerWidth/2, innerHeight/2);
+                    fireworks(window.innerWidth/2, window.innerHeight/2);
                     setTimeout(() => location.href = 'https://yzbjfpv.top/20250709.html', 1000);
                 }
             });
             
             // 游客登录
             document.getElementById('visitorLogin').addEventListener('click', () => {
-                fireworks(innerWidth/2, innerHeight/2);
+                fireworks(window.innerWidth/2, window.innerHeight/2);
                 setTimeout(() => location.href = 'https://yzbjfpv.top/20250709.html', 1000);
             });
 
             // 点击触发烟花
             document.body.addEventListener('click', e => {
-                if (!e.target.closest('.login-card') && !e.target.closest('.ad-container')) {
+                if (!e.target.closest('.login-card') && !e.target.closest('.ad-container') && !e.target.closest('.nav-link')) {
                     fireworks(e.clientX, e.clientY);
                 }
             });
 
-            // 自动烟花
+            // 更频繁的自动烟花 (3秒一次)
             setInterval(() => {
-                fireworks(Math.random() * innerWidth, Math.random() * innerHeight);
-            }, 5000);
+                fireworks(
+                    Math.random() * window.innerWidth, 
+                    Math.random() * window.innerHeight
+                );
+            }, 3000);
         });
     </script>
 </body>
