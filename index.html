@@ -229,9 +229,34 @@
             animation: pop 0.3s;
         }
         
+        /* 游客登录提示弹窗 */
+        .visitor-modal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(255,255,255,0.95);
+            color: #165DFF;
+            padding: 20px 30px;
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.3);
+            z-index: 1001;
+            max-width: 80%;
+            text-align: center;
+            font-size: 1.2rem;
+            font-weight: bold;
+            animation: fadeIn 0.5s;
+        }
+        
         @keyframes pop {
             0% { transform: scale(0.8); opacity: 0; }
             100% { transform: scale(1); opacity: 1; }
+        }
+        
+        @keyframes fadeIn {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
         }
         
         /* 响应式调整 */
@@ -250,6 +275,11 @@
             
             .login-card {
                 padding: 30px 40px;
+            }
+            
+            .visitor-modal {
+                font-size: 1rem;
+                padding: 15px 20px;
             }
         }
     </style>
@@ -335,6 +365,11 @@
         <div class="modal-content">
             <p>请先登录哦~</p>
         </div>
+    </div>
+    
+    <!-- 游客登录提示弹窗 -->
+    <div class="visitor-modal" id="visitorModal">
+        <p>请联系微信ID：YGWFK2024免费注册账号</p>
     </div>
     
     <div class="login-card">
@@ -553,23 +588,56 @@
                 renderer.setSize(window.innerWidth, window.innerHeight);
             });
 
-            // 登录逻辑
+            // 登录逻辑 - 多账号验证（使用指定账号密码）
             const form = document.getElementById('login-form');
             form.addEventListener('submit', e => {
                 e.preventDefault();
-                const pass = form.querySelector('input[type="password"]').value;
-                if (pass === 'YZBJFPV') {
-                    // 点击登录时保留烟花效果
+                // 获取输入的用户名和密码
+                const username = form.querySelectorAll('.form-input')[0].value;
+                const password = form.querySelectorAll('.form-input')[1].value;
+                
+                // 配置指定的账号密码列表
+                const validAccounts = [
+                    {user: 'yaosiqi777', pass: 'admin123'},
+                    {user: 'lifegoeson', pass: '133299'},
+                    {user: 'AriseLi', pass: '1234567890'},
+                    {user: 'xmz0401', pass: 'XKzxpXMC402'},
+                    {user: '津威-fpv', pass: 'jv77336'},
+                    {user: '114514', pass: '415411'},
+                    {user: '院长', pass: '250107'},
+                    {user: '亜', pass: 'Lyd135790'},
+                    {user: 'Administrator', pass: 'Administrato'},
+                    {user: 'YZ', pass: 'Lyz201966'}
+                ];
+                
+                // 验证账号密码是否匹配
+                const isMatch = validAccounts.some(account => 
+                    account.user === username && account.pass === password
+                );
+                
+                if (isMatch) {
+                    // 验证通过，执行登录跳转
                     fireworks(window.innerWidth/2, window.innerHeight/2);
-                    setTimeout(() => location.href = 'https://yzbjfpv.top/20250709.html', 1000);
+                    setTimeout(() => {
+                        location.href = 'https://yzbjfpv.top/20250709.html';
+                    }, 1000);
+                } else {
+                    // 验证失败，显示错误提示
+                    alert('用户名或密码不正确，请重新输入');
                 }
             });
             
-            // 游客登录
+            // 游客登录 - 显示注册提示
             document.getElementById('visitorLogin').addEventListener('click', () => {
-                // 点击游客登录时保留烟花效果
-                fireworks(window.innerWidth/2, window.innerHeight/2);
-                setTimeout(() => location.href = 'https://yzbjfpv.top/20250709.html', 1000);
+                const visitorModal = document.getElementById('visitorModal');
+                
+                // 显示提示弹窗
+                visitorModal.style.display = 'block';
+                
+                // 5秒后隐藏弹窗
+                setTimeout(() => {
+                    visitorModal.style.display = 'none';
+                }, 5000);
             });
 
             // 点击触发烟花
