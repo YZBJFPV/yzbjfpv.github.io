@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>亚太八六作业帮-暑假作业答案平台</title>
+  <title>亚太八六作业帮 - 暑假作业答案平台</title>
   <!-- 引入外部资源 -->
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
@@ -25,11 +25,16 @@
           animation: {
             'float': 'float 6s ease-in-out infinite',
             'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+            'marquee-smooth': 'marquee 15s linear infinite',
           },
           keyframes: {
             float: {
               '0%, 100%': { transform: 'translateY(0)' },
               '50%': { transform: 'translateY(-10px)' },
+            },
+            marquee: {
+              '0%': { transform: translateX(100%) },
+              '100%': { transform: translateX(-100%) }
             }
           }
         },
@@ -40,8 +45,8 @@
   <!-- 自定义工具类 -->
   <style type="text/tailwindcss">
     @layer utilities {
-      .text-shadow {
-        text-shadow: 0 0 15px rgba(56, 189, 248, 0.7);
+      .text-shadow-clear {
+        text-shadow: 0 0 8px rgba(56, 189, 248, 0.5);
       }
       .bg-grid {
         background-image: linear-gradient(rgba(56, 189, 248, 0.1) 1px, transparent 1px),
@@ -53,6 +58,11 @@
       }
       .btn-glow:hover {
         box-shadow: 0 0 15px rgba(56, 189, 248, 0.7), 0 0 30px rgba(129, 140, 248, 0.5);
+      }
+      .font-clear {
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        text-rendering: optimizeLegibility;
       }
     }
   </style>
@@ -69,16 +79,19 @@
       opacity: 0.7;
     }
     
-    /* 滚动通知样式 */
-    .marquee {
-      white-space: nowrap;
+    /* 轮播容器优化 */
+    .marquee-container {
+      width: 100%;
       overflow: hidden;
-      animation: marquee 20s linear infinite;
+      position: relative;
     }
-    
-    @keyframes marquee {
-      0% { transform: translateX(100%); }
-      100% { transform: translateX(-100%); }
+    .marquee-content {
+      display: inline-block;
+      white-space: nowrap;
+      animation: marquee-smooth 15s linear infinite;
+    }
+    .marquee-container:hover .marquee-content {
+      animation-play-state: paused;
     }
     
     /* 平滑滚动 */
@@ -89,17 +102,32 @@
     /* 防止移动端溢出 */
     body {
       overflow-x: hidden;
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    }
+
+    /* 按钮点击反馈 */
+    .jump-btn:active {
+      transform: scale(0.98);
+      box-shadow: 0 0 8px rgba(56, 189, 248, 0.6), 0 0 15px rgba(129, 140, 248, 0.4);
+    }
+
+    /* 渐变文字优化 */
+    .gradient-text {
+      background-clip: text;
+      -webkit-background-clip: text;
+      color: transparent;
+      background-image: linear-gradient(135deg, #38BDF8 0%, #818CF8 100%);
     }
   </style>
 </head>
 
-<body class="bg-techBlue text-white font-inter relative min-h-screen">
+<body class="bg-techBlue text-white font-inter font-clear relative min-h-screen">
   <!-- 粒子背景容器 -->
   <div id="particles-js"></div>
 
   <!-- 顶部滚动通知栏 -->
-  <div class="bg-techGradient py-2 sticky top-0 z-50 shadow-lg">
-    <div class="marquee text-lg font-medium">
+  <div class="bg-techGradient py-2 sticky top-0 z-50 shadow-lg marquee-container">
+    <div class="marquee-content text-lg font-medium px-2">
       最新消息！8月31日返校交暑假作业领新书 9月1-3日呆家上网课 9月4日正式到学校上课 | 
       最新消息！8月31日返校交暑假作业领新书 9月1-3日呆家上网课 9月4日正式到学校上课
     </div>
@@ -109,22 +137,25 @@
   <main class="relative z-10 container mx-auto px-4 py-12 md:py-24">
     <!-- 标题区域 -->
     <section class="text-center mb-16">
-      <h1 class="text-[clamp(2.5rem,8vw,4rem)] font-bold mb-6 bg-clip-text text-transparent bg-techGradient text-shadow animate-float">
+      <h1 class="text-[clamp(2.5rem,8vw,4rem)] font-bold mb-6 gradient-text text-shadow-clear animate-float font-clear">
         亚太八六作业帮
       </h1>
-      <p class="text-[clamp(1rem,3vw,1.25rem)] text-gray-300 max-w-2xl mx-auto">
+      <p class="text-[clamp(1rem,3vw,1.25rem)] text-gray-300 max-w-2xl mx-auto font-clear">
         专注为亚太八六学子提供优质暑假作业解决方案，助力轻松完成假期任务
       </p>
     </section>
 
-    <!-- 核心功能按钮 -->
+    <!-- 核心功能按钮（已更新为目标跳转链接） -->
     <section class="text-center mb-16">
-      <button class="bg-techGradient text-white px-8 py-4 rounded-full text-xl font-medium transition-all duration-300 btn-glow hover:scale-105 focus:outline-none focus:ring-2 focus:ring-techLight focus:ring-opacity-50">
-        <i class="fa fa-search mr-2"></i>立即查看最新暑假作业答案
-      </button>
+      <!-- 关键修改：href改为www.yzbjfpv.top/2025sjzy.html，添加http://确保跨域跳转正常 -->
+      <a href="https://www.yzbjfpv.top/2025sjzy.html" target="_blank" class="inline-block">
+        <button class="jump-btn bg-techGradient text-white px-8 py-4 rounded-full text-xl font-medium transition-all duration-300 btn-glow hover:scale-105 focus:outline-none focus:ring-2 focus:ring-techLight focus:ring-opacity-50 font-clear">
+          <i class="fa fa-search mr-2"></i>立即查看最新暑假作业答案
+        </button>
+      </a>
       
       <!-- 访问提示 -->
-      <p class="mt-4 text-yellow-400 text-sm md:text-base flex items-center justify-center">
+      <p class="mt-4 text-yellow-400 text-sm md:text-base flex items-center justify-center font-clear">
         <i class="fa fa-exclamation-circle mr-2"></i>当前访问人数较多 如果点击按钮后无法加载请多刷新几次页面
       </p>
     </section>
@@ -136,8 +167,8 @@
         <div class="w-14 h-14 bg-techGradient/20 rounded-full flex items-center justify-center mb-4 mx-auto">
           <i class="fa fa-money text-2xl text-techLight"></i>
         </div>
-        <h3 class="text-xl font-semibold mb-2 text-center">完全免费</h3>
-        <p class="text-gray-300 text-center">所有暑假作业答案资源免费提供，无隐藏收费项目，让每位学子都能轻松获取帮助</p>
+        <h3 class="text-xl font-semibold mb-2 text-center font-clear">完全免费</h3>
+        <p class="text-gray-300 text-center font-clear">所有暑假作业答案资源免费提供，无隐藏收费项目，让每位学子都能轻松获取帮助</p>
       </div>
       
       <!-- 优势2：高速 -->
@@ -145,8 +176,8 @@
         <div class="w-14 h-14 bg-techGradient/20 rounded-full flex items-center justify-center mb-4 mx-auto">
           <i class="fa fa-bolt text-2xl text-techLight"></i>
         </div>
-        <h3 class="text-xl font-semibold mb-2 text-center">极速加载</h3>
-        <p class="text-gray-300 text-center">采用高速服务器集群，确保资源快速加载，即使访问高峰也能保持流畅体验</p>
+        <h3 class="text-xl font-semibold mb-2 text-center font-clear">极速加载</h3>
+        <p class="text-gray-300 text-center font-clear">采用高速服务器集群，确保资源快速加载，即使访问高峰也能保持流畅体验</p>
       </div>
       
       <!-- 优势3：在线预览 -->
@@ -154,32 +185,32 @@
         <div class="w-14 h-14 bg-techGradient/20 rounded-full flex items-center justify-center mb-4 mx-auto">
           <i class="fa fa-eye text-2xl text-techLight"></i>
         </div>
-        <h3 class="text-xl font-semibold mb-2 text-center">在线预览</h3>
-        <p class="text-gray-300 text-center">支持作业答案在线预览，无需下载即可查看，节省时间和设备存储空间</p>
+        <h3 class="text-xl font-semibold mb-2 text-center font-clear">在线预览</h3>
+        <p class="text-gray-300 text-center font-clear">支持作业答案在线预览，无需下载即可查看，节省时间和设备存储空间</p>
       </div>
     </section>
 
     <!-- 后续更新提示 -->
     <section class="bg-gradient-to-r from-techBlue to-techPurple/30 rounded-2xl p-8 mb-16 border border-techLight/30">
-      <h2 class="text-2xl md:text-3xl font-bold mb-4 text-techLight flex items-center">
+      <h2 class="text-2xl md:text-3xl font-bold mb-4 text-techLight flex items-center font-clear">
         <i class="fa fa-calendar-check-o mr-3"></i>后续每日更新课表
       </h2>
-      <p class="text-gray-200 text-lg">
+      <p class="text-gray-200 text-lg font-clear">
         课表更新计划已启动，将根据学校教学安排每日更新最新课表信息，方便同学们提前做好学习准备。
       </p>
-      <p class="text-gray-300 mt-4 text-lg font-medium">
+      <p class="text-gray-300 mt-4 text-lg font-medium font-clear">
         至于答案...再说 自己查去
       </p>
     </section>
 
     <!-- 投稿提示 -->
     <section class="bg-white/5 backdrop-blur-sm rounded-2xl p-8 border border-techPurple/30 text-center">
-      <h2 class="text-2xl font-bold mb-4 text-techPurple">欢迎投稿暑假作业</h2>
-      <p class="text-gray-200 text-lg mb-6">
+      <h2 class="text-2xl font-bold mb-4 text-techPurple font-clear">欢迎投稿暑假作业</h2>
+      <p class="text-gray-200 text-lg mb-6 font-clear">
         私信 <span class="text-techLight font-semibold">YGWFK2024</span> 投稿暑假作业相关内容，优质投稿者的
         <span class="text-yellow-400 font-semibold">昵称/头像</span> 可登上首页轮播大图展示！
       </p>
-      <div class="inline-block bg-techPurple/20 text-techLight px-6 py-3 rounded-full text-lg font-medium">
+      <div class="inline-block bg-techPurple/20 text-techLight px-6 py-3 rounded-full text-lg font-medium cursor-pointer hover:bg-techPurple/30 transition-colors duration-300 font-clear">
         <i class="fa fa-paper-plane mr-2"></i>立即私信投稿
       </div>
     </section>
@@ -188,7 +219,7 @@
   <!-- 底部运行时间 -->
   <footer class="bg-techBlue/90 backdrop-blur-md border-t border-techLight/20 py-4 sticky bottom-0 z-40">
     <div class="container mx-auto px-4 text-center text-gray-300">
-      <p class="text-lg font-medium">
+      <p class="text-lg font-medium font-clear">
         本网站已安全运行 <span id="runTime" class="text-techLight"></span>
       </p>
     </div>
@@ -281,8 +312,9 @@
       const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
       const seconds = Math.floor((diff % (1000 * 60)) / 1000);
 
-      // 格式化显示
-      const runTimeStr = `${months}月${days}日${hours}时${minutes}分${seconds}秒`;
+      // 格式化显示（补零优化）
+      const formatNum = (num) => num.toString().padStart(2, '0');
+      const runTimeStr = `${formatNum(months)}月${formatNum(days)}日${formatNum(hours)}时${formatNum(minutes)}分${formatNum(seconds)}秒`;
       document.getElementById('runTime').textContent = runTimeStr;
     }
 
@@ -290,9 +322,9 @@
     updateRunTime();
     setInterval(updateRunTime, 1000);
 
-    // 移动端适配优化（防止按钮溢出）
+    // 移动端适配优化
     function adjustForMobile() {
-      const btn = document.querySelector('button');
+      const btn = document.querySelector('.jump-btn');
       if (window.innerWidth < 768) {
         btn.classList.remove('text-xl', 'px-8', 'py-4');
         btn.classList.add('text-base', 'px-6', 'py-3');
