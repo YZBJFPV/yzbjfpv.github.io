@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <title>英语暑假作业-亚太八六作业帮</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- 仅保留必要的颜色配置，确保风格统一 -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        techDark: '#0A1128',
+                        techPrimary: '#1E40AF',
+                        techAccent: '#60A5FA',
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style type="text/tailwindcss">
+        @layer utilities {
+            /* 轮播文字基础样式 */
+            .marquee-container {
+                overflow: hidden;
+                white-space: nowrap;
+                background-color: rgba(96, 165, 250, 0.1);
+            }
+            .marquee-content {
+                display: inline-block;
+                animation: marquee 15s linear infinite;
+            }
+            /* 图片容器：仅保证贴合屏幕，无多余样式 */
+            .img-container {
+                width: 100%;
+                border-bottom: 1px solid rgba(96, 165, 250, 0.2);
+            }
+            /* 图片样式：确保全屏贴合，支持缩放 */
+            .zoomable-img {
+                width: 100%;
+                height: auto;
+                transition: transform 0.3s ease;
+            }
+        }
+    </style>
+    
+    <style>
+        /* 页面基础背景 */
+        body {
+            background-color: #0A1128;
+            color: white;
+        }
+        /* 轮播动画：仅基础滚动，无多余效果 */
+        @keyframes marquee {
+            0% { transform: translateX(100%); }
+            100% { transform: translateX(-100%); }
+        }
+        /* 返回按钮：仅基础定位和样式 */
+        .back-button {
+            position: fixed;
+            top: 4rem;
+            left: 1rem;
+            z-index: 10;
+            background-color: rgba(30, 64, 175, 0.8);
+            backdrop-filter: blur(4px);
+        }
+    </style>
+</head>
+<body>
+    <!-- 顶部轮播文字：仅指定内容，无额外提示 -->
+    <div class="marquee-container py-2 px-4 border-b border-techAccent/30">
+        <div class="marquee-content text-techAccent font-medium">
+            感谢使用亚太八六作业帮 本文件贡献者为梨猿帧 | 感谢使用亚太八六作业帮 本文件贡献者为梨猿帧 | 感谢使用亚太八六作业帮 本文件贡献者为梨猿帧
+        </div>
+    </div>
+    
+    <!-- 标题区：仅核心标题，无加载相关提示 -->
+    <header class="py-4 px-4 text-center border-b border-techAccent/20">
+        <h1 class="text-xl md:text-2xl font-bold text-white">英语暑假作业</h1>
+    </header>
+    
+    <!-- 返回按钮：仅跳转功能，无多余交互 -->
+    <a href="index.html" class="back-button p-2 rounded-full shadow-lg">
+        <i class="fa fa-arrow-left text-white"></i>
+    </a>
+    
+    <!-- 图片展示区：仅图片标签，无加载动画/重试逻辑 -->
+    <main class="mt-2">
+        <div class="img-container">
+            <img src="https://free.picui.cn/free/2025/08/28/68b06e26bd6dd.jpg" alt="英语暑假作业答案1" class="zoomable-img">
+        </div>
+        <div class="img-container">
+            <img src="https://free.picui.cn/free/2025/08/28/68b06e27440fa.jpg" alt="英语暑假作业答案2" class="zoomable-img">
+        </div>
+        <div class="img-container">
+            <img src="https://free.picui.cn/free/2025/08/28/68b06e276a0c9.jpg" alt="英语暑假作业答案3" class="zoomable-img">
+        </div>
+        <div class="img-container">
+            <img src="https://free.picui.cn/free/2025/08/28/68b06e271957b.jpg" alt="英语暑假作业答案4" class="zoomable-img">
+        </div>
+        <div class="img-container">
+            <img src="https://free.picui.cn/free/2025/08/28/68b06e26d1a6a.jpg" alt="英语暑假作业答案5" class="zoomable-img">
+        </div>
+        <div class="img-container">
+            <img src="https://free.picui.cn/free/2025/08/28/68b06e3131b35.jpg" alt="英语暑假作业答案6" class="zoomable-img">
+        </div>
+        <div class="img-container">
+            <img src="https://free.picui.cn/free/2025/08/28/68b06e3162360.jpg" alt="英语暑假作业答案7" class="zoomable-img">
+        </div>
+        <div class="img-container">
+            <img src="https://free.picui.cn/free/2025/08/28/68b06e310c361.jpg" alt="英语暑假作业答案8" class="zoomable-img">
+        </div>
+        <div class="img-container">
+            <img src="https://free.picui.cn/free/2025/08/28/68b06e3345c4c.jpg" alt="英语暑假作业答案9" class="zoomable-img">
+        </div>
+        <div class="img-container">
+            <img src="https://free.picui.cn/free/2025/08/28/68b06e2f814cf.jpg" alt="英语暑假作业答案10" class="zoomable-img">
+        </div>
+        <div class="img-container">
+            <img src="https://free.picui.cn/free/2025/08/28/68b06e383295b.jpg" alt="英语暑假作业答案11" class="zoomable-img">
+        </div>
+    </main>
+    
+    <!-- 底部信息：仅版权和缩放说明，无加载相关内容 -->
+    <footer class="py-3 px-4 text-center text-gray-500 text-xs border-t border-techAccent/20 mt-4">
+        <p>© 2025 亚太八六作业帮 | 英语暑假作业答案</p>
+        <p class="mt-1">点击图片可放大查看，双指缩放或双击还原</p>
+    </footer>
+
+    <!-- 仅保留图片缩放核心功能，无任何加载干预代码 -->
+    <script>
+        document.querySelectorAll('.zoomable-img').forEach(img => {
+            let scale = 1;
+            const maxScale = 3;
+            
+            // 双击缩放
+            img.addEventListener('dblclick', () => {
+                scale = scale > 1 ? 1 : 2;
+                img.style.transform = `scale(${scale})`;
+            });
+            
+            // 触摸缩放
+            let touchStartDistance = null;
+            let touchStartScale = null;
+            
+            img.addEventListener('touchstart', (e) => {
+                if (e.touches.length === 2) {
+                    const t1 = e.touches[0];
+                    const t2 = e.touches[1];
+                    touchStartDistance = Math.hypot(t2.clientX - t1.clientX, t2.clientY - t1.clientY);
+                    touchStartScale = scale;
+                }
+            });
+            
+            img.addEventListener('touchmove', (e) => {
+                if (e.touches.length === 2 && touchStartDistance) {
+                    e.preventDefault();
+                    const t1 = e.touches[0];
+                    const t2 = e.touches[1];
+                    const currentDistance = Math.hypot(t2.clientX - t1.clientX, t2.clientY - t1.clientY);
+                    scale = touchStartScale * (currentDistance / touchStartDistance);
+                    scale = Math.min(Math.max(1, scale), maxScale);
+                    img.style.transform = `scale(${scale})`;
+                }
+            });
+        });
+    </script>
+</body>
+</html>
+    
