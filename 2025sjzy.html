@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <title>亚太八六作业帮</title>
+    <!-- 外部资源引入 -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- Tailwind 配置 -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        techDark: '#0A1128',    // 科技深底
+                        techPrimary: '#1E40AF', // 主蓝
+                        techSecondary: '#3B82F6',// 次蓝
+                        techAccent: '#60A5FA',  // 亮蓝
+                        techGlow: 'rgba(96, 165, 250, 0.4)', // 光效色
+                    },
+                    fontFamily: {
+                        inter: ['Inter', 'system-ui', 'sans-serif'],
+                    },
+                    animation: {
+                        'btn-pulse': 'btnPulse 3s ease-in-out infinite',
+                        'bg-flow': 'bgFlow 15s linear infinite',
+                    },
+                    keyframes: {
+                        btnPulse: {
+                            '0%, 100%': { boxShadow: '0 0 12px rgba(96, 165, 250, 0.5), 0 0 20px rgba(59, 130, 246, 0.3)' },
+                            '50%': { boxShadow: '0 0 18px rgba(96, 165, 250, 0.7), 0 0 28px rgba(59, 130, 246, 0.5)' },
+                        },
+                        bgFlow: {
+                            '0%': { backgroundPosition: '0% 50%' },
+                            '100%': { backgroundPosition: '100% 50%' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- 自定义工具类 -->
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .text-shadow-sm { text-shadow: 0 1px 3px rgba(0,0,0,0.2); }
+            .btn-hover-lift { transition: transform 0.3s ease, box-shadow 0.3s ease; }
+            .btn-hover-lift:hover { transform: translateY(-2px); }
+            .bg-grid-light { 
+                background-image: linear-gradient(rgba(96, 165, 250, 0.05) 1px, transparent 1px),
+                                linear-gradient(90deg, rgba(96, 165, 250, 0.05) 1px, transparent 1px);
+                background-size: 30px 30px;
+            }
+        }
+    </style>
+    
+    <style>
+        /* 基础样式优化 */
+        body {
+            background: linear-gradient(45deg, #0A1128, #1E293B, #0A1128);
+            background-size: 200% 200%;
+            animation: bgFlow 15s linear infinite;
+            overflow-x: hidden;
+        }
+        
+        /* 按钮更新状态标签样式 */
+        .update-tag {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+        
+        /* 贡献者卡片hover效果 */
+        .contributor-card {
+            transition: all 0.3s ease;
+            border: 1px solid rgba(96, 165, 250, 0.1);
+        }
+        .contributor-card:hover {
+            border-color: rgba(96, 165, 250, 0.3);
+            background-color: rgba(14, 55, 153, 0.1);
+        }
+    </style>
+</head>
+
+<body class="font-inter text-white min-h-screen flex flex-col">
+    <!-- 页面容器 -->
+    <div class="container mx-auto px-4 py-8 md:py-16 flex-grow bg-grid-light relative">
+        <!-- 顶部标题区 -->
+        <header class="text-center mb-12 md:mb-20 pt-4">
+            <h1 class="text-[clamp(1.8rem,5vw,2.8rem)] font-bold text-transparent bg-clip-text bg-gradient-to-r from-techAccent to-techSecondary mb-3 text-shadow-sm">
+                亚太八六作业帮
+            </h1>
+            <p class="text-gray-300 text-[clamp(0.9rem,2vw,1rem)] max-w-md mx-auto">
+                各学科暑假作业答案入口 | 实时更新 · 免费查看
+            </p>
+        </header>
+        
+        <!-- 核心按钮区（纵向布局，一行一个） -->
+        <section class="max-w-md mx-auto space-y-6 md:space-y-8">
+            <!-- 语文作业按钮 -->
+            <a href="https://www.yzbjfpv.top/91-ywsjzy.html" target="_blank" class="block">
+                <button class="w-full py-5 px-6 rounded-xl bg-gradient-to-r from-techPrimary/90 to-techSecondary/90 btn-hover-lift animate-btn-pulse flex items-center justify-between relative">
+                    <span class="text-lg md:text-xl font-medium">语文暑假作业</span>
+                    <span class="update-tag bg-blue-500/80 text-white">2025.08.29 中午更新</span>
+                </button>
+            </a>
+            
+            <!-- 数学作业按钮 -->
+            <a href="https://www.yzbjfpv.top/91-sxsjzy.html" target="_blank" class="block">
+                <button class="w-full py-5 px-6 rounded-xl bg-gradient-to-r from-techPrimary/90 to-techSecondary/90 btn-hover-lift animate-btn-pulse flex items-center justify-between relative">
+                    <span class="text-lg md:text-xl font-medium">数学暑假作业</span>
+                    <span class="update-tag bg-blue-500/80 text-white">2025.08.29 下午更新</span>
+                </button>
+            </a>
+            
+            <!-- 物理作业按钮 -->
+            <a href="https://www.yzbjfpv.top/91-wlsjzy" target="_blank" class="block">
+                <button class="w-full py-5 px-6 rounded-xl bg-gradient-to-r from-techPrimary/90 to-techSecondary/90 btn-hover-lift animate-btn-pulse flex items-center justify-between relative">
+                    <span class="text-lg md:text-xl font-medium">物理暑假作业</span>
+                    <span class="update-tag bg-green-500/80 text-white">已上线 · 可立即查看</span>
+                </button>
+            </a>
+            
+            <!-- 英语作业按钮（补充：原需求4个按钮，此处按输入呈现） -->
+            <a href="https://www.yzbjfpv.top/91-yysjzy.html" target="_blank" class="block">
+                <button class="w-full py-5 px-6 rounded-xl bg-gradient-to-r from-techPrimary/90 to-techSecondary/90 btn-hover-lift animate-btn-pulse flex items-center justify-between relative">
+                    <span class="text-lg md:text-xl font-medium">英语暑假作业</span>
+                    <span class="update-tag bg-blue-500/80 text-white">2025.08.29 上午更新</span>
+                </button>
+            </a>
+        </section>
+        
+        <!-- 中间留白区（平衡布局） -->
+        <div class="h-12 md:h-20"></div>
+        
+        <!-- 贡献者名单区 -->
+        <section class="max-w-2xl mx-auto mt-16 md:mt-24">
+            <div class="text-center mb-8">
+                <h2 class="text-[clamp(1.2rem,3vw,1.6rem)] font-semibold text-techAccent mb-2">
+                    <i class="fa fa-users mr-2"></i>贡献者名单
+                </h2>
+                <p class="text-gray-400 text-sm md:text-base">感谢以下同学/老师的内容支持（排名不分先后）</p>
+            </div>
+            
+            <!-- 贡献者卡片网格（预留空位） -->
+            <div class="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
+                <!-- 预留空位1 -->
+                <div class="contributor-card rounded-lg p-4 text-center">
+                    <div class="w-12 h-12 bg-techPrimary/30 rounded-full flex items-center justify-center mx-auto mb-3">
+                        <i class="fa fa-user text-techAccent"></i>
+                    </div>
+                    <p class="text-gray-300 font-medium">待填写昵称1</p>
+                    <p class="text-gray-500 text-xs mt-1">贡献内容：--</p>
+                </div>
+                
+                <!-- 预留空位2 -->
+                <div class="contributor-card rounded-lg p-4 text-center">
+                    <div class="w-12 h-12 bg-techPrimary/30 rounded-full flex items-center justify-center mx-auto mb-3">
+                        <i class="fa fa-user text-techAccent"></i>
+                    </div>
+                    <p class="text-gray-300 font-medium">待填写昵称2</p>
+                    <p class="text-gray-500 text-xs mt-1">贡献内容：--</p>
+                </div>
+                
+                <!-- 预留空位3 -->
+                <div class="contributor-card rounded-lg p-4 text-center">
+                    <div class="w-12 h-12 bg-techPrimary/30 rounded-full flex items-center justify-center mx-auto mb-3">
+                        <i class="fa fa-user text-techAccent"></i>
+                    </div>
+                    <p class="text-gray-300 font-medium">待填写昵称3</p>
+                    <p class="text-gray-500 text-xs mt-1">贡献内容：--</p>
+                </div>
+                
+                <!-- 预留空位4 -->
+                <div class="contributor-card rounded-lg p-4 text-center">
+                    <div class="w-12 h-12 bg-techPrimary/30 rounded-full flex items-center justify-center mx-auto mb-3">
+                        <i class="fa fa-user text-techAccent"></i>
+                    </div>
+                    <p class="text-gray-300 font-medium">待填写昵称4</p>
+                    <p class="text-gray-500 text-xs mt-1">贡献内容：--</p>
+                </div>
+                
+                <!-- 预留空位5 -->
+                <div class="contributor-card rounded-lg p-4 text-center">
+                    <div class="w-12 h-12 bg-techPrimary/30 rounded-full flex items-center justify-center mx-auto mb-3">
+                        <i class="fa fa-user text-techAccent"></i>
+                    </div>
+                    <p class="text-gray-300 font-medium">待填写昵称5</p>
+                    <p class="text-gray-500 text-xs mt-1">贡献内容：--</p>
+                </div>
+                
+                <!-- 新增空位（可按需删除） -->
+                <div class="contributor-card rounded-lg p-4 text-center">
+                    <div class="w-12 h-12 bg-techPrimary/30 rounded-full flex items-center justify-center mx-auto mb-3">
+                        <i class="fa fa-plus text-techAccent"></i>
+                    </div>
+                    <p class="text-gray-300 font-medium">添加新贡献者</p>
+                    <p class="text-gray-500 text-xs mt-1">点击编辑填写信息</p>
+                </div>
+            </div>
+        </section>
+    </div>
+    
+    <!-- 底部版权区 -->
+    <footer class="py-4 bg-techDark/80 backdrop-blur-sm border-t border-techPrimary/20">
+        <div class="container mx-auto px-4 text-center text-gray-500 text-sm">
+            <p>© 2025 亚太八六作业帮 | 仅供学习交流使用 | 侵权联系删除</p>
+        </div>
+    </footer>
+
+    <!-- 简单交互脚本（可选增强） -->
+    <script>
+        // 按钮点击反馈（增强体验）
+        document.querySelectorAll('button').forEach(btn => {
+            btn.addEventListener('click', function() {
+                this.style.transform = 'translateY(0)';
+                setTimeout(() => {
+                    this.style.transform = '';
+                }, 100);
+            });
+        });
+        
+        // 页面加载动画
+        window.addEventListener('load', function() {
+            document.body.classList.add('opacity-100');
+            document.body.classList.remove('opacity-0');
+        });
+    </script>
+</body>
+</html>
