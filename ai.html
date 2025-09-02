@@ -1,0 +1,892 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FlyzAI-ChatGPT5-全免费AI对话平台</title>
+    <!-- SEO优化信息 -->
+    <meta name="description" content="FlyzAI-ChatGPT5 - 全免费、无需登录、不限次数的AI对话平台，融合GPT5核心技术，支持多场景智能交互，2025年9月3日正式开启！">
+    <meta name="keywords" content="FlyzAI, ChatGPT5, 免费AI工具, 无需登录AI, AI对话系统, 人工智能助手, GPT5功能, 智能问答, 免费ChatGPT">
+    <meta name="author" content="FlyzAI团队">
+    <meta name="robots" content="index, follow">
+    <meta property="og:title" content="FlyzAI-ChatGPT5 - 全免费AI对话平台">
+    <meta property="og:description" content="全免费、无需登录、不限次数的AI对话体验，融合GPT5核心技术，2025年9月3日正式上线！">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="https://picsum.photos/id/1/1200/630">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="FlyzAI-ChatGPT5 - 全免费AI对话平台">
+    <!-- 外部资源 -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.8/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <!-- 自定义配置 -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#165DFF',
+                        secondary: '#0FC6C2',
+                        accent: '#722ED1',
+                        dark: '#0A0F1C',
+                        'dark-light': '#141B2D'
+                    },
+                    fontFamily: {
+                        inter: ['Inter', 'system-ui', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .text-gradient {
+                background-clip: text;
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+            }
+            .bg-glass {
+                background: rgba(255, 255, 255, 0.05);
+                backdrop-filter: blur(10px);
+                -webkit-backdrop-filter: blur(10px);
+            }
+            .bg-grid {
+                background-size: 40px 40px;
+                background-image: 
+                    linear-gradient(to right, rgba(22, 93, 255, 0.05) 1px, transparent 1px),
+                    linear-gradient(to bottom, rgba(22, 93, 255, 0.05) 1px, transparent 1px);
+            }
+            .shadow-neon {
+                box-shadow: 0 0 15px rgba(22, 93, 255, 0.5);
+            }
+            .animate-float {
+                animation: float 6s ease-in-out infinite;
+            }
+            .animate-float-delay-1 {
+                animation: float 6s ease-in-out 1s infinite;
+            }
+            .animate-float-delay-2 {
+                animation: float 6s ease-in-out 2s infinite;
+            }
+            .scroll-reveal {
+                opacity: 0;
+                transform: translateY(30px);
+                transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+            }
+            .scroll-reveal.active {
+                opacity: 1;
+                transform: translateY(0);
+            }
+            .scroll-reveal-delay-1 {
+                transition-delay: 0.2s;
+            }
+            .scroll-reveal-delay-2 {
+                transition-delay: 0.4s;
+            }
+            .scroll-reveal-delay-3 {
+                transition-delay: 0.6s;
+            }
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+            100% { transform: translateY(0px); }
+        }
+    </style>
+</head>
+<body class="font-inter bg-dark text-white min-h-screen overflow-x-hidden bg-grid">
+    <!-- 背景音乐播放器 -->
+    <audio id="backgroundMusic" loop>
+        <source src="https://yzbjfpv.top/split.mp3" type="audio/mpeg">
+    </audio>
+    
+    <!-- 音乐控制按钮 -->
+    <button id="musicControl" class="fixed top-20 right-6 w-10 h-10 rounded-full bg-glass border border-primary/30 flex items-center justify-center z-50 text-primary hover:bg-primary/20 transition-all duration-300">
+        <i class="fa fa-volume-up"></i>
+    </button>
+
+    <!-- 粒子背景容器 -->
+    <div id="particles-js" class="fixed inset-0 z-0 opacity-30"></div>
+
+    <!-- 导航栏 -->
+    <nav class="fixed w-full top-0 z-50 bg-glass border-b border-primary/20 transition-all duration-300" id="navbar">
+        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+            <div class="flex items-center space-x-2">
+                <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-primary to-secondary flex items-center justify-center shadow-neon">
+                    <i class="fa fa-bolt text-white text-xl"></i>
+                </div>
+                <h1 class="text-2xl font-bold tracking-tight">
+                    <span class="text-white">Flyz</span><span class="text-primary">AI</span>
+                    <span class="text-sm ml-2 text-primary/80 font-normal">ChatGPT5</span>
+                </h1>
+            </div>
+            <div class="hidden md:flex items-center space-x-8">
+                <a href="#features" class="text-gray-300 hover:text-primary transition-colors">核心功能</a>
+                <a href="#scenarios" class="text-gray-300 hover:text-primary transition-colors">应用场景</a>
+                <a href="#advantages" class="text-gray-300 hover:text-primary transition-colors">技术优势</a>
+                <button id="adButton" class="flex items-center space-x-2 bg-primary/10 hover:bg-primary/20 text-primary px-4 py-2 rounded-full transition-all duration-300 border border-primary/30">
+                    <i class="fa fa-comments"></i>
+                    <span>商务合作</span>
+                </button>
+            </div>
+            <button class="md:hidden text-2xl" id="mobileMenuBtn">
+                <i class="fa fa-bars"></i>
+            </button>
+        </div>
+        
+        <!-- 移动端菜单 -->
+        <div id="mobileMenu" class="md:hidden hidden bg-dark-light border-t border-primary/20">
+            <div class="container mx-auto px-4 py-4 flex flex-col space-y-4">
+                <a href="#features" class="text-gray-300 hover:text-primary transition-colors py-2">核心功能</a>
+                <a href="#scenarios" class="text-gray-300 hover:text-primary transition-colors py-2">应用场景</a>
+                <a href="#advantages" class="text-gray-300 hover:text-primary transition-colors py-2">技术优势</a>
+                <button id="mobileAdButton" class="flex items-center justify-center space-x-2 bg-primary/10 hover:bg-primary/20 text-primary px-4 py-2 rounded-full transition-all duration-300 border border-primary/30">
+                    <i class="fa fa-comments"></i>
+                    <span>商务合作</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 主内容区 -->
+    <main class="relative z-10">
+        <!-- 英雄区域 -->
+        <section class="pt-32 pb-20 md:pt-40 md:pb-32">
+            <div class="container mx-auto px-4">
+                <!-- 倒计时和上线信息 -->
+                <div class="text-center mb-8 scroll-reveal">
+                    <div class="inline-block px-4 py-1.5 rounded-full bg-primary/10 text-primary text-sm font-medium mb-4 border border-primary/30">
+                        即将上线 · 庆祝国家节日特别推出
+                    </div>
+                    <h2 id="countdown" class="text-2xl md:text-3xl font-bold text-white mb-4">
+                        距离正式开启还有 <span class="text-primary" id="daysRemaining">0</span> 天
+                    </h2>
+                    <p class="text-gray-400 max-w-md mx-auto">
+                        2025年9月3日 · 全新AI对话体验，为您而来
+                    </p>
+                </div>
+
+                <!-- 标题区域 -->
+                <div class="text-center max-w-5xl mx-auto mb-16 scroll-reveal">
+                    <h1 class="text-[clamp(2.5rem,8vw,5rem)] font-bold leading-tight mb-6 tracking-tighter">
+                        <span class="bg-gradient-to-r from-primary via-secondary to-accent text-gradient">
+                            重新定义AI对话体验
+                        </span>
+                    </h1>
+                    <p class="text-gray-300 text-[clamp(1rem,2vw,1.25rem)] mb-10 max-w-3xl mx-auto leading-relaxed">
+                        FlyzAI-ChatGPT5融合GPT系列核心优势，带来革命性的人工智能对话服务，
+                        全免费、无需登录、不限次数，为您提供高效、智能、安全的AI交互体验。
+                    </p>
+                    
+                    <!-- 核心优势标签 -->
+                    <div class="flex flex-wrap justify-center gap-4 mb-12">
+                        <div class="px-6 py-3 bg-white/5 rounded-full border border-white/10 flex items-center space-x-2 hover:border-primary/50 hover:bg-primary/5 transition-all duration-300 transform hover:-translate-y-1">
+                            <i class="fa fa-check-circle text-secondary"></i>
+                            <span>全免费使用</span>
+                        </div>
+                        <div class="px-6 py-3 bg-white/5 rounded-full border border-white/10 flex items-center space-x-2 hover:border-primary/50 hover:bg-primary/5 transition-all duration-300 transform hover:-translate-y-1">
+                            <i class="fa fa-unlock-alt text-secondary"></i>
+                            <span>无需登录</span>
+                        </div>
+                        <div class="px-6 py-3 bg-white/5 rounded-full border border-white/10 flex items-center space-x-2 hover:border-primary/50 hover:bg-primary/5 transition-all duration-300 transform hover:-translate-y-1">
+                            <i class="fa fa-repeat text-secondary"></i>
+                            <span>不限使用次数</span>
+                        </div>
+                    </div>
+                    
+                    <!-- 立即体验按钮 -->
+                    <a href="https://yzbjfpv.top/flyzai.html" target="_blank" class="inline-block px-8 py-4 bg-gradient-to-r from-primary to-secondary rounded-full text-white font-medium text-lg shadow-lg shadow-primary/20 hover:shadow-primary/30 transform hover:-translate-y-1 hover:shadow-neon transition-all duration-300">
+                        立即体验
+                        <i class="fa fa-arrow-right ml-2"></i>
+                    </a>
+                </div>
+
+                <!-- 科技感图形装饰 -->
+                <div class="relative max-w-5xl mx-auto h-64 md:h-96 mb-12 overflow-hidden rounded-2xl scroll-reveal">
+                    <div class="absolute inset-0 bg-gradient-to-br from-primary/20 to-secondary/20 backdrop-blur-sm border border-white/10"></div>
+                    <div class="absolute top-1/4 left-1/4 w-32 h-32 md:w-48 md:h-48 bg-primary/30 rounded-full filter blur-3xl animate-float"></div>
+                    <div class="absolute bottom-1/4 right-1/4 w-32 h-32 md:w-48 md:h-48 bg-secondary/30 rounded-full filter blur-3xl animate-float-delay-1"></div>
+                    <div class="absolute top-1/2 right-1/3 w-24 h-24 md:w-36 md:h-36 bg-accent/30 rounded-full filter blur-3xl animate-float-delay-2"></div>
+                    <div class="absolute inset-0 flex items-center justify-center">
+                        <i class="fa fa-comments text-6xl md:text-9xl text-white/10"></i>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 核心功能区域 -->
+        <section id="features" class="py-20 bg-dark-light relative overflow-hidden">
+            <div class="container mx-auto px-4 relative z-10">
+                <div class="text-center max-w-3xl mx-auto mb-16 scroll-reveal">
+                    <h2 class="text-3xl md:text-4xl font-bold mb-4">
+                        <span class="bg-gradient-to-r from-primary to-secondary text-gradient">核心功能</span>
+                    </h2>
+                    <p class="text-gray-400">FlyzAI-ChatGPT5 融合多项创新技术，打造全方位智能对话体验</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <!-- 功能卡片 1 -->
+                    <div class="bg-glass rounded-xl p-6 border border-white/10 hover:border-primary/30 transition-all duration-500 hover:shadow-lg hover:shadow-primary/5 transform hover:-translate-y-2 scroll-reveal">
+                        <div class="w-14 h-14 rounded-lg bg-primary/10 flex items-center justify-center mb-5">
+                            <i class="fa fa-comments-o text-primary text-2xl"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold mb-3">自然语言交互</h3>
+                        <p class="text-gray-400">
+                            支持复杂语境理解，精准把握语义意图，实现流畅自然的人机对话体验，就像与真人交流一样轻松。
+                        </p>
+                    </div>
+                    
+                    <!-- 功能卡片 2 -->
+                    <div class="bg-glass rounded-xl p-6 border border-white/10 hover:border-primary/30 transition-all duration-500 hover:shadow-lg hover:shadow-primary/5 transform hover:-translate-y-2 scroll-reveal scroll-reveal-delay-1">
+                        <div class="w-14 h-14 rounded-lg bg-primary/10 flex items-center justify-center mb-5">
+                            <i class="fa fa-brain text-primary text-2xl"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold mb-3">深度逻辑推理</h3>
+                        <p class="text-gray-400">
+                            具备强大的逻辑分析与推理能力，能够解决复杂问题、进行多步骤思考，提供有深度的回答内容。
+                        </p>
+                    </div>
+                    
+                    <!-- 功能卡片 3 -->
+                    <div class="bg-glass rounded-xl p-6 border border-white/10 hover:border-primary/30 transition-all duration-500 hover:shadow-lg hover:shadow-primary/5 transform hover:-translate-y-2 scroll-reveal scroll-reveal-delay-2">
+                        <div class="w-14 h-14 rounded-lg bg-primary/10 flex items-center justify-center mb-5">
+                            <i class="fa fa-lightbulb-o text-primary text-2xl"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold mb-3">创意内容生成</h3>
+                        <p class="text-gray-400">
+                            可生成高质量文章、故事、诗歌、代码等多种内容，激发创作灵感，提升内容生产效率。
+                        </p>
+                    </div>
+                    
+                    <!-- 功能卡片 4 -->
+                    <div class="bg-glass rounded-xl p-6 border border-white/10 hover:border-primary/30 transition-all duration-500 hover:shadow-lg hover:shadow-primary/5 transform hover:-translate-y-2 scroll-reveal">
+                        <div class="w-14 h-14 rounded-lg bg-primary/10 flex items-center justify-center mb-5">
+                            <i class="fa fa-language text-primary text-2xl"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold mb-3">多语言支持</h3>
+                        <p class="text-gray-400">
+                            支持超过100种语言的精准翻译与对话，打破语言障碍，实现全球无障碍沟通。
+                        </p>
+                    </div>
+                    
+                    <!-- 功能卡片 5 -->
+                    <div class="bg-glass rounded-xl p-6 border border-white/10 hover:border-primary/30 transition-all duration-500 hover:shadow-lg hover:shadow-primary/5 transform hover:-translate-y-2 scroll-reveal scroll-reveal-delay-1">
+                        <div class="w-14 h-14 rounded-lg bg-primary/10 flex items-center justify-center mb-5">
+                            <i class="fa fa-code text-primary text-2xl"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold mb-3">代码助手</h3>
+                        <p class="text-gray-400">
+                            提供代码生成、解释、调试和优化建议，支持多种编程语言，助力开发者提升工作效率。
+                        </p>
+                    </div>
+                    
+                    <!-- 功能卡片 6 -->
+                    <div class="bg-glass rounded-xl p-6 border border-white/10 hover:border-primary/30 transition-all duration-500 hover:shadow-lg hover:shadow-primary/5 transform hover:-translate-y-2 scroll-reveal scroll-reveal-delay-2">
+                        <div class="w-14 h-14 rounded-lg bg-primary/10 flex items-center justify-center mb-5">
+                            <i class="fa fa-shield text-primary text-2xl"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold mb-3">隐私保护</h3>
+                        <p class="text-gray-400">
+                            无需登录即可使用，严格保护用户隐私，所有对话数据仅保存在本地，不会上传至服务器。
+                        </p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 背景装饰 -->
+            <div class="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
+                <div class="absolute -top-20 -left-20 w-80 h-80 bg-primary/5 rounded-full blur-3xl"></div>
+                <div class="absolute -bottom-40 -right-20 w-96 h-96 bg-secondary/5 rounded-full blur-3xl"></div>
+            </div>
+        </section>
+
+        <!-- 应用场景区域 -->
+        <section id="scenarios" class="py-20">
+            <div class="container mx-auto px-4">
+                <div class="text-center max-w-3xl mx-auto mb-16 scroll-reveal">
+                    <h2 class="text-3xl md:text-4xl font-bold mb-4">
+                        <span class="bg-gradient-to-r from-primary to-secondary text-gradient">应用场景</span>
+                    </h2>
+                    <p class="text-gray-400">FlyzAI-ChatGPT5 适用于多种场景，满足不同用户的多样化需求</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+                    <!-- 场景卡片 1 -->
+                    <div class="bg-glass rounded-xl overflow-hidden border border-white/10 hover:border-primary/30 transition-all duration-500 group scroll-reveal">
+                        <div class="h-48 overflow-hidden">
+                            <img src="https://picsum.photos/id/20/800/400" alt="学习辅助场景" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                        </div>
+                        <div class="p-6">
+                            <div class="flex items-center mb-4">
+                                <div class="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center mr-3">
+                                    <i class="fa fa-graduation-cap text-primary"></i>
+                                </div>
+                                <h3 class="text-xl font-semibold">学习辅助</h3>
+                            </div>
+                            <p class="text-gray-400">
+                                提供个性化学习指导，解答学科问题，辅助完成作业，推荐学习资源，成为您的私人学习助手。
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <!-- 场景卡片 2 -->
+                    <div class="bg-glass rounded-xl overflow-hidden border border-white/10 hover:border-primary/30 transition-all duration-500 group scroll-reveal scroll-reveal-delay-1">
+                        <div class="h-48 overflow-hidden">
+                            <img src="https://picsum.photos/id/48/800/400" alt="工作办公场景" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                        </div>
+                        <div class="p-6">
+                            <div class="flex items-center mb-4">
+                                <div class="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center mr-3">
+                                    <i class="fa fa-briefcase text-primary"></i>
+                                </div>
+                                <h3 class="text-xl font-semibold">工作办公</h3>
+                            </div>
+                            <p class="text-gray-400">
+                                协助撰写文档、邮件、报告，整理会议纪要，提供数据分析支持，提升工作效率与质量。
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <!-- 场景卡片 3 -->
+                    <div class="bg-glass rounded-xl overflow-hidden border border-white/10 hover:border-primary/30 transition-all duration-500 group scroll-reveal">
+                        <div class="h-48 overflow-hidden">
+                            <img src="https://picsum.photos/id/96/800/400" alt="创意创作场景" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                        </div>
+                        <div class="p-6">
+                            <div class="flex items-center mb-4">
+                                <div class="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center mr-3">
+                                    <i class="fa fa-paint-brush text-primary"></i>
+                                </div>
+                                <h3 class="text-xl font-semibold">创意创作</h3>
+                            </div>
+                            <p class="text-gray-400">
+                                激发创意灵感，辅助创作小说、诗歌、剧本、广告语等，提供多样化的创作思路与建议。
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <!-- 场景卡片 4 -->
+                    <div class="bg-glass rounded-xl overflow-hidden border border-white/10 hover:border-primary/30 transition-all duration-500 group scroll-reveal scroll-reveal-delay-1">
+                        <div class="h-48 overflow-hidden">
+                            <img src="https://picsum.photos/id/180/800/400" alt="生活助手场景" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                        </div>
+                        <div class="p-6">
+                            <div class="flex items-center mb-4">
+                                <div class="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center mr-3">
+                                    <i class="fa fa-home text-primary"></i>
+                                </div>
+                                <h3 class="text-xl font-semibold">生活助手</h3>
+                            </div>
+                            <p class="text-gray-400">
+                                提供生活建议、旅行规划、美食推荐、健康咨询等服务，成为您生活中的智能助手。
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 技术优势区域 -->
+        <section id="advantages" class="py-20 bg-dark-light relative">
+            <div class="container mx-auto px-4 relative z-10">
+                <div class="text-center max-w-3xl mx-auto mb-16 scroll-reveal">
+                    <h2 class="text-3xl md:text-4xl font-bold mb-4">
+                        <span class="bg-gradient-to-r from-primary to-secondary text-gradient">技术优势</span>
+                    </h2>
+                    <p class="text-gray-400">FlyzAI-ChatGPT5 采用先进技术架构，带来卓越性能体验</p>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center max-w-6xl mx-auto">
+                    <!-- 左侧图表 -->
+                    <div class="scroll-reveal">
+                        <div class="bg-glass rounded-xl p-6 border border-white/10 h-full">
+                            <h3 class="text-xl font-semibold mb-6 text-center">性能对比</h3>
+                            <div class="h-80">
+                                <canvas id="performanceChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 右侧优势列表 -->
+                    <div class="space-y-6">
+                        <div class="bg-glass rounded-xl p-6 border border-white/10 hover:border-primary/30 transition-all duration-300 scroll-reveal">
+                            <div class="flex items-start">
+                                <div class="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center mr-4 mt-1 flex-shrink-0">
+                                    <i class="fa fa-bolt text-primary text-xl"></i>
+                                </div>
+                                <div>
+                                    <h4 class="text-lg font-semibold mb-2">超高速响应</h4>
+                                    <p class="text-gray-400">
+                                        优化的模型架构与推理引擎，实现毫秒级响应速度，对话体验流畅无延迟。
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-glass rounded-xl p-6 border border-white/10 hover:border-primary/30 transition-all duration-300 scroll-reveal scroll-reveal-delay-1">
+                            <div class="flex items-start">
+                                <div class="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center mr-4 mt-1 flex-shrink-0">
+                                    <i class="fa fa-database text-primary text-xl"></i>
+                                </div>
+                                <div>
+                                    <h4 class="text-lg font-semibold mb-2">海量知识储备</h4>
+                                    <p class="text-gray-400">
+                                        基于海量数据训练，拥有广泛的知识覆盖，能够解答各领域专业问题。
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-glass rounded-xl p-6 border border-white/10 hover:border-primary/30 transition-all duration-300 scroll-reveal scroll-reveal-delay-2">
+                            <div class="flex items-start">
+                                <div class="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center mr-4 mt-1 flex-shrink-0">
+                                    <i class="fa fa-microchip text-primary text-xl"></i>
+                                </div>
+                                <div>
+                                    <h4 class="text-lg font-semibold mb-2">高效资源占用</h4>
+                                    <p class="text-gray-400">
+                                        优化的模型压缩技术，在保证性能的同时大幅降低资源占用，适配各种设备。
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 背景装饰 -->
+            <div class="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
+                <div class="absolute top-1/3 right-10 w-60 h-60 bg-accent/5 rounded-full blur-3xl"></div>
+            </div>
+        </section>
+
+        <!-- 底部CTA区域 -->
+        <section class="py-20">
+            <div class="container mx-auto px-4">
+                <div class="max-w-4xl mx-auto bg-gradient-to-r from-primary/20 to-secondary/20 rounded-2xl p-8 md:p-12 border border-primary/30 relative overflow-hidden scroll-reveal">
+                    <!-- 背景装饰 -->
+                    <div class="absolute top-0 left-0 w-full h-full overflow-hidden opacity-20">
+                        <div class="absolute -top-20 -left-20 w-60 h-60 bg-primary rounded-full filter blur-3xl"></div>
+                        <div class="absolute -bottom-20 -right-20 w-60 h-60 bg-secondary rounded-full filter blur-3xl"></div>
+                    </div>
+                    
+                    <div class="relative z-10 text-center">
+                        <h2 class="text-3xl md:text-4xl font-bold mb-6">
+                            准备好体验下一代AI对话了吗？
+                        </h2>
+                        <p class="text-gray-300 mb-8 max-w-2xl mx-auto">
+                            2025年9月3日，FlyzAI-ChatGPT5正式开启，全免费、无需登录、不限次数，
+                            让每个人都能享受AI科技带来的便利，庆祝国家节日的到来。
+                        </p>
+                        <a href="https://yzbjfpv.top/flyzai.html" target="_blank" class="inline-block px-8 py-4 bg-gradient-to-r from-primary to-secondary rounded-full text-white font-medium text-lg shadow-lg shadow-primary/20 hover:shadow-primary/30 transform hover:-translate-y-1 hover:shadow-neon transition-all duration-300">
+                            立即体验
+                            <i class="fa fa-arrow-right ml-2"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- 页脚 -->
+    <footer class="bg-dark-light border-t border-primary/20 py-12 relative z-10">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
+                <div class="md:col-span-1">
+                    <div class="flex items-center space-x-2 mb-4">
+                        <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-primary to-secondary flex items-center justify-center shadow-neon">
+                            <i class="fa fa-bolt text-white text-xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-white">FlyzAI-ChatGPT5</h3>
+                    </div>
+                    <p class="text-gray-400 mb-4">
+                        全免费、无需登录、不限次数的AI对话平台，让每个人都能享受AI科技带来的便利。
+                    </p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-gray-400 hover:text-primary hover:bg-white/10 transition-colors">
+                            <i class="fa fa-weibo"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-gray-400 hover:text-primary hover:bg-white/10 transition-colors">
+                            <i class="fa fa-weixin"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-gray-400 hover:text-primary hover:bg-white/10 transition-colors">
+                            <i class="fa fa-github"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">产品</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-primary transition-colors">功能介绍</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-primary transition-colors">使用教程</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-primary transition-colors">更新日志</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-primary transition-colors">常见问题</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">资源</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-primary transition-colors">开发者文档</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-primary transition-colors">API接口</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-primary transition-colors">应用案例</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-primary transition-colors">合作伙伴</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">关于我们</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-primary transition-colors">团队介绍</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-primary transition-colors">联系我们</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-primary transition-colors">加入我们</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-primary transition-colors">隐私政策</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="pt-8 border-t border-white/10 text-center text-gray-500 text-sm">
+                <p>© 2025 FlyzAI团队. 保留所有权利.</p>
+                <p class="mt-2">本网站仅作预告展示，所有功能将于2025年9月3日正式开放</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- 广告弹窗 -->
+    <div id="adModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center opacity-0 pointer-events-none transition-opacity duration-300">
+        <div class="bg-dark-light border border-primary/30 rounded-2xl p-8 max-w-md w-full mx-4 relative transform scale-95 transition-transform duration-300" id="modalContent">
+            <button id="closeModal" class="absolute top-4 right-4 text-gray-400 hover:text-white transition-colors">
+                <i class="fa fa-times text-xl"></i>
+            </button>
+            <div class="text-center mb-6">
+                <div class="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4">
+                    <i class="fa fa-bullhorn text-primary text-2xl"></i>
+                </div>
+                <h3 class="text-2xl font-bold mb-2">商务合作</h3>
+                <p class="text-gray-400">期待与您携手，共创AI生态新未来</p>
+            </div>
+            <div class="bg-white/5 rounded-xl p-6 mb-6 border border-white/10">
+                <div class="flex items-center justify-center space-x-3 mb-2">
+                    <i class="fa fa-weixin text-green-500 text-2xl"></i>
+                    <span class="text-xl font-medium">YGWFK2024</span>
+                </div>
+                <p class="text-center text-gray-400 text-sm">添加微信，洽谈广告合作事宜</p>
+            </div>
+            <button id="closeAdButton" class="w-full py-3 bg-primary/10 hover:bg-primary/20 text-primary rounded-lg transition-colors">
+                关闭
+            </button>
+        </div>
+    </div>
+
+    <!-- 移动端悬浮按钮 -->
+    <button id="fixedAdButton" class="fixed bottom-6 right-6 w-14 h-14 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center shadow-lg z-40 md:hidden transform hover:scale-110 transition-transform duration-300 shadow-neon">
+        <i class="fa fa-comments text-white text-xl"></i>
+    </button>
+
+    <script>
+        // 页面加载完成后执行
+        document.addEventListener('DOMContentLoaded', function() {
+            // 背景音乐控制
+            const backgroundMusic = document.getElementById('backgroundMusic');
+            const musicControl = document.getElementById('musicControl');
+            let isPlaying = false;
+            
+            // 尝试自动播放音乐，处理浏览器自动播放限制
+            function tryPlayMusic() {
+                backgroundMusic.volume = 0.3; // 设置初始音量为30%
+                
+                backgroundMusic.play().then(() => {
+                    isPlaying = true;
+                    musicControl.innerHTML = '<i class="fa fa-volume-up"></i>';
+                }).catch(error => {
+                    console.log('自动播放失败，等待用户交互后播放:', error);
+                    musicControl.innerHTML = '<i class="fa fa-volume-off"></i>';
+                });
+            }
+            
+            // 初始尝试播放
+            tryPlayMusic();
+            
+            // 音乐控制按钮点击事件
+            musicControl.addEventListener('click', function() {
+                if (isPlaying) {
+                    backgroundMusic.pause();
+                    musicControl.innerHTML = '<i class="fa fa-volume-off"></i>';
+                } else {
+                    backgroundMusic.play();
+                    musicControl.innerHTML = '<i class="fa fa-volume-up"></i>';
+                }
+                isPlaying = !isPlaying;
+            });
+            
+            // 为了解决浏览器自动播放限制，在用户首次交互时尝试播放
+            document.addEventListener('click', function firstClickHandler() {
+                if (!isPlaying) {
+                    tryPlayMusic();
+                }
+                document.removeEventListener('click', firstClickHandler);
+            }, { once: true });
+
+            // 粒子背景初始化
+            particlesJS('particles-js', {
+                "particles": {
+                    "number": {
+                        "value": 80,
+                        "density": {
+                            "enable": true,
+                            "value_area": 800
+                        }
+                    },
+                    "color": {
+                        "value": "#165DFF"
+                    },
+                    "shape": {
+                        "type": "circle"
+                    },
+                    "opacity": {
+                        "value": 0.5,
+                        "random": true
+                    },
+                    "size": {
+                        "value": 3,
+                        "random": true
+                    },
+                    "line_linked": {
+                        "enable": true,
+                        "distance": 150,
+                        "color": "#165DFF",
+                        "opacity": 0.1,
+                        "width": 1
+                    },
+                    "move": {
+                        "enable": true,
+                        "speed": 1,
+                        "direction": "none",
+                        "random": true,
+                        "straight": false,
+                        "out_mode": "out",
+                        "bounce": false
+                    }
+                },
+                "interactivity": {
+                    "detect_on": "canvas",
+                    "events": {
+                        "onhover": {
+                            "enable": true,
+                            "mode": "grab"
+                        },
+                        "onclick": {
+                            "enable": true,
+                            "mode": "push"
+                        },
+                        "resize": true
+                    },
+                    "modes": {
+                        "grab": {
+                            "distance": 140,
+                            "line_linked": {
+                                "opacity": 0.3
+                            }
+                        },
+                        "push": {
+                            "particles_nb": 3
+                        }
+                    }
+                },
+                "retina_detect": true
+            });
+
+            // 性能对比图表
+            const ctx = document.getElementById('performanceChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'radar',
+                data: {
+                    labels: ['响应速度', '理解能力', '生成质量', '多语言支持', '资源占用', '安全性'],
+                    datasets: [
+                        {
+                            label: 'FlyzAI-ChatGPT5',
+                            data: [95, 92, 90, 94, 88, 96],
+                            backgroundColor: 'rgba(22, 93, 255, 0.2)',
+                            borderColor: 'rgba(22, 93, 255, 1)',
+                            pointBackgroundColor: 'rgba(22, 93, 255, 1)',
+                            pointBorderColor: '#fff',
+                            pointHoverBackgroundColor: '#fff',
+                            pointHoverBorderColor: 'rgba(22, 93, 255, 1)'
+                        },
+                        {
+                            label: '同类产品平均',
+                            data: [70, 75, 72, 68, 65, 78],
+                            backgroundColor: 'rgba(15, 198, 194, 0.2)',
+                            borderColor: 'rgba(15, 198, 194, 1)',
+                            pointBackgroundColor: 'rgba(15, 198, 194, 1)',
+                            pointBorderColor: '#fff',
+                            pointHoverBackgroundColor: '#fff',
+                            pointHoverBorderColor: 'rgba(15, 198, 194, 1)'
+                        }
+                    ]
+                },
+                options: {
+                    scales: {
+                        r: {
+                            angleLines: {
+                                color: 'rgba(255, 255, 255, 0.1)'
+                            },
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.1)'
+                            },
+                            pointLabels: {
+                                color: 'rgba(255, 255, 255, 0.7)'
+                            },
+                            ticks: {
+                                color: 'rgba(255, 255, 255, 0.5)',
+                                backdropColor: 'transparent'
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: 'rgba(255, 255, 255, 0.7)'
+                            }
+                        }
+                    }
+                }
+            });
+
+            // 倒计时功能
+            function updateCountdown() {
+                const launchDate = new Date('2025-09-03T00:00:00').getTime();
+                const now = new Date().getTime();
+                const distance = launchDate - now;
+                
+                const days = Math.ceil(distance / (1000 * 60 * 60 * 24));
+                
+                document.getElementById('daysRemaining').textContent = days;
+            }
+            
+            // 初始更新倒计时
+            updateCountdown();
+            // 每天更新一次倒计时
+            setInterval(updateCountdown, 86400000);
+
+            // 滚动显示动画
+            function checkScroll() {
+                const elements = document.querySelectorAll('.scroll-reveal');
+                
+                elements.forEach(element => {
+                    const elementPosition = element.getBoundingClientRect().top;
+                    const windowHeight = window.innerHeight;
+                    
+                    if (elementPosition < windowHeight * 0.85) {
+                        element.classList.add('active');
+                    }
+                });
+            }
+            
+            // 初始检查
+            checkScroll();
+            
+            // 滚动时检查
+            window.addEventListener('scroll', checkScroll);
+
+            // 导航栏滚动效果
+            function handleNavbarScroll() {
+                const navbar = document.getElementById('navbar');
+                if (window.scrollY > 50) {
+                    navbar.classList.add('py-2');
+                    navbar.classList.remove('py-4');
+                    navbar.classList.add('shadow-lg');
+                } else {
+                    navbar.classList.add('py-4');
+                    navbar.classList.remove('py-2');
+                    navbar.classList.remove('shadow-lg');
+                }
+            }
+            
+            window.addEventListener('scroll', handleNavbarScroll);
+
+            // 移动端菜单切换
+            const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+            const mobileMenu = document.getElementById('mobileMenu');
+            
+            mobileMenuBtn.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+                if (mobileMenuBtn.innerHTML.includes('bars')) {
+                    mobileMenuBtn.innerHTML = '<i class="fa fa-times"></i>';
+                } else {
+                    mobileMenuBtn.innerHTML = '<i class="fa fa-bars"></i>';
+                }
+            });
+
+            // 广告弹窗控制
+            const adModal = document.getElementById('adModal');
+            const modalContent = document.getElementById('modalContent');
+            const adButtons = [
+                document.getElementById('adButton'),
+                document.getElementById('mobileAdButton'),
+                document.getElementById('fixedAdButton')
+            ];
+            const closeButtons = [
+                document.getElementById('closeModal'),
+                document.getElementById('closeAdButton')
+            ];
+            
+            function openModal() {
+                adModal.classList.remove('opacity-0', 'pointer-events-none');
+                modalContent.classList.remove('scale-95');
+                modalContent.classList.add('scale-100');
+                document.body.style.overflow = 'hidden';
+            }
+            
+            function closeModalFunc() {
+                adModal.classList.add('opacity-0', 'pointer-events-none');
+                modalContent.classList.remove('scale-100');
+                modalContent.classList.add('scale-95');
+                document.body.style.overflow = 'auto';
+            }
+            
+            adButtons.forEach(button => {
+                if (button) {
+                    button.addEventListener('click', openModal);
+                }
+            });
+            
+            closeButtons.forEach(button => {
+                if (button) {
+                    button.addEventListener('click', closeModalFunc);
+                }
+            });
+            
+            // 点击弹窗外部关闭
+            adModal.addEventListener('click', (e) => {
+                if (e.target === adModal) {
+                    closeModalFunc();
+                }
+            });
+            
+            // 页面加载5秒后自动显示广告弹窗
+            setTimeout(openModal, 5000);
+
+            // 平滑滚动
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    
+                    // 关闭移动菜单（如果打开）
+                    if (!mobileMenu.classList.contains('hidden')) {
+                        mobileMenu.classList.add('hidden');
+                        mobileMenuBtn.innerHTML = '<i class="fa fa-bars"></i>';
+                    }
+                    
+                    document.querySelector(this.getAttribute('href')).scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                });
+            });
+        });
+    </script>
+</body>
+</html>
