@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FlyzAI-ChatGPT5 - 功能介绍</title>
+    <!-- SEO优化信息 -->
+    <meta name="description" content="FlyzAI-ChatGPT5功能全解析：自然语言交互、深度逻辑推理、多语言支持等核心功能，全免费、无需登录的智能对话体验">
+    <meta name="keywords" content="FlyzAI功能, ChatGPT5功能, AI对话功能, 免费AI工具功能">
+    <meta name="author" content="FlyzAI团队">
+    
+    <!-- 外部资源 -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.8/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- 自定义配置（沿用原页面主题色） -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#165DFF',
+                        secondary: '#0FC6C2',
+                        accent: '#722ED1',
+                        dark: '#0A0F1C',
+                        'dark-light': '#141B2D'
+                    },
+                    fontFamily: {
+                        inter: ['Inter', 'system-ui', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .text-gradient {
+                background-clip: text;
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+            }
+            .bg-glass {
+                background: rgba(255, 255, 255, 0.05);
+                backdrop-filter: blur(10px);
+                -webkit-backdrop-filter: blur(10px);
+            }
+            .bg-grid {
+                background-size: 40px 40px;
+                background-image: 
+                    linear-gradient(to right, rgba(22, 93, 255, 0.05) 1px, transparent 1px),
+                    linear-gradient(to bottom, rgba(22, 93, 255, 0.05) 1px, transparent 1px);
+            }
+            .shadow-neon {
+                box-shadow: 0 0 15px rgba(22, 93, 255, 0.5);
+            }
+            .animate-float {
+                animation: float 6s ease-in-out infinite;
+            }
+            .animate-float-delay-1 {
+                animation: float 6s ease-in-out 1s infinite;
+            }
+            .animate-float-delay-2 {
+                animation: float 6s ease-in-out 2s infinite;
+            }
+            .scroll-reveal {
+                opacity: 0;
+                transform: translateY(30px);
+                transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+            }
+            .scroll-reveal.active {
+                opacity: 1;
+                transform: translateY(0);
+            }
+            .scroll-reveal-delay-1 {
+                transition-delay: 0.2s;
+            }
+            .scroll-reveal-delay-2 {
+                transition-delay: 0.4s;
+            }
+            .scroll-reveal-delay-3 {
+                transition-delay: 0.6s;
+            }
+            .feature-card-hover {
+                transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+            }
+            .feature-card-hover:hover {
+                transform: translateY(-8px);
+                border-color: rgba(22, 93, 255, 0.5);
+                box-shadow: 0 12px 30px rgba(22, 93, 255, 0.15);
+            }
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+            100% { transform: translateY(0px); }
+        }
+    </style>
+</head>
+<body class="font-inter bg-dark text-white min-h-screen overflow-x-hidden bg-grid">
+    <!-- 背景音乐播放器 -->
+    <audio id="backgroundMusic" loop>
+        <source src="https://yzbjfpv.top/split.mp3" type="audio/mpeg">
+    </audio>
+    
+    <!-- 音乐控制按钮 -->
+    <button id="musicControl" class="fixed top-20 right-6 w-10 h-10 rounded-full bg-glass border border-primary/30 flex items-center justify-center z-50 text-primary hover:bg-primary/20 transition-all duration-300">
+        <i class="fa fa-volume-up"></i>
+    </button>
+
+    <!-- 粒子背景容器 -->
+    <div id="particles-js" class="fixed inset-0 z-0 opacity-30"></div>
+
+    <!-- 导航栏 -->
+    <nav class="fixed w-full top-0 z-50 bg-glass border-b border-primary/20 transition-all duration-300" id="navbar">
+        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+            <!-- Logo区域 -->
+            <div class="flex items-center space-x-2">
+                <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-primary to-secondary flex items-center justify-center shadow-neon">
+                    <i class="fa fa-bolt text-white text-xl"></i>
+                </div>
+                <h1 class="text-2xl font-bold tracking-tight">
+                    <span class="text-white">Flyz</span><span class="text-primary">AI</span>
+                    <span class="text-sm ml-2 text-primary/80 font-normal">功能介绍</span>
+                </h1>
+            </div>
+            
+            <!-- 桌面端导航 -->
+            <div class="hidden md:flex items-center space-x-6">
+                <a href="https://yzbjfpv.top/ai.html" class="flex items-center space-x-2 bg-primary/10 hover:bg-primary/20 text-primary px-4 py-2 rounded-full transition-all duration-300 border border-primary/30">
+                    <i class="fa fa-home"></i>
+                    <span>返回首页</span>
+                </a>
+                <span class="text-primary font-medium flex items-center">
+                    <i class="fa fa-angle-right mr-2"></i>功能解析
+                </span>
+            </div>
+            
+            <!-- 移动端菜单按钮 -->
+            <button class="md:hidden text-2xl" id="mobileMenuBtn">
+                <i class="fa fa-bars"></i>
+            </button>
+        </div>
+        
+        <!-- 移动端菜单 -->
+        <div id="mobileMenu" class="md:hidden hidden bg-dark-light border-t border-primary/20">
+            <div class="container mx-auto px-4 py-4 flex flex-col space-y-4">
+                <a href="https://yzbjfpv.top/ai.html" class="flex items-center justify-center space-x-2 bg-primary/10 hover:bg-primary/20 text-primary px-4 py-2 rounded-full transition-all duration-300 border border-primary/30">
+                    <i class="fa fa-home"></i>
+                    <span>返回首页</span>
+                </a>
+                <a href="#core-features" class="text-gray-300 hover:text-primary transition-colors py-2 flex items-center">
+                    <i class="fa fa-star text-primary mr-2"></i>核心功能
+                </a>
+                <a href="#feature-details" class="text-gray-300 hover:text-primary transition-colors py-2 flex items-center">
+                    <i class="fa fa-list-ul text-primary mr-2"></i>功能详情
+                </a>
+                <a href="#scenario-application" class="text-gray-300 hover:text-primary transition-colors py-2 flex items-center">
+                    <i class="fa fa-sitemap text-primary mr-2"></i>场景应用
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 主内容区 -->
+    <main class="relative z-10">
+        <!-- 英雄区域 -->
+        <section class="pt-32 pb-20 md:pt-40 md:pb-32">
+            <div class="container mx-auto px-4">
+                <!-- 功能介绍标题 -->
+                <div class="text-center max-w-5xl mx-auto mb-16 scroll-reveal">
+                    <div class="inline-block px-4 py-1.5 rounded-full bg-primary/10 text-primary text-sm font-medium mb-4 border border-primary/30">
+                        功能全解析 · 能力无边界
+                    </div>
+                    <h1 class="text-[clamp(2.2rem,6vw,4rem)] font-bold leading-tight mb-6 tracking-tighter">
+                        <span class="bg-gradient-to-r from-primary via-secondary to-accent text-gradient">
+                            FlyzAI-ChatGPT5 核心功能
+                        </span>
+                    </h1>
+                    <p class="text-gray-300 text-[clamp(1rem,2vw,1.25rem)] mb-10 max-w-3xl mx-auto leading-relaxed">
+                        融合GPT5核心技术，打造6大核心能力模块，覆盖自然交互、深度推理、创意生成等全场景需求，
+                        全免费、无需登录，让智能服务触手可及。
+                    </p>
+                    
+                    <!-- 功能优势概览标签 -->
+                    <div class="flex flex-wrap justify-center gap-4 mb-12">
+                        <div class="px-6 py-3 bg-white/5 rounded-full border border-white/10 flex items-center space-x-2 hover:border-primary/50 hover:bg-primary/5 transition-all duration-300 transform hover:-translate-y-1">
+                            <i class="fa fa-comments text-secondary"></i>
+                            <span>自然语言交互</span>
+                        </div>
+                        <div class="px-6 py-3 bg-white/5 rounded-full border border-white/10 flex items-center space-x-2 hover:border-primary/50 hover:bg-primary/5 transition-all duration-300 transform hover:-translate-y-1">
+                            <i class="fa fa-lightbulb-o text-secondary"></i>
+                            <span>深度逻辑推理</span>
+                        </div>
+                        <div class="px-6 py-3 bg-white/5 rounded-full border border-white/10 flex items-center space-x-2 hover:border-primary/50 hover:bg-primary/5 transition-all duration-300 transform hover:-translate-y-1">
+                            <i class="fa fa-pencil text-secondary"></i>
+                            <span>创意内容生成</span>
+                        </div>
+                        <div class="px-6 py-3 bg-white/5 rounded-full border border-white/10 flex items-center space-x-2 hover:border-primary/50 hover:bg-primary/5 transition-all duration-300 transform hover:-translate-y-1">
+                            <i class="fa fa-language text-secondary"></i>
+                            <span>多语言支持</span>
+                        </div>
+                        <div class="px-6 py-3 bg-white/5 rounded-full border border-white/10 flex items-center space-x-2 hover:border-primary/50 hover:bg-primary/5 transition-all duration-300 transform hover:-translate-y-1">
+                            <i class="fa fa-code text-secondary"></i>
+                            <span>代码助手</span>
+                        </div>
+                        <div class="px-6 py-3 bg-white/5 rounded-full border border-white/10 flex items-center space-x-2 hover:border-primary/50 hover:bg-primary/5 transition-all duration-300 transform hover:-translate-y-1">
+                            <i class="fa fa-shield text-secondary"></i>
+                            <span>隐私保护</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 科技感图形装饰 -->
+                <div class="relative max-w-5xl mx-auto h-64 md:h-80 mb-12 overflow-hidden rounded-2xl scroll-reveal">
+                    <div class="absolute top-1/4 left-1/4 w-32 h-32 md:w-48 md:h-48 bg-primary/30 rounded-full filter blur-3xl animate-float"></div>
+                    <div class="absolute bottom-1/4 right-1/4 w-32 h-32 md:w-48 md:h-48 bg-secondary/30 rounded-full filter blur-3xl animate-float-delay-1"></div>
+                    <div class="absolute top-1/2 right-1/3 w-24 h-24 md:w-36 md:h-36 bg-accent/30 rounded-full filter blur-3xl animate-float-delay-2"></div>
+                    <!-- 功能架构图 -->
+                    <div class="absolute inset-0 flex items-center justify-center">
+                        <div class="w-full max-w-3xl p-4">
+                            <img src="https://picsum.photos/id/180/1200/600" alt="FlyzAI功能架构图" class="w-full h-auto rounded-xl opacity-80 hover:opacity-100 transition-opacity duration-500">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 核心功能概览区域 -->
+        <section id="core-features" class="py-20 bg-dark-light relative overflow-hidden">
+            <div class="container mx-auto px-4 relative z-10">
+                <div class="text-center max-w-3xl mx-auto mb-16 scroll-reveal">
+                    <h2 class="text-3xl md:text-4xl font-bold mb-4">
+                        <span class="bg-gradient-to-r from-primary to-secondary text-gradient">核心功能概览</span>
+                    </h2>
+                    <p class="text-gray-400">6大核心能力模块，构建全方位智能服务体系，满足多样化使用需求</p>
+                </div>
+
+                <!-- 功能概览卡片组 -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
+                    <!-- 功能卡片1：自然语言交互 -->
+                    <div class="bg-glass rounded-xl p-6 border border-white/10 feature-card-hover scroll-reveal">
+                        <div class="w-14 h-14 rounded-lg bg-primary/10 flex items-center justify-center mb-5">
+                            <i class="fa fa-comments-o text-primary text-2xl"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold mb-3">自然语言交互</h3>
+                        <div class="flex items-center mb-4">
+                            <div class="w-full bg-white/10 rounded-full h-2">
+                                <div class="bg-gradient-to-r from-primary to-secondary h-2 rounded-full" style="width: 95%"></div>
+                            </div>
+                            <span class="ml-2 text-sm text-primary">95分</span>
+                        </div>
+                        <p class="text-gray-400">
+                            支持复杂语境理解，精准把握语义意图，实现流畅自然的人机对话，支持多轮上下文记忆，交互体验媲美真人。
+                        </p>
+                    </div>
+                    
+                    <!-- 功能卡片2：深度逻辑推理 -->
+                    <div class="bg-glass rounded-xl p-6 border border-white/10 feature-card-hover scroll-reveal scroll-reveal-delay-1">
+                        <div class="w-14 h-14 rounded-lg bg-primary/10 flex items-center justify-center mb-5">
+                            <i class="fa fa-lightbulb-o text-primary text-2xl"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold mb-3">深度逻辑推理</h3>
+                        <div class="flex items-center mb-4">
+                            <div class="w-full bg-white/10 rounded-full h-2">
+                                <div class="bg-gradient-to-r from-primary to-secondary h-2 rounded-full" style="width: 92%"></div>
+                            </div>
+                            <span class="ml-2 text-sm text-primary">92分</span>
+                        </div>
+                        <p class="text-gray-400">
+                            具备强大的逻辑分析与推理能力，可解决数学问题、逻辑谜题、科学推理等复杂任务，提供清晰的解题步骤。
+                        </p>
+                    </div>
+                    
+                    <!-- 功能卡片3：创意内容生成 -->
+                    <div class="bg-glass rounded-xl p-6 border border-white/10 feature-card-hover scroll-reveal scroll-reveal-delay-2">
+                        <div class="w-14 h-14 rounded-lg bg-primary/10 flex items-center justify-center mb-5">
+                            <i class="fa fa-pencil-square-o text-primary text-2xl"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold mb-3">创意内容生成</h3>
+                        <div class="flex items-center mb-4">
+                            <div class="w-full bg-white/10 rounded-full h-2">
+                                <div class="bg-gradient-to-r from-primary to-secondary h-2 rounded-full" style="width: 94%"></div>
+                            </div>
+                            <span class="ml-2 text-sm text-primary">94分</span>
+                        </div>
+                        <p class="text-gray-400">
+                            可生成高质量文章、故事、诗歌、营销文案等创意内容，风格多样，支持个性化定制，满足不同场景需求。
+                        </p>
+                    </div>
+                    
+                    <!-- 功能卡片4：多语言支持 -->
+                    <div class="bg-glass rounded-xl p-6 border border-white/10 feature-card-hover scroll-reveal">
+                        <div class="w-14 h-14 rounded-lg bg-primary/10 flex items-center justify-center mb-5">
+                            <i class="fa fa-language text-primary text-2xl"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold mb-3">多语言支持</h3>
+                        <div class="flex items-center mb-4">
+                            <div class="w-full bg-white/10 rounded-full h-2">
+                                <div class="bg-gradient-to-r from-primary to-secondary h-2 rounded-full" style="width: 90%"></div>
+                            </div>
+                            <span class="ml-2 text-sm text-primary">90分</span>
+                        </div>
+                        <p class="text-gray-400">
+                            支持超过100种语言的翻译与交互，精准传达语义和文化内涵，打破语言壁垒，实现全球化沟通。
+                        </p>
+                    </div>
+                    
+                    <!-- 功能卡片5：代码助手 -->
+                    <div class="bg-glass rounded-xl p-6 border border-white/10 feature-card-hover scroll-reveal scroll-reveal-delay-1">
+                        <div class="w-14 h-14 rounded-lg bg-primary/10 flex items-center justify-center mb-5">
+                            <i class="fa fa-code text-primary text-2xl"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold mb-3">代码助手</h3>
+                        <div class="flex items-center mb-4">
+                            <div class="w-full bg-white/10 rounded-full h-2">
+                                <div class="bg-gradient-to-r from-primary to-secondary h-2 rounded-full" style="width: 96%"></div>
+                            </div>
+                            <span class="ml-2 text-sm text-primary">96分</span>
+                        </div>
+                        <p class="text-gray-400">
+                            支持多种编程语言的代码生成、解释、调试和优化，提供最佳实践建议，提高开发效率。
+                        </p>
+                    </div>
+                    
+                    <!-- 功能卡片6：隐私保护 -->
+                    <div class="bg-glass rounded-xl p-6 border border-white/10 feature-card-hover scroll-reveal scroll-reveal-delay-2">
+                        <div class="w-14 h-14 rounded-lg bg-primary/10 flex items-center justify-center mb-5">
+                            <i class="fa fa-shield text-primary text-2xl"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold mb-3">隐私保护</h3>
+                        <div class="flex items-center mb-4">
+                            <div class="w-full bg-white/10 rounded-full h-2">
+                                <div class="bg-gradient-to-r from-primary to-secondary h-2 rounded-full" style="width: 98%"></div>
+                            </div>
+                            <span class="ml-2 text-sm text-primary">98分</span>
+                        </div>
+                        <p class="text-gray-400">
+                            采用端到端加密技术，本地数据处理优先，不存储用户对话内容，确保个人信息和敏感数据安全。
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 功能详情区域 -->
+        <section id="feature-details" class="py-20 relative overflow-hidden">
+            <div class="container mx-auto px-4 relative z-10">
+                <div class="text-center max-w-3xl mx-auto mb-16 scroll-reveal">
+                    <h2 class="text-3xl md:text-4xl font-bold mb-4">
+                        <span class="bg-gradient-to-r from-primary to-secondary text-gradient">功能详情解析</span>
+                    </h2>
+                    <p class="text-gray-400">深入了解每项核心功能的技术特点与应用场景，体验AI带来的智能变革</p>
+                </div>
+
+                <!-- 功能详情展示 - 左侧文字右侧图片 -->
+                <div class="max-w-6xl mx-auto mb-24 scroll-reveal">
+                    <div class="flex flex-col lg:flex-row items-center gap-12">
+                        <div class="lg:w-1/2">
+                            <div class="inline-block px-3 py-1 rounded-full bg-primary/10 text-primary text-sm font-medium mb-4 border border-primary/30">
+                                自然语言交互
+                            </div>
+                            <h3 class="text-2xl md:text-3xl font-bold mb-6">像与人对话一样与AI交流</h3>
+                            <p class="text-gray-300 mb-6 leading-relaxed">
+                                FlyzAI采用先进的自然语言处理技术，能够理解复杂语境、 slang表达和隐含意图，实现流畅自然的对话体验。
+                            </p>
+                            <ul class="space-y-3 mb-8">
+                                <li class="flex items-start">
+                                    <i class="fa fa-check-circle text-secondary mt-1 mr-3"></i>
+                                    <span>支持多轮对话上下文记忆，保持话题连贯性</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fa fa-check-circle text-secondary mt-1 mr-3"></i>
+                                    <span>理解模糊查询并主动澄清，减少沟通障碍</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fa fa-check-circle text-secondary mt-1 mr-3"></i>
+                                    <span>识别情绪并做出适当回应，提升交互温度</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fa fa-check-circle text-secondary mt-1 mr-3"></i>
+                                    <span>支持语音输入输出，解放双手更便捷</span>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="lg:w-1/2 relative">
+                            <div class="absolute -top-6 -left-6 w-32 h-32 bg-primary/20 rounded-full filter blur-2xl"></div>
+                            <div class="relative rounded-xl overflow-hidden shadow-lg border border-primary/20">
+                                <img src="https://p3-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/e03a1ee2929b4be8bcde51f89fda666d.png~tplv-a9rns2rl98-24:720:720.png?rk3s=1fb89129&x-expires=1757400414&x-signature=Or8KSi1DS9UUwOTwgfjoepyrO3o%3D" 
+                                     alt="自然语言交互演示" 
+                                     class="w-full h-auto">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 功能详情展示 - 右侧文字左侧图片 -->
+                <div class="max-w-6xl mx-auto mb-24 scroll-reveal">
+                    <div class="flex flex-col lg:flex-row-reverse items-center gap-12">
+                        <div class="lg:w-1/2">
+                            <div class="inline-block px-3 py-1 rounded-full bg-primary/10 text-primary text-sm font-medium mb-4 border border-primary/30">
+                                深度逻辑推理
+                            </div>
+                            <h3 class="text-2xl md:text-3xl font-bold mb-6">解决复杂问题的思考能力</h3>
+                            <p class="text-gray-300 mb-6 leading-relaxed">
+                                超越简单的信息匹配，FlyzAI具备类人的逻辑思考能力，能够分析问题、拆解步骤、推导结论，解决各类复杂任务。
+                            </p>
+                            <ul class="space-y-3 mb-8">
+                                <li class="flex items-start">
+                                    <i class="fa fa-check-circle text-secondary mt-1 mr-3"></i>
+                                    <span>数学问题求解，从基础运算到高等数学</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fa fa-check-circle text-secondary mt-1 mr-3"></i>
+                                    <span>逻辑推理与论证，支持复杂决策分析</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fa fa-check-circle text-secondary mt-1 mr-3"></i>
+                                    <span>故障诊断与问题排查，提供系统解决方案</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fa fa-check-circle text-secondary mt-1 mr-3"></i>
+                                    <span>多步骤规划与执行，支持项目管理</span>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="lg:w-1/2 relative">
+                            <div class="absolute -bottom-6 -right-6 w-32 h-32 bg-secondary/20 rounded-full filter blur-2xl"></div>
+                            <div class="relative rounded-xl overflow-hidden shadow-lg border border-secondary/20">
+                                <img src="https://picsum.photos/id/0/800/600" alt="深度逻辑推理演示" class="w-full h-auto">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- JavaScript -->
+    <script>
+        // 粒子背景初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            // 音乐控制
+            const musicControl = document.getElementById('musicControl');
+            const backgroundMusic = document.getElementById('backgroundMusic');
+            let isPlaying = false;
+            
+            musicControl.addEventListener('click', function() {
+                if (isPlaying) {
+                    backgroundMusic.pause();
+                    musicControl.innerHTML = '<i class="fa fa-volume-off"></i>';
+                } else {
+                    backgroundMusic.play().catch(e => {
+                        console.log("音乐播放需要用户交互:", e);
+                    });
+                    musicControl.innerHTML = '<i class="fa fa-volume-up"></i>';
+                }
+                isPlaying = !isPlaying;
+            });
+            
+            // 移动端菜单控制
+            const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+            const mobileMenu = document.getElementById('mobileMenu');
+            
+            mobileMenuBtn.addEventListener('click', function() {
+                mobileMenu.classList.toggle('hidden');
+            });
+            
+            // 滚动显示动画
+            const scrollRevealElements = document.querySelectorAll('.scroll-reveal');
+            
+            function checkScroll() {
+                scrollRevealElements.forEach(element => {
+                    const elementTop = element.getBoundingClientRect().top;
+                    const elementVisible = 150;
+                    
+                    if (elementTop < window.innerHeight - elementVisible) {
+                        element.classList.add('active');
+                    }
+                });
+            }
+            
+            window.addEventListener('scroll', checkScroll);
+            checkScroll(); // 初始检查
+            
+            // 导航栏滚动效果
+            const navbar = document.getElementById('navbar');
+            
+            window.addEventListener('scroll', function() {
+                if (window.scrollY > 50) {
+                    navbar.classList.add('py-2');
+                    navbar.classList.remove('py-4');
+                    navbar.classList.add('shadow-lg');
+                } else {
+                    navbar.classList.add('py-4');
+                    navbar.classList.remove('py-2');
+                    navbar.classList.remove('shadow-lg');
+                }
+            });
+            
+            // 粒子效果初始化
+            if (typeof particlesJS !== 'undefined') {
+                particlesJS('particles-js', {
+                    "particles": {
+                        "number": {
+                            "value": 80,
+                            "density": {
+                                "enable": true,
+                                "value_area": 800
+                            }
+                        },
+                        "color": {
+                            "value": "#165DFF"
+                        },
+                        "shape": {
+                            "type": "circle"
+                        },
+                        "opacity": {
+                            "value": 0.5,
+                            "random": true
+                        },
+                        "size": {
+                            "value": 3,
+                            "random": true
+                        },
+                        "line_linked": {
+                            "enable": true,
+                            "distance": 150,
+                            "color": "#165DFF",
+                            "opacity": 0.2,
+                            "width": 1
+                        },
+                        "move": {
+                            "enable": true,
+                            "speed": 1,
+                            "direction": "none",
+                            "random": true,
+                            "straight": false,
+                            "out_mode": "out",
+                            "bounce": false
+                        }
+                    },
+                    "interactivity": {
+                        "detect_on": "canvas",
+                        "events": {
+                            "onhover": {
+                                "enable": true,
+                                "mode": "grab"
+                            },
+                            "onclick": {
+                                "enable": true,
+                                "mode": "push"
+                            },
+                            "resize": true
+                        },
+                        "modes": {
+                            "grab": {
+                                "distance": 140,
+                                "line_linked": {
+                                    "opacity": 0.5
+                                }
+                            },
+                            "push": {
+                                "particles_nb": 4
+                            }
+                        }
+                    },
+                    "retina_detect": true
+                });
+            }
+        });
+    </script>
+</body>
+</html>
