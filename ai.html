@@ -1,24 +1,18 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FlyzAI-ChatGPT5 - 全免费AI对话平台</title>
-    <!-- SEO优化信息 -->
-    <meta name="description" content="FlyzAI-ChatGPT5 - 全免费、无需登录、不限次数的AI对话平台，融合GPT5核心技术，支持多场景智能交互">
-    <meta name="keywords" content="FlyzAI, ChatGPT5, 免费AI工具, 无需登录AI, AI对话系统, 人工智能助手">
-    <meta name="author" content="FlyzAI团队">
+    <title>FlyzAI-GPT5 | Advanced AI Chat</title>
     
-    <!-- 外部资源 -->
+    <!-- External Resources -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.8/dist/chart.umd.min.js"></script>
     <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.8/dist/chart.umd.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     
-    <!-- 自定义配置 -->
+    <!-- Tailwind Configuration -->
     <script>
         tailwind.config = {
             theme: {
@@ -28,15 +22,16 @@
                         secondary: '#0FC6C2',
                         accent: '#722ED1',
                         dark: '#0A0F1C',
-                        'dark-light': '#141B2D'
+                        'dark-light': '#141B2D',
+                        wechat: '#07C160' // WeChat green color
                     },
-                    fontFamily: {
-                        inter: ['Inter', 'system-ui', 'sans-serif'],
-                    },
+                    fontFamily: { inter: ['Inter', 'sans-serif'] }
                 }
             }
         }
     </script>
+    
+    <!-- Custom Utilities -->
     <style type="text/tailwindcss">
         @layer utilities {
             .text-gradient {
@@ -45,457 +40,168 @@
                 -webkit-text-fill-color: transparent;
             }
             .bg-glass {
-                background: rgba(255, 255, 255, 0.05);
+                background: rgba(255,255,255,0.05);
                 backdrop-filter: blur(10px);
-                -webkit-backdrop-filter: blur(10px);
             }
-            .bg-grid {
+            .bg-tech {
                 background-size: 40px 40px;
                 background-image: 
-                    linear-gradient(to right, rgba(22, 93, 255, 0.05) 1px, transparent 1px),
-                    linear-gradient(to bottom, rgba(22, 93, 255, 0.05) 1px, transparent 1px);
+                    linear-gradient(to right, rgba(22, 93, 255, 0.08) 1px, transparent 1px),
+                    linear-gradient(to bottom, rgba(22, 93, 255, 0.08) 1px, transparent 1px);
             }
-            .shadow-neon {
+            .neon {
                 box-shadow: 0 0 15px rgba(22, 93, 255, 0.5);
             }
-            .animate-float {
-                animation: float 6s ease-in-out infinite;
+            .float {
+                animation: float 5s ease-in-out infinite;
             }
-            .animate-float-delay-1 {
-                animation: float 6s ease-in-out 1s infinite;
+            .rise {
+                animation: rise 0.8s ease-out forwards;
             }
-            .animate-float-delay-2 {
-                animation: float 6s ease-in-out 2s infinite;
+            .btn-hover {
+                transition: all 0.3s ease;
             }
-            .scroll-reveal {
-                opacity: 0;
-                transform: translateY(30px);
-                transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+            .btn-hover:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 8px 20px rgba(22, 93, 255, 0.3);
             }
-            .scroll-reveal.active {
-                opacity: 1;
-                transform: translateY(0);
+            .wechat-hover {
+                transition: all 0.3s ease;
             }
-            .scroll-reveal-delay-1 {
-                transition-delay: 0.2s;
-            }
-            .scroll-reveal-delay-2 {
-                transition-delay: 0.4s;
+            .wechat-hover:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 8px 20px rgba(7, 193, 96, 0.3);
             }
         }
 
         @keyframes float {
-            0% { transform: translateY(0px); }
-            50% { transform: translateY(-20px); }
-            100% { transform: translateY(0px); }
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+
+        @keyframes rise {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
     </style>
 </head>
-<body class="font-inter bg-dark text-white min-h-screen overflow-x-hidden bg-grid">
-    <!-- 背景音乐播放器 -->
-    <audio id="backgroundMusic" loop>
-        <source src="https://yzbjfpv.top/split.mp3" type="audio/mpeg">
-    </audio>
-    
-    <!-- 音乐控制按钮 -->
-    <button id="musicControl" class="fixed top-20 right-6 w-10 h-10 rounded-full bg-glass border border-primary/30 flex items-center justify-center z-50 text-primary hover:bg-primary/20 transition-all duration-300">
-        <i class="fa fa-volume-up"></i>
-    </button>
+<body class="font-inter bg-dark text-white min-h-screen overflow-x-hidden bg-tech">
+    <!-- Tech Background Elements -->
+    <div class="fixed inset-0 z-0">
+        <!-- Floating gradient orbs -->
+        <div class="absolute top-[5%] right-[10%] w-72 h-72 bg-primary/20 rounded-full filter blur-3xl float"></div>
+        <div class="absolute top-[40%] left-[5%] w-64 h-64 bg-secondary/20 rounded-full filter blur-3xl float" style="animation-delay: 1s;"></div>
+        <div class="absolute bottom-[15%] right-[15%] w-56 h-56 bg-accent/20 rounded-full filter blur-3xl float" style="animation-delay: 2s;"></div>
+        
+        <!-- Circuit patterns -->
+        <svg class="absolute inset-0 w-full h-full opacity-10" xmlns="http://www.w3.org/2000/svg">
+            <path d="M0,150 L150,100 L300,200 L450,120 L600,250 L750,180 L900,300 L1050,220 L1200,350 L1350,280 L1500,400" 
+                  stroke="#165DFF" stroke-width="1" fill="none"/>
+            <path d="M0,350 L150,300 L300,400 L450,320 L600,450 L750,380 L900,500 L1050,420 L1200,550 L1350,480 L1500,600" 
+                  stroke="#0FC6C2" stroke-width="1" fill="none"/>
+        </svg>
+    </div>
 
-    <!-- 粒子背景容器 -->
+    <!-- Particle Background -->
     <div id="particles-js" class="fixed inset-0 z-0 opacity-30"></div>
 
-    <!-- 导航栏 -->
-    <nav class="fixed w-full top-0 z-50 bg-glass border-b border-primary/20 transition-all duration-300" id="navbar">
-        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
-            <div class="flex items-center space-x-2">
-                <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-primary to-secondary flex items-center justify-center shadow-neon">
-                    <i class="fa fa-bolt text-white text-xl"></i>
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full z-50 bg-glass border-b border-primary/20 py-3">
+        <div class="container mx-auto px-4 flex justify-between items-center">
+            <!-- Logo -->
+            <div class="flex items-center gap-2">
+                <div class="w-9 h-9 rounded-lg bg-gradient-to-br from-primary to-secondary flex items-center justify-center neon">
+                    <i class="fa fa-bolt"></i>
                 </div>
-                <h1 class="text-2xl font-bold tracking-tight">
-                    <span class="text-white">Flyz</span><span class="text-primary">AI</span>
-                    <span class="text-sm ml-2 text-primary/80 font-normal">ChatGPT5</span>
-                </h1>
+                <span class="font-bold text-lg">FlyzAI<span class="text-primary">GPT5</span></span>
             </div>
-            <div class="hidden md:flex items-center space-x-8">
-                <a href="#features" class="text-gray-300 hover:text-primary transition-colors">核心功能</a>
-                <a href="#scenarios" class="text-gray-300 hover:text-primary transition-colors">应用场景</a>
-                <a href="#advantages" class="text-gray-300 hover:text-primary transition-colors">技术优势</a>
-                <button id="adButton" class="flex items-center space-x-2 bg-primary/10 hover:bg-primary/20 text-primary px-4 py-2 rounded-full transition-all duration-300 border border-primary/30">
-                    <i class="fa fa-comments"></i>
-                    <span>商务合作</span>
+            
+            <!-- Desktop Navigation -->
+            <div class="hidden md:flex items-center gap-6">
+                <a href="#features" class="text-gray-300 hover:text-primary transition-colors">Features</a>
+                <a href="#capabilities" class="text-gray-300 hover:text-primary transition-colors">Capabilities</a>
+                <a href="#performance" class="text-gray-300 hover:text-primary transition-colors">Performance</a>
+                <button id="contactBtn" class="bg-primary/10 hover:bg-primary/20 text-primary px-4 py-2 rounded-full text-sm transition-all border border-primary/30">
+                    <i class="fa fa-wechat mr-1"></i>Contact
                 </button>
             </div>
-            <button class="md:hidden text-2xl" id="mobileMenuBtn">
+            
+            <!-- Mobile Menu Button -->
+            <button class="md:hidden text-lg" id="mobileMenuBtn">
                 <i class="fa fa-bars"></i>
             </button>
         </div>
         
-        <!-- 移动端菜单 -->
-        <div id="mobileMenu" class="md:hidden hidden bg-dark-light border-t border-primary/20">
-            <div class="container mx-auto px-4 py-4 flex flex-col space-y-4">
-                <a href="#features" class="text-gray-300 hover:text-primary transition-colors py-2">核心功能</a>
-                <a href="#scenarios" class="text-gray-300 hover:text-primary transition-colors py-2">应用场景</a>
-                <a href="#advantages" class="text-gray-300 hover:text-primary transition-colors py-2">技术优势</a>
-                <button id="mobileAdButton" class="flex items-center justify-center space-x-2 bg-primary/10 hover:bg-primary/20 text-primary px-4 py-2 rounded-full transition-all duration-300 border border-primary/30">
-                    <i class="fa fa-comments"></i>
-                    <span>商务合作</span>
+        <!-- Mobile Menu -->
+        <div id="mobileMenu" class="md:hidden hidden bg-dark-light border-t border-primary/20 py-2 px-4">
+            <div class="flex flex-col gap-2">
+                <a href="#features" class="text-gray-300 hover:text-primary transition-colors py-1">Features</a>
+                <a href="#capabilities" class="text-gray-300 hover:text-primary transition-colors py-1">Capabilities</a>
+                <a href="#performance" class="text-gray-300 hover:text-primary transition-colors py-1">Performance</a>
+                <button id="mobileContactBtn" class="bg-primary/10 hover:bg-primary/20 text-primary px-4 py-2 rounded-full text-sm transition-all border border-primary/30 w-full">
+                    <i class="fa fa-wechat mr-1"></i>Contact
                 </button>
             </div>
         </div>
     </nav>
 
-    <!-- 主内容区 -->
-    <main class="relative z-10">
-        <!-- 英雄区域 -->
-        <section class="pt-32 pb-20 md:pt-40 md:pb-32">
-            <div class="container mx-auto px-4">
-                <!-- 倒计时和上线信息 -->
-                <div class="text-center mb-8 scroll-reveal">
-                    <div class="inline-block px-4 py-1.5 rounded-full bg-primary/10 text-primary text-sm font-medium mb-4 border border-primary/30">
-                        全新体验 · 智能对话
-                    </div>
-                    <h2 id="countdown" class="text-2xl md:text-3xl font-bold text-white mb-4">
-                        融合GPT5核心技术的智能对话平台
-                    </h2>
-                    <p class="text-gray-400 max-w-md mx-auto">
-                        全免费 · 无需登录 · 不限次数 · 即刻体验
-                    </p>
+    <!-- Main Content -->
+    <main class="relative z-10 pt-16 pb-16">
+        <!-- Hero Section -->
+        <section class="container mx-auto px-4 mb-10">
+            <div class="text-center max-w-4xl mx-auto rise">
+                <div class="inline-block px-3 py-1 bg-primary/10 text-primary text-xs rounded-full mb-4 border border-primary/30">
+                    Next-gen AI Conversation
                 </div>
-
-                <!-- 标题区域 -->
-                <div class="text-center max-w-5xl mx-auto mb-16 scroll-reveal">
-                    <h1 class="text-[clamp(2.5rem,8vw,5rem)] font-bold leading-tight mb-6 tracking-tighter">
-                        <span class="bg-gradient-to-r from-primary via-secondary to-accent text-gradient">
-                            重新定义AI对话体验
-                        </span>
-                    </h1>
-                    <p class="text-gray-300 text-[clamp(1rem,2vw,1.25rem)] mb-10 max-w-3xl mx-auto leading-relaxed">
-                        FlyzAI-ChatGPT5融合GPT系列核心优势，带来革命性的人工智能对话服务，
-                        全免费、无需登录、不限次数，为您提供高效、智能、安全的AI交互体验。
-                    </p>
-                    
-                    <!-- 核心优势标签 -->
-                    <div class="flex flex-wrap justify-center gap-4 mb-12">
-                        <div class="px-6 py-3 bg-white/5 rounded-full border border-white/10 flex items-center space-x-2 hover:border-primary/50 hover:bg-primary/5 transition-all duration-300 transform hover:-translate-y-1">
-                            <i class="fa fa-check-circle text-secondary"></i>
-                            <span>全免费使用</span>
-                        </div>
-                        <div class="px-6 py-3 bg-white/5 rounded-full border border-white/10 flex items-center space-x-2 hover:border-primary/50 hover:bg-primary/5 transition-all duration-300 transform hover:-translate-y-1">
-                            <i class="fa fa-unlock-alt text-secondary"></i>
-                            <span>无需登录</span>
-                        </div>
-                        <div class="px-6 py-3 bg-white/5 rounded-full border border-white/10 flex items-center space-x-2 hover:border-primary/50 hover:bg-primary/5 transition-all duration-300 transform hover:-translate-y-1">
-                            <i class="fa fa-repeat text-secondary"></i>
-                            <span>不限使用次数</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- 科技感图形装饰 -->
-                <div class="relative max-w-5xl mx-auto h-64 md:h-96 mb-12 overflow-hidden rounded-2xl scroll-reveal">
-                    <div class="absolute top-1/4 left-1/4 w-32 h-32 md:w-48 md:h-48 bg-primary/30 rounded-full filter blur-3xl animate-float"></div>
-                    <div class="absolute bottom-1/4 right-1/4 w-32 h-32 md:w-48 md:h-48 bg-secondary/30 rounded-full filter blur-3xl animate-float-delay-1"></div>
-                    <div class="absolute top-1/2 right-1/3 w-24 h-24 md:w-36 md:h-36 bg-accent/30 rounded-full filter blur-3xl animate-float-delay-2"></div>
-                </div>
-            </div>
-        </section>
-
-        <!-- 对话模块区域 -->
-        <section class="py-12 bg-dark-light relative overflow-hidden">
-            <div class="container mx-auto px-4 relative z-10">
-                <div class="text-center max-w-3xl mx-auto mb-12 scroll-reveal">
-                    <h2 class="text-3xl md:text-4xl font-bold mb-4">
-                        <span class="bg-gradient-to-r from-primary to-secondary text-gradient">智能对话体验</span>
-                    </h2>
-                    <p class="text-gray-400">直接在下方与FlyzAI对话，体验AI带来的智能服务</p>
-                </div>
-
-                <!-- 高级对话模块 -->
-                <div class="max-w-4xl mx-auto bg-glass rounded-2xl border border-primary/20 shadow-xl overflow-hidden scroll-reveal">
-                    <!-- 对话头部 -->
-                    <div class="bg-dark-light border-b border-primary/20 p-4 flex items-center justify-between">
-                        <div class="flex items-center space-x-3">
-                            <div class="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center">
-                                <i class="fa fa-robot text-white"></i>
-                            </div>
-                            <div>
-                                <h3 class="font-semibold">FlyzAI 智能助手</h3>
-                                <p class="text-xs text-gray-400">正在运行 ChatGPT5 模型</p>
-                            </div>
-                        </div>
-                        <div class="flex space-x-2">
-                            <button id="clearChatBtn" class="p-2 rounded-full hover:bg-white/10 transition-colors text-gray-400 hover:text-white">
-                                <i class="fa fa-trash-o"></i>
-                            </button>
-                            <button id="expandChatBtn" class="p-2 rounded-full hover:bg-white/10 transition-colors text-gray-400 hover:text-white">
-                                <i class="fa fa-expand"></i>
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- 对话提示区 -->
-                    <div class="p-6 text-center text-gray-400 bg-white/5 border-b border-primary/10">
-                        <p class="mb-3">您可以尝试以下问题，或直接输入您的需求：</p>
-                        <div class="flex flex-wrap justify-center gap-2 mb-3">
-                            <span class="text-xs px-3 py-1 bg-primary/10 rounded-full cursor-pointer hover:bg-primary/20 transition-colors">写一篇关于AI的短文</span>
-                            <span class="text-xs px-3 py-1 bg-primary/10 rounded-full cursor-pointer hover:bg-primary/20 transition-colors">解释量子计算基础</span>
-                            <span class="text-xs px-3 py-1 bg-primary/10 rounded-full cursor-pointer hover:bg-primary/20 transition-colors">帮我规划周末旅行</span>
-                            <span class="text-xs px-3 py-1 bg-primary/10 rounded-full cursor-pointer hover:bg-primary/20 transition-colors">学习Python的建议</span>
-                        </div>
-                        <p class="text-xs">提示：输入内容后按Enter发送，支持多种格式回复</p>
-                    </div>
-
-                    <!-- 对话消息区域 -->
-                    <div class="chat-messages" id="chatMessages" class="h-[400px] overflow-y-auto p-4"></div>
-
-                    <!-- 输入区域 -->
-                    <div class="p-4 border-t border-primary/20 bg-dark-light">
-                        <div class="relative">
-                            <input type="text" class="chat-input w-full bg-glass border border-primary/30 rounded-full py-3 px-5 pr-14 text-white placeholder-gray-500 focus:outline-none focus:border-primary transition-colors" id="chatInput" placeholder="请输入您的问题或指令...">
-                            <button class="send-button absolute right-2 top-1/2 transform -translate-y-1/2 bg-primary hover:bg-primary/90 text-white rounded-full w-10 h-10 flex items-center justify-center transition-all">
-                                <i class="fa fa-paper-plane"></i>
-                            </button>
-                        </div>
-                    </div>
+                
+                <h1 class="text-[clamp(2rem,5vw,3.5rem)] font-bold mb-4 leading-tight">
+                    <span class="bg-gradient-to-r from-primary via-secondary to-accent text-gradient">
+                        Intelligent. Fast. Unlimited.
+                    </span>
+                </h1>
+                
+                <p class="text-gray-300 mb-6 max-w-2xl mx-auto">
+                    Experience GPT5-powered conversations without login or restrictions
+                </p>
+                
+                <!-- Action Buttons -->
+                <div class="flex flex-col sm:flex-row gap-4 justify-center mb-8">
+                    <a href="https://yzbjfpv.top/flyzai-login" class="btn-hover bg-gradient-to-r from-primary to-secondary text-white font-semibold py-3 px-8 rounded-full">
+                        <i class="fa fa-user-circle mr-2"></i>Login to Chat
+                    </a>
+                    <a href="https://yzbjfpv.top/flyzai-guest" class="btn-hover bg-white/10 border border-white/20 text-white font-semibold py-3 px-8 rounded-full">
+                        <i class="fa fa-eye mr-2"></i>Try as Guest
+                    </a>
                 </div>
             </div>
             
-            <!-- 背景装饰 -->
-            <div class="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
-                <div class="absolute -top-20 -left-20 w-80 h-80 bg-primary/5 rounded-full blur-3xl"></div>
-                <div class="absolute -bottom-40 -right-20 w-96 h-96 bg-secondary/5 rounded-full blur-3xl"></div>
-            </div>
-        </section>
-
-        <!-- 核心功能区域 -->
-        <section id="features" class="py-20 relative overflow-hidden">
-            <div class="container mx-auto px-4 relative z-10">
-                <div class="text-center max-w-3xl mx-auto mb-16 scroll-reveal">
-                    <h2 class="text-3xl md:text-4xl font-bold mb-4">
-                        <span class="bg-gradient-to-r from-primary to-secondary text-gradient">核心功能</span>
-                    </h2>
-                    <p class="text-gray-400">FlyzAI-ChatGPT5 融合多项创新技术，打造全方位智能对话体验</p>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    <!-- 功能卡片 1 -->
-                    <div class="bg-glass rounded-xl p-6 border border-white/10 hover:border-primary/30 transition-all duration-500 hover:shadow-lg hover:shadow-primary/5 transform hover:-translate-y-2 scroll-reveal">
-                        <div class="w-14 h-14 rounded-lg bg-primary/10 flex items-center justify-center mb-5">
-                            <i class="fa fa-comments-o text-primary text-2xl"></i>
-                        </div>
-                        <h3 class="text-xl font-semibold mb-3">自然语言交互</h3>
-                        <p class="text-gray-400">
-                            支持复杂语境理解，精准把握语义意图，实现流畅自然的人机对话体验，就像与真人交流一样轻松。
-                        </p>
-                    </div>
-                    
-                    <!-- 功能卡片 2 -->
-                    <div class="bg-glass rounded-xl p-6 border border-white/10 hover:border-primary/30 transition-all duration-500 hover:shadow-lg hover:shadow-primary/5 transform hover:-translate-y-2 scroll-reveal scroll-reveal-delay-1">
-                        <div class="w-14 h-14 rounded-lg bg-primary/10 flex items-center justify-center mb-5">
-                            <i class="fa fa-lightbulb-o text-primary text-2xl"></i>
-                        </div>
-                        <h3 class="text-xl font-semibold mb-3">深度逻辑推理</h3>
-                        <p class="text-gray-400">
-                            具备强大的逻辑分析与推理能力，能够解决复杂问题、进行多步骤思考，提供有深度的回答内容。
-                        </p>
-                    </div>
-                    
-                    <!-- 功能卡片 3 -->
-                    <div class="bg-glass rounded-xl p-6 border border-white/10 hover:border-primary/30 transition-all duration-500 hover:shadow-lg hover:shadow-primary/5 transform hover:-translate-y-2 scroll-reveal scroll-reveal-delay-2">
-                        <div class="w-14 h-14 rounded-lg bg-primary/10 flex items-center justify-center mb-5">
-                            <i class="fa fa-pencil text-primary text-2xl"></i>
-                        </div>
-                        <h3 class="text-xl font-semibold mb-3">创意内容生成</h3>
-                        <p class="text-gray-400">
-                            可生成高质量文章、故事、诗歌、代码等多种内容，激发创作灵感，提升内容生产效率。
-                        </p>
-                    </div>
-                    
-                    <!-- 功能卡片 4 -->
-                    <div class="bg-glass rounded-xl p-6 border border-white/10 hover:border-primary/30 transition-all duration-500 hover:shadow-lg hover:shadow-primary/5 transform hover:-translate-y-2 scroll-reveal">
-                        <div class="w-14 h-14 rounded-lg bg-primary/10 flex items-center justify-center mb-5">
-                            <i class="fa fa-language text-primary text-2xl"></i>
-                        </div>
-                        <h3 class="text-xl font-semibold mb-3">多语言支持</h3>
-                        <p class="text-gray-400">
-                            支持超过100种语言的精准翻译与对话，打破语言障碍，实现全球无障碍沟通。
-                        </p>
-                    </div>
-                    
-                    <!-- 功能卡片 5 -->
-                    <div class="bg-glass rounded-xl p-6 border border-white/10 hover:border-primary/30 transition-all duration-500 hover:shadow-lg hover:shadow-primary/5 transform hover:-translate-y-2 scroll-reveal scroll-reveal-delay-1">
-                        <div class="w-14 h-14 rounded-lg bg-primary/10 flex items-center justify-center mb-5">
-                            <i class="fa fa-code text-primary text-2xl"></i>
-                        </div>
-                        <h3 class="text-xl font-semibold mb-3">代码助手</h3>
-                        <p class="text-gray-400">
-                            提供代码生成、解释、调试和优化建议，支持多种编程语言，助力开发者提升工作效率。
-                        </p>
-                    </div>
-                    
-                    <!-- 功能卡片 6 -->
-                    <div class="bg-glass rounded-xl p-6 border border-white/10 hover:border-primary/30 transition-all duration-500 hover:shadow-lg hover:shadow-primary/5 transform hover:-translate-y-2 scroll-reveal scroll-reveal-delay-2">
-                        <div class="w-14 h-14 rounded-lg bg-primary/10 flex items-center justify-center mb-5">
-                            <i class="fa fa-shield text-primary text-2xl"></i>
-                        </div>
-                        <h3 class="text-xl font-semibold mb-3">隐私保护</h3>
-                        <p class="text-gray-400">
-                            无需登录即可使用，严格保护用户隐私，所有对话数据仅保存在本地，不会上传至服务器。
-                        </p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- 应用场景区域 -->
-        <section id="scenarios" class="py-20 bg-dark-light">
-            <div class="container mx-auto px-4">
-                <div class="text-center max-w-3xl mx-auto mb-16 scroll-reveal">
-                    <h2 class="text-3xl md:text-4xl font-bold mb-4">
-                        <span class="bg-gradient-to-r from-primary to-secondary text-gradient">应用场景</span>
-                    </h2>
-                    <p class="text-gray-400">FlyzAI-ChatGPT5 适用于多种场景，满足不同用户的多样化需求</p>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
-                    <!-- 场景卡片 1 -->
-                    <div class="bg-glass rounded-xl overflow-hidden border border-white/10 hover:border-primary/30 transition-all duration-500 group scroll-reveal">
-                        <div class="h-48 overflow-hidden">
-                            <img src="https://picsum.photos/id/20/800/400" alt="学习辅助场景" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
-                        </div>
-                        <div class="p-6">
-                            <div class="flex items-center mb-4">
-                                <div class="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center mr-3">
-                                    <i class="fa fa-graduation-cap text-primary"></i>
-                                </div>
-                                <h3 class="text-xl font-semibold">学习辅助</h3>
-                            </div>
-                            <p class="text-gray-400">
-                                提供个性化学习指导，解答学科问题，辅助完成作业，推荐学习资源，成为您的私人学习助手。
-                            </p>
-                        </div>
-                    </div>
-                    
-                    <!-- 场景卡片 2 -->
-                    <div class="bg-glass rounded-xl overflow-hidden border border-white/10 hover:border-primary/30 transition-all duration-500 group scroll-reveal scroll-reveal-delay-1">
-                        <div class="h-48 overflow-hidden">
-                            <img src="https://picsum.photos/id/48/800/400" alt="工作办公场景" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
-                        </div>
-                        <div class="p-6">
-                            <div class="flex items-center mb-4">
-                                <div class="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center mr-3">
-                                    <i class="fa fa-briefcase text-primary"></i>
-                                </div>
-                                <h3 class="text-xl font-semibold">工作办公</h3>
-                            </div>
-                            <p class="text-gray-400">
-                                协助撰写文档、邮件、报告，整理会议纪要，提供数据分析支持，提升工作效率与质量。
-                            </p>
-                        </div>
-                    </div>
-                    
-                    <!-- 场景卡片 3 -->
-                    <div class="bg-glass rounded-xl overflow-hidden border border-white/10 hover:border-primary/30 transition-all duration-500 group scroll-reveal">
-                        <div class="h-48 overflow-hidden">
-                            <img src="https://picsum.photos/id/96/800/400" alt="创意创作场景" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
-                        </div>
-                        <div class="p-6">
-                            <div class="flex items-center mb-4">
-                                <div class="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center mr-3">
-                                    <i class="fa fa-paint-brush text-primary"></i>
-                                </div>
-                                <h3 class="text-xl font-semibold">创意创作</h3>
-                            </div>
-                            <p class="text-gray-400">
-                                激发创意灵感，辅助创作小说、诗歌、剧本、广告语等，提供多样化的创作思路与建议。
-                            </p>
-                        </div>
-                    </div>
-                    
-                    <!-- 场景卡片 4 -->
-                    <div class="bg-glass rounded-xl overflow-hidden border border-white/10 hover:border-primary/30 transition-all duration-500 group scroll-reveal scroll-reveal-delay-1">
-                        <div class="h-48 overflow-hidden">
-                            <img src="https://picsum.photos/id/180/800/400" alt="生活助手场景" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
-                        </div>
-                        <div class="p-6">
-                            <div class="flex items-center mb-4">
-                                <div class="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center mr-3">
-                                    <i class="fa fa-home text-primary"></i>
-                                </div>
-                                <h3 class="text-xl font-semibold">生活助手</h3>
-                            </div>
-                            <p class="text-gray-400">
-                                提供生活建议、旅行规划、美食推荐、健康咨询等服务，成为您生活中的智能助手。
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- 技术优势区域 -->
-        <section id="advantages" class="py-20 relative">
-            <div class="container mx-auto px-4 relative z-10">
-                <div class="text-center max-w-3xl mx-auto mb-16 scroll-reveal">
-                    <h2 class="text-3xl md:text-4xl font-bold mb-4">
-                        <span class="bg-gradient-to-r from-primary to-secondary text-gradient">技术优势</span>
-                    </h2>
-                    <p class="text-gray-400">FlyzAI-ChatGPT5 采用先进技术架构，带来卓越性能体验</p>
-                </div>
-
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center max-w-6xl mx-auto">
-                    <!-- 左侧图表 -->
-                    <div class="scroll-reveal">
-                        <div class="bg-glass rounded-xl p-6 border border-white/10 h-full">
-                            <h3 class="text-xl font-semibold mb-6 text-center">性能对比</h3>
-                            <div class="h-80">
-                                <canvas id="performanceChart"></canvas>
+            <!-- Chat Preview -->
+            <div class="relative h-56 md:h-64 max-w-3xl mx-auto rounded-xl overflow-hidden bg-glass border border-primary/20 rise" style="animation-delay: 0.2s;">
+                <div class="absolute inset-0 flex items-center justify-center p-4">
+                    <!-- Simulated chat interface -->
+                    <div class="w-full max-w-md space-y-3">
+                        <div class="flex gap-2">
+                            <div class="w-7 h-7 rounded-full bg-primary/30 flex-shrink-0"></div>
+                            <div class="bg-primary/10 rounded-lg rounded-tl-none px-3 py-2 text-sm max-w-[80%]">
+                                Hello! I'm FlyzAI. How can I help you?
                             </div>
                         </div>
-                    </div>
-                    
-                    <!-- 右侧优势列表 -->
-                    <div class="space-y-6">
-                        <div class="bg-glass rounded-xl p-6 border border-white/10 hover:border-primary/30 transition-all duration-300 scroll-reveal">
-                            <div class="flex items-start">
-                                <div class="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center mr-4 mt-1 flex-shrink-0">
-                                    <i class="fa fa-bolt text-primary text-xl"></i>
-                                </div>
-                                <div>
-                                    <h4 class="text-lg font-semibold mb-2">超高速响应</h4>
-                                    <p class="text-gray-400">
-                                        优化的模型架构与推理引擎，实现毫秒级响应速度，对话体验流畅无延迟。
-                                    </p>
-                                </div>
+                        <div class="flex gap-2 justify-end">
+                            <div class="bg-white/10 rounded-lg rounded-tr-none px-3 py-2 text-sm max-w-[80%]">
+                                What makes you different?
                             </div>
+                            <div class="w-7 h-7 rounded-full bg-gray-600 flex-shrink-0"></div>
                         </div>
-                        
-                        <div class="bg-glass rounded-xl p-6 border border-white/10 hover:border-primary/30 transition-all duration-300 scroll-reveal scroll-reveal-delay-1">
-                            <div class="flex items-start">
-                                <div class="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center mr-4 mt-1 flex-shrink-0">
-                                    <i class="fa fa-database text-primary text-xl"></i>
-                                </div>
-                                <div>
-                                    <h4 class="text-lg font-semibold mb-2">海量知识储备</h4>
-                                    <p class="text-gray-400">
-                                        基于海量数据训练，拥有广泛的知识覆盖，能够解答各领域专业问题。
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="bg-glass rounded-xl p-6 border border-white/10 hover:border-primary/30 transition-all duration-300 scroll-reveal scroll-reveal-delay-2">
-                            <div class="flex items-start">
-                                <div class="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center mr-4 mt-1 flex-shrink-0">
-                                    <i class="fa fa-microchip text-primary text-xl"></i>
-                                </div>
-                                <div>
-                                    <h4 class="text-lg font-semibold mb-2">高效资源占用</h4>
-                                    <p class="text-gray-400">
-                                        优化的模型压缩技术，在保证性能的同时大幅降低资源占用，适配各种设备。
-                                    </p>
-                                </div>
+                        <div class="flex gap-2">
+                            <div class="w-7 h-7 rounded-full bg-primary/30 flex-shrink-0"></div>
+                            <div class="bg-primary/10 rounded-lg rounded-tl-none px-3 py-2 text-sm max-w-[80%]">
+                                I offer faster responses, better understanding, and no login requirements.
                             </div>
                         </div>
                     </div>
@@ -503,27 +209,135 @@
             </div>
         </section>
 
-        <!-- 底部CTA区域 -->
-        <section class="py-20 bg-dark-light">
-            <div class="container mx-auto px-4">
-                <div class="max-w-4xl mx-auto bg-gradient-to-r from-primary/20 to-secondary/20 rounded-2xl p-8 md:p-12 border border-primary/30 relative overflow-hidden scroll-reveal">
-                    <!-- 背景装饰 -->
-                    <div class="absolute top-0 left-0 w-full h-full overflow-hidden opacity-20">
-                        <div class="absolute -top-20 -left-20 w-60 h-60 bg-primary rounded-full filter blur-3xl"></div>
-                        <div class="absolute -bottom-20 -right-20 w-60 h-60 bg-secondary rounded-full filter blur-3xl"></div>
+        <!-- Features Section -->
+        <section id="features" class="container mx-auto px-4 mb-12 rise" style="animation-delay: 0.4s;">
+            <h2 class="text-2xl font-bold mb-8 text-center">
+                <span class="bg-gradient-to-r from-primary to-secondary text-gradient">Core Features</span>
+            </h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Feature 1 -->
+                <div class="bg-glass p-5 rounded-xl border border-white/10 hover:border-primary/30 transition-all hover:-translate-y-1">
+                    <div class="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center mb-4">
+                        <i class="fa fa-comments text-primary"></i>
+                    </div>
+                    <h3 class="font-semibold mb-2">Natural Chat</h3>
+                    <p class="text-gray-400 text-sm">Human-like conversations with context awareness</p>
+                </div>
+                
+                <!-- Feature 2 -->
+                <div class="bg-glass p-5 rounded-xl border border-white/10 hover:border-primary/30 transition-all hover:-translate-y-1">
+                    <div class="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center mb-4">
+                        <i class="fa fa-bolt text-primary"></i>
+                    </div>
+                    <h3 class="font-semibold mb-2">Instant Responses</h3>
+                    <p class="text-gray-400 text-sm">Optimized for speed without quality loss</p>
+                </div>
+                
+                <!-- Feature 3 -->
+                <div class="bg-glass p-5 rounded-xl border border-white/10 hover:border-primary/30 transition-all hover:-translate-y-1">
+                    <div class="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center mb-4">
+                        <i class="fa fa-unlock-alt text-primary"></i>
+                    </div>
+                    <h3 class="font-semibold mb-2">No Restrictions</h3>
+                    <p class="text-gray-400 text-sm">Free access with no login or usage limits</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Capabilities Section -->
+        <section id="capabilities" class="container mx-auto px-4 mb-12 rise" style="animation-delay: 0.6s;">
+            <h2 class="text-2xl font-bold mb-8 text-center">
+                <span class="bg-gradient-to-r from-primary to-secondary text-gradient">What It Can Do</span>
+            </h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Capability 1 -->
+                <div class="bg-glass rounded-xl overflow-hidden border border-white/10 hover:border-primary/30 transition-all group">
+                    <div class="h-40 overflow-hidden">
+                        <img src="https://picsum.photos/id/0/600/400" alt="Content creation" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
+                    </div>
+                    <div class="p-5">
+                        <h3 class="font-semibold mb-2">Create Content</h3>
+                        <p class="text-gray-400 text-sm">Write articles, stories, and messages with ease</p>
+                    </div>
+                </div>
+                
+                <!-- Capability 2 -->
+                <div class="bg-glass rounded-xl overflow-hidden border border-white/10 hover:border-primary/30 transition-all group">
+                    <div class="h-40 overflow-hidden">
+                        <img src="https://picsum.photos/id/160/600/400" alt="Code assistance" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
+                    </div>
+                    <div class="p-5">
+                        <h3 class="font-semibold mb-2">Assist Coding</h3>
+                        <p class="text-gray-400 text-sm">Generate, debug and explain code in any language</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Performance Section -->
+        <section id="performance" class="container mx-auto px-4 mb-12 rise" style="animation-delay: 0.8s;">
+            <h2 class="text-2xl font-bold mb-8 text-center">
+                <span class="bg-gradient-to-r from-primary to-secondary text-gradient">Performance</span>
+            </h2>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center max-w-5xl mx-auto">
+                <!-- Performance Chart -->
+                <div class="bg-glass p-5 rounded-xl border border-white/10">
+                    <h3 class="text-base font-semibold mb-4">Capability Comparison</h3>
+                    <div class="h-64">
+                        <canvas id="performanceChart"></canvas>
+                    </div>
+                </div>
+                
+                <!-- Key Metrics -->
+                <div class="space-y-4">
+                    <div class="bg-glass p-5 rounded-xl border border-white/10 hover:border-primary/30 transition-all">
+                        <div class="flex items-start gap-3">
+                            <div class="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center flex-shrink-0">
+                                <i class="fa fa-bolt text-primary"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold mb-1">Faster Responses</h4>
+                                <p class="text-gray-400 text-sm">5x quicker than standard AI chatbots</p>
+                            </div>
+                        </div>
                     </div>
                     
-                    <div class="relative z-10 text-center">
-                        <h2 class="text-3xl md:text-4xl font-bold mb-6">
-                            开始体验智能对话的未来
-                        </h2>
-                        <p class="text-gray-300 mb-8 max-w-2xl mx-auto">
-                            FlyzAI-ChatGPT5融合最新AI技术，为您提供全方位智能服务，
-                            无论学习、工作还是生活，都能成为您的得力助手。
-                        </p>
-                        <a href="#chat-section" class="inline-block px-8 py-4 bg-gradient-to-r from-primary to-secondary rounded-full text-white font-medium text-lg shadow-lg shadow-primary/20 hover:shadow-primary/30 transform hover:-translate-y-1 hover:shadow-neon transition-all duration-300">
-                            开始对话
-                            <i class="fa fa-arrow-down ml-2"></i>
+                    <div class="bg-glass p-5 rounded-xl border border-white/10 hover:border-primary/30 transition-all">
+                        <div class="flex items-start gap-3">
+                            <div class="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center flex-shrink-0">
+                                <i class="fa fa-brain text-primary"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold mb-1">Better Understanding</h4>
+                                <p class="text-gray-400 text-sm">Superior context retention and comprehension</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CTA Section -->
+        <section class="container mx-auto px-4 rise" style="animation-delay: 1s;">
+            <div class="bg-gradient-to-r from-primary/20 to-secondary/20 rounded-xl p-6 md:p-8 text-center border border-primary/30 relative overflow-hidden">
+                <!-- Background elements -->
+                <div class="absolute -top-16 -right-16 w-48 h-48 bg-primary/30 rounded-full filter blur-3xl"></div>
+                <div class="absolute -bottom-16 -left-16 w-48 h-48 bg-secondary/30 rounded-full filter blur-3xl"></div>
+                
+                <div class="relative z-10">
+                    <h2 class="text-2xl md:text-3xl font-bold mb-4">Ready to Experience?</h2>
+                    <p class="text-gray-300 mb-6 max-w-md mx-auto">
+                        Try the advanced GPT5-powered chat without limitations
+                    </p>
+                    <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                        <a href="https://yzbjfpv.top/flyzai-login" class="btn-hover bg-gradient-to-r from-primary to-secondary text-white font-semibold py-3 px-8 rounded-full neon">
+                            <i class="fa fa-user-circle mr-2"></i>Login to Chat
+                        </a>
+                        <a href="https://yzbjfpv.top/flyzai-guest" class="btn-hover bg-white/10 border border-white/20 text-white font-semibold py-3 px-8 rounded-full">
+                            <i class="fa fa-eye mr-2"></i>Try as Guest
                         </a>
                     </div>
                 </div>
@@ -531,924 +345,226 @@
         </section>
     </main>
 
-    <!-- 页脚 -->
-    <footer class="bg-dark border-t border-primary/20 py-12 relative z-10">
+    <!-- Footer -->
+    <footer class="bg-dark-light border-t border-primary/20 py-8 relative z-10">
         <div class="container mx-auto px-4">
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
-                <div class="md:col-span-1">
-                    <div class="flex items-center space-x-2 mb-4">
-                        <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-primary to-secondary flex items-center justify-center shadow-neon">
-                            <i class="fa fa-bolt text-white text-xl"></i>
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
+                <div>
+                    <div class="flex items-center gap-2 mb-3">
+                        <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-secondary flex items-center justify-center neon">
+                            <i class="fa fa-bolt text-sm"></i>
                         </div>
-                        <h3 class="text-xl font-bold text-white">FlyzAI-ChatGPT5</h3>
+                        <span class="font-bold">FlyzAI<span class="text-primary">GPT5</span></span>
                     </div>
-                    <p class="text-gray-400 mb-4">
-                        全免费、无需登录、不限次数的AI对话平台，让每个人都能享受AI科技带来的便利。
+                    <p class="text-gray-400 text-sm mb-3">
+                        Advanced AI conversation platform
                     </p>
-                    <div class="flex space-x-4">
-                        <a href="#" class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-gray-400 hover:text-primary hover:bg-white/10 transition-colors">
-                            <i class="fa fa-weibo"></i>
+                    <div class="flex gap-3">
+                        <a href="#" class="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-gray-400 hover:text-primary transition-colors">
+                            <i class="fa fa-twitter"></i>
                         </a>
-                        <a href="#" class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-gray-400 hover:text-primary hover:bg-white/10 transition-colors">
-                            <i class="fa fa-weixin"></i>
-                        </a>
-                        <a href="#" class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-gray-400 hover:text-primary hover:bg-white/10 transition-colors">
-                            <i class="fa fa-github"></i>
+                        <a href="#" class="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-gray-400 hover:text-wechat transition-colors">
+                            <i class="fa fa-wechat"></i>
                         </a>
                     </div>
                 </div>
                 
                 <div>
-                    <h4 class="text-lg font-semibold mb-4">产品</h4>
-                    <ul class="space-y-2">
-                        <li><a href="https://yzbjfpv.top/flyzai-features.html" class="text-gray-400 hover:text-primary transition-colors">功能介绍</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-primary transition-colors">使用教程</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-primary transition-colors">更新日志</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-primary transition-colors">常见问题</a></li>
+                    <h4 class="font-semibold mb-3 text-sm">Product</h4>
+                    <ul class="space-y-1 text-sm">
+                        <li><a href="#features" class="text-gray-400 hover:text-primary transition-colors">Features</a></li>
+                        <li><a href="#capabilities" class="text-gray-400 hover:text-primary transition-colors">Capabilities</a></li>
                     </ul>
                 </div>
                 
                 <div>
-                    <h4 class="text-lg font-semibold mb-4">资源</h4>
-                    <ul class="space-y-2">
-                        <li><a href="#" class="text-gray-400 hover:text-primary transition-colors">开发者文档</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-primary transition-colors">API接口</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-primary transition-colors">应用案例</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-primary transition-colors">合作伙伴</a></li>
+                    <h4 class="font-semibold mb-3 text-sm">Resources</h4>
+                    <ul class="space-y-1 text-sm">
+                        <li><a href="#" class="text-gray-400 hover:text-primary transition-colors">Docs</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-primary transition-colors">Tutorials</a></li>
                     </ul>
                 </div>
                 
                 <div>
-                    <h4 class="text-lg font-semibold mb-4">关于我们</h4>
-                    <ul class="space-y-2">
-                        <li><a href="#" class="text-gray-400 hover:text-primary transition-colors">团队介绍</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-primary transition-colors">联系我们</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-primary transition-colors">加入我们</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-primary transition-colors">隐私政策</a></li>
+                    <h4 class="font-semibold mb-3 text-sm">Contact</h4>
+                    <ul class="space-y-2 text-sm">
+                        <li class="flex items-center gap-2">
+                            <i class="fa fa-wechat text-wechat"></i>
+                            <span class="text-gray-400">WeChat: YGWFK2024</span>
+                        </li>
+                        <li>
+                            <a href="#" class="text-gray-400 hover:text-primary transition-colors flex items-center gap-2">
+                                <i class="fa fa-envelope"></i>
+                                <span>Message Us</span>
+                            </a>
+                        </li>
                     </ul>
                 </div>
             </div>
             
-            <div class="pt-8 border-t border-white/10 text-center text-gray-500 text-sm">
-                <p>© 2025 FlyzAI团队. 保留所有权利.</p>
-                <p class="mt-2">TyloAI提供技术支持</p>
+            <div class="pt-4 border-t border-white/10 text-center text-gray-500 text-xs">
+                <p>© 2025 FlyzAI Technologies. All rights reserved.</p>
             </div>
         </div>
     </footer>
 
-    <!-- 广告弹窗 -->
-    <div id="adModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center opacity-0 pointer-events-none transition-opacity duration-300">
-        <div class="bg-dark-light border border-primary/30 rounded-2xl p-8 max-w-md w-full mx-4 relative transform scale-95 transition-transform duration-300" id="modalContent">
-            <button id="closeModal" class="absolute top-4 right-4 text-gray-400 hover:text-white transition-colors">
-                <i class="fa fa-times text-xl"></i>
+    <!-- Contact Modal with WeChat Info -->
+    <div id="contactModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center opacity-0 pointer-events-none transition-opacity duration-300">
+        <div class="bg-dark-light border border-primary/30 rounded-xl p-6 max-w-md w-full mx-4 transform scale-95 transition-transform duration-300">
+            <button id="closeModal" class="absolute top-3 right-3 text-gray-400 hover:text-white transition-colors">
+                <i class="fa fa-times"></i>
             </button>
-            <div class="text-center mb-6">
-                <div class="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4">
-                    <i class="fa fa-bullhorn text-primary text-2xl"></i>
+            <div class="text-center mb-4">
+                <div class="w-14 h-14 rounded-full bg-wechat/20 flex items-center justify-center mx-auto mb-4">
+                    <i class="fa fa-wechat text-wechat text-2xl"></i>
                 </div>
-                <h3 class="text-2xl font-bold mb-2">商务合作</h3>
-                <p class="text-gray-400">期待与您携手，共创AI生态新未来</p>
-            </div>
-            <div class="bg-white/5 rounded-xl p-6 mb-6 border border-white/10">
-                <div class="flex items-center justify-center space-x-3 mb-2">
-                    <i class="fa fa-weixin text-green-500 text-2xl"></i>
-                    <span class="text-xl font-medium">YGWFK2024</span>
+                <h3 class="text-xl font-bold mb-2">Contact Us</h3>
+                <p class="text-gray-400 text-sm mb-4">Connect with us on WeChat for support</p>
+                
+                <!-- WeChat ID Display -->
+                <div class="bg-white/5 rounded-lg p-4 mb-5 border border-wechat/30">
+                    <div class="flex items-center justify-center gap-3">
+                        <i class="fa fa-wechat text-wechat text-xl"></i>
+                        <span class="font-semibold text-white">YGWFK2024</span>
+                    </div>
+                    <p class="text-center text-gray-400 text-xs mt-2">Add this WeChat ID to connect</p>
                 </div>
-                <p class="text-center text-gray-400 text-sm">添加微信，洽谈广告合作事宜</p>
             </div>
-            <button id="closeAdButton" class="w-full py-3 bg-primary/10 hover:bg-primary/20 text-primary rounded-lg transition-colors">
-                关闭
-            </button>
+            
+            <a href="weixin://dl/chat?YGWFK2024" class="wechat-hover block w-full py-3 bg-wechat text-white rounded-lg transition-colors text-center font-medium">
+                <i class="fa fa-wechat mr-2"></i>Open in WeChat
+            </a>
         </div>
     </div>
 
+    <!-- Scripts -->
     <script>
-        // 页面加载完成后执行
-        document.addEventListener('DOMContentLoaded', function() {
-            // 背景音乐控制
-            const backgroundMusic = document.getElementById('backgroundMusic');
-            const musicControl = document.getElementById('musicControl');
-            let isPlaying = false;
-            
-            // 尝试自动播放音乐，处理浏览器自动播放限制
-            function tryPlayMusic() {
-                backgroundMusic.volume = 0.3; // 设置初始音量为30%
-                
-                backgroundMusic.play().then(() => {
-                    isPlaying = true;
-                    musicControl.innerHTML = '<i class="fa fa-volume-up"></i>';
-                }).catch(error => {
-                    console.log('自动播放失败，等待用户交互后播放:', error);
-                    musicControl.innerHTML = '<i class="fa fa-volume-off"></i>';
-                });
+        // Mobile menu toggle
+        document.getElementById('mobileMenuBtn').addEventListener('click', function() {
+            const menu = document.getElementById('mobileMenu');
+            menu.classList.toggle('hidden');
+            this.innerHTML = menu.classList.contains('hidden') 
+                ? '<i class="fa fa-bars"></i>' 
+                : '<i class="fa fa-times"></i>';
+        });
+
+        // Contact modal functionality
+        const contactModal = document.getElementById('contactModal');
+        const modalContent = contactModal.querySelector('div');
+        
+        function openModal() {
+            contactModal.classList.remove('opacity-0', 'pointer-events-none');
+            modalContent.classList.remove('scale-95');
+            modalContent.classList.add('scale-100');
+            document.body.style.overflow = 'hidden';
+        }
+        
+        function closeModal() {
+            contactModal.classList.add('opacity-0', 'pointer-events-none');
+            modalContent.classList.remove('scale-100');
+            modalContent.classList.add('scale-95');
+            document.body.style.overflow = 'auto';
+        }
+        
+        document.getElementById('contactBtn').addEventListener('click', openModal);
+        document.getElementById('mobileContactBtn').addEventListener('click', openModal);
+        document.getElementById('closeModal').addEventListener('click', closeModal);
+        
+        contactModal.addEventListener('click', (e) => {
+            if (e.target === contactModal) closeModal();
+        });
+
+        // Particles.js configuration
+        particlesJS('particles-js', {
+            "particles": {
+                "number": { "value": 60 },
+                "color": { "value": "#165DFF" },
+                "shape": { "type": "circle" },
+                "opacity": { "value": 0.5, "random": true },
+                "size": { "value": 2, "random": true },
+                "line_linked": {
+                    "enable": true,
+                    "distance": 120,
+                    "color": "#165DFF",
+                    "opacity": 0.2,
+                    "width": 1
+                },
+                "move": {
+                    "enable": true,
+                    "speed": 1,
+                    "direction": "none",
+                    "random": true
+                }
+            },
+            "interactivity": {
+                "onhover": {
+                    "enable": true,
+                    "mode": "grab"
+                },
+                "onclick": {
+                    "enable": true,
+                    "mode": "push"
+                }
             }
-            
-            // 初始尝试播放
-            tryPlayMusic();
-            
-            // 音乐控制按钮点击事件
-            musicControl.addEventListener('click', function() {
-                if (isPlaying) {
-                    backgroundMusic.pause();
-                    musicControl.innerHTML = '<i class="fa fa-volume-off"></i>';
-                } else {
-                    backgroundMusic.play();
-                    musicControl.innerHTML = '<i class="fa fa-volume-up"></i>';
-                }
-                isPlaying = !isPlaying;
-            });
-            
-            // 为了解决浏览器自动播放限制，在用户首次交互时尝试播放
-            document.addEventListener('click', function firstClickHandler() {
-                if (!isPlaying) {
-                    tryPlayMusic();
-                }
-                document.removeEventListener('click', firstClickHandler);
-            }, { once: true });
+        });
 
-            // 粒子背景初始化
-            particlesJS('particles-js', {
-                "particles": {
-                    "number": {
-                        "value": 80,
-                        "density": {
-                            "enable": true,
-                            "value_area": 800
-                        }
+        // Performance chart
+        const ctx = document.getElementById('performanceChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'radar',
+            data: {
+                labels: ['Speed', 'Understanding', 'Accuracy', 'Creativity', 'Code'],
+                datasets: [
+                    {
+                        label: 'FlyzAI-GPT5',
+                        data: [95, 92, 90, 94, 89],
+                        backgroundColor: 'rgba(22, 93, 255, 0.2)',
+                        borderColor: 'rgba(22, 93, 255, 1)',
+                        pointBackgroundColor: 'rgba(22, 93, 255, 1)',
+                        pointBorderColor: '#fff'
                     },
-                    "color": {
-                        "value": "#165DFF"
-                    },
-                    "shape": {
-                        "type": "circle"
-                    },
-                    "opacity": {
-                        "value": 0.5,
-                        "random": true
-                    },
-                    "size": {
-                        "value": 3,
-                        "random": true
-                    },
-                    "line_linked": {
-                        "enable": true,
-                        "distance": 150,
-                        "color": "#165DFF",
-                        "opacity": 0.1,
-                        "width": 1
-                    },
-                    "move": {
-                        "enable": true,
-                        "speed": 1,
-                        "direction": "none",
-                        "random": true,
-                        "straight": false,
-                        "out_mode": "out",
-                        "bounce": false
+                    {
+                        label: 'Standard AI',
+                        data: [70, 75, 72, 68, 65],
+                        backgroundColor: 'rgba(15, 198, 194, 0.2)',
+                        borderColor: 'rgba(15, 198, 194, 1)',
+                        pointBackgroundColor: 'rgba(15, 198, 194, 1)',
+                        pointBorderColor: '#fff'
+                    }
+                ]
+            },
+            options: {
+                scales: {
+                    r: {
+                        angleLines: { color: 'rgba(255,255,255,0.1)' },
+                        grid: { color: 'rgba(255,255,255,0.1)' },
+                        pointLabels: { color: 'rgba(255,255,255,0.7)', font: { size: 10 } },
+                        ticks: { color: 'rgba(255,255,255,0.5)', backdropColor: 'transparent' }
                     }
                 },
-                "interactivity": {
-                    "detect_on": "canvas",
-                    "events": {
-                        "onhover": {
-                            "enable": true,
-                            "mode": "grab"
-                        },
-                        "onclick": {
-                            "enable": true,
-                            "mode": "push"
-                        },
-                        "resize": true
-                    },
-                    "modes": {
-                        "grab": {
-                            "distance": 140,
-                            "line_linked": {
-                                "opacity": 0.3
-                            }
-                        },
-                        "push": {
-                            "particles_nb": 3
-                        }
-                    }
-                },
-                "retina_detect": true
-            });
-
-            // 性能对比图表
-            const ctx = document.getElementById('performanceChart').getContext('2d');
-            new Chart(ctx, {
-                type: 'radar',
-                data: {
-                    labels: ['响应速度', '理解能力', '生成质量', '多语言支持', '资源占用', '安全性'],
-                    datasets: [
-                        {
-                            label: 'FlyzAI-ChatGPT5',
-                            data: [95, 92, 90, 94, 88, 96],
-                            backgroundColor: 'rgba(22, 93, 255, 0.2)',
-                            borderColor: 'rgba(22, 93, 255, 1)',
-                            pointBackgroundColor: 'rgba(22, 93, 255, 1)',
-                            pointBorderColor: '#fff',
-                            pointHoverBackgroundColor: '#fff',
-                            pointHoverBorderColor: 'rgba(22, 93, 255, 1)'
-                        },
-                        {
-                            label: '同类产品平均',
-                            data: [70, 75, 72, 68, 65, 78],
-                            backgroundColor: 'rgba(15, 198, 194, 0.2)',
-                            borderColor: 'rgba(15, 198, 194, 1)',
-                            pointBackgroundColor: 'rgba(15, 198, 194, 1)',
-                            pointBorderColor: '#fff',
-                            pointHoverBackgroundColor: '#fff',
-                            pointHoverBorderColor: 'rgba(15, 198, 194, 1)'
-                        }
-                    ]
-                },
-                options: {
-                    scales: {
-                        r: {
-                            angleLines: {
-                                color: 'rgba(255, 255, 255, 0.1)'
-                            },
-                            grid: {
-                                color: 'rgba(255, 255, 255, 0.1)'
-                            },
-                            pointLabels: {
-                                color: 'rgba(255, 255, 255, 0.7)'
-                            },
-                            ticks: {
-                                color: 'rgba(255, 255, 255, 0.5)',
-                                backdropColor: 'transparent'
-                            }
-                        }
-                    },
-                    plugins: {
-                        legend: {
-                            labels: {
-                                color: 'rgba(255, 255, 255, 0.7)'
-                            }
-                        }
-                    }
+                plugins: {
+                    legend: { labels: { color: 'rgba(255,255,255,0.7)', font: { size: 10 } } }
                 }
-            });
+            }
+        });
 
-            // 滚动显示动画
-            function checkScroll() {
-                const elements = document.querySelectorAll('.scroll-reveal');
-                
-                elements.forEach(element => {
-                    const elementPosition = element.getBoundingClientRect().top;
-                    const windowHeight = window.innerHeight;
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth' });
                     
-                    if (elementPosition < windowHeight * 0.85) {
-                        element.classList.add('active');
-                    }
-                });
-            }
-            
-            // 初始检查
-            checkScroll();
-            
-            // 滚动时检查
-            window.addEventListener('scroll', checkScroll);
-
-            // 导航栏滚动效果
-            function handleNavbarScroll() {
-                const navbar = document.getElementById('navbar');
-                if (window.scrollY > 50) {
-                    navbar.classList.add('py-2');
-                    navbar.classList.remove('py-4');
-                    navbar.classList.add('shadow-lg');
-                } else {
-                    navbar.classList.add('py-4');
-                    navbar.classList.remove('py-2');
-                    navbar.classList.remove('shadow-lg');
-                }
-            }
-            
-            window.addEventListener('scroll', handleNavbarScroll);
-
-            // 移动端菜单切换
-            const mobileMenuBtn = document.getElementById('mobileMenuBtn');
-            const mobileMenu = document.getElementById('mobileMenu');
-            
-            mobileMenuBtn.addEventListener('click', () => {
-                mobileMenu.classList.toggle('hidden');
-                if (mobileMenuBtn.innerHTML.includes('bars')) {
-                    mobileMenuBtn.innerHTML = '<i class="fa fa-times"></i>';
-                } else {
-                    mobileMenuBtn.innerHTML = '<i class="fa fa-bars"></i>';
-                }
-            });
-
-            // 广告弹窗控制
-            const adModal = document.getElementById('adModal');
-            const modalContent = document.getElementById('modalContent');
-            const adButtons = [
-                document.getElementById('adButton'),
-                document.getElementById('mobileAdButton')
-            ];
-            const closeButtons = [
-                document.getElementById('closeModal'),
-                document.getElementById('closeAdButton')
-            ];
-            
-            function openModal() {
-                adModal.classList.remove('opacity-0', 'pointer-events-none');
-                modalContent.classList.remove('scale-95');
-                modalContent.classList.add('scale-100');
-                document.body.style.overflow = 'hidden';
-            }
-            
-            function closeModalFunc() {
-                adModal.classList.add('opacity-0', 'pointer-events-none');
-                modalContent.classList.remove('scale-100');
-                modalContent.classList.add('scale-95');
-                document.body.style.overflow = 'auto';
-            }
-            
-            adButtons.forEach(button => {
-                if (button) {
-                    button.addEventListener('click', openModal);
-                }
-            });
-            
-            closeButtons.forEach(button => {
-                if (button) {
-                    button.addEventListener('click', closeModalFunc);
-                }
-            });
-            
-            // 点击弹窗外部关闭
-            adModal.addEventListener('click', (e) => {
-                if (e.target === adModal) {
-                    closeModalFunc();
-                }
-            });
-
-            // 平滑滚动
-            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-                anchor.addEventListener('click', function (e) {
-                    e.preventDefault();
-                    
-                    // 关闭移动菜单（如果打开）
+                    // Close mobile menu if open
+                    const mobileMenu = document.getElementById('mobileMenu');
                     if (!mobileMenu.classList.contains('hidden')) {
                         mobileMenu.classList.add('hidden');
-                        mobileMenuBtn.innerHTML = '<i class="fa fa-bars"></i>';
+                        document.getElementById('mobileMenuBtn').innerHTML = '<i class="fa fa-bars"></i>';
                     }
-                    
-                    document.querySelector(this.getAttribute('href')) ? 
-                        document.querySelector(this.getAttribute('href')).scrollIntoView({ behavior: 'smooth' }) :
-                        document.getElementById('chatMessages').scrollIntoView({ behavior: 'smooth' });
-                });
+                }
             });
-
-            // 对话示例点击功能
-            document.querySelectorAll('.text-xs.px-3.py-1.bg-primary\\/10.rounded-full.cursor-pointer').forEach(el => {
-                el.addEventListener('click', function() {
-                    const chatInput = document.getElementById('chatInput');
-                    chatInput.value = this.textContent;
-                    chatInput.focus();
-                });
-            });
-
-            // 对话功能实现
-            class ChatInterface {
-                constructor() {
-                    this.storageKey = 'flyzai_chat_history_' + window.location.hostname;
-                    this.messages = this.loadMessages();
-                    this.isLoading = false;
-                    this.apiKey = 'sk-e1ed90c2effc4415beeee85845f66d05';
-                    this.apiUrl = 'https://api.deepseek.com/chat/completions';
-                    this.init();
-                }
-
-                init() {
-                    this.chatInput = document.getElementById('chatInput');
-                    this.sendButton = document.querySelector('.send-button');
-                    this.chatMessages = document.getElementById('chatMessages');
-                    this.clearChatBtn = document.getElementById('clearChatBtn');
-
-                    // 事件监听
-                    this.chatInput.addEventListener('keypress', (e) => {
-                        if (e.key === 'Enter' && !e.shiftKey) {
-                            e.preventDefault();
-                            this.sendMessage();
-                        }
-                    });
-
-                    this.sendButton.addEventListener('click', () => {
-                        this.sendMessage();
-                    });
-
-                    this.clearChatBtn.addEventListener('click', () => {
-                        this.clearChat();
-                    });
-
-                    // 加载保存的消息
-                    this.renderStoredMessages();
-                    
-                    // 自动聚焦输入框
-                    this.chatInput.focus();
-                }
-
-                // 从本地存储加载消息
-                loadMessages() {
-                    try {
-                        const stored = localStorage.getItem(this.storageKey);
-                        if (stored) {
-                            return JSON.parse(stored);
-                        }
-                    } catch (e) {
-                        console.error('Failed to load messages from localStorage:', e);
-                    }
-                    
-                    // 默认系统消息
-                    return [
-                        {
-                            role: 'system',
-                            content: 'You are FlyzAI, an intelligent, friendly, and professional AI assistant. You have the following characteristics:\n1. Your name is FlyzAI\n2. You support multimodal interaction and can understand text, images, etc.\n3. You have contextual memory capabilities and can remember conversation history\n4. You respond to user questions in a friendly and professional manner\n5. When users ask about your identity, please introduce yourself as FlyzAI powered by TyloAI\n6. You are committed to providing users with the best AI service experience\nPlease always maintain a friendly and professional attitude.'
-                        }
-                    ];
-                }
-
-                // 保存消息到本地存储
-                saveMessages() {
-                    try {
-                        localStorage.setItem(this.storageKey, JSON.stringify(this.messages));
-                    } catch (e) {
-                        console.error('Failed to save messages to localStorage:', e);
-                    }
-                }
-
-                // 渲染已存储的消息
-                renderStoredMessages() {
-                    // 清除现有消息
-                    this.chatMessages.innerHTML = '';
-                    
-                    // 跳过系统消息，只渲染用户和AI的消息
-                    for (const message of this.messages) {
-                        if (message.role === 'user' || message.role === 'assistant') {
-                            this.addMessageElement(message.role, message.content);
-                        }
-                    }
-                    
-                    this.scrollToBottom();
-                }
-
-                // 清除聊天记录
-                clearChat() {
-                    if (confirm('确定要清除聊天记录吗？')) {
-                        // 保留系统消息
-                        this.messages = [this.messages[0]];
-                        this.saveMessages();
-                        this.chatMessages.innerHTML = '';
-                    }
-                }
-
-                async sendMessage() {
-                    const message = this.chatInput.value.trim();
-                    if (!message || this.isLoading) return;
-
-                    // 添加用户消息
-                    this.addMessage('user', message);
-                    this.messages.push({ role: 'user', content: message });
-                    
-                    this.chatInput.value = '';
-                    this.setLoading(true);
-
-                    try {
-                        // 调用API
-                        await this.callDeepSeekAPI();
-                        
-                        // 保存消息到本地存储
-                        this.saveMessages();
-                    } catch (error) {
-                        this.addMessage('assistant', '抱歉，我遇到了一些技术问题。请检查网络连接或稍后再试。');
-                        console.error('API Error:', error);
-                    } finally {
-                        this.setLoading(false);
-                    }
-                }
-
-                async callDeepSeekAPI() {
-                    try {
-                        const response = await fetch(this.apiUrl, {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'Authorization': `Bearer ${this.apiKey}`
-                            },
-                            body: JSON.stringify({
-                                model: 'deepseek-chat',
-                                messages: this.messages,
-                                stream: true,
-                                max_tokens: 8192,
-                                temperature: 0.7,
-                                top_p: 0.9
-                            })
-                        });
-
-                        if (!response.ok) {
-                            throw new Error(`API请求失败: ${response.status} ${response.statusText}`);
-                        }
-
-                        // 处理流式响应
-                        const reader = response.body.getReader();
-                        const decoder = new TextDecoder();
-                        
-                        // 创建思考动画容器
-                        const thinkingDiv = document.createElement('div');
-                        thinkingDiv.className = 'message ai';
-                        thinkingDiv.innerHTML = '<div class="thinking-container"><div class="loading"></div></div>';
-                        this.chatMessages.appendChild(thinkingDiv);
-                        this.scrollToBottom();
-
-                        // 延迟创建实际消息容器
-                        await new Promise(resolve => setTimeout(resolve, 500));
-
-                        // 创建AI消息容器
-                        const messageDiv = document.createElement('div');
-                        messageDiv.className = 'message ai';
-
-                        const bubbleDiv = document.createElement('div');
-                        bubbleDiv.className = 'message-bubble typing-indicator';
-
-                        messageDiv.appendChild(bubbleDiv);
-
-                        // 用真实消息替换思考动画
-                        thinkingDiv.replaceWith(messageDiv);
-                        this.scrollToBottom();
-
-                        let aiResponse = '';
-                        let buffer = '';
-
-                        while (true) {
-                            const { done, value } = await reader.read();
-                            if (done) break;
-
-                            buffer += decoder.decode(value, { stream: true });
-                            const lines = buffer.split('\n');
-                            buffer = lines.pop(); // 保留不完整的行
-
-                            for (const line of lines) {
-                                if (line.trim() === '') continue;
-                                if (line.startsWith('data: ')) {
-                                    const data = line.slice(6);
-                                    if (data === '[DONE]') continue;
-                                    
-                                    try {
-                                        const json = JSON.parse(data);
-                                        const content = json.choices?.[0]?.delta?.content;
-                                        if (content) {
-                                            aiResponse += content;
-                                            // 实时更新UI
-                                            bubbleDiv.innerHTML = this.formatMarkdown(aiResponse);
-                                            this.scrollToBottom();
-                                        }
-                                    } catch (e) {
-                                        console.warn('JSON解析失败:', e);
-                                    }
-                                }
-                            }
-                        }
-
-                        // 移除打字指示器
-                        bubbleDiv.classList.remove('typing-indicator');
-                        
-                        // 处理Markdown格式
-                        if (aiResponse) {
-                            bubbleDiv.innerHTML = this.formatMarkdown(aiResponse);
-                            this.messages.push({ role: 'assistant', content: aiResponse });
-                        }
-
-                    } catch (error) {
-                        console.error('API调用失败:', error);
-                        throw error;
-                    }
-                }
-
-                addMessage(sender, text) {
-                    this.addMessageElement(sender, text);
-                    this.scrollToBottom();
-                }
-                
-                addMessageElement(sender, text) {
-                    const messageDiv = document.createElement('div');
-                    messageDiv.className = `message ${sender} animate-fade-in`;
-                    
-                    const bubbleDiv = document.createElement('div');
-                    bubbleDiv.className = 'message-bubble';
-                    
-                    // 如果是AI消息，处理Markdown格式
-                    if (sender === 'assistant') {
-                        bubbleDiv.innerHTML = this.formatMarkdown(text);
-                    } else {
-                        bubbleDiv.textContent = text;
-                    }
-                    
-                    messageDiv.appendChild(bubbleDiv);
-                    this.chatMessages.appendChild(messageDiv);
-                }
-
-                setLoading(loading) {
-                    this.isLoading = loading;
-                    this.sendButton.disabled = loading;
-                    
-                    if (loading) {
-                        this.sendButton.innerHTML = '<div class="loading"></div>';
-                    } else {
-                        this.sendButton.innerHTML = '<i class="fa fa-paper-plane"></i>';
-                    }
-                }
-
-                scrollToBottom() {
-                    this.chatMessages.scrollTop = this.chatMessages.scrollHeight;
-                }
-
-                // Markdown格式化函数
-                formatMarkdown(text) {
-                    // 转义HTML
-                    text = text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-                    
-                    // 代码块处理
-                    text = text.replace(/```(\w+)?\n([\s\S]*?)```/g, (match, lang, code) => {
-                        const language = lang || 'text';
-                        return `<pre><div class="code-header">${language}</div><code>${code.trim()}</code></pre>`;
-                    });
-                    
-                    // 行内代码
-                    text = text.replace(/`([^`]+)`/g, '<code>$1</code>');
-                    
-                    // 标题
-                    text = text.replace(/^### (.*$)/gm, '<h3>$1</h3>');
-                    text = text.replace(/^## (.*$)/gm, '<h2>$1</h2>');
-                    text = text.replace(/^# (.*$)/gm, '<h1>$1</h1>');
-                    
-                    // 粗体和斜体
-                    text = text.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
-                    text = text.replace(/\*([^*]+)\*/g, '<em>$1</em>');
-                    
-                    // 水平线
-                    text = text.replace(/^---$/gm, '<hr>');
-                    
-                    // 引用
-                    text = text.replace(/^> (.*)$/gm, '<blockquote>$1</blockquote>');
-                    
-                    // 无序列表
-                    text = text.replace(/^\* (.*)$/gm, '<li>$1</li>');
-                    text = text.replace(/(<li>.*<\/li>)/s, '<ul>$1</ul>');
-                    
-                    // 有序列表
-                    text = text.replace(/^\d+\. (.*)$/gm, '<li>$1</li>');
-                    
-                    // 表格处理
-                    const tableRegex = /(\|[^|\n]+\|[^|\n]*\n)+/g;
-                    text = text.replace(tableRegex, (match) => {
-                        const rows = match.trim().split('\n');
-                        let tableHTML = '<table>';
-                        
-                        rows.forEach((row, index) => {
-                            const cells = row.split('|').filter(cell => cell.trim());
-                            const tag = index === 0 ? 'th' : 'td';
-                            
-                            if (index === 1 && row.includes('---')) return; // 跳过分隔行
-                            
-                            tableHTML += '<tr>';
-                            cells.forEach(cell => {
-                                tableHTML += `<${tag}>${cell.trim()}</${tag}>`;
-                            });
-                            tableHTML += '</tr>';
-                        });
-                        
-                        tableHTML += '</table>';
-                        return tableHTML;
-                    });
-                    
-                    // 段落处理
-                    text = text.replace(/\n\n/g, '</p><p>');
-                    text = '<p>' + text + '</p>';
-                    
-                    // 清理空段落
-                    text = text.replace(/<p><\/p>/g, '');
-                    text = text.replace(/<p>\s*<\/p>/g, '');
-                    
-                    return text;
-                }
-            }
-
-            // 初始化聊天界面
-            new ChatInterface();
-
-            // 添加新的CSS样式
-            const style = document.createElement('style');
-            style.textContent = `
-                /* 对话模块样式 */
-                .chat-messages {
-                    height: 400px;
-                    overflow-y: auto;
-                    padding: 1rem;
-                }
-                
-                .message {
-                    margin-bottom: 1.5rem;
-                    animation: fadeIn 0.3s ease-out;
-                }
-                
-                .message.user {
-                    text-align: right;
-                }
-                
-                .message.ai {
-                    text-align: left;
-                }
-                
-                .message-bubble {
-                    display: inline-block;
-                    max-width: 80%;
-                    padding: 1rem 1.25rem;
-                    border-radius: 18px;
-                    word-wrap: break-word;
-                    line-height: 1.6;
-                    font-size: 0.95rem;
-                }
-                
-                .message.user .message-bubble {
-                    background: #165DFF;
-                    color: #fff;
-                }
-                
-                .message.ai .message-bubble {
-                    background: rgba(255, 255, 255, 0.08);
-                    color: #f0f0f0;
-                    border: 1px solid rgba(255, 255, 255, 0.1);
-                }
-                
-                /* 加载动画 */
-                .loading {
-                    display: inline-block;
-                    width: 20px;
-                    height: 20px;
-                    border: 3px solid rgba(255, 255, 255, 0.3);
-                    border-top: 3px solid #165DFF;
-                    border-radius: 50%;
-                    animation: spin 1s linear infinite;
-                }
-                
-                @keyframes spin {
-                    0% { transform: rotate(0deg); }
-                    100% { transform: rotate(360deg); }
-                }
-                
-                @keyframes fadeIn {
-                    from { opacity: 0; transform: translateY(10px); }
-                    to { opacity: 1; transform: translateY(0); }
-                }
-                
-                /* 代码样式 */
-                pre {
-                    background: rgba(0, 0, 0, 0.3);
-                    border-radius: 8px;
-                    padding: 0;
-                    margin: 1rem 0;
-                    overflow-x: auto;
-                    font-family: monospace;
-                }
-                
-                code {
-                    background: rgba(0, 0, 0, 0.2);
-                    padding: 0.2rem 0.4rem;
-                    border-radius: 4px;
-                    font-family: monospace;
-                    font-size: 0.9rem;
-                }
-                
-                pre code {
-                    background: none;
-                    padding: 0;
-                    display: block;
-                    padding: 1rem;
-                    line-height: 1.5;
-                }
-                
-                .code-header {
-                    background: rgba(0, 0, 0, 0.4);
-                    padding: 0.5rem 1rem;
-                    border-radius: 8px 8px 0 0;
-                    font-size: 0.8rem;
-                    color: #aaa;
-                    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-                    font-family: 'Inter', sans-serif;
-                }
-                
-                /* 富文本样式 */
-                .message.ai .message-bubble h1,
-                .message.ai .message-bubble h2,
-                .message.ai .message-bubble h3 {
-                    color: #fff;
-                    margin: 1rem 0 0.5rem 0;
-                    font-weight: 600;
-                }
-                
-                .message.ai .message-bubble h1 { font-size: 1.5rem; }
-                .message.ai .message-bubble h2 { font-size: 1.3rem; }
-                .message.ai .message-bubble h3 { font-size: 1.1rem; }
-                
-                .message.ai .message-bubble p {
-                    margin: 0.5rem 0;
-                }
-                
-                .message.ai .message-bubble ul,
-                .message.ai .message-bubble ol {
-                    margin: 0.5rem 0;
-                    padding-left: 1.5rem;
-                }
-                
-                .message.ai .message-bubble li {
-                    margin: 0.25rem 0;
-                }
-                
-                .message.ai .message-bubble blockquote {
-                    border-left: 3px solid #165DFF;
-                    margin: 1rem 0;
-                    padding-left: 1rem;
-                    font-style: italic;
-                    color: #bbb;
-                }
-                
-                .message.ai .message-bubble table {
-                    border-collapse: collapse;
-                    width: 100%;
-                    margin: 1rem 0;
-                }
-                
-                .message.ai .message-bubble th,
-                .message.ai .message-bubble td {
-                    border: 1px solid rgba(255, 255, 255, 0.1);
-                    padding: 0.5rem;
-                    text-align: left;
-                }
-                
-                .message.ai .message-bubble th {
-                    background: rgba(255, 255, 255, 0.05);
-                    font-weight: 600;
-                }
-                
-                .message.ai .message-bubble strong {
-                    font-weight: 600;
-                    color: #fff;
-                }
-                
-                .message.ai .message-bubble em {
-                    font-style: italic;
-                    color: #ddd;
-                }
-                
-                .message.ai .message-bubble hr {
-                    border: none;
-                    border-top: 1px solid rgba(255, 255, 255, 0.1);
-                    margin: 1rem 0;
-                }
-                
-                /* 打字指示器 */
-                .typing-indicator::after {
-                    content: '|';
-                    animation: blink 1s infinite;
-                }
-                
-                @keyframes blink {
-                    0%, 50% { opacity: 1; }
-                    51%, 100% { opacity: 0; }
-                }
-                
-                /* 思考容器 */
-                .thinking-container {
-                    padding: 1rem;
-                    text-align: center;
-                }
-                
-                /* 滚动条样式 */
-                .chat-messages::-webkit-scrollbar {
-                    width: 6px;
-                }
-                
-                .chat-messages::-webkit-scrollbar-track {
-                    background: rgba(255, 255, 255, 0.05);
-                    border-radius: 3px;
-                }
-                
-                .chat-messages::-webkit-scrollbar-thumb {
-                    background: rgba(255, 255, 255, 0.2);
-                    border-radius: 3px;
-                }
-                
-                .chat-messages::-webkit-scrollbar-thumb:hover {
-                    background: rgba(255, 255, 255, 0.3);
-                }
-            `;
-            document.head.appendChild(style);
         });
     </script>
 </body>
 </html>
-    
