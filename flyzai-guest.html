@@ -1,9 +1,11 @@
-<html lang="en"><head>
+<!DOCTYPE html>
+<html lang="en">
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FlyzAI - Guest Mode</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
     <!-- KaTeX for math formulas -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
@@ -24,6 +26,8 @@
             overflow-x: hidden;
             width: 100%;
             min-height: 100vh;
+            display: flex;
+            flex-direction: column;
         }
 
 
@@ -316,6 +320,7 @@
             display: flex;
             flex-direction: column;
             padding-top: 60px;
+            flex: 1;
         }
 
 
@@ -1152,7 +1157,7 @@
                 <!-- Title -->
                 <div class="hero-title">
                     <div class="brand-logo">
-                        <img src="https://p3-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/8268258f83f14e4791f0dc29909434b1.png~tplv-a9rns2rl98-24:720:720.png?rk3s=1fb89129&amp;x-expires=1757470109&amp;x-signature=Y0cG83R01JchQUc7%2BBU2kwd3d40%3D" alt="FlyzAI Logo">
+                        <i class="fas fa-robot text-4xl text-blue-600"></i>
                     </div>
                     <h1>FlyzAI - Guest Mode</h1>
                     <p>unrestricted use without login</p>
@@ -1176,7 +1181,7 @@
                             </button>
                         </div>
                     </div>
-                    <input type="file" class="file-input" id="fileInput" accept="image/*,.pdf,.txt,.doc,.docx" multiple="">
+                    <input type="file" class="file-input" id="fileInput" accept="image/*,.pdf,.txt,.doc,.docx" multiple>
                 </div>
 
 
@@ -1186,7 +1191,7 @@
                         <i class="fas fa-pen mr-2"></i> Writing Assistant
                     </div>
                     <div class="feature-tag" onclick="setPrompt('Explain quantum computing')">
-                        <i class="fas fa-brain mr-2"></i> Knowledge Q&amp;A
+                        <i class="fas fa-brain mr-2"></i> Knowledge Q&A
                     </div>
                     <div class="feature-tag" onclick="setPrompt('Write a sorting algorithm in Python')">
                         <i class="fas fa-code mr-2"></i> Code Assistant
@@ -1204,7 +1209,7 @@
                 <p>© 2023 FlyzAI. All rights reserved.</p>
                 <div class="footer-links">
                     <a href="#">Terms of Service</a>
-                    <a href="#">翼效架构</a>
+                    <a href="#">Privacy Policy</a>
                     <a href="#">Contact Us</a>
                     <a href="#">About FlyzAI</a>
                 </div>
@@ -1253,7 +1258,7 @@
         mermaid.initialize({ startOnLoad: true, theme: 'default' });
 
 
-        // API configuration
+        // API configuration - 已添加完整API配置
         const API_CONFIG = {
             linkapi: {
                 baseUrl: 'https://api.linkapi.org/v1',
@@ -1653,7 +1658,7 @@
         }
 
 
-        // Send message
+        // Send message - 完整的消息发送功能
         async function sendMessage() {
             const message = chatInput.value.trim();
             if (!message || isLoading) return;
@@ -1704,7 +1709,7 @@
 
 
             try {
-                // Call streaming API
+                // Call streaming API - 完整的API调用
                 await callStreamingAPI(message, streamingDiv);
                 
                 // 增加使用次数
@@ -1724,7 +1729,7 @@
         }
 
 
-        // Call LinkAPI with streaming
+        // Call LinkAPI with streaming - 完整的API调用实现
         async function callStreamingAPI(message, streamingDiv) {
             const apiUrl = `${API_CONFIG.linkapi.baseUrl}/chat/completions`;
             
@@ -1747,4 +1752,255 @@
                     "Content-Type": "application/json",
                     "Authorization": `Bearer ${API_CONFIG.linkapi.apiKey}`
                 },
-                body: JSON.stringify({</script></body></html>
+                body: JSON.stringify({
+                    model: API_CONFIG.linkapi.model,
+                    messages: requestMessages,
+                    temperature: 1.0,
+                    max_tokens: 1024,
+                    stream: true
+                }),
+                signal: currentController.signal
+            });
+
+
+            if (!response.ok) {
+                throw new Error(`API request failed: ${response.status}`);
+            }
+
+
+            const reader = response.body.getReader();
+            const decoder = new TextDecoder();
+            let fullContent = '';
+
+
+            while (true) {
+                const { done, value } = await reader.read();
+                if (done) break;
+
+
+                const chunk = decoder.decode(value, { stream: true });
+                const lines = chunk.split('\n');
+
+
+                for (const line of lines) {
+                    if (line.startsWith('data: ')) {
+                        const data = line.slice(6);
+                        if (data === '[DONE]') continue;
+
+
+                        try {
+                            const parsed = JSON.parse(data);
+                            const content = parsed.choices?.[0]?.delta?.content;
+                            
+                            if (content) {
+                                fullContent += content;
+                                updateStreamingMessage(streamingDiv, fullContent);
+                            }
+                        } catch (e) {
+                            console.warn('Failed to parse chunk:', e);
+                        }
+                    }
+                }
+            }
+
+
+            // Finalize streaming message
+            finalizeStreamingMessage(streamingDiv);
+            
+            // 保存助手回复到会话历史
+            const activeSession = chatSessions[currentChatId];
+            activeSession.messages.push({ role: 'assistant', content: fullContent });
+            activeSession.updatedAt = new Date().toISOString();
+            saveChatHistory();
+            updateChatHistoryUI();
+        }
+
+
+        // Create streaming message container
+        function createStreamingMessage() {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message assistant';
+            
+            const contentDiv = document.createElement('div');
+            contentDiv.className = 'message-content streaming-cursor';
+            
+            messageDiv.appendChild(contentDiv);
+            chatMessages.appendChild(messageDiv);
+            
+            return contentDiv;
+        }
+
+
+        // Update streaming message
+        function updateStreamingMessage(div, content) {
+            // Configure marked options
+            marked.setOptions({
+                breaks: true,
+                gfm: true,
+                tables: true,
+                headerIds: false,
+                mangle: false
+            });
+
+
+            // Parse and render markdown
+            let html = marked.parse(content);
+            
+            // 临时替换数学公式标记，防止被HTML解析
+            html = html.replace(/\$\$([\s\S]*?)\$\$/g, '<div class="math-display" data-math="$1"></div>');
+            html = html.replace(/\$(.*?)\$/g, '<span class="math-inline" data-math="$1"></span>');
+            
+            div.innerHTML = html;
+            
+            // Apply syntax highlighting to code blocks
+            div.querySelectorAll('pre code').forEach((block) => {
+                // Check if it's a mermaid diagram
+                if (block.classList.contains('language-mermaid')) {
+                    const mermaidDiv = document.createElement('div');
+                    mermaidDiv.className = 'mermaid';
+                    mermaidDiv.textContent = block.textContent;
+                    block.parentElement.replaceWith(mermaidDiv);
+                    mermaid.init(undefined, mermaidDiv);
+                } else {
+                    // Wrap in code block wrapper for copy button
+                    const wrapper = document.createElement('div');
+                    wrapper.className = 'code-block-wrapper';
+                    const pre = block.parentElement;
+                    pre.parentNode.insertBefore(wrapper, pre);
+                    wrapper.appendChild(pre);
+                    
+                    // Add copy button
+                    const copyBtn = document.createElement('button');
+                    copyBtn.className = 'copy-button';
+                    copyBtn.innerHTML = '<i class="fas fa-copy"></i>';
+                    copyBtn.onclick = () => copyCode(block);
+                    wrapper.appendChild(copyBtn);
+                    
+                    // Apply Prism highlighting
+                    Prism.highlightElement(block);
+                }
+            });
+            
+            // Render math formulas
+            div.querySelectorAll('.math-display').forEach(el => {
+                const math = el.getAttribute('data-math');
+                katex.render(math, el, { displayMode: true, throwOnError: false });
+            });
+            
+            div.querySelectorAll('.math-inline').forEach(el => {
+                const math = el.getAttribute('data-math');
+                katex.render(math, el, { displayMode: false, throwOnError: false });
+            });
+            
+            // Scroll to bottom
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+
+        // Finalize streaming message
+        function finalizeStreamingMessage(div) {
+            div.classList.remove('streaming-cursor');
+        }
+
+
+        // Add message to UI
+        function addMessage(role, content, files = []) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${role}`;
+            
+            // Add file previews if any
+            if (files.length > 0) {
+                files.forEach(file => {
+                    const preview = document.createElement('div');
+                    preview.className = 'file-preview';
+                    preview.innerHTML = `
+                        <i class="fas fa-file"></i>
+                        <span>${file.name}</span>
+                    `;
+                    messageDiv.appendChild(preview);
+                });
+            }
+            
+            const contentDiv = document.createElement('div');
+            contentDiv.className = 'message-content';
+            
+            if (role === 'assistant') {
+                // Use the same rendering logic as streaming
+                updateStreamingMessage(contentDiv, content);
+                contentDiv.classList.remove('streaming-cursor');
+            } else {
+                contentDiv.textContent = content;
+            }
+            
+            messageDiv.appendChild(contentDiv);
+            chatMessages.appendChild(messageDiv);
+            
+            // Scroll to bottom
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+
+        // Copy code to clipboard
+        function copyCode(codeBlock) {
+            const text = codeBlock.textContent;
+            navigator.clipboard.writeText(text).then(() => {
+                // Show feedback
+                const btn = codeBlock.parentElement.parentElement.querySelector('.copy-button');
+                const originalHtml = btn.innerHTML;
+                btn.innerHTML = '<i class="fas fa-check"></i>';
+                setTimeout(() => {
+                    btn.innerHTML = originalHtml;
+                }, 2000);
+            });
+        }
+
+
+        // Show error message
+        function showError(message) {
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'error-message';
+            errorDiv.textContent = message;
+            chatMessages.appendChild(errorDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+
+        // Set loading state
+        function setLoading(loading) {
+            isLoading = loading;
+            sendButton.disabled = loading;
+            
+            if (loading) {
+                sendButton.innerHTML = '<div class="loading"></div>';
+                sendButton.classList.remove('stop-mode');
+            } else {
+                sendButton.innerHTML = '<i class="fas fa-paper-plane"></i>';
+                currentController = null;
+            }
+            
+            // Toggle stop mode
+            if (loading && currentController) {
+                sendButton.classList.add('stop-mode');
+                sendButton.innerHTML = '<i class="fas fa-stop"></i>';
+                sendButton.disabled = false;
+                sendButton.onclick = () => {
+                    if (currentController) {
+                        currentController.abort();
+                        setLoading(false);
+                    }
+                };
+            } else {
+                sendButton.onclick = sendMessage;
+            }
+        }
+
+
+        // Make closeUpgradeModal globally accessible
+        window.closeUpgradeModal = closeUpgradeModal;
+        window.deleteChatSession = deleteChatSession;
+        window.setPrompt = setPrompt;
+    </script>
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js/vcd15cbe7772f49c399c6a5babf22c1241717689176015" integrity="sha512-ZpsOmlRQV6y907TI0dKBHq9Md29nnaEIPlkf84rnaERnq6zvWvPUqr2ft8M1aS28oN72PdrCzSjY4U6VaAw1EQ==" data-cf-beacon='{"version":"2024.11.0","token":"75ae739201534319bef943552eb72eee","r":1,"server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
+</body>
+</html>
+    
