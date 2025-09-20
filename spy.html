@@ -53,6 +53,46 @@
             color: #666;
             font-size: 14px;
         }
+        
+        /* 弹窗样式 */
+       .popup-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        
+       .popup-content {
+            background-color: white;
+            padding: 30px 20px;
+            border-radius: 8px;
+            text-align: center;
+            width: 80%;
+            max-width: 300px;
+        }
+        
+       .popup-message {
+            font-size: 18px;
+            color: #333;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+        
+       .popup-close {
+            background-color: #d97706;
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
@@ -68,6 +108,20 @@
     <div class="phone-text">电话：15201130697</div>
     <!-- 底部解释权声明 -->
     <div class="copyright">最终解释权归北京康易安科技有限公司所有</div>
+    
+    <!-- 生产日期弹窗 -->
+    <div id="productionDatePopup" class="popup-overlay">
+        <div class="popup-content">
+            <p class="popup-message">本批次生产日期：2025年9月12日</p>
+            <button class="popup-close" onclick="document.getElementById('productionDatePopup').style.display='none'">确定</button>
+        </div>
+    </div>
+
+    <script>
+        // 确保页面加载完成后显示弹窗
+        window.onload = function() {
+            document.getElementById('productionDatePopup').style.display = 'flex';
+        };
+    </script>
 </body>
 </html>
-    
