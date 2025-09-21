@@ -1,0 +1,758 @@
+<html lang="zh-CN">
+        <head>
+            <meta charset="utf-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1">
+            <title>智能后台|Flyz远征飞官网</title>
+            <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.2/dist/gsap.min.js"></script>
+            <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/build/three.min.js"></script>
+            <!-- Font Awesome -->
+            <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+            
+            <style>
+                body {
+                    margin: 0;
+                    min-height: 100vh;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    position: relative;
+                    overflow: hidden;
+                    padding-top: 100px; /* 增加顶部边距 */
+                    padding-bottom: 80px; /* 增加底部边距，避免与运行时间重叠 */
+                }
+                
+                /* 网站运行时间统计样式 */
+                .site-stats {
+                    position: fixed;
+                    bottom: 0;
+                    left: 0;
+                    width: 100%;
+                    background: rgba(0, 0, 0, 0.5);
+                    color: white;
+                    padding: 10px 0;
+                    text-align: center;
+                    font-size: 14px;
+                    z-index: 100;
+                    backdrop-filter: blur(5px);
+                }
+                
+                /* 导航栏样式 */
+                #navbar {
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    z-index: 100;
+                    transition: all 0.3s ease;
+                }
+                
+                .nav-gradient {
+                    background: linear-gradient(90deg, rgba(22,93,255,0.9) 0%, rgba(29,33,41,0.95) 100%);
+                    padding: 1rem 6rem;
+                }
+                
+                .nav-container {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    max-width: 1200px;
+                    margin: 0 auto;
+                }
+                
+                .logo {
+                    display: flex;
+                    align-items: center;
+                    gap: 10px;
+                    color: white;
+                    text-decoration: none;
+                }
+                
+                .logo img {
+                    height: 40px;
+                    border-radius: 5px;
+                }
+                
+                .logo-text {
+                    font-weight: bold;
+                    font-size: 1.2rem;
+                }
+                
+                .nav-links {
+                    display: flex;
+                    gap: 2rem;
+                }
+                
+                .nav-link {
+                    color: white;
+                    text-decoration: none;
+                    display: flex;
+                    align-items: center;
+                    gap: 5px;
+                    transition: color 0.3s ease;
+                }
+                
+                .nav-link:hover {
+                    color: #FF7D00;
+                }
+                
+                .menu-toggle {
+                    display: none;
+                    background: none;
+                    border: none;
+                    color: white;
+                    font-size: 1.5rem;
+                    cursor: pointer;
+                }
+                
+                .mobile-menu {
+                    display: none;
+                    background: rgba(29,33,41,0.95);
+                    padding: 1rem;
+                }
+                
+                .mobile-nav-links {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 1rem;
+                }
+                
+                /* 登录卡片样式 - 调整大小和间距 */
+                .login-card {
+                    background: rgba(255,255,255,0.08);
+                    border: 3px solid rgba(255,255,255,0.5);
+                    border-radius: 40px;
+                    padding: 30px 50px; /* 减少内边距，使卡片更小 */
+                    max-width: 500px; /* 增加最大宽度，左右拉宽 */
+                    width: 90%; /* 响应式宽度 */
+                    box-shadow: 0 0 50px rgba(255,255,255,0.6);
+                    position: relative;
+                    z-index: 2;
+                    margin: 20px; /* 增加外边距，使卡片不贴近导航栏 */
+                }
+                
+                .form-input {
+                    background: rgba(255,255,255,0.1);
+                    border: 3px solid rgba(255,255,255,0.6);
+                    border-radius: 28px;
+                    padding: 12px 20px; /* 减少输入框内边距 */
+                    font-size: 16px; /* 减小字体大小 */
+                    color: #fff;
+                    width: 100%;
+                    margin-bottom: 15px; /* 减少输入框间距，下边向上缩短 */
+                    box-sizing: border-box; /* 确保内边距包含在宽度内 */
+                }
+                
+                /* 优化按钮样式和间距 */
+                .btn-container {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 15px; /* 减少按钮之间的间距，下边向上缩短 */
+                    margin-top: 25px; /* 减少按钮组与输入框的间距，下边向上缩短 */
+                }
+                
+                .btn-primary, .btn-visitor {
+                    background: rgba(255,255,255,0.1);
+                    border: 3px solid rgba(255,255,255,0.6);
+                    border-radius: 28px;
+                    padding: 12px 0; /* 减少按钮内边距 */
+                    font-size: 18px; /* 减小按钮字体大小 */
+                    color: white;
+                    width: 100%;
+                    cursor: pointer;
+                    transition: all 0.3s ease;
+                }
+                
+                .btn-primary:hover, .btn-visitor:hover {
+                    background: rgba(255,255,255,0.2);
+                    transform: translateY(-2px);
+                }
+                
+                .title-animation {
+                    background: linear-gradient(90deg, #ff00ff, #00ffff);
+                    -webkit-background-clip: text;
+                    color: transparent;
+                    font-size: 2rem; /* 减小标题字体大小 */
+                    animation: breathe 2s infinite;
+                    text-align: center;
+                    margin-bottom: 25px; /* 减少标题与输入框的间距，下边向上缩短 */
+                }
+                
+                @keyframes breathe { 0%,100%{transform:scale(1);} 50%{transform:scale(1.1);} }
+                
+                /* 广告样式 */
+                .ad-container {
+                    position: fixed;
+                    right: -400px; /* 初始隐藏在右侧 */
+                    top: 50%;
+                    transform: translateY(-50%);
+                    width: 300px;
+                    background: white;
+                    border-radius: 15px 0 0 15px;
+                    box-shadow: -5px 0 15px rgba(0,0,0,0.3);
+                    z-index: 10;
+                    transition: right 0.5s ease;
+                }
+                
+                .ad-header {
+                    background: white;
+                    padding: 15px;
+                    border-bottom: 1px solid #eee;
+                    position: relative;
+                }
+                
+                .ad-title {
+                    margin: 0;
+                    color: black;
+                    font-size: 18px;
+                    text-align: center;
+                }
+                
+                .ad-close {
+                    position: absolute;
+                    top: 10px;
+                    right: 10px;
+                    width: 30px;
+                    height: 30px;
+                    background: black;
+                    color: white;
+                    border: none;
+                    border-radius: 50%;
+                    font-size: 20px;
+                    cursor: pointer;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    padding: 0;
+                }
+                
+                .ad-image {
+                    width: 100%;
+                    height: 300px;
+                    overflow: hidden;
+                }
+                
+                .ad-image img {
+                    width: 100%;
+                    height: 100%;
+                    object-fit: cover;
+                }
+                
+                .ad-footer {
+                    background: white;
+                    padding: 15px;
+                    text-align: center;
+                }
+                
+                .ad-contact {
+                    margin: 0;
+                    color: black;
+                    font-size: 16px;
+                }
+                
+                /* 弹窗样式 */
+                .modal {
+                    display: none;
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    background: rgba(0,0,0,0.5);
+                    z-index: 1000;
+                    justify-content: center;
+                    align-items: center;
+                }
+                
+                .modal-content {
+                    background: white;
+                    padding: 2rem;
+                    border-radius: 15px;
+                    font-size: 1.2rem;
+                    text-align: center;
+                    animation: pop 0.3s;
+                }
+                
+                /* 游客登录提示弹窗 */
+                .visitor-modal {
+                    display: none;
+                    position: fixed;
+                    top: 50%;
+                    left: 50%;
+                    transform: translate(-50%, -50%);
+                    background: rgba(255,255,255,0.95);
+                    color: #165DFF;
+                    padding: 20px 30px;
+                    border-radius: 15px;
+                    box-shadow: 0 0 20px rgba(0,0,0,0.3);
+                    z-index: 1001;
+                    max-width: 80%;
+                    text-align: center;
+                    font-size: 1.2rem;
+                    font-weight: bold;
+                    animation: fadeIn 0.5s;
+                }
+                
+                @keyframes pop {
+                    0% { transform: scale(0.8); opacity: 0; }
+                    100% { transform: scale(1); opacity: 1; }
+                }
+                
+                @keyframes fadeIn {
+                    0% { opacity: 0; }
+                    100% { opacity: 1; }
+                }
+                
+                /* 响应式调整 */
+                @media (max-width: 768px) {
+                    .nav-links {
+                        display: none;
+                    }
+                    
+                    .menu-toggle {
+                        display: block;
+                    }
+                    
+                    .mobile-menu.active {
+                        display: block;
+                    }
+                    
+                    .login-card {
+                        padding: 25px 30px; /* 移动端进一步减少内边距 */
+                        margin: 15px; /* 移动端减少外边距 */
+                        max-width: 400px; /* 移动端调整最大宽度 */
+                    }
+                    
+                    .visitor-modal {
+                        font-size: 1rem;
+                        padding: 15px 20px;
+                    }
+                    
+                    /* 移动端调整运行时间显示 */
+                    .site-stats {
+                        font-size: 12px;
+                        padding: 8px 0;
+                    }
+                    
+                    /* 移动端调整按钮样式 */
+                    .btn-primary, .btn-visitor {
+                        padding: 10px 0; /* 移动端减少按钮内边距 */
+                        font-size: 16px; /* 移动端减小按钮字体大小 */
+                    }
+                    
+                    .title-animation {
+                        font-size: 1.8rem; /* 移动端减小标题字体大小 */
+                        margin-bottom: 20px; /* 移动端减少标题与输入框的间距 */
+                    }
+                    
+                    .form-input {
+                        padding: 10px 15px; /* 移动端减少输入框内边距 */
+                        font-size: 14px; /* 移动端减小输入框字体大小 */
+                        margin-bottom: 15px; /* 移动端调整输入框间距 */
+                    }
+                    
+                    .btn-container {
+                        gap: 15px; /* 移动端调整按钮之间的间距 */
+                        margin-top: 20px; /* 移动端调整按钮组与输入框的间距 */
+                    }
+                }
+            </style>
+        </head>
+        <body style="background: linear-gradient(135deg, rgb(22, 93, 255), rgb(64, 224, 208));">
+            <!-- 导航栏 -->
+            <header id="navbar">
+                <nav class="nav-gradient">
+                    <div class="nav-container">
+                        <!-- Logo -->
+                        <a href="#" class="logo">
+                            <img src="https://img520.com/UIGuUV.jpeg" alt="Flyz远征飞Logo" 
+                                 onerror="this.onerror=null;this.src='https://picsum.photos/40/40'">
+                            <span class="logo-text">Flyz远征飞</span>
+                        </a>
+                        
+                        <!-- 桌面导航 -->
+                        <div class="nav-links">
+                            <a href="#" class="nav-link nav-item">
+                                <i class="fa fa-home mr-2"></i>智能后台
+                            </a>
+                            <a href="#" class="nav-link nav-item">
+                                <i class="fa fa-download mr-2"></i>抖音
+                            </a>
+                            <a href="#" class="nav-link nav-item">
+                                <i class="fa fa-shopping-bag mr-2"></i>快手
+                            </a>
+                            <a href="#" class="nav-link nav-item">
+                                <i class="fa fa-wrench mr-2"></i>小红书
+                            </a>
+                            <a href="#" class="nav-link nav-item">
+                                <i class="fa fa-user-plus mr-2"></i>加我WX
+                            </a>
+                        </div>
+                        
+                        <!-- 移动端菜单按钮 -->
+                        <button class="menu-toggle" id="menuToggle">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                    </div>
+                </nav>
+                
+                <!-- 移动端导航菜单 -->
+                <div class="mobile-menu" id="mobileMenu">
+                    <div class="mobile-nav-links">
+                        <a href="#" class="nav-link nav-item">
+                            <i class="fa fa-home mr-2"></i>首页
+                        </a>
+                        <a href="#" class="nav-link nav-item">
+                            <i class="fa fa-download mr-2"></i>下载中心
+                        </a>
+                        <a href="#" class="nav-link nav-item">
+                            <i class="fa fa-shopping-bag mr-2"></i>严选商城
+                        </a>
+                        <a href="#" class="nav-link nav-item">
+                            <i class="fa fa-wrench mr-2"></i>维修专区
+                        </a>
+                        <a href="#" class="nav-link nav-item">
+                            <i class="fa fa-user-plus mr-2"></i>加我WX
+                        </a>
+                    </div>
+                </div>
+            </header>
+            
+            <div id="threejs-container" style="position:fixed;width:100%;height:100%;top:0;left:0;z-index:1;"></div>
+            
+            <!-- 广告容器 -->
+            <div class="ad-container" id="adContainer">
+                <div class="ad-header">
+                    <h3 class="ad-title">航模背包—飞阅传媒出品</h3>
+                    <button class="ad-close" id="adClose">×</button>
+                </div>
+                <div class="ad-image">
+                    <img src="https://www.img520.com/7IwP91.jpeg" alt="航模背包">
+                </div>
+                <div class="ad-footer">
+                    <p class="ad-contact">联系微信ID：feiyue580231低价购买</p>
+                </div>
+            </div>
+            
+            <!-- 登录弹窗 -->
+            <div class="modal" id="loginModal">
+                <div class="modal-content">
+                    <p>测试版本不支持哦~</p>
+                </div>
+            </div>
+            
+            <!-- 游客登录提示弹窗 -->
+            <div class="visitor-modal" id="visitorModal">
+                <p>请添加微信ID：YGWFK2024注  册</p>
+            </div>
+            
+            <div class="login-card">
+                <h2 class="title-animation">Flyz远征飞智能后台</h2>
+                <form id="login-form" class="space-y-6">
+                    <input type="text" class="form-input" placeholder="版本:20250921测试版">
+                    <input type="password" class="form-input" placeholder="状态:正在运行">
+                    <div class="btn-container">
+                        <button type="submit" class="btn-primary">登录</button>
+                        <button type="button" class="btn-visitor" id="visitorLogin">注册账号</button>
+                    </div>
+                </form>
+            </div>
+            
+            <!-- 网站运行时间统计 -->
+            <div class="site-stats">
+                <span id="running-time">网站已安全运行：0天0时0分0秒</span>
+            </div>
+
+            <script>
+                document.addEventListener('DOMContentLoaded', () => {
+                    // 网站运行时间统计功能
+                    function updateRunningTime() {
+                        // 固定网页建立时间：2024年8月9日上午8点58分整
+                        const startTime = new Date(2025, 9, 21, 8, 40, 0); // 月份从0开始，所以8月是7
+                        const now = new Date();
+                        const diff = now - startTime; // 毫秒数
+                        
+                        // 计算差值（只显示天、时、分、秒）
+                        const totalSeconds = Math.floor(diff / 1000);
+                        const seconds = totalSeconds % 60;
+                        
+                        const totalMinutes = Math.floor(totalSeconds / 60);
+                        const minutes = totalMinutes % 60;
+                        
+                        const totalHours = Math.floor(totalMinutes / 60);
+                        const hours = totalHours % 24;
+                        
+                        const days = Math.floor(totalHours / 24);
+                        
+                        // 更新显示
+                        const timeElement = document.getElementById('running-time');
+                        timeElement.textContent = `网站已安全运行：${days}天${hours}时${minutes}分${seconds}秒`;
+                    }
+                    
+                    // 初始更新一次
+                    updateRunningTime();
+                    // 每秒更新一次
+                    setInterval(updateRunningTime, 1000);
+                    
+                    // 导航菜单切换
+                    const menuToggle = document.getElementById('menuToggle');
+                    const mobileMenu = document.getElementById('mobileMenu');
+                    
+                    menuToggle.addEventListener('click', () => {
+                        mobileMenu.classList.toggle('active');
+                    });
+                    
+                    // 导航项点击事件 - 显示登录提示
+                    const navItems = document.querySelectorAll('.nav-item');
+                    const loginModal = document.getElementById('loginModal');
+                    
+                    navItems.forEach(item => {
+                        item.addEventListener('click', (e) => {
+                            e.preventDefault();
+                            // 显示弹窗
+                            loginModal.style.display = 'flex';
+                            
+                            // 3秒后隐藏弹窗
+                            setTimeout(() => {
+                                loginModal.style.display = 'none';
+                            }, 2000);
+                        });
+                    });
+                    
+                    // 广告弹出动画
+                    setTimeout(() => {
+                        const ad = document.getElementById('adContainer');
+                        ad.style.right = '0';
+                    }, 1000);
+                    
+                    // 关闭广告
+                    document.getElementById('adClose').addEventListener('click', () => {
+                        document.getElementById('adContainer').style.right = '-400px';
+                    });
+                    
+                    // 更快的背景渐变动画 (1秒切换一次)
+                    const bgColors = [
+                        'linear-gradient(135deg, rgb(22, 93, 255), rgb(64, 224, 208))',
+                        'linear-gradient(135deg, #165DFF, #36d7b7)',
+                        'linear-gradient(135deg, #4ecdc4, #0A2463)',
+                        'linear-gradient(135deg, #36d7b7, #165DFF)'
+                    ];
+                    
+                    let colorIndex = 0;
+                    setInterval(() => {
+                        colorIndex = (colorIndex + 1) % bgColors.length;
+                        gsap.to(document.body, {
+                            background: bgColors[colorIndex], 
+                            duration: 1, 
+                            ease: 'power2'
+                        });
+                    }, 1000);
+
+                    // Three.js 初始化 - 全屏覆盖的粒子效果
+                    const container = document.getElementById('threejs-container');
+                    const scene = new THREE.Scene();
+                    const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
+                    const renderer = new THREE.WebGLRenderer({alpha: true, antialias: true});
+                    renderer.setSize(window.innerWidth, window.innerHeight);
+                    container.appendChild(renderer.domElement);
+                    camera.position.z = 5;
+
+                    // 减少粒子数量，分散分布
+                    const particlesCount = 800; // 减少到800个粒子
+                    const geometry = new THREE.BufferGeometry();
+                    const pos = new Float32Array(particlesCount * 3);
+                    const velocities = new Float32Array(particlesCount * 3); // 存储每个粒子的速度
+                    
+                    // 更广泛的分布范围
+                    for (let i = 0; i < particlesCount; i++) {
+                        const p = i * 3;
+                        pos[p] = (Math.random() - 0.5) * 40; // 范围扩展到±20，更加分散
+                        pos[p+1] = (Math.random() - 0.5) * 40;
+                        pos[p+2] = (Math.random() - 0.5) * 40;
+                        
+                        // 为每个粒子设置初始速度
+                        velocities[p] = (Math.random() - 0.5) * 0.02;
+                        velocities[p+1] = (Math.random() - 0.5) * 0.02;
+                        velocities[p+2] = (Math.random() - 0.5) * 0.005;
+                    }
+                    
+                    geometry.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+                    
+                    // 多彩粒子材质
+                    const material = new THREE.PointsMaterial({
+                        size: 0.1, // 增加粒子大小，让单个粒子更明显
+                        transparent: true,
+                        opacity: 0.8,
+                        color: 0xffffff,
+                        blending: THREE.AdditiveBlending
+                    });
+                    
+                    const points = new THREE.Points(geometry, material);
+                    scene.add(points);
+
+                    // 添加粒子连接线
+                    const lineGeometry = new THREE.BufferGeometry();
+                    const lineVertices = new Float32Array(particlesCount * 3);
+                    
+                    // 粒子连接线材质
+                    const lineMaterial = new THREE.LineBasicMaterial({
+                        color: 0xffffff,
+                        transparent: true,
+                        opacity: 0.2
+                    });
+                    
+                    const lines = new THREE.LineSegments(lineGeometry, lineMaterial);
+                    scene.add(lines);
+
+                    // 粒子动画 - 自由随机移动
+                    function animate() {
+                        requestAnimationFrame(animate);
+                        
+                        // 缓慢旋转整个粒子系统
+                        points.rotation.x += 0.0005;
+                        points.rotation.y += 0.0005;
+                        
+                        // 粒子自由移动，不再重置位置
+                        const pos = geometry.attributes.position;
+                        for (let i = 0; i < particlesCount; i++) {
+                            const p = i * 3;
+                            
+                            // 应用速度移动粒子
+                            pos.array[p] += velocities[p];
+                            pos.array[p+1] += velocities[p+1];
+                            pos.array[p+2] += velocities[p+2];
+                            
+                            // 轻微随机加速度，让运动更自然
+                            velocities[p] += (Math.random() - 0.5) * 0.0001;
+                            velocities[p+1] += (Math.random() - 0.5) * 0.0001;
+                            velocities[p+2] += (Math.random() - 0.5) * 0.00005;
+                            
+                            // 限制最大速度
+                            const maxSpeed = 0.03;
+                            const speed = Math.sqrt(
+                                velocities[p] * velocities[p] + 
+                                velocities[p+1] * velocities[p+1] + 
+                                velocities[p+2] * velocities[p+2]
+                            );
+                            
+                            if (speed > maxSpeed) {
+                                velocities[p] *= maxSpeed / speed;
+                                velocities[p+1] *= maxSpeed / speed;
+                                velocities[p+2] *= maxSpeed / speed;
+                            }
+                        }
+                        pos.needsUpdate = true;
+                        
+                        // 更新连接线
+                        updateLines();
+                        
+                        renderer.render(scene, camera);
+                    }
+                    animate();
+
+                    // 更新粒子之间的连接线
+                    function updateLines() {
+                        const positions = geometry.attributes.position.array;
+                        const linePositions = lineGeometry.attributes.position;
+                        
+                        let index = 0;
+                        const threshold = 2.5; // 增加阈值，让粒子更容易连接
+                        
+                        // 简化版：只连接相邻的粒子
+                        for (let i = 0; i < particlesCount - 1; i++) {
+                            const i3 = i * 3;
+                            const j3 = (i + 1) * 3;
+                            
+                            // 计算距离
+                            const dx = positions[i3] - positions[j3];
+                            const dy = positions[i3+1] - positions[j3+1];
+                            const dz = positions[i3+2] - positions[j3+2];
+                            const distance = Math.sqrt(dx * dx + dy * dy + dz * dz);
+                            
+                            if (distance < threshold) {
+                                lineVertices[index++] = positions[i3];
+                                lineVertices[index++] = positions[i3+1];
+                                lineVertices[index++] = positions[i3+2];
+                                
+                                lineVertices[index++] = positions[j3];
+                                lineVertices[index++] = positions[j3+1];
+                                lineVertices[index++] = positions[j3+2];
+                            }
+                        }
+                        
+                        if (linePositions) {
+                            linePositions.copyArray(lineVertices);
+                            linePositions.needsUpdate = true;
+                        } else {
+                            lineGeometry.setAttribute('position', new THREE.BufferAttribute(lineVertices, 3));
+                        }
+                        
+                        // 动态调整线条的可见顶点数量
+                        lineGeometry.setDrawRange(0, index / 3);
+                    }
+
+                    // 窗口大小调整
+                    window.addEventListener('resize', () => {
+                        camera.aspect = window.innerWidth / window.innerHeight;
+                        camera.updateProjectionMatrix();
+                        renderer.setSize(window.innerWidth, window.innerHeight);
+                    });
+
+                    // 登录逻辑 - 多账号验证（使用指定账号密码）
+                    const form = document.getElementById('login-form');
+                    form.addEventListener('submit', e => {
+                        e.preventDefault();
+                        // 获取输入的用户名和密码
+                        const username = form.querySelectorAll('.form-input')[0].value;
+                        const password = form.querySelectorAll('.form-input')[1].value;
+                        
+                        // 配置指定的账号密码列表（修复了对象间缺少逗号的语法错误）
+                        const validAccounts = [
+                            {user: 'yaosiqi777', pass: 'admin123'},
+                            {user: 'lifegoeson', pass: '133299'},
+                            {user: 'AriseLi', pass: '1234567890'},
+                            {user: 'xmz0401', pass: 'XKzxpXMC402'},
+                            {user: '津威-fpv', pass: 'jv77336'},
+                            {user: '114514', pass: '415411'},
+                            {user: '院长', pass: '250107'},
+                            {user: '亜', pass: 'Lyd135790'},
+                            {user: 'Administrator', pass: 'Administrato'},
+                            {user: '387912583', pass: 'lvhongwei10225'},
+                            {user: 'YZ', pass: 'Lyz201966'},
+                            {user: '387912583', pass: 'lvhongwei10225'},
+                            {user: 'qaz1234567', pass: 'qaz7654321'},
+                            {user: '240010065', pass: '821789'},
+                            {user: '13722223757', pass: 'imaginati0n'}    
+                        ];
+                        
+                        // 验证账号密码是否匹配
+                        const isMatch = validAccounts.some(account => 
+                            account.user === username && account.pass === password
+                        );
+                        
+                        if (isMatch) {
+                            // 验证通过，执行登录跳转
+                            setTimeout(() => {
+                                location.href = 'https://yzbjfpv.top/20250709.html';
+                            }, 1000);
+                        } else {
+                            // 验证失败，显示错误提示
+                            alert('用户名或密码不正确，请重新输入');
+                        }
+                    });
+                    
+                    // 游客登录 - 显示注册提示
+                    document.getElementById('visitorLogin').addEventListener('click', () => {
+                        const visitorModal = document.getElementById('visitorModal');
+                        
+                        // 显示提示弹窗
+                        visitorModal.style.display = 'block';
+                        
+                        // 5秒后隐藏弹窗
+                        setTimeout(() => {
+                            visitorModal.style.display = 'none';
+                        }, 5000);
+                    });
+                });
+            </script>
+        </body>
+        </html>
