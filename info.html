@@ -96,6 +96,16 @@
             color: #FF7D00;
         }
         
+        .nav-link.disabled {
+            color: #888;
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+        
+        .nav-link.disabled:hover {
+            color: #888;
+        }
+        
         .menu-toggle {
             display: none;
             background: none;
@@ -425,6 +435,11 @@
             background: #007E33;
         }
         
+        /* 登录后隐藏登录卡片 */
+        .logged-in .login-card {
+            display: none;
+        }
+        
         /* 响应式调整 */
         @media (max-width: 768px) {
             .nav-links {
@@ -512,17 +527,17 @@
                 <!-- 桌面导航 -->
                 <div class="nav-links">
                     <!-- 智能后台跳转外部链接 -->
-                    <a href="https://www.yzbjfpv.top/info.html" target="_self" class="nav-link nav-item">
+                    <a href="https://www.yzbjfpv.top/info.html" target="_self" class="nav-link nav-item disabled" data-require-login="true">
                         <i class="fa fa-home mr-2"></i>智能后台
                     </a>
                     <!-- 抖音/快手/小红书嵌入当前页 -->
-                    <div class="nav-link nav-item embed-link" data-url="https://www.douyin.com">
+                    <div class="nav-link nav-item embed-link disabled" data-url="https://www.douyin.com" data-require-login="true">
                         <i class="fa fa-download mr-2"></i>抖音
                     </div>
-                    <div class="nav-link nav-item embed-link" data-url="https://www.kuaishou.com">
+                    <div class="nav-link nav-item embed-link disabled" data-url="https://www.kuaishou.com" data-require-login="true">
                         <i class="fa fa-shopping-bag mr-2"></i>快手
                     </div>
-                    <div class="nav-link nav-item embed-link" data-url="https://www.xiaohongshu.com">
+                    <div class="nav-link nav-item embed-link disabled" data-url="https://www.xiaohongshu.com" data-require-login="true">
                         <i class="fa fa-wrench mr-2"></i>小红书
                     </div>
                     <!-- 移除"加我微信"栏目 -->
@@ -538,16 +553,16 @@
         <!-- 移动端导航菜单 -->
         <div class="mobile-menu" id="mobileMenu">
             <div class="mobile-nav-links">
-                <a href="https://www.yzbjfpv.top/info.html" target="_self" class="nav-link nav-item">
+                <a href="https://www.yzbjfpv.top/info.html" target="_self" class="nav-link nav-item disabled" data-require-login="true">
                     <i class="fa fa-home mr-2"></i>智能后台
                 </a>
-                <div class="nav-link nav-item embed-link" data-url="https://www.douyin.com">
+                <div class="nav-link nav-item embed-link disabled" data-url="https://www.douyin.com" data-require-login="true">
                     <i class="fa fa-download mr-2"></i>抖音
                 </div>
-                <div class="nav-link nav-item embed-link" data-url="https://www.kuaishou.com">
+                <div class="nav-link nav-item embed-link disabled" data-url="https://www.kuaishou.com" data-require-login="true">
                     <i class="fa fa-shopping-bag mr-2"></i>快手
                 </div>
-                <div class="nav-link nav-item embed-link" data-url="https://www.xiaohongshu.com">
+                <div class="nav-link nav-item embed-link disabled" data-url="https://www.xiaohongshu.com" data-require-login="true">
                     <i class="fa fa-wrench mr-2"></i>小红书
                 </div>
                 <!-- 移除"加我微信"栏目 -->
@@ -685,6 +700,9 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
+            // 登录状态管理
+            let isLoggedIn = false;
+            
             // -------------------------- 基础功能：网站运行时间统计 --------------------------
             function updateRunningTime() {
                 // 固定网页建立时间：2024年8月9日上午8点58分整
@@ -718,6 +736,25 @@
                 mobileMenu.classList.toggle('active');
             });
 
+            // -------------------------- 导航栏权限管理 --------------------------
+            function enableNavigation() {
+                // 移除所有导航项的禁用状态
+                const navItems = document.querySelectorAll('.nav-item[data-require-login="true"]');
+                navItems.forEach(item => {
+                    item.classList.remove('disabled');
+                });
+                isLoggedIn = true;
+            }
+            
+            function checkLoginStatus(element) {
+                // 检查元素是否需要登录权限
+                if (element.hasAttribute('data-require-login') && !isLoggedIn) {
+                    alert('请先登录以访问该功能');
+                    return false;
+                }
+                return true;
+            }
+
             // -------------------------- H5嵌入功能（抖音/快手/小红书） --------------------------
             const embedContainer = document.getElementById('embedContainer');
             const embedIframe = document.getElementById('embedIframe');
@@ -727,6 +764,12 @@
             // 嵌入链接点击事件
             embedLinks.forEach(link => {
                 link.addEventListener('click', (e) => {
+                    // 检查登录状态
+                    if (!checkLoginStatus(link)) {
+                        e.preventDefault();
+                        return;
+                    }
+                    
                     e.preventDefault();
                     const targetUrl = link.getAttribute('data-url');
                     embedIframe.src = targetUrl;
@@ -1030,10 +1073,13 @@
                     successMsg.textContent = `欢迎${matchedAccount.role}登录！`;
                     successModal.style.display = 'block';
                     
-                    // 2秒后关闭弹窗并跳转
+                    // 2秒后关闭弹窗，不跳转页面，而是开放导航权限
                     setTimeout(() => {
                         successModal.style.display = 'none';
-                        location.href = 'https://yzbjfpv.top/20250709.html';
+                        enableNavigation(); // 开放导航栏权限
+                        // 清空输入框
+                        usernameInput.value = '';
+                        passwordInput.value = '';
                     }, 2000);
                 } else {
                     // 显示错误提示
@@ -1050,17 +1096,24 @@
                 }, 5000);
             });
 
-            // 其他导航项点击事件（除嵌入链接外）
+            // 导航项点击事件（除嵌入链接外）
             const otherNavItems = document.querySelectorAll('.nav-item:not(.embed-link)');
             otherNavItems.forEach(item => {
                 item.addEventListener('click', (e) => {
-                    // 排除智能后台（已设置跳转链接）
-                    if (item.textContent.includes('智能后台')) return;
-                    e.preventDefault();
-                    loginModal.style.display = 'flex';
-                    setTimeout(() => {
-                        loginModal.style.display = 'none';
-                    }, 2000);
+                    // 检查登录状态
+                    if (!checkLoginStatus(item)) {
+                        e.preventDefault();
+                        return;
+                    }
+                    
+                    // 智能后台链接已设置跳转链接，不需要额外处理
+                    if (!item.textContent.includes('智能后台')) {
+                        e.preventDefault();
+                        loginModal.style.display = 'flex';
+                        setTimeout(() => {
+                            loginModal.style.display = 'none';
+                        }, 2000);
+                    }
                 });
             });
         });
