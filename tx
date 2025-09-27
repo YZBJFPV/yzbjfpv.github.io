@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="zh-CN" id="html-lang">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PokRC 14dBi定向天线｜Flyz远征飞 即将开售</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- 自定义Tailwind配置（延续原站风格） -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#165DFF',
+                        secondary: '#FF7D00',
+                        dark: '#1D2129',
+                        light: '#F2F3F5',
+                        antennaDark: '#0F172A' // 新增天线页面深色基调，提升高级感
+                    },
+                    fontFamily: {
+                        inter: ['Inter', 'system-ui', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .content-auto {
+                content-visibility: auto;
+            }
+            .nav-gradient {
+                background: linear-gradient(90deg, rgba(22,93,255,0.9) 0%, rgba(29,33,41,0.95) 100%);
+            }
+            .hover-lift {
+                transition: transform 0.3s ease, box-shadow 0.3s ease;
+            }
+            .hover-lift:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.15);
+            }
+            .antenna-gradient {
+                background: linear-gradient(145deg, #0F172A 0%, #1E293B 100%);
+            }
+            .text-glow {
+                text-shadow: 0 0 15px rgba(22, 93, 255, 0.5);
+            }
+            .card-gradient {
+                background: linear-gradient(180deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0) 100%);
+            }
+        }
+    </style>
+</head>
+<body class="font-inter bg-antennaDark text-light m-0 p-0 overflow-x-hidden">
+    <!-- 粒子背景（提升科技感与高级感） -->
+    <div id="particles-js" style="position:absolute;top:0;left:0;width:100%;height:100%;z-index:-1;"></div>
+
+    <!-- 导航栏（完整保留原站结构与交互） -->
+    <header id="navbar" class="fixed w-full top-0 z-50 transition-all duration-300">
+        <nav class="nav-gradient py-4 px-6 md:px-12">
+            <div class="container mx-auto flex justify-between items-center">
+                <!-- Logo -->
+                <a href="https://yzbjfpv.top/20250709.html" class="flex items-center space-x-2">
+                    <img src="https://img520.com/UIGuUV.jpeg" alt="Flyz远征飞Logo" 
+                         class="h-10 w-auto object-contain rounded-md hover-lift"
+                         onerror="this.onerror=null;this.src='https://picsum.photos/40/40'">
+                    <span class="text-white font-bold text-xl hidden md:inline">Flyz远征飞</span>
+                </a>
+                
+                <!-- 桌面导航 -->
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="https://yzbjfpv.top/20250709.html" class="text-white hover:text-secondary transition-colors duration-300">
+                        <i class="fa fa-home mr-2"></i>首页
+                    </a>
+                    <a href="http://yzflight.xyz" class="text-white hover:text-secondary transition-colors duration-300">
+                        <i class="fa fa-download mr-2"></i>下载中心
+                    </a>
+                    <a href="https://shop500685313.taobao.com/" class="text-white hover:text-secondary transition-colors duration-300">
+                        <i class="fa fa-shopping-bag mr-2"></i>严选商城
+                    </a>
+                    <a href="https://yzbjfpv.top/fix.html" class="text-white hover:text-secondary transition-colors duration-300">
+                        <i class="fa fa-wrench mr-2"></i>维修专区
+                    </a>
+                    <a href="https://yzbjfpv.top/wxtalk.html" class="text-white hover:text-secondary transition-colors duration-300">
+                        <i class="fa fa-user-plus mr-2"></i>加我WX
+                    </a>
+                </div>
+                
+                <!-- 移动端菜单按钮 -->
+                <button id="menu-toggle" class="md:hidden text-white focus:outline-none">
+                    <i class="fa fa-bars text-2xl"></i>
+                </button>
+            </div>
+        </nav>
+        
+        <!-- 移动端导航菜单 -->
+        <div id="mobile-menu" class="hidden bg-dark/95 md:hidden">
+            <div class="container mx-auto py-4 px-6 flex flex-col space-y-4">
+                <a href="https://yzbjfpv.top/20250709.html" class="text-white hover:text-secondary transition-colors duration-300 py-2">
+                    <i class="fa fa-home mr-2"></i>首页
+                </a>
+                <a href="http://yzflight.xyz" class="text-white hover:text-secondary transition-colors duration-300 py-2">
+                    <i class="fa fa-download mr-2"></i>下载中心
+                </a>
+                <a href="https://shop500685313.taobao.com/" class="text-white hover:text-secondary transition-colors duration-300 py-2">
+                    <i class="fa fa-shopping-bag mr-2"></i>严选商城
+                </a>
+                <a href="https://yzbjfpv.top/fix.html" class="text-white hover:text-secondary transition-colors duration-300 py-2">
+                    <i class="fa fa-wrench mr-2"></i>维修专区
+                </a>
+                <a href="https://yzbjfpv.top/wxtalk.html" class="text-white hover:text-secondary transition-colors duration-300 py-2">
+                    <i class="fa fa-user-plus mr-2"></i>加我WX
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- 主内容区：天线预告核心模块 -->
+    <main class="pt-24 pb-16">
+        <!-- 1. Hero区域：产品核心预告 -->
+        <section class="container mx-auto px-4 md:px-8 mb-16">
+            <div class="flex flex-col md:flex-row items-center justify-between gap-8 md:gap-12">
+                <!-- 左侧文字：核心信息传递 -->
+                <div class="w-full md:w-1/2 space-y-6">
+                    <div class="inline-block px-4 py-1 bg-primary/20 text-primary rounded-full text-sm font-medium mb-2">
+                        <i class="fa fa-bullhorn mr-1"></i> 新品预告
+                    </div>
+                    <h1 class="text-[clamp(2rem,5vw,3.5rem)] font-bold leading-tight text-white text-glow">
+                        PokRC 14dBi<br>
+                        <span class="text-primary">航模定向平板天线</span>
+                    </h1>
+                    <p class="text-[clamp(1rem,2vw,1.25rem)] text-gray-300 leading-relaxed">
+                        突破市面同级增益上限，实测增益优于常规14dBi天线，为航模远航提供更强信号穿透力、更远传输距离，稳定护航每一次飞行。
+                    </p>
+                    <div class="flex flex-wrap gap-4 pt-2">
+                        <span class="flex items-center text-gray-400"><i class="fa fa-check-circle text-primary mr-2"></i> 品牌：PokRC魄客模型</span>
+                        <span class="flex items-center text-gray-400"><i class="fa fa-check-circle text-primary mr-2"></i> 售卖：Flyz远征飞</span>
+                    </div>
+                    <a href="https://yzbjfpv.top/wxtalk.html" class="inline-block px-8 py-3 bg-primary hover:bg-primary/90 text-white font-medium rounded-lg transition-all duration-300 hover-lift">
+                        <i class="fa fa-weixin mr-2"></i> 微信小店 预约咨询
+                    </a>
+                </div>
+                <!-- 右侧产品图：占位（建议替换为实际产品图） -->
+                <div class="w-full md:w-1/2">
+                    <div class="relative rounded-xl overflow-hidden shadow-2xl hover-lift">
+                        <!-- 产品图占位（替换为实际天线图片效果更佳） -->
+                        <img src="https://picsum.photos/800/600?grayscale&blur=1" alt="PokRC 14dBi航模定向平板天线" class="w-full h-auto object-cover">
+                        <!-- 覆盖层提升高级感 -->
+                        <div class="absolute inset-0 bg-gradient-to-t from-antennaDark/80 to-transparent flex items-end">
+                            <div class="p-6">
+                                <p class="text-white font-medium">即将开售 · 敬请期待</p>
+                                <p class="text-gray-400 text-sm">Flyz远征飞 独家首发</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. 核心优势：为什么选择这款天线 -->
+        <section class="container mx-auto px-4 md:px-8 mb-16">
+            <div class="text-center mb-12">
+                <h2 class="text-[clamp(1.5rem,3vw,2.5rem)] font-bold text-white mb-4">三大核心优势 · 超越市面同级</h2>
+                <p class="text-gray-400 max-w-2xl mx-auto">从材质到性能，每一处细节都为航模玩家量身打造，兼顾信号强度与使用便捷性</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
+                <!-- 优势1：增益突破 -->
+                <div class="rounded-xl p-6 card-gradient border border-white/10 hover-lift">
+                    <div class="w-12 h-12 bg-primary/20 rounded-lg flex items-center justify-center mb-4">
+                        <i class="fa fa-signal text-primary text-xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-3">增益突破14dBi</h3>
+                    <p class="text-gray-400">实测增益达14.2dBi，优于市面常规14dBi天线，信号覆盖范围更广，远航距离显著提升。</p>
+                </div>
+                <!-- 优势2：低驻波比 -->
+                <div class="rounded-xl p-6 card-gradient border border-white/10 hover-lift">
+                    <div class="w-12 h-12 bg-primary/20 rounded-lg flex items-center justify-center mb-4">
+                        <i class="fa fa-wave-square text-primary text-xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-3">低驻波比＜1.2</h3>
+                    <p class="text-gray-400">驻波比控制在1.2以内，信号传输效率更高，减少能量损耗，避免设备过载，保障飞行稳定。</p>
+                </div>
+                <!-- 优势3：宽频适配 -->
+                <div class="rounded-xl p-6 card-gradient border border-white/10 hover-lift">
+                    <div class="w-12 h-12 bg-primary/20 rounded-lg flex items-center justify-center mb-4">
+                        <i class="fa fa-random text-primary text-xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-3">宽频多协议适配</h3>
+                    <p class="text-gray-400">兼容2.4G/5.8G主流频段，适配大部分航模遥控器与图传系统，无需额外更换天线，通用性强。</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. 售卖信息：购买渠道引导 -->
+        <section class="container mx-auto px-4 md:px-8">
+            <div class="rounded-2xl overflow-hidden bg-gradient-to-r from-primary/10 to-secondary/10 border border-white/10 p-8 md:p-12">
+                <div class="flex flex-col md:flex-row items-center justify-between gap-8">
+                    <div class="text-center md:text-left">
+                        <h2 class="text-[clamp(1.5rem,3vw,2rem)] font-bold text-white mb-3">独家售卖 · 微信小店优先购</h2>
+                        <p class="text-gray-300 mb-6 max-w-md mx-auto md:mx-0">
+                            该款PokRC 14dBi定向天线由Flyz远征飞独家负责售卖，首发期间仅在微信小店上架，提前添加客服微信，获取开售提醒与专属优惠。
+                        </p>
+                        <a href="https://yzbjfpv.top/wxtalk.html" class="inline-block px-6 py-2 bg-secondary hover:bg-secondary/90 text-white font-medium rounded-lg transition-all duration-300 hover-lift">
+                            <i class="fa fa-user-plus mr-2"></i> 立即添加客服WX
+                        </a>
+                    </div>
+                    <!-- 微信二维码占位（建议替换为实际客服二维码） -->
+                    <div class="w-48 h-48 bg-white rounded-lg flex items-center justify-center p-2 hover-lift">
+                        <img src="https://picsum.photos/200/200?grayscale" alt="Flyz远征飞客服微信二维码" class="w-full h-full object-cover">
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- 页脚（延续原站风格，调整信息适配） -->
+    <footer class="bg-dark/80 p-6 md:p-8 border-t border-white/10">
+        <div class="container mx-auto text-center">
+            <div class="flex flex-col md:flex-row items-center justify-center gap-4 md:gap-8 mb-6">
+                <a href="https://b23.tv/JXuI9QA" class="text-gray-400 hover:text-white transition-colors duration-300">
+                    <i class="fa fa-play-circle mr-2"></i>哔哩哔哩｜Flyz远征飞官方账号
+                </a>
+                <a href="https://yzbjfpv.top/wxtalk.html" class="text-gray-400 hover:text-white transition-colors duration-300">
+                    <i class="fa fa-weixin mr-2"></i>客服微信｜Flyz远征飞
+                </a>
+                <a href="https://yzbjfpv.top/20250709.html" class="text-gray-400 hover:text-white transition-colors duration-300">
+                    <i class="fa fa-home mr-2"></i>返回官网首页
+                </a>
+            </div>
+            <p class="text-gray-500 text-sm">© 2025 Flyz远征飞 × PokRC魄客模型 联合呈现 | 天线产品预告页</p>
+            <p class="text-gray-600 text-xs mt-2">本页面所有产品参数以实际发售版本为准，最终解释权归Flyz远征飞所有</p>
+        </div>
+    </footer>
+
+    <!-- 粒子脚本（提升背景科技感） -->
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js" defer></script>
+    <script>
+        // 粒子效果配置（适配深色背景与天线主题）
+        particlesJS.load('particles-js', {
+            "particles": {
+                "number": { "value": 80, "density": { "enable": true, "value_area": 1200 } },
+                "color": { "value": ["#165DFF", "#FF7D00", "#F2F3F5"] },
+                "size": { "value": 2, "random": true, "opacity": 0.6 },
+                "line_linked": { "enable": true, "distance": 150, "color": "#165DFF", "opacity": 0.2, "width": 1 },
+                "move": { "speed": 1, "direction": "none", "random": true, "straight": false, "out_mode": "out", "bounce": false }
+            },
+            "interactivity": {
+                "detect_on": "canvas",
+                "events": {
+                    "onhover": { "enable": true, "mode": "grab" },
+                    "onclick": { "enable": true, "mode": "push" },
+                    "resize": true
+                },
+                "modes": {
+                    "grab": { "distance": 140, "line_linked": { "opacity": 0.4 } },
+                    "push": { "particles_nb": 3 }
+                }
+            },
+            "retina_detect": true
+        });
+
+        // 导航栏滚动效果（延续原站交互）
+        window.addEventListener('scroll', function() {
+            const navbar = document.getElementById('navbar');
+            if (window.scrollY > 50) {
+                navbar.classList.add('py-2');
+                navbar.classList.remove('py-4');
+                navbar.classList.add('shadow-lg');
+            } else {
+                navbar.classList.add('py-4');
+                navbar.classList.remove('py-2');
+                navbar.classList.remove('shadow-lg');
+            }
+        });
+
+        // 移动端菜单切换（延续原站交互）
+        document.getElementById('menu-toggle').addEventListener('click', function() {
+            const mobileMenu = document.getElementById('mobile-menu');
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        // 平滑滚动（延续原站交互）
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+                document.getElementById('mobile-menu').classList.add('hidden');
+            });
+        });
+    </script>
+</body>
+</html>
