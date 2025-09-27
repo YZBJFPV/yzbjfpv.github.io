@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flyz网站管理员后台</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#165DFF',
+                        secondary: '#40E0D0',
+                        dark: '#1E293B',
+                        light: '#F8FAFC'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .btn-shadow {
+                box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            }
+            .btn-hover {
+                transition: all 0.3s ease;
+            }
+            .btn-hover:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <header class="bg-gradient-to-r from-primary to-secondary text-white shadow-lg">
+        <div class="container mx-auto px-4 py-6">
+            <h1 class="text-[clamp(1.8rem,4vw,2.5rem)] font-bold">
+                <i class="fa fa-cogs mr-3"></i>网站管理员导航中心
+            </h1>
+            <p class="text-white/90 mt-2">快速访问网站所有页面和功能</p>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-4 py-8">
+        <!-- 首页与主要页面 -->
+        <section class="mb-12">
+            <h2 class="text-2xl font-bold mb-6 text-dark border-b-2 border-primary pb-2">
+                <i class="fa fa-home mr-2"></i>首页与主要页面
+            </h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                <a href="/index.html" target="_blank" class="bg-white rounded-lg p-4 shadow btn-shadow btn-hover border-l-4 border-primary">
+                    <div class="flex items-center">
+                        <i class="fa fa-home text-2xl text-primary mr-3"></i>
+                        <div>
+                            <h3 class="font-semibold">首页</h3>
+                            <p class="text-sm text-gray-500">index.html</p>
+                        </div>
+                    </div>
+                </a>
+                <a href="/index2.html" target="_blank" class="bg-white rounded-lg p-4 shadow btn-shadow btn-hover border-l-4 border-primary">
+                    <div class="flex items-center">
+                        <i class="fa fa-clone text-2xl text-primary mr-3"></i>
+                        <div>
+                            <h3 class="font-semibold">备用首页</h3>
+                            <p class="text-sm text-gray-500">index2.html</p>
+                        </div>
+                    </div>
+                </a>
+                <a href="/oldindex.html" target="_blank" class="bg-white rounded-lg p-4 shadow btn-shadow btn-hover border-l-4 border-primary">
+                    <div class="flex items-center">
+                        <i class="fa fa-history text-2xl text-primary mr-3"></i>
+                        <div>
+                            <h3 class="font-semibold">旧版首页</h3>
+                            <p class="text-sm text-gray-500">oldindex.html</p>
+                        </div>
+                    </div>
+                </a>
+                <a href="/404.html" target="_blank" class="bg-white rounded-lg p-4 shadow btn-shadow btn-hover border-l-4 border-primary">
+                    <div class="flex items-center">
+                        <i class="fa fa-exclamation-triangle text-2xl text-primary mr-3"></i>
+                        <div>
+                            <h3 class="font-semibold">404页面</h3>
+                            <p class="text-sm text-gray-500">404.html</p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </section>
+
+        <!-- 暑假作业相关 -->
+        <section class="mb-12">
+            <h2 class="text-2xl font-bold mb-6 text-dark border-b-2 border-secondary pb-2">
+                <i class="fa fa-book mr-2"></i>暑假作业相关
+            </h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                <a href="/2025sjzy.html" target="_blank" class="bg-white rounded-lg p-4 shadow btn-shadow btn-hover border-l-4 border-secondary">
+                    <div class="flex items-center">
+                        <i class="fa fa-list-alt text-2xl text-secondary mr-3"></i>
+                        <div>
+                            <h3 class="font-semibold">2025暑假作业汇总</h3>
+                            <p class="text-sm text-gray-500">2025sjzy.html</p>
+                        </div>
+                    </div>
+                </a>
+                <a href="/91-sxsjzy.html" target="_blank" class="bg-white rounded-lg p-4 shadow btn-shadow btn-hover border-l-4 border-secondary">
+                    <div class="flex items-center">
+                        <i class="fa fa-calculator text-2xl text-secondary mr-3"></i>
+                        <div>
+                            <h3 class="font-semibold">数学暑假作业</h3>
+                            <p class="text-sm text-gray-500">91-sxsjzy.html</p>
+                        </div>
+                    </div>
+                </a>
+                <a href="/91-wlsjzy.html" target="_blank" class="bg-white rounded-lg p-4 shadow btn-shadow btn-hover border-l-4 border-secondary">
+                    <div class="flex items-center">
+                        <i class="fa fa-flask text-2xl text-secondary mr-3"></i>
+                        <div>
+                            <h3 class="font-semibold">物理暑假作业</h3>
+                            <p class="text-sm text-gray-500">91-wlsjzy.html</p>
+                        </div>
+                    </div>
+                </a>
+                <a href="/91-yysjzy.html" target="_blank" class="bg-white rounded-lg p-4 shadow btn-shadow btn-hover border-l-4 border-secondary">
+                    <div class="flex items-center">
+                        <i class="fa fa-language text-2xl text-secondary mr-3"></i>
+                        <div>
+                            <h3 class="font-semibold">英语暑假作业</h3>
+                            <p class="text-sm text-gray-500">91-yysjzy.html</p>
+                        </div>
+                    </div>
+                </a>
+                <a href="/91.html" target="_blank" class="bg-white rounded-lg p-4 shadow btn-shadow btn-hover border-l-4 border-secondary">
+                    <div class="flex items-center">
+                        <i class="fa fa-graduation-cap text-2xl text-secondary mr-3"></i>
+                        <div>
+                            <h3 class="font-semibold">91班相关页面</h3>
+                            <p class="text-sm text-gray-500">91.html</p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </section>
+
+        <!-- 下载与工具 -->
+        <section class="mb-12">
+            <h2 class="text-2xl font-bold mb-6 text-dark border-b-2 border-green-500 pb-2">
+                <i class="fa fa-download mr-2"></i>下载与工具
+            </h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                <a href="/download.html" target="_blank" class="bg-white rounded-lg p-4 shadow btn-shadow btn-hover border-l-4 border-green-500">
+                    <div class="flex items-center">
+                        <i class="fa fa-download text-2xl text-green-500 mr-3"></i>
+                        <div>
+                            <h3 class="font-semibold">下载中心</h3>
+                            <p class="text-sm text-gray-500">download.html</p>
+                        </div>
+                    </div>
+                </a>
+                <a href="/down.html" target="_blank" class="bg-white rounded-lg p-4 shadow btn-shadow btn-hover border-l-4 border-green-500">
+                    <div class="flex items-center">
+                        <i class="fa fa-files-o text-2xl text-green-500 mr-3"></i>
+                        <div>
+                            <h3 class="font-semibold">下载页面</h3>
+                            <p class="text-sm text-gray-500">down.html</p>
+                        </div>
+                    </div>
+                </a>
+                <a href="/spare-download.html" target="_blank" class="bg-white rounded-lg p-4 shadow btn-shadow btn-hover border-l-4 border-green-500">
+                    <div class="flex items-center">
+                        <i class="fa fa-backup text-2xl text-green-500 mr-3"></i>
+                        <div>
+                            <h3 class="font-semibold">备用下载</h3>
+                            <p class="text-sm text-gray-500">spare-download.html</p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </section>
+
+        <!-- 功能页面 -->
+        <section class="mb-12">
+            <h2 class="text-2xl font-bold mb-6 text-dark border-b-2 border-purple-500 pb-2">
+                <i class="fa fa-cog mr-2"></i>功能页面
+            </h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                <a href="/ai.html" target="_blank" class="bg-white rounded-lg p-4 shadow btn-shadow btn-hover border-l-4 border-purple-500">
+                    <div class="flex items-center">
+                        <i class="fa fa-robot text-2xl text-purple-500 mr-3"></i>
+                        <div>
+                            <h3 class="font-semibold">AI相关页面</h3>
+                            <p class="text-sm text-gray-500">ai.html</p>
+                        </div>
+                    </div>
+                </a>
+                <a href="/game.html" target="_blank" class="bg-white rounded-lg p-4 shadow btn-shadow btn-hover border-l-4 border-purple-500">
+                    <div class="flex items-center">
+                        <i class="fa fa-gamepad text-2xl text-purple-500 mr-3"></i>
+                        <div>
+                            <h3 class="font-semibold">游戏页面</h3>
+                            <p class="text-sm text-gray-500">game.html</p>
+                        </div>
+                    </div>
+                </a>
+                <a href="/spy.html" target="_blank" class="bg-white rounded-lg p-4 shadow btn-shadow btn-hover border-l-4 border-purple-500">
+                    <div class="flex items-center">
+                        <i class="fa fa-eye text-2xl text-purple-500 mr-3"></i>
+                        <div>
+                            <h3 class="font-semibold">监控页面</h3>
+                            <p class="text-sm text-gray-500">spy.html</p>
+                        </div>
+                    </div>
+                </a>
+                <a href="/fix.html" target="_blank" class="bg-white rounded-lg p-4 shadow btn-shadow btn-hover border-l-4 border-purple-500">
+                    <div class="flex items-center">
+                        <i class="fa fa-wrench text-2xl text-purple-500 mr-3"></i>
+                        <div>
+                            <h3 class="font-semibold">维修专区</h3>
+                            <p class="text-sm text-gray-500">fix.html</p>
+                        </div>
+                    </div>
+                </a>
+                <a href="/info.html" target="_blank" class="bg-white rounded-lg p-4 shadow btn-shadow btn-hover border-l-4 border-purple-500">
+                    <div class="flex items-center">
+                        <i class="fa fa-info-circle text-2xl text-purple-500 mr-3"></i>
+                        <div>
+                            <h3 class="font-semibold">信息页面</h3>
+                            <p class="text-sm text-gray-500">info.html</p>
+                        </div>
+                    </div>
+                </a>
+                <a href="/question.html" target="_blank" class="bg-white rounded-lg p-4 shadow btn-shadow btn-hover border-l-4 border-purple-500">
+                    <div class="flex items-center">
+                        <i class="fa fa-question-circle text-2xl text-purple-500 mr-3"></i>
+                        <div>
+                            <h3 class="font-semibold">问题解决方案</h3>
+                            <p class="text-sm text-gray-500">question.html</p>
+                        </div>
+                    </div>
+                </a>
+                <a href="/wxtalk.html" target="_blank" class="bg-white rounded-lg p-4 shadow btn-shadow btn-hover border-l-4 border-purple-500">
+                    <div class="flex items-center">
+                        <i class="fa fa-weixin text-2xl text-purple-500 mr-3"></i>
+                        <div>
+                            <h3 class="font-semibold">微信交流</h3>
+                            <p class="text-sm text-gray-500">wxtalk.html</p>
+                        </div>
+                    </div>
+                </a>
+                <a href="/flyzai-features.html" target="_blank" class="bg-white rounded-lg p-4 shadow btn-shadow btn-hover border-l-4 border-purple-500">
+                    <div class="flex items-center">
+                        <i class="fa fa-star text-2xl text-purple-500 mr-3"></i>
+                        <div>
+                            <h3 class="font-semibold">Flyzai功能</h3>
+                            <p class="text-sm text-gray-500">flyzai-features.html</p>
+                        </div>
+                    </div>
+                </a>
+                <a href="/flyzai-guest.html" target="_blank" class="bg-white rounded-lg p-4 shadow btn-shadow btn-hover border-l-4 border-purple-500">
+                    <div class="flex items-center">
+                        <i class="fa fa-user text-2xl text-purple-500 mr-3"></i>
+                        <div>
+                            <h3 class="font-semibold">Flyzai访客</h3>
+                            <p class="text-sm text-gray-500">flyzai-guest.html</p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </section>
+
+        <!-- 其他页面 -->
+        <section class="mb-12">
+            <h2 class="text-2xl font-bold mb-6 text-dark border-b-2 border-amber-500 pb-2">
+                <i class="fa fa-ellipsis-h mr-2"></i>其他页面
+            </h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                <a href="/20250709.html" target="_blank" class="bg-white rounded-lg p-4 shadow btn-shadow btn-hover border-l-4 border-amber-500">
+                    <div class="flex items-center">
+                        <i class="fa fa-calendar text-2xl text-amber-500 mr-3"></i>
+                        <div>
+                            <h3 class="font-semibold">20250709页面</h3>
+                            <p class="text-sm text-gray-500">20250709.html</p>
+                        </div>
+                    </div>
+                </a>
+                <a href="/78.html" target="_blank" class="bg-white rounded-lg p-4 shadow btn-shadow btn-hover border-l-4 border-amber-500">
+                    <div class="flex items-center">
+                        <i class="fa fa-file text-2xl text-amber-500 mr-3"></i>
+                        <div>
+                            <h3 class="font-semibold">78页面</h3>
+                            <p class="text-sm text-gray-500">78.html</p>
+                        </div>
+                    </div>
+                </a>
+                <a href="/86.html" target="_blank" class="bg-white rounded-lg p-4 shadow btn-shadow btn-hover border-l-4 border-amber-500">
+                    <div class="flex items-center">
+                        <i class="fa fa-file-text text-2xl text-amber-500 mr-3"></i>
+                        <div>
+                            <h3 class="font-semibold">86页面</h3>
+                            <p class="text-sm text-gray-500">86.html</p>
+                        </div>
+                    </div>
+                </a>
+                <a href="/dj.html" target="_blank" class="bg-white rounded-lg p-4 shadow btn-shadow btn-hover border-l-4 border-amber-500">
+                    <div class="flex items-center">
+                        <i class="fa fa-music text-2xl text-amber-500 mr-3"></i>
+                        <div>
+                            <h3 class="font-semibold">DJ页面</h3>
+                            <p class="text-sm text-gray-500">dj.html</p>
+                        </div>
+                    </div>
+                </a>
+                <a href="/ffzbzq.html" target="_blank" class="bg-white rounded-lg p-4 shadow btn-shadow btn-hover border-l-4 border-amber-500">
+                    <div class="flex items-center">
+                        <i class="fa fa-fire text-2xl text-amber-500 mr-3"></i>
+                        <div>
+                            <h3 class="font-semibold">FFZBZQ页面</h3>
+                            <p class="text-sm text-gray-500">ffzbzq.html</p>
+                        </div>
+                    </div>
+                </a>
+                <a href="/hzhb.html" target="_blank" class="bg-white rounded-lg p-4 shadow btn-shadow btn-hover border-l-4 border-amber-500">
+                    <div class="flex items-center">
+                        <i class="fa fa-handshake-o text-2xl text-amber-500 mr-3"></i>
+                        <div>
+                            <h3 class="font-semibold">合作互帮页面</h3>
+                            <p class="text-sm text-gray-500">hzhb.html</p>
+                        </div>
+                    </div>
+                </a>
+                <a href="/jiyu.html" target="_blank" class="bg-white rounded-lg p-4 shadow btn-shadow btn-hover border-l-4 border-amber-500">
+                    <div class="flex items-center">
+                        <i class="fa fa-gift text-2xl text-amber-500 mr-3"></i>
+                        <div>
+                            <h3 class="font-semibold">寄语页面</h3>
+                            <p class="text-sm text-gray-500">jiyu.html</p>
+                        </div>
+                    </div>
+                </a>
+                <a href="/neice.html" target="_blank" class="bg-white rounded-lg p-4 shadow btn-shadow btn-hover border-l-4 border-amber-500">
+                    <div class="flex items-center">
+                        <i class="fa fa-child text-2xl text-amber-500 mr-3"></i>
+                        <div>
+                            <h3 class="font-semibold"> niece页面</h3>
+                            <p class="text-sm text-gray-500">neice.html</p>
+                        </div>
+                    </div>
+                </a>
+                <a href="/new.html" target="_blank" class="bg-white rounded-lg p-4 shadow btn-shadow btn-hover border-l-4 border-amber-500">
+                    <div class="flex items-center">
+                        <i class="fa fa-newspaper-o text-2xl text-amber-500 mr-3"></i>
+                        <div>
+                            <h3 class="font-semibold">新页面</h3>
+                            <p class="text-sm text-gray-500">new.html</p>
+                        </div>
+                    </div>
+                </a>
+                <a href="/tx.html" target="_blank" class="bg-white rounded-lg p-4 shadow btn-shadow btn-hover border-l-4 border-amber-500">
+                    <div class="flex items-center">
+                        <i class="fa fa-comment text-2xl text-amber-500 mr-3"></i>
+                        <div>
+                            <h3 class="font-semibold">TX页面</h3>
+                            <p class="text-sm text-gray-500">tx.html</p>
+                        </div>
+                    </div>
+                </a>
+                <a href="/yt.html" target="_blank" class="bg-white rounded-lg p-4 shadow btn-shadow btn-hover border-l-4 border-amber-500">
+                    <div class="flex items-center">
+                        <i class="fa fa-television text-2xl text-amber-500 mr-3"></i>
+                        <div>
+                            <h3 class="font-semibold">YT页面</h3>
+                            <p class="text-sm text-gray-500">yt.html</p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-dark text-white py-8">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="mb-4 md:mb-0">
+                    <p>&copy; 2025 网站管理系统</p>
+                </div>
+                <div class="flex space-x-4">
+                    <a href="/admin/" target="_blank" class="hover:text-secondary transition-colors">
+                        <i class="fa fa-lock mr-1"></i> 管理员登录
+                    </a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // 添加平滑滚动效果
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+
+        // 为每个链接添加打开提示
+        document.querySelectorAll('a[target="_blank"]').forEach(link => {
+            link.addEventListener('mouseover', function() {
+                this.title = "在新窗口打开: " + this.textContent.trim();
+            });
+        });
+    </script>
+</body>
+</html>
