@@ -9,7 +9,7 @@
     <!-- Font Awesome -->
     <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
     
-    <!-- 自定义Tailwind配置（延续原站风格） -->
+    <!-- 自定义Tailwind配置 -->
     <script>
         tailwind.config = {
             theme: {
@@ -19,7 +19,7 @@
                         secondary: '#FF7D00',
                         dark: '#1D2129',
                         light: '#F2F3F5',
-                        antennaDark: '#0F172A' // 新增天线页面深色基调，提升高级感
+                        antennaDark: '#0F172A'
                     },
                     fontFamily: {
                         inter: ['Inter', 'system-ui', 'sans-serif'],
@@ -44,23 +44,26 @@
                 transform: translateY(-5px);
                 box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.15);
             }
-            .antenna-gradient {
-                background: linear-gradient(145deg, #0F172A 0%, #1E293B 100%);
-            }
             .text-glow {
                 text-shadow: 0 0 15px rgba(22, 93, 255, 0.5);
             }
             .card-gradient {
                 background: linear-gradient(180deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0) 100%);
             }
+            .modal-backdrop {
+                backdrop-filter: blur(5px);
+            }
+            .dark-mask {
+                background: linear-gradient(90deg, rgba(15,23,42,0.95) 0%, rgba(15,23,42,0.9) 50%, rgba(15,23,42,0.95) 100%);
+            }
         }
     </style>
 </head>
 <body class="font-inter bg-antennaDark text-light m-0 p-0 overflow-x-hidden">
-    <!-- 粒子背景（提升科技感与高级感） -->
+    <!-- 粒子背景 -->
     <div id="particles-js" style="position:absolute;top:0;left:0;width:100%;height:100%;z-index:-1;"></div>
 
-    <!-- 导航栏（完整保留原站结构与交互） -->
+    <!-- 导航栏 -->
     <header id="navbar" class="fixed w-full top-0 z-50 transition-all duration-300">
         <nav class="nav-gradient py-4 px-6 md:px-12">
             <div class="container mx-auto flex justify-between items-center">
@@ -86,9 +89,9 @@
                     <a href="https://yzbjfpv.top/fix.html" class="text-white hover:text-secondary transition-colors duration-300">
                         <i class="fa fa-wrench mr-2"></i>维修专区
                     </a>
-                    <a href="https://yzbjfpv.top/wxtalk.html" class="text-white hover:text-secondary transition-colors duration-300">
+                    <button id="nav-wx-btn" class="text-white hover:text-secondary transition-colors duration-300">
                         <i class="fa fa-user-plus mr-2"></i>加我WX
-                    </a>
+                    </button>
                 </div>
                 
                 <!-- 移动端菜单按钮 -->
@@ -113,19 +116,18 @@
                 <a href="https://yzbjfpv.top/fix.html" class="text-white hover:text-secondary transition-colors duration-300 py-2">
                     <i class="fa fa-wrench mr-2"></i>维修专区
                 </a>
-                <a href="https://yzbjfpv.top/wxtalk.html" class="text-white hover:text-secondary transition-colors duration-300 py-2">
+                <button id="mobile-wx-btn" class="text-white hover:text-secondary transition-colors duration-300 py-2 text-left">
                     <i class="fa fa-user-plus mr-2"></i>加我WX
-                </a>
+                </button>
             </div>
         </div>
     </header>
 
-    <!-- 主内容区：天线预告核心模块 -->
+    <!-- 主内容区 -->
     <main class="pt-24 pb-16">
-        <!-- 1. Hero区域：产品核心预告 -->
+        <!-- 1. Hero区域 -->
         <section class="container mx-auto px-4 md:px-8 mb-16">
             <div class="flex flex-col md:flex-row items-center justify-between gap-8 md:gap-12">
-                <!-- 左侧文字：核心信息传递 -->
                 <div class="w-full md:w-1/2 space-y-6">
                     <div class="inline-block px-4 py-1 bg-primary/20 text-primary rounded-full text-sm font-medium mb-2">
                         <i class="fa fa-bullhorn mr-1"></i> 新品预告
@@ -141,16 +143,19 @@
                         <span class="flex items-center text-gray-400"><i class="fa fa-check-circle text-primary mr-2"></i> 品牌：PokRC魄客模型</span>
                         <span class="flex items-center text-gray-400"><i class="fa fa-check-circle text-primary mr-2"></i> 售卖：Flyz远征飞</span>
                     </div>
-                    <a href="https://yzbjfpv.top/wxtalk.html" class="inline-block px-8 py-3 bg-primary hover:bg-primary/90 text-white font-medium rounded-lg transition-all duration-300 hover-lift">
+                    <button id="contact-btn" class="inline-block px-8 py-3 bg-primary hover:bg-primary/90 text-white font-medium rounded-lg transition-all duration-300 hover-lift">
                         <i class="fa fa-weixin mr-2"></i> 微信小店 预约咨询
-                    </a>
+                    </button>
                 </div>
-                <!-- 右侧产品图：占位（建议替换为实际产品图） -->
                 <div class="w-full md:w-1/2">
                     <div class="relative rounded-xl overflow-hidden shadow-2xl hover-lift">
-                        <!-- 产品图占位（替换为实际天线图片效果更佳） -->
-                        <img src="https://picsum.photos/800/600?grayscale&blur=1" alt="PokRC 14dBi航模定向平板天线" class="w-full h-auto object-cover">
-                        <!-- 覆盖层提升高级感 -->
+                        <!-- 天线图片 -->
+                        <img src="https://p3-flow-imagex-download-sign.byteimg.com/tos-cn-i-a9rns2rl98/7793c0dcea2140078d1c3fa48bc352db.png~tplv-a9rns2rl98-24:720:720.png?rcl=20250927085445F656003380DDC2D99B00&rk3s=8e244e95&rrcfp=8a172a1a&x-expires=1759539285&x-signature=RfdrEqfKRK72meW5lVfuRFgMXIc%3D" 
+                             alt="PokRC 14dBi航模定向平板天线" 
+                             class="w-full h-auto object-cover">
+                        <!-- 深黑色渐变蒙版 -->
+                        <div class="absolute inset-0 dark-mask"></div>
+                        <!-- 即将开售文字 -->
                         <div class="absolute inset-0 bg-gradient-to-t from-antennaDark/80 to-transparent flex items-end">
                             <div class="p-6">
                                 <p class="text-white font-medium">即将开售 · 敬请期待</p>
@@ -161,16 +166,14 @@
                 </div>
             </div>
         </section>
-
-        <!-- 2. 核心优势：为什么选择这款天线 -->
+                <!-- 2. 核心优势 -->
         <section class="container mx-auto px-4 md:px-8 mb-16">
             <div class="text-center mb-12">
                 <h2 class="text-[clamp(1.5rem,3vw,2.5rem)] font-bold text-white mb-4">三大核心优势 · 超越市面同级</h2>
-                <p class="text-gray-400 max-w-2xl mx-auto">从材质到性能，每一处细节都为航模玩家量身打造，兼顾信号强度与使用便捷性</p>
+                <p class="text-gray-400 max-w-2xl mx-auto">从材质到性能，每一处细节都为航模玩家量身打造</p>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
-                <!-- 优势1：增益突破 -->
                 <div class="rounded-xl p-6 card-gradient border border-white/10 hover-lift">
                     <div class="w-12 h-12 bg-primary/20 rounded-lg flex items-center justify-center mb-4">
                         <i class="fa fa-signal text-primary text-xl"></i>
@@ -178,7 +181,6 @@
                     <h3 class="text-xl font-bold text-white mb-3">增益突破14dBi</h3>
                     <p class="text-gray-400">实测增益达14.2dBi，优于市面常规14dBi天线，信号覆盖范围更广，远航距离显著提升。</p>
                 </div>
-                <!-- 优势2：低驻波比 -->
                 <div class="rounded-xl p-6 card-gradient border border-white/10 hover-lift">
                     <div class="w-12 h-12 bg-primary/20 rounded-lg flex items-center justify-center mb-4">
                         <i class="fa fa-wave-square text-primary text-xl"></i>
@@ -186,49 +188,235 @@
                     <h3 class="text-xl font-bold text-white mb-3">低驻波比＜1.2</h3>
                     <p class="text-gray-400">驻波比控制在1.2以内，信号传输效率更高，减少能量损耗，避免设备过载，保障飞行稳定。</p>
                 </div>
-                <!-- 优势3：宽频适配 -->
                 <div class="rounded-xl p-6 card-gradient border border-white/10 hover-lift">
                     <div class="w-12 h-12 bg-primary/20 rounded-lg flex items-center justify-center mb-4">
                         <i class="fa fa-random text-primary text-xl"></i>
                     </div>
                     <h3 class="text-xl font-bold text-white mb-3">宽频多协议适配</h3>
-                    <p class="text-gray-400">兼容2.4G/5.8G主流频段，适配大部分航模遥控器与图传系统，无需额外更换天线，通用性强。</p>
+                    <p class="text-gray-400">兼容2.4G/5.8G主流频段，适配大部分航模遥控器与图传系统，无需额外更换天线。</p>
                 </div>
             </div>
         </section>
 
-        <!-- 3. 售卖信息：购买渠道引导 -->
-        <section class="container mx-auto px-4 md:px-8">
-            <div class="rounded-2xl overflow-hidden bg-gradient-to-r from-primary/10 to-secondary/10 border border-white/10 p-8 md:p-12">
-                <div class="flex flex-col md:flex-row items-center justify-between gap-8">
-                    <div class="text-center md:text-left">
-                        <h2 class="text-[clamp(1.5rem,3vw,2rem)] font-bold text-white mb-3">独家售卖 · 微信小店优先购</h2>
-                        <p class="text-gray-300 mb-6 max-w-md mx-auto md:mx-0">
-                            该款PokRC 14dBi定向天线由Flyz远征飞独家负责售卖，首发期间仅在微信小店上架，提前添加客服微信，获取开售提醒与专属优惠。
-                        </p>
-                        <a href="https://yzbjfpv.top/wxtalk.html" class="inline-block px-6 py-2 bg-secondary hover:bg-secondary/90 text-white font-medium rounded-lg transition-all duration-300 hover-lift">
-                            <i class="fa fa-user-plus mr-2"></i> 立即添加客服WX
-                        </a>
+        <!-- 3. 专利申请文档 -->
+        <section class="container mx-auto px-4 md:px-8 py-12">
+            <div class="max-w-4xl mx-auto">
+                <h2 class="text-[clamp(1.5rem,3vw,2.5rem)] font-bold text-white mb-2 text-center">
+                    <i class="fa fa-file-text-o mr-2 text-primary"></i>专利申请文档
+                </h2>
+                <p class="text-center text-lg text-primary font-bold mb-6">专利号:ZL202520378885.2</p>
+
+                <div class="space-y-6">
+                    <!-- 发明名称 -->
+                    <div class="bg-antennaDark/50 border border-white/10 rounded-xl overflow-hidden hover-lift transition-all duration-300">
+                        <details class="group">
+                            <summary class="flex items-center justify-between p-6 cursor-pointer">
+                                <h3 class="text-xl font-bold text-white">一、发明名称</h3>
+                                <i class="fa fa-chevron-down text-primary group-open:rotate-180 transition-transform duration-300"></i>
+                            </summary>
+                            <div class="px-6 pb-6">
+                                <p class="text-gray-300">一种用于5.14-5.96GHz频段的高增益低驻波比定向平板阵列天线</p>
+                            </div>
+                        </details>
                     </div>
-                    <!-- 微信二维码占位（建议替换为实际客服二维码） -->
-                    <div class="w-48 h-48 bg-white rounded-lg flex items-center justify-center p-2 hover-lift">
-                        <img src="https://picsum.photos/200/200?grayscale" alt="Flyz远征飞客服微信二维码" class="w-full h-full object-cover">
+
+                    <!-- 摘要 -->
+                    <div class="bg-antennaDark/50 border border-white/10 rounded-xl overflow-hidden hover-lift transition-all duration-300">
+                        <details class="group" open>
+                            <summary class="flex items-center justify-between p-6 cursor-pointer">
+                                <h3 class="text-xl font-bold text-white">二、摘要</h3>
+                                <i class="fa fa-chevron-down text-primary group-open:rotate-180 transition-transform duration-300"></i>
+                            </summary>
+                            <div class="px-6 pb-6">
+                                <p class="text-gray-300 mb-4">本实用新型提供了一种用于5.14-5.96GHz频段的高增益低驻波比定向平板阵列天线，旨在满足高密度数据传输和远距离通信的需求。该天线采用多层结构设计，包括天线PCB面板、反射板、支撑模组和天线馈线。</p>
+                                <ul class="space-y-2 text-gray-300">
+                                    <li class="flex items-start">
+                                        <i class="fa fa-check-circle text-primary mt-1 mr-2"></i>
+                                        <span><strong class="text-white">天线PCB面板：</strong>采用1mm厚的铁氟龙高频版，具有低介电常数和低损耗正切。</span>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <i class="fa fa-check-circle text-primary mt-1 mr-2"></i>
+                                        <span><strong class="text-white">反射板：</strong>采用黑色磨砂氧化铝材质，与PCB面板底面间隔7mm。</span>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <i class="fa fa-check-circle text-primary mt-1 mr-2"></i>
+                                        <span><strong class="text-white">支撑模组：</strong>采用537尼龙套管，具有良好的绝缘性能和机械强度。</span>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <i class="fa fa-check-circle text-primary mt-1 mr-2"></i>
+                                        <span><strong class="text-white">天线馈线：</strong>采用同轴线馈电方式，优化了信号线焊接和屏蔽层处理。</span>
+                                    </li>
+                                </ul>
+                                <div class="mt-4 p-4 bg-dark/30 rounded-lg">
+                                    <p class="text-gray-300">该天线的增益高达<strong class="text-primary">14dBi</strong>，驻波比为<strong class="text-primary">1.06</strong>，工作频段为<strong class="text-primary">5.14-5.96GHz</strong>，采用垂直极化方式，最大可承受8W的有效功率，实际发出的功率为53dBm，接收灵敏度为-198dBm，整体重量约为30g。</p>
+                                </div>
+                            </div>
+                        </details>
+                    </div>
+
+                    <!-- 技术领域 -->
+                    <div class="bg-antennaDark/50 border border-white/10 rounded-xl overflow-hidden hover-lift transition-all duration-300">
+                        <details class="group">
+                            <summary class="flex items-center justify-between p-6 cursor-pointer">
+                                <h3 class="text-xl font-bold text-white">三、技术领域</h3>
+                                <i class="fa fa-chevron-down text-primary group-open:rotate-180 transition-transform duration-300"></i>
+                            </summary>
+                            <div class="px-6 pb-6">
+                                <p class="text-gray-300">本实用新型涉及无线通信技术领域，特别是涉及一种用于5.14-5.96GHz频段的高增益低驻波比定向平板阵列天线。</p>
+                            </div>
+                        </details>
+                    </div>
+
+                    <!-- 背景技术 -->
+                    <div class="bg-antennaDark/50 border border-white/10 rounded-xl overflow-hidden hover-lift transition-all duration-300">
+                        <details class="group">
+                            <summary class="flex items-center justify-between p-6 cursor-pointer">
+                                <h3 class="text-xl font-bold text-white">四、背景技术</h3>
+                                <i class="fa fa-chevron-down text-primary group-open:rotate-180 transition-transform duration-300"></i>
+                            </summary>
+                            <div class="px-6 pb-6">
+                                <p class="text-gray-300">随着无线通信技术的快速发展，对高增益、低驻波比和高灵敏度的天线需求日益增加。现有的天线在增益、驻波比和极化方向等方面存在一定的局限性，无法满足高密度数据传输和远距离通信的需求。</p>
+                            </div>
+                        </details>
+                    </div>
+
+                    <!-- 发明内容 -->
+                    <div class="bg-antennaDark/50 border border-white/10 rounded-xl overflow-hidden hover-lift transition-all duration-300">
+                        <details class="group">
+                            <summary class="flex items-center justify-between p-6 cursor-pointer">
+                                <h3 class="text-xl font-bold text-white">五、发明内容</h3>
+                                <i class="fa fa-chevron-down text-primary group-open:rotate-180 transition-transform duration-300"></i>
+                            </summary>
+                            <div class="px-6 pb-6">
+                                <p class="text-gray-300">本实用新型的目的是提供一种用于5.14-5.96GHz频段的高增益低驻波比定向平板阵列天线，其设计优化了增益、驻波比和极化方向，同时具有轻量化和高可靠性。</p>
+                            </div>
+                        </details>
+                    </div>
+
+                    <!-- 技术方案 -->
+                    <div class="bg-antennaDark/50 border border-white/10 rounded-xl overflow-hidden hover-lift transition-all duration-300">
+                        <details class="group">
+                            <summary class="flex items-center justify-between p-6 cursor-pointer">
+                                <h3 class="text-xl font-bold text-white">六、技术方案</h3>
+                                <i class="fa fa-chevron-down text-primary group-open:rotate-180 transition-transform duration-300"></i>
+                            </summary>
+                            <div class="px-6 pb-6">
+                                <ol class="space-y-4 text-gray-300 list-decimal pl-5">
+                                    <li>
+                                        <strong class="text-white">天线PCB面板：</strong>采用多层结构设计，包括顶层、顶层阻焊层、顶层锡膏层、底层、底层阻焊层、板框层和钻孔图层。PCB厚度为1mm，采用铁氟龙高频版作为PCB材料。
+                                    </li>
+                                    <li>
+                                        <strong class="text-white">反射板：</strong>采用黑色磨砂氧化铝材质，与PCB面板底面间隔7mm，确保最佳的反射效果和天线增益。
+                                    </li>
+                                    <li>
+                                        <strong class="text-white">支撑模组：</strong>采用537尼龙套管，具有良好的绝缘性能和机械强度，确保反射板与PCB面板之间的稳定支撑。
+                                    </li>
+                                    <li>
+                                        <strong class="text-white">天线馈线：</strong>采用同轴线馈电方式，优化了信号线焊接和屏蔽层处理，确保信号线在焊接过程中无裸露部分，避免短路现象。
+                                    </li>
+                                </ol>
+                            </div>
+                        </details>
+                    </div>
+
+                    <!-- 具体实施方式 -->
+                    <div class="bg-antennaDark/50 border border-white/10 rounded-xl overflow-hidden hover-lift transition-all duration-300">
+                        <details class="group">
+                            <summary class="flex items-center justify-between p-6 cursor-pointer">
+                                <h3 class="text-xl font-bold text-white">七、具体实施方式</h3>
+                                <i class="fa fa-chevron-down text-primary group-open:rotate-180 transition-transform duration-300"></i>
+                            </summary>
+                            <div class="px-6 pb-6">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div class="bg-dark/30 p-4 rounded-lg">
+                                        <h4 class="text-white font-bold mb-2">天线增益与频率特性</h4>
+                                        <ul class="space-y-1 text-gray-300">
+                                            <li>• 增益：14dBi</li>
+                                            <li>• 驻波比：1.06</li>
+                                            <li>• 中心频率：5.8GHz</li>
+                                            <li>• 工作频段：5.144-5.966GHz</li>
+                                        </ul>
+                                    </div>
+                                    <div class="bg-dark/30 p-4 rounded-lg">
+                                        <h4 class="text-white font-bold mb-2">极化方向</h4>
+                                        <p class="text-gray-300">采用垂直极化方式，减少与其他极化方式的干扰，提高信号的纯净度和传输效率。</p>
+                                    </div>
+                                    <div class="bg-dark/30 p-4 rounded-lg">
+                                        <h4 class="text-white font-bold mb-2">功率和灵敏度</h4>
+                                        <ul class="space-y-1 text-gray-300">
+                                            <li>• 最大承受功率：8W</li>
+                                            <li>• 实际发出功率（EIRP）：53dBm</li>
+                                            <li>• 接收灵敏度：-198dBm</li>
+                                        </ul>
+                                    </div>
+                                    <div class="bg-dark/30 p-4 rounded-lg">
+                                        <h4 class="text-white font-bold mb-2">重量优化</h4>
+                                        <p class="text-gray-300">整体重量约为30g，轻量化设计使得天线更加便携和灵活。</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </details>
+                    </div>
+
+                    <!-- 技术特征和优点 -->
+                    <div class="bg-antennaDark/50 border border-white/10 rounded-xl overflow-hidden hover-lift transition-all duration-300">
+                        <details class="group">
+                            <summary class="flex items-center justify-between p-6 cursor-pointer">
+                                <h3 class="text-xl font-bold text-white">八、技术特征和优点</h3>
+                                <i class="fa fa-chevron-down text-primary group-open:rotate-180 transition-transform duration-300"></i>
+                            </summary>
+                            <div class="px-6 pb-6">
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                    <div class="flex items-start">
+                                        <i class="fa fa-check-circle text-primary mt-1 mr-2"></i>
+                                        <span class="text-gray-300">高增益：14dBi</span>
+                                    </div>
+                                    <div class="flex items-start">
+                                        <i class="fa fa-check-circle text-primary mt-1 mr-2"></i>
+                                        <span class="text-gray-300">低驻波比：1.06</span>
+                                    </div>
+                                    <div class="flex items-start">
+                                        <i class="fa fa-check-circle text-primary mt-1 mr-2"></i>
+                                        <span class="text-gray-300">宽频段：5.14-5.96GHz</span>
+                                    </div>
+                                    <div class="flex items-start">
+                                        <i class="fa fa-check-circle text-primary mt-1 mr-2"></i>
+                                        <span class="text-gray-300">垂直极化方式</span>
+                                    </div>
+                                    <div class="flex items-start">
+                                        <i class="fa fa-check-circle text-primary mt-1 mr-2"></i>
+                                        <span class="text-gray-300">高功率承受能力：8W</span>
+                                    </div>
+                                    <div class="flex items-start">
+                                        <i class="fa fa-check-circle text-primary mt-1 mr-2"></i>
+                                        <span class="text-gray-300">高灵敏度：-198dBm</span>
+                                    </div>
+                                    <div class="flex items-start">
+                                        <i class="fa fa-check-circle text-primary mt-1 mr-2"></i>
+                                        <span class="text-gray-300">轻量化设计：约30g</span>
+                                    </div>
+                                    <div class="flex items-start">
+                                        <i class="fa fa-check-circle text-primary mt-1 mr-2"></i>
+                                        <span class="text-gray-300">可靠焊接设计，避免短路</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </details>
                     </div>
                 </div>
             </div>
         </section>
     </main>
-
-    <!-- 页脚（延续原站风格，调整信息适配） -->
+        <!-- 页脚 -->
     <footer class="bg-dark/80 p-6 md:p-8 border-t border-white/10">
         <div class="container mx-auto text-center">
             <div class="flex flex-col md:flex-row items-center justify-center gap-4 md:gap-8 mb-6">
                 <a href="https://b23.tv/JXuI9QA" class="text-gray-400 hover:text-white transition-colors duration-300">
                     <i class="fa fa-play-circle mr-2"></i>哔哩哔哩｜Flyz远征飞官方账号
                 </a>
-                <a href="https://yzbjfpv.top/wxtalk.html" class="text-gray-400 hover:text-white transition-colors duration-300">
+                <button id="footer-wx-btn" class="text-gray-400 hover:text-white transition-colors duration-300">
                     <i class="fa fa-weixin mr-2"></i>客服微信｜Flyz远征飞
-                </a>
+                </button>
                 <a href="https://yzbjfpv.top/20250709.html" class="text-gray-400 hover:text-white transition-colors duration-300">
                     <i class="fa fa-home mr-2"></i>返回官网首页
                 </a>
@@ -238,10 +426,36 @@
         </div>
     </footer>
 
-    <!-- 粒子脚本（提升背景科技感） -->
+    <!-- 微信联系方式弹窗 -->
+    <div id="contact-modal" class="fixed inset-0 z-50 flex items-center justify-center hidden">
+        <div class="absolute inset-0 bg-black/50 modal-backdrop"></div>
+        <div class="relative bg-antennaDark border border-primary/30 rounded-xl p-8 max-w-md w-full mx-4 shadow-2xl transform transition-all">
+            <button id="close-modal" class="absolute top-4 right-4 text-gray-400 hover:text-white transition-colors">
+                <i class="fa fa-times text-xl"></i>
+            </button>
+            <div class="text-center mb-6">
+                <div class="w-16 h-16 bg-primary/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fa fa-weixin text-primary text-2xl"></i>
+                </div>
+                <h3 class="text-xl font-bold text-white mb-2">添加客服微信</h3>
+                <p class="text-gray-400">获取产品最新信息与专属优惠</p>
+            </div>
+            <div class="bg-dark/50 rounded-lg p-4 mb-6 text-center">
+                <p class="text-xl font-bold text-white mb-2">微信号</p>
+                <p class="text-2xl font-mono font-bold text-primary">YGWFK2024</p>
+            </div>
+            <div class="flex justify-center">
+                <button id="close-modal-btn" class="px-6 py-2 bg-primary hover:bg-primary/90 text-white font-medium rounded-lg transition-all duration-300">
+                    我知道了
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 粒子脚本 -->
     <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js" defer></script>
     <script>
-        // 粒子效果配置（适配深色背景与天线主题）
+        // 粒子效果
         particlesJS.load('particles-js', {
             "particles": {
                 "number": { "value": 80, "density": { "enable": true, "value_area": 1200 } },
@@ -265,7 +479,7 @@
             "retina_detect": true
         });
 
-        // 导航栏滚动效果（延续原站交互）
+        // 导航栏滚动效果
         window.addEventListener('scroll', function() {
             const navbar = document.getElementById('navbar');
             if (window.scrollY > 50) {
@@ -279,21 +493,50 @@
             }
         });
 
-        // 移动端菜单切换（延续原站交互）
+        // 移动端菜单切换
         document.getElementById('menu-toggle').addEventListener('click', function() {
             const mobileMenu = document.getElementById('mobile-menu');
             mobileMenu.classList.toggle('hidden');
         });
 
-        // 平滑滚动（延续原站交互）
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                document.querySelector(this.getAttribute('href')).scrollIntoView({
-                    behavior: 'smooth'
-                });
-                document.getElementById('mobile-menu').classList.add('hidden');
-            });
+        // 微信联系弹窗交互
+        const modal = document.getElementById('contact-modal');
+        const contactBtn = document.getElementById('contact-btn');
+        const navWxBtn = document.getElementById('nav-wx-btn');
+        const mobileWxBtn = document.getElementById('mobile-wx-btn');
+        const footerWxBtn = document.getElementById('footer-wx-btn');
+        const closeModal = document.getElementById('close-modal');
+        const closeModalBtn = document.getElementById('close-modal-btn');
+
+        function openModal() {
+            modal.classList.remove('hidden');
+            document.body.classList.add('overflow-hidden');
+        }
+
+        function closeModalWindow() {
+            modal.classList.add('hidden');
+            document.body.classList.remove('overflow-hidden');
+        }
+
+        contactBtn.addEventListener('click', openModal);
+        navWxBtn.addEventListener('click', openModal);
+        mobileWxBtn.addEventListener('click', openModal);
+        footerWxBtn.addEventListener('click', openModal);
+        closeModal.addEventListener('click', closeModalWindow);
+        closeModalBtn.addEventListener('click', closeModalWindow);
+
+        // 点击模态框背景关闭
+        modal.addEventListener('click', function(e) {
+            if (e.target === modal) {
+                closeModalWindow();
+            }
+        });
+
+        // 按下ESC键关闭模态框
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && !modal.classList.contains('hidden')) {
+                closeModalWindow();
+            }
         });
     </script>
 </body>
