@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flyz远征飞智能后台</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- 配置Tailwind自定义颜色和字体 -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'tech-dark': '#0a0e17',
+                        'tech-blue': '#00f0ff',
+                        'tech-purple': '#a742f5',
+                    },
+                    fontFamily: {
+                        'tech': ['Orbitron', 'sans-serif', 'system-ui'],
+                    },
+                }
+            }
+        }
+    </script>
+    
+    <!-- 自定义工具类 -->
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .text-shadow-glow {
+                text-shadow: 0 0 10px theme('colors.tech-blue'), 
+                             0 0 20px theme('colors.tech-blue'), 
+                             0 0 30px theme('colors.tech-blue'),
+                             0 0 40px theme('colors.tech-purple');
+            }
+            .bg-grid {
+                background-image: linear-gradient(rgba(0, 240, 255, 0.1) 1px, transparent 1px),
+                                  linear-gradient(90deg, rgba(0, 240, 255, 0.1) 1px, transparent 1px);
+                background-size: 40px 40px;
+            }
+            .border-glow {
+                box-shadow: 0 0 5px theme('colors.tech-blue'), 
+                            0 0 15px theme('colors.tech-blue');
+            }
+            .pulse-slow {
+                animation: pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+            }
+            .float-effect {
+                animation: float 6s ease-in-out infinite;
+            }
+        }
+        
+        /* 导入科技感字体 */
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&display=swap');
+        
+        /* 动画定义 */
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 1;
+                text-shadow: 0 0 10px theme('colors.tech-blue'), 
+                             0 0 20px theme('colors.tech-blue'), 
+                             0 0 30px theme('colors.tech-blue'),
+                             0 0 40px theme('colors.tech-purple');
+            }
+            50% {
+                opacity: 0.8;
+                text-shadow: 0 0 5px theme('colors.tech-blue'), 
+                             0 0 10px theme('colors.tech-blue'), 
+                             0 0 15px theme('colors.tech-blue'),
+                             0 0 20px theme('colors.tech-purple');
+            }
+        }
+        
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+        
+        /* 粒子效果样式 */
+        #particles-js {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: 0;
+            opacity: 0.7;
+        }
+        
+        /* 渐变遮罩效果 */
+        .gradient-overlay {
+            background: radial-gradient(circle at center, rgba(10, 14, 23, 0.3) 0%, rgba(10, 14, 23, 0.95) 70%);
+        }
+    </style>
+</head>
+<body class="bg-tech-dark font-tech overflow-hidden">
+    <!-- 粒子背景容器 -->
+    <div id="particles-js"></div>
+    
+    <!-- 网格背景层 -->
+    <div class="fixed inset-0 bg-grid opacity-30"></div>
+    
+    <!-- 渐变遮罩层 -->
+    <div class="fixed inset-0 gradient-overlay"></div>
+    
+    <!-- 主内容容器 -->
+    <div class="relative w-full h-screen flex items-center justify-center overflow-hidden">
+        <!-- 装饰性边框 -->
+        <div class="absolute inset-[20px] border border-tech-blue/30 border-glow rounded-lg"></div>
+        
+        <!-- 中心文字内容 -->
+        <div class="relative z-10 text-center px-4 float-effect">
+            <!-- 顶部状态标签 -->
+            <div class="mb-6 text-tech-blue/80 text-lg md:text-xl tracking-widest pulse-slow">
+                <span class="border border-tech-blue/50 px-3 py-1 rounded text-sm md:text-base">
+                    <i class="fa fa-bolt mr-2"></i>系统运行中
+                </span>
+            </div>
+            
+            <!-- 主要文字 -->
+            <div class="text-white text-5xl md:text-7xl lg:text-8xl font-black text-shadow-glow pulse-slow">
+                万食赞®15201130697
+            </div>
+            
+            <!-- 状态信息 -->
+            <div class="mt-12 text-tech-blue/80 text-sm md:text-base tracking-wider flex flex-col md:flex-row items-center justify-center gap-6 md:gap-12">
+                <div class="flex items-center">
+                    <i class="fa fa-clock-o mr-2 text-tech-blue"></i>
+                    <span>安全运行时间: <span id="uptime" class="font-bold">00:00:00</span></span>
+                </div>
+                <div class="flex items-center">
+                    <i class="fa fa-signal mr-2 text-tech-blue"></i>
+                    <span>当前网速: <span id="network-speed" class="font-bold">-- Mbps</span></span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 角落信息 -->
+        <div class="absolute top-4 left-4 text-tech-blue/40 text-xs tracking-widest">
+            Flyz远征飞 / V2.2.0
+        </div>
+        <div class="absolute bottom-4 right-4 text-tech-blue/40 text-xs tracking-widest">
+            智能后台系统 / © 2025
+        </div>
+    </div>
+    
+    <!-- 粒子效果JS -->
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <script>
+        // 初始化粒子效果
+        particlesJS('particles-js', {
+            "particles": {
+                "number": {
+                    "value": 60,
+                    "density": {
+                        "enable": true,
+                        "value_area": 800
+                    }
+                },
+                "color": {
+                    "value": "#00f0ff"
+                },
+                "shape": {
+                    "type": "circle"
+                },
+                "opacity": {
+                    "value": 0.2,
+                    "random": true
+                },
+                "size": {
+                    "value": 2,
+                    "random": true
+                },
+                "line_linked": {
+                    "enable": true,
+                    "distance": 150,
+                    "color": "#00f0ff",
+                    "opacity": 0.1,
+                    "width": 1
+                },
+                "move": {
+                    "enable": true,
+                    "speed": 1,
+                    "direction": "none",
+                    "random": true,
+                    "straight": false,
+                    "out_mode": "out",
+                    "bounce": false
+                }
+            },
+            "interactivity": {
+                "detect_on": "canvas",
+                "events": {
+                    "onhover": {
+                        "enable": true,
+                        "mode": "grab"
+                    },
+                    "onclick": {
+                        "enable": true,
+                        "mode": "push"
+                    },
+                    "resize": true
+                },
+                "modes": {
+                    "grab": {
+                        "distance": 140,
+                        "line_linked": {
+                            "opacity": 0.3
+                        }
+                    },
+                    "push": {
+                        "particles_nb": 3
+                    }
+                }
+            },
+            "retina_detect": true
+        });
+        
+        // 计时器功能 - 从0开始计时
+        function startUptimeCounter() {
+            const startTime = new Date();
+            const uptimeElement = document.getElementById('uptime');
+            
+            function updateUptime() {
+                const currentTime = new Date();
+                const elapsedSeconds = Math.floor((currentTime - startTime) / 1000);
+                
+                // 计算时、分、秒
+                const hours = Math.floor(elapsedSeconds / 3600).toString().padStart(2, '0');
+                const minutes = Math.floor((elapsedSeconds % 3600) / 60).toString().padStart(2, '0');
+                const seconds = (elapsedSeconds % 60).toString().padStart(2, '0');
+                
+                uptimeElement.textContent = `${hours}:${minutes}:${seconds}`;
+                requestAnimationFrame(updateUptime);
+            }
+            
+            updateUptime();
+        }
+        
+        // 网络速度监测
+        function monitorNetworkSpeed() {
+            const speedElement = document.getElementById('network-speed');
+            
+            // 检查浏览器是否支持connection API
+            if (navigator.connection) {
+                const connection = navigator.connection;
+                
+                function updateNetworkInfo() {
+                    // 计算Mbps (1 Mbps = 125000 Bytes/s)
+                    const speedMbps = (connection.downlink || 0).toFixed(1);
+                    speedElement.textContent = `${speedMbps} Mbps`;
+                }
+                
+                // 初始更新
+                updateNetworkInfo();
+                
+                // 当网络状态变化时更新
+                connection.addEventListener('change', updateNetworkInfo);
+            } else {
+                // 不支持connection API时，使用替代方法
+                speedElement.textContent = "未知";
+                console.log("浏览器不支持网络速度监测API");
+            }
+        }
+        
+        // 全屏显示功能
+        function setupFullscreen() {
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'F11') {
+                    e.preventDefault();
+                    if (!document.fullscreenElement) {
+                        document.documentElement.requestFullscreen();
+                    } else {
+                        if (document.exitFullscreen) {
+                            document.exitFullscreen();
+                        }
+                    }
+                }
+                // 按ESC退出全屏
+                if (e.key === 'Escape' && document.fullscreenElement) {
+                    document.exitFullscreen();
+                }
+            });
+            
+            // 点击页面进入全屏
+            document.addEventListener('click', () => {
+                if (!document.fullscreenElement) {
+                    document.documentElement.requestFullscreen().catch(err => {
+                        console.log(`全屏请求被拒绝: ${err.message}`);
+                    });
+                }
+            });
+        }
+        
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', () => {
+            startUptimeCounter();
+            monitorNetworkSpeed();
+            setupFullscreen();
+        });
+    </script>
+</body>
+</html>
