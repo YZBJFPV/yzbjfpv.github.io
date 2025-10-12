@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>高级78长度查询器</title>
+    <style>
+        :root {
+            --primary-color: #00f0ff;
+            --secondary-color: #0066ff;
+            --bg-color: #0a0e17;
+            --text-color: #ffffff;
+            --shadow: 0 0 20px rgba(0, 240, 255, 0.3);
+        }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: "Microsoft Yahei", sans-serif;
+            background-color: var(--bg-color);
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(0, 96, 255, 0.1) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(0, 240, 255, 0.1) 0%, transparent 20%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            color: var(--text-color);
+        }
+        .container {
+            background-color: rgba(17, 25, 40, 0.85);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 240, 255, 0.3);
+            border-radius: 16px;
+            box-shadow: var(--shadow);
+            padding: 30px;
+            width: 100%;
+            max-width: 600px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .container::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #00f0ff, #0066ff, #ff00ff, #00f0ff);
+            background-size: 400% 100%;
+            animation: gradientMove 8s linear infinite;
+        }
+        h1 {
+            color: var(--primary-color);
+            font-size: 28px;
+            margin-bottom: 10px;
+            position: relative;
+            display: inline-block;
+            text-shadow: 0 0 10px rgba(0, 240, 255, 0.7);
+        }
+        h1::after {
+            content: "";
+            position: absolute;
+            bottom: -5px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 2px;
+            background-color: var(--primary-color);
+            border-radius: 3px;
+            box-shadow: 0 0 5px rgba(0, 240, 255, 0.7);
+        }
+        .subtitle {
+            color: #a0b3c9;
+            font-size: 16px;
+            margin-bottom: 30px;
+            opacity: 0;
+            animation: fadeIn 0.8s ease-out 0.3s forwards;
+        }
+        .input-group {
+            margin: 20px 0;
+            opacity: 0;
+            animation: fadeIn 0.8s ease-out 0.6s forwards;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #a0b3c9;
+            text-align: left;
+        }
+        input {
+            width: 100%;
+            padding: 12px 15px;
+            background-color: rgba(30, 41, 59, 0.8);
+            border: 1px solid rgba(0, 240, 255, 0.3);
+            border-radius: 8px;
+            font-size: 16px;
+            color: var(--text-color);
+            transition: all 0.3s;
+        }
+        input:focus {
+            border-color: var(--primary-color);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(0, 240, 255, 0.2);
+        }
+        button {
+            background: linear-gradient(135deg, rgba(0, 240, 255, 0.2), rgba(0, 102, 255, 0.2));
+            border: 1px solid var(--primary-color);
+            color: var(--primary-color);
+            padding: 12px 30px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+            transition: all 0.3s;
+            opacity: 0;
+            animation: fadeIn 0.8s ease-out 0.9s forwards;
+            position: relative;
+            overflow: hidden;
+        }
+        button::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 240, 255, 0.1), transparent);
+            transition: left 0.5s;
+        }
+        button:hover {
+            background: linear-gradient(135deg, rgba(0, 240, 255, 0.3), rgba(0, 102, 255, 0.3));
+            box-shadow: 0 0 15px rgba(0, 240, 255, 0.4);
+        }
+        /* 倒T形摄像头视窗 */
+        .camera-container {
+            width: 100%;
+            height: 280px;
+            margin: 30px 0;
+            border: 1px solid rgba(0, 240, 255, 0.5);
+            border-radius: 8px;
+            position: relative;
+            overflow: hidden;
+            display: none;
+            opacity: 0;
+            animation: fadeIn 0.8s ease-out forwards;
+            box-shadow: 0 0 20px rgba(0, 240, 255, 0.1);
+        }
+        /* 渐变彩色动态描边效果 */
+        .camera-container::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, #ff00ff, #00f0ff, #0066ff, #ff00ff);
+            background-size: 400%;
+            border-radius: 10px;
+            z-index: -1;
+            animation: borderGlow 8s linear infinite;
+        }
+        .camera-top {
+            width: 100%;
+            height: 60px;
+            background-color: rgba(17, 25, 40, 0.9);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #a0b3c9;
+        }
+        .camera-bottom {
+            width: 100%;
+            height: 220px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        #camera-view {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        /* 倒T形遮挡效果 - 底部有横条，中间是竖直扫描区域 */
+        .cover {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(17, 25, 40, 0.95);
+            z-index: 1;
+            /* 倒T形镂空 - 底部横条 + 中间竖条 */
+            clip-path: polygon(
+                0% 0%, 100% 0%, 100% 70%, /* 顶部区域 */
+                30% 70%, 30% 100%, /* 左侧遮挡 */
+                70% 100%, 70% 70%, /* 右侧遮挡 */
+                0% 70% /* 回到起点 */
+            );
+        }
+        /* 扫描线效果 */
+        .scan-line {
+            position: absolute;
+            top: 70%;
+            left: 30%;
+            width: 40%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #00f0ff, transparent);
+            animation: scanMove 2s ease-in-out infinite;
+            z-index: 2;
+        }
+        /* 倒计时样式 */
+        .countdown {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 40px;
+            font-weight: bold;
+            color: #00f0ff;
+            text-shadow: 0 0 10px rgba(0, 240, 255, 0.8);
+            opacity: 0;
+            z-index: 3;
+        }
+        .analysis-result {
+            margin-top: 30px;
+            padding: 25px;
+            background-color: rgba(30, 41, 59, 0.6);
+            border-radius: 8px;
+            border-left: 4px solid var(--primary-color);
+            opacity: 0;
+            display: none;
+            animation: slideUp 0.6s ease-out forwards;
+        }
+        .progress-bar {
+            height: 8px;
+            background-color: rgba(30, 41, 59, 0.8);
+            border-radius: 4px;
+            margin: 15px 0;
+            overflow: hidden;
+        }
+        .progress {
+            height: 100%;
+            background: linear-gradient(90deg, #00f0ff, #0066ff);
+            width: 0;
+            transition: width 2.5s ease-in-out;
+        }
+        .length-display {
+            font-size: 36px;
+            font-weight: bold;
+            color: var(--primary-color);
+            margin: 20px 0;
+            text-shadow: 0 0 10px rgba(0, 240, 255, 0.7);
+        }
+        .comment {
+            margin-top: 20px;
+            padding: 12px;
+            border-radius: 6px;
+            background-color: rgba(17, 25, 40, 0.8);
+            text-align: left;
+            line-height: 1.6;
+            color: #a0b3c9;
+        }
+        .footer {
+            margin-top: 20px;
+            color: #66758c;
+            font-size: 14px;
+            opacity: 0;
+            animation: fadeIn 0.8s ease-out 1.2s forwards;
+        }
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        @keyframes countdownAnim {
+            0% {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1);
+                text-shadow: 0 0 10px rgba(0, 240, 255, 0.8);
+            }
+            90% {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1.3);
+                text-shadow: 0 0 20px rgba(0, 240, 255, 1);
+            }
+            100% {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(1.5);
+                text-shadow: 0 0 30px rgba(0, 240, 255, 0);
+            }
+        }
+        @keyframes borderGlow {
+            0% {
+                background-position: 0% 50%;
+            }
+            100% {
+                background-position: 400% 50%;
+            }
+        }
+        @keyframes gradientMove {
+            0% {
+                background-position: 0% 0%;
+            }
+            100% {
+                background-position: 400% 0%;
+            }
+        }
+        @keyframes scanMove {
+            0% {
+                top: 70%;
+                opacity: 0;
+            }
+            50% {
+                opacity: 1;
+            }
+            100% {
+                top: 100%;
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>78长度查询器</h1>
+        <p class="subtitle">让硕大来看看你的78</p>
+        <div class="input-group">
+            <label for="username">请输入您的用户名：</label>
+            <input type="text" id="username" placeholder="输入用户名，例如：张三">
+        </div>
+        <button id="analyze-btn">分析78长度</button>
+        
+        <!-- 倒T形摄像头视窗 -->
+        <div class="camera-container" id="camera-container">
+            <div class="camera-top">
+                <span>正在调用后置摄像头扫描...</span>
+            </div>
+            <div class="camera-bottom">
+                <video id="camera-view" autoplay muted></video>
+                <div class="cover"></div> <!-- 倒T形遮挡层 -->
+                <div class="scan-line"></div> <!-- 扫描线 -->
+                <div class="countdown" id="countdown"></div>
+            </div>
+        </div>
+        
+        <div class="analysis-result" id="result-container">
+            <p>用户名: <span id="result-username"></span></p>
+            <div class="progress-bar">
+                <div class="progress" id="progress"></div>
+            </div>
+            <div class="length-display" id="length-display"></div>
+            <div class="comment" id="comment"></div>
+        </div>
+        
+        <div class="footer">
+            长度仅供参考 请以实物为准
+        </div>
+    </div>
+
+    <script>
+        const analyzeBtn = document.getElementById('analyze-btn');
+        const resultContainer = document.getElementById('result-container');
+        const resultUsername = document.getElementById('result-username');
+        const lengthDisplay = document.getElementById('length-display');
+        const comment = document.getElementById('comment');
+        const progress = document.getElementById('progress');
+        const cameraContainer = document.getElementById('camera-container');
+        const cameraView = document.getElementById('camera-view');
+        const countdown = document.getElementById('countdown');
+
+        // 模拟调用后置摄像头并显示倒计时拍摄效果
+        function startCamera() {
+            cameraContainer.style.display = 'block';
+            if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+                navigator.mediaDevices.getUserMedia({ 
+                    video: { 
+                        facingMode: 'environment', // 后置摄像头
+                        width: { ideal: 640 },
+                        height: { ideal: 480 }
+                    } 
+                })
+                    .then(stream => {
+                        cameraView.srcObject = stream;
+                        // 等待5秒后显示倒计时
+                        setTimeout(() => {
+                            let count = 3;
+                            const countdownInterval = setInterval(() => {
+                                countdown.textContent = count;
+                                countdown.style.animation = 'countdownAnim 1s ease-in-out';
+                                countdown.style.opacity = 1;
+                                count--;
+                                if (count < 0) {
+                                    clearInterval(countdownInterval);
+                                    countdown.style.opacity = 0;
+                                    // 停顿持续展示当前画面2秒
+                                    setTimeout(() => {
+                                        analyzeLength();
+                                    }, 2000);
+                                }
+                            }, 1000);
+                        }, 5000); // 保持5秒扫描时间
+                    })
+                    .catch(err => {
+                        console.error('获取摄像头失败: ', err);
+                        // 模拟摄像头画面（无摄像头时显示提示）
+                        cameraView.style.backgroundColor = '#111928';
+                        cameraView.innerHTML = '<div style="width:100%;height:100%;display:flex;justify-content:center;align-items:center;color:#66758c;">无法访问摄像头，将模拟分析</div>';
+                        // 等待5秒后模拟倒计时
+                        setTimeout(() => {
+                            let count = 3;
+                            const countdownInterval = setInterval(() => {
+                                countdown.textContent = count;
+                                countdown.style.animation = 'countdownAnim 1s ease-in-out';
+                                countdown.style.opacity = 1;
+                                count--;
+                                if (count < 0) {
+                                    clearInterval(countdownInterval);
+                                    countdown.style.opacity = 0;
+                                    setTimeout(() => {
+                                        analyzeLength();
+                                    }, 2000);
+                                }
+                            }, 1000);
+                        }, 5000);
+                    });
+            } else {
+                // 不支持 getUserMedia 时模拟分析
+                cameraView.style.backgroundColor = '#111928';
+                cameraView.innerHTML = '<div style="width:100%;height:100%;display:flex;justify-content:center;align-items:center;color:#66758c;">您的浏览器不支持摄像头功能</div>';
+                // 等待5秒后模拟倒计时
+                setTimeout(() => {
+                    let count = 3;
+                    const countdownInterval = setInterval(() => {
+                        countdown.textContent = count;
+                        countdown.style.animation = 'countdownAnim 1s ease-in-out';
+                        countdown.style.opacity = 1;
+                        count--;
+                        if (count < 0) {
+                            clearInterval(countdownInterval);
+                            countdown.style.opacity = 0;
+                            setTimeout(() => {
+                                analyzeLength();
+                            }, 2000);
+                        }
+                    }, 1000);
+                }, 5000);
+            }
+        }
+
+        function analyzeLength() {
+            // 隐藏摄像头视图
+            if (cameraView.srcObject) {
+                cameraView.srcObject.getTracks().forEach(track => track.stop());
+            }
+            cameraContainer.style.display = 'none';
+
+            // 生成更精细的随机长度（范围：3.00000 ~ 25.99999）
+            const randomBase = Math.random() * 22.99999 + 3.00000;
+            const randomLength = randomBase.toFixed(5);
+            const lengthValue = parseFloat(randomLength);
+
+            // 进度条动画
+            progress.style.width = '100%';
+
+            // 显示结果
+            resultUsername.textContent = document.getElementById('username').value || '匿名用户';
+            lengthDisplay.textContent = `${lengthValue} cm`;
+
+            // 更丰富的评论逻辑
+            let commentText = '';
+            if (lengthValue < 5.00000) {
+                commentText = '这长度也太寒酸了吧！建议找个安静的环境再仔细测量，或许是操作方式影响了结果～';
+            } else if (lengthValue < 8.00000) {
+                commentText = '长度处于平均区间偏下，别灰心，日常状态和测量方式都会有影响哦～';
+            } else if (lengthValue < 12.00000) {
+                commentText = '很不错的长度表现，属于大众认可的舒适区间，继续保持良好状态！';
+            } else if (lengthValue < 18.00000) {
+                commentText = '相当优秀的长度，已经超越了多数人的水平，这可是很多人羡慕的程度～';
+            } else {
+                commentText = '哇哦，这长度太厉害了吧！妥妥的“佼佼者”级别，建议再找专业方式复核确认～';
+            }
+            comment.textContent = commentText;
+
+            resultContainer.style.display = 'block';
+        }
+
+        analyzeBtn.addEventListener('click', startCamera);
+
+        // 页面加载时的渐显动画
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                document.querySelector('.subtitle').style.opacity = 1;
+            }, 300);
+        });
+    </script>
+</body>
+</html>
