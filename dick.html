@@ -3,43 +3,49 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="referrer" content="no-referrer-when-downgrade">
     <title>高级78长度查询器</title>
     <style>
         :root {
-            --primary-color: #00f0ff;
-            --secondary-color: #0066ff;
-            --bg-color: #0a0e17;
-            --text-color: #ffffff;
-            --shadow: 0 0 20px rgba(0, 240, 255, 0.3);
+            --primary: #00f0ff;
+            --primary-light: #00c8ff;
+            --secondary: #1e293b;
+            --text: #e2e8f0;
+            --text-light: #94a3b8;
+            --shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+            --ad-bg: linear-gradient(135deg, rgba(0, 240, 255, 0.1), rgba(0, 240, 255, 0.18));
+            --ad-border: #00f0ff40;
+            --bg-main: radial-gradient(circle at 15% 25%, rgba(0, 240, 255, 0.08) 0%, transparent 25%),
+                        radial-gradient(circle at 85% 75%, rgba(0, 200, 255, 0.08) 0%, transparent 25%),
+                        #0f172a;
+            --card-bg: #171e2f;
+            --input-bg: #273449;
+            --btn-bg: linear-gradient(135deg, var(--primary), var(--primary-light));
         }
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
         body {
-            font-family: "Microsoft Yahei", sans-serif;
-            background-color: var(--bg-color);
-            background-image: 
-                radial-gradient(circle at 10% 20%, rgba(0, 96, 255, 0.1) 0%, transparent 20%),
-                radial-gradient(circle at 90% 80%, rgba(0, 240, 255, 0.1) 0%, transparent 20%);
+            font-family: "Microsoft Yahei", "Segoe UI", sans-serif;
+            background: var(--bg-main);
             min-height: 100vh;
             display: flex;
             justify-content: center;
-            align-items: center;
-            padding: 20px;
-            color: var(--text-color);
+            align-items: flex-start;
+            padding: 20px 0;
+            overflow-x: hidden;
         }
         .container {
-            background-color: rgba(17, 25, 40, 0.85);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(0, 240, 255, 0.3);
-            border-radius: 16px;
+            background: var(--card-bg);
+            border-radius: 20px;
             box-shadow: var(--shadow);
             padding: 30px;
             width: 100%;
             max-width: 600px;
-            text-align: center;
+            margin: 20px auto;
             position: relative;
             overflow: hidden;
         }
@@ -50,133 +56,152 @@
             left: 0;
             width: 100%;
             height: 4px;
-            background: linear-gradient(90deg, #00f0ff, #0066ff, #ff00ff, #00f0ff);
-            background-size: 400% 100%;
-            animation: gradientMove 8s linear infinite;
+            background: linear-gradient(90deg, var(--primary), var(--primary-light));
         }
-        h1 {
-            color: var(--primary-color);
+        .page-title {
+            color: var(--primary);
             font-size: 28px;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
             position: relative;
             display: inline-block;
-            text-shadow: 0 0 10px rgba(0, 240, 255, 0.7);
+            text-shadow: 0 2px 8px rgba(0, 240, 255, 0.25);
+            animation: titleFloat 3s ease-in-out infinite;
         }
-        h1::after {
+        .page-title::after {
             content: "";
             position: absolute;
-            bottom: -5px;
+            bottom: -6px;
             left: 50%;
             transform: translateX(-50%);
             width: 60px;
-            height: 2px;
-            background-color: var(--primary-color);
+            height: 3px;
+            background: var(--primary);
             border-radius: 3px;
-            box-shadow: 0 0 5px rgba(0, 240, 255, 0.7);
+            animation: linePulse 2s ease-in-out infinite;
         }
         .subtitle {
-            color: #a0b3c9;
-            font-size: 16px;
-            margin-bottom: 30px;
+            color: var(--text-light);
+            font-size: 15px;
+            margin-bottom: 25px;
             opacity: 0;
-            animation: fadeIn 0.8s ease-out 0.3s forwards;
+            animation: fadeUp 0.6s ease-out 0.3s forwards;
         }
         .input-group {
             margin: 20px 0;
             opacity: 0;
-            animation: fadeIn 0.8s ease-out 0.6s forwards;
+            animation: fadeUp 0.6s ease-out 0.6s forwards;
         }
-        label {
+        .input-label {
             display: block;
             margin-bottom: 8px;
             font-weight: 500;
-            color: #a0b3c9;
+            color: var(--text);
             text-align: left;
+            font-size: 15px;
         }
-        input {
+        .username-input {
             width: 100%;
-            padding: 12px 15px;
-            background-color: rgba(30, 41, 59, 0.8);
-            border: 1px solid rgba(0, 240, 255, 0.3);
-            border-radius: 8px;
+            padding: 13px 16px;
+            border: 1px solid #334155;
+            border-radius: 10px;
             font-size: 16px;
-            color: var(--text-color);
-            transition: all 0.3s;
-        }
-        input:focus {
-            border-color: var(--primary-color);
+            color: var(--text);
+            background: var(--input-bg);
             outline: none;
-            box-shadow: 0 0 0 3px rgba(0, 240, 255, 0.2);
         }
-        button {
-            background: linear-gradient(135deg, rgba(0, 240, 255, 0.2), rgba(0, 102, 255, 0.2));
-            border: 1px solid var(--primary-color);
-            color: var(--primary-color);
-            padding: 12px 30px;
-            border-radius: 8px;
+        .username-input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(0, 240, 255, 0.15);
+            transform: translateY(-1px);
+        }
+        .analyze-btn {
+            background: var(--btn-bg);
+            color: #0f172a;
+            border: none;
+            padding: 13px 0;
+            border-radius: 10px;
             cursor: pointer;
             font-size: 16px;
-            font-weight: 500;
-            transition: all 0.3s;
+            font-weight: 600;
+            width: 100%;
+            margin-top: 10px;
             opacity: 0;
-            animation: fadeIn 0.8s ease-out 0.9s forwards;
+            animation: fadeUp 0.6s ease-out 0.9s forwards;
             position: relative;
             overflow: hidden;
         }
-        button::before {
+        .analyze-btn::before {
             content: "";
             position: absolute;
             top: 0;
             left: -100%;
             width: 100%;
             height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(0, 240, 255, 0.1), transparent);
-            transition: left 0.5s;
+            background: linear-gradient(90deg, transparent, rgba(15, 23, 42, 0.15), transparent);
+            transition: left 0.6s ease;
         }
-        button:hover {
-            background: linear-gradient(135deg, rgba(0, 240, 255, 0.3), rgba(0, 102, 255, 0.3));
-            box-shadow: 0 0 15px rgba(0, 240, 255, 0.4);
+        .analyze-btn:hover::before {
+            left: 100%;
         }
-        /* 倒T形摄像头视窗 */
+        .analyze-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0, 240, 255, 0.25);
+        }
+        .analyze-btn:active {
+            transform: translateY(0);
+        }
+        .copy-btn {
+            background: rgba(0, 240, 255, 0.1);
+            color: var(--primary);
+            border: 1px solid var(--primary);
+            padding: 10px 0;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 15px;
+            width: 100%;
+            margin-top: 15px;
+        }
+        .copy-btn:hover {
+            background: rgba(0, 240, 255, 0.2);
+            box-shadow: 0 4px 12px rgba(0, 240, 255, 0.15);
+        }
+        .copy-tip {
+            color: #22c55e;
+            font-size: 13px;
+            margin-top: 8px;
+            opacity: 0;
+            height: 16px;
+        }
+        .copy-tip.active {
+            opacity: 1;
+            animation: fadeIn 0.5s ease-out forwards;
+        }
         .camera-container {
             width: 100%;
-            height: 280px;
-            margin: 30px 0;
-            border: 1px solid rgba(0, 240, 255, 0.5);
-            border-radius: 8px;
+            height: 260px;
+            margin: 25px 0;
+            border: 1px solid #334155;
+            border-radius: 12px;
             position: relative;
             overflow: hidden;
             display: none;
             opacity: 0;
-            animation: fadeIn 0.8s ease-out forwards;
-            box-shadow: 0 0 20px rgba(0, 240, 255, 0.1);
-        }
-        /* 渐变彩色动态描边效果 */
-        .camera-container::before {
-            content: '';
-            position: absolute;
-            top: -2px;
-            left: -2px;
-            right: -2px;
-            bottom: -2px;
-            background: linear-gradient(45deg, #ff00ff, #00f0ff, #0066ff, #ff00ff);
-            background-size: 400%;
-            border-radius: 10px;
-            z-index: -1;
-            animation: borderGlow 8s linear infinite;
+            animation: fadeUp 0.6s ease-out forwards;
+            background: var(--input-bg);
         }
         .camera-top {
             width: 100%;
-            height: 60px;
-            background-color: rgba(17, 25, 40, 0.9);
+            height: 50px;
+            background: #212936;
             display: flex;
             justify-content: center;
             align-items: center;
-            color: #a0b3c9;
+            font-size: 14px;
+            color: var(--text-light);
         }
-        .camera-bottom {
+        .camera-preview {
             width: 100%;
-            height: 220px;
+            height: calc(100% - 50px);
             display: flex;
             justify-content: center;
             align-items: center;
@@ -186,332 +211,792 @@
             height: 100%;
             object-fit: cover;
         }
-        /* 倒T形遮挡效果 - 底部有横条，中间是竖直扫描区域 */
-        .cover {
+        .cover-mask {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(17, 25, 40, 0.95);
+            background: rgba(15, 23, 42, 0.7);
             z-index: 1;
-            /* 倒T形镂空 - 底部横条 + 中间竖条 */
             clip-path: polygon(
-                0% 0%, 100% 0%, 100% 70%, /* 顶部区域 */
-                30% 70%, 30% 100%, /* 左侧遮挡 */
-                70% 100%, 70% 70%, /* 右侧遮挡 */
-                0% 70% /* 回到起点 */
+                0% 0%, 100% 0%, 100% 50px, 
+                30% 50px, 30% 100%, 
+                70% 100%, 70% 50px, 
+                0% 50px
             );
         }
-        /* 扫描线效果 */
         .scan-line {
             position: absolute;
-            top: 70%;
+            top: 50px;
             left: 30%;
             width: 40%;
             height: 2px;
-            background: linear-gradient(90deg, transparent, #00f0ff, transparent);
-            animation: scanMove 2s ease-in-out infinite;
+            background: var(--primary);
             z-index: 2;
+            animation: scanMove 2s ease-in-out infinite;
         }
-        /* 倒计时样式 */
         .countdown {
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            font-size: 40px;
+            font-size: 48px;
             font-weight: bold;
-            color: #00f0ff;
-            text-shadow: 0 0 10px rgba(0, 240, 255, 0.8);
+            color: var(--primary);
+            text-shadow: 0 4px 12px rgba(0, 240, 255, 0.3);
             opacity: 0;
             z-index: 3;
         }
-        .analysis-result {
-            margin-top: 30px;
-            padding: 25px;
-            background-color: rgba(30, 41, 59, 0.6);
-            border-radius: 8px;
-            border-left: 4px solid var(--primary-color);
+        .countdown.active {
+            animation: countPulse 1s ease-in-out forwards;
+        }
+        .result-container {
+            margin-top: 25px;
+            padding: 22px;
+            background: var(--secondary);
+            border-radius: 12px;
+            border-left: 4px solid var(--primary);
             opacity: 0;
             display: none;
-            animation: slideUp 0.6s ease-out forwards;
+            animation: slideUp 0.8s ease-out forwards;
+        }
+        .result-username {
+            font-size: 15px;
+            color: var(--text);
+            margin-bottom: 15px;
+            text-align: left;
         }
         .progress-bar {
             height: 8px;
-            background-color: rgba(30, 41, 59, 0.8);
+            background: #334155;
             border-radius: 4px;
-            margin: 15px 0;
+            margin-bottom: 20px;
             overflow: hidden;
         }
-        .progress {
+        .progress-fill {
             height: 100%;
-            background: linear-gradient(90deg, #00f0ff, #0066ff);
+            background: linear-gradient(90deg, var(--primary), var(--primary-light));
             width: 0;
-            transition: width 2.5s ease-in-out;
+            transition: width 2.8s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
         .length-display {
-            font-size: 36px;
+            font-size: 38px;
             font-weight: bold;
-            color: var(--primary-color);
-            margin: 20px 0;
-            text-shadow: 0 0 10px rgba(0, 240, 255, 0.7);
+            color: var(--primary);
+            margin: 15px 0;
+            text-shadow: 0 2px 8px rgba(0, 240, 255, 0.25);
+            position: relative;
+            overflow: hidden;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
+        .length-digit {
+            display: inline-block;
+            animation: numberRoll 0.8s ease-out forwards;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        .length-digit:nth-child(1) { animation-delay: 0.2s; }
+        .length-digit:nth-child(2) { animation-delay: 0.4s; }
+        .length-digit:nth-child(3) { animation-delay: 0.6s; }
+        .length-digit:nth-child(4) { animation-delay: 0.8s; }
         .comment {
-            margin-top: 20px;
+            margin-top: 15px;
             padding: 12px;
-            border-radius: 6px;
-            background-color: rgba(17, 25, 40, 0.8);
+            border-radius: 8px;
+            background: var(--card-bg);
             text-align: left;
             line-height: 1.6;
-            color: #a0b3c9;
+            font-size: 15px;
+            color: var(--text-light);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+        }
+        .ad-space {
+            margin: 25px 0;
+            padding: 18px;
+            background: var(--ad-bg);
+            border: 1px dashed var(--ad-border);
+            border-radius: 10px;
+            cursor: pointer;
+            text-align: center;
+            animation: adBreathe 3s ease-in-out infinite;
+        }
+        .ad-title {
+            font-size: 16px;
+            font-weight: 500;
+            color: var(--primary);
+            margin-bottom: 5px;
+        }
+        .ad-desc {
+            color: var(--text-light);
+            font-size: 13px;
+        }
+        .ad-space:hover {
+            background: linear-gradient(135deg, rgba(0, 240, 255, 0.15), rgba(0, 240, 255, 0.25));
+            transform: translateY(-1px);
+        }
+        .comments-section {
+            margin: 25px 0;
+            padding-top: 20px;
+            border-top: 1px solid #273449;
+            opacity: 0;
+            animation: fadeUp 0.6s ease-out 1.2s forwards;
+        }
+        .comments-title {
+            font-size: 18px;
+            font-weight: 500;
+            color: var(--text);
+            margin-bottom: 15px;
+            text-align: left;
+        }
+        .ad-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 1000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+        .ad-modal.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+        .modal-content {
+            background: var(--card-bg);
+            border: 1px solid #334155;
+            border-radius: 16px;
+            padding: 30px 25px;
+            width: 90%;
+            max-width: 450px;
+            text-align: center;
+            position: relative;
+            transform: scale(0.9);
+            transition: transform 0.3s ease;
+        }
+        .ad-modal.active .modal-content {
+            transform: scale(1);
+        }
+        .close-modal {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-size: 22px;
+            color: var(--text-light);
+            cursor: pointer;
+        }
+        .close-modal:hover {
+            color: var(--primary);
+        }
+        .modal-title {
+            font-size: 22px;
+            font-weight: 500;
+            color: var(--primary);
+            margin-bottom: 20px;
+        }
+        .contact-info {
+            margin: 15px 0;
+        }
+        .contact-label {
+            font-size: 15px;
+            color: var(--text-light);
+            margin-bottom: 8px;
+            display: block;
+        }
+        .contact-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--primary);
+            letter-spacing: 1px;
+        }
+        .price-list {
+            margin: 20px 0;
+            text-align: left;
+            padding-left: 15px;
+        }
+        .price-item {
+            font-size: 16px;
+            color: var(--text);
+            margin: 10px 0;
+            display: flex;
+            align-items: center;
+        }
+        .price-item::before {
+            content: "•";
+            color: var(--primary);
+            margin-right: 8px;
+        }
+        .confession-note {
+            font-size: 15px;
+            color: #22c55e;
+            font-weight: 500;
+            margin: 20px 0;
+            padding: 12px;
+            background: rgba(34, 197, 94, 0.1);
+            border-radius: 8px;
         }
         .footer {
             margin-top: 20px;
-            color: #66758c;
-            font-size: 14px;
+            color: var(--text-light);
+            font-size: 13px;
             opacity: 0;
-            animation: fadeIn 0.8s ease-out 1.2s forwards;
+            animation: fadeUp 0.6s ease-out 1.5s forwards;
         }
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        .camera-fallback {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: var(--text-light);
+            font-size: 14px;
+            text-align: center;
+            padding: 20px;
+        }
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
         }
         @keyframes slideUp {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
         }
-        @keyframes countdownAnim {
-            0% {
-                opacity: 1;
-                transform: translate(-50%, -50%) scale(1);
-                text-shadow: 0 0 10px rgba(0, 240, 255, 0.8);
-            }
-            90% {
-                opacity: 1;
-                transform: translate(-50%, -50%) scale(1.3);
-                text-shadow: 0 0 20px rgba(0, 240, 255, 1);
-            }
-            100% {
-                opacity: 0;
-                transform: translate(-50%, -50%) scale(1.5);
-                text-shadow: 0 0 30px rgba(0, 240, 255, 0);
-            }
+        @keyframes titleFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-3px); }
         }
-        @keyframes borderGlow {
-            0% {
-                background-position: 0% 50%;
-            }
-            100% {
-                background-position: 400% 50%;
-            }
-        }
-        @keyframes gradientMove {
-            0% {
-                background-position: 0% 0%;
-            }
-            100% {
-                background-position: 400% 0%;
-            }
+        @keyframes linePulse {
+            0%, 100% { width: 60px; }
+            50% { width: 80px; }
         }
         @keyframes scanMove {
-            0% {
-                top: 70%;
-                opacity: 0;
-            }
-            50% {
-                opacity: 1;
-            }
-            100% {
-                top: 100%;
-                opacity: 0;
-            }
+            0% { top: 50px; opacity: 0.6; }
+            50% { top: calc(100% - 20px); opacity: 1; }
+            100% { top: 50px; opacity: 0.6; }
+        }
+        @keyframes countPulse {
+            0% { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
+            50% { opacity: 1; transform: translate(-50%, -50%) scale(1.1); }
+            100% { opacity: 0; transform: translate(-50%, -50%) scale(1); }
+        }
+        @keyframes numberRoll {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes adBreathe {
+            0%, 100% { opacity: 0.9; }
+            50% { opacity: 1; }
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>78长度查询器</h1>
-        <p class="subtitle">让硕大来看看你的78</p>
-        <div class="input-group">
-            <label for="username">请输入您的用户名：</label>
-            <input type="text" id="username" placeholder="输入用户名，例如：张三">
-        </div>
-        <button id="analyze-btn">分析78长度</button>
+        <h1 class="page-title">78长度查询器</h1>
+        <p class="subtitle">AI智能扫描，精准获取数据</p>
         
-        <!-- 倒T形摄像头视窗 -->
+        <!-- 广告位1 -->
+        <div class="ad-space" id="ad-space-top">
+            <div class="ad-title">广告位招租</div>
+            <div class="ad-desc">黄金曝光位，低至1元/7天</div>
+        </div>
+
+        <div class="input-group">
+            <label class="input-label" for="username">用户名</label>
+            <input type="text" id="username" class="username-input" placeholder="例如：张三" autocomplete="off">
+        </div>
+        <button class="analyze-btn" id="analyze-btn">开始扫描分析</button>
+        
+        <!-- 摄像头视窗 -->
         <div class="camera-container" id="camera-container">
             <div class="camera-top">
-                <span>正在调用后置摄像头扫描...</span>
+                <span>请对准物体，等待扫描...</span>
             </div>
-            <div class="camera-bottom">
-                <video id="camera-view" autoplay muted></video>
-                <div class="cover"></div> <!-- 倒T形遮挡层 -->
-                <div class="scan-line"></div> <!-- 扫描线 -->
+            <div class="camera-preview">
+                <video id="camera-view" autoplay muted playsinline></video>
+                <div class="cover-mask"></div>
+                <div class="scan-line"></div>
                 <div class="countdown" id="countdown"></div>
             </div>
         </div>
         
-        <div class="analysis-result" id="result-container">
-            <p>用户名: <span id="result-username"></span></p>
+        <!-- 结果区（含复制按钮） -->
+        <div class="result-container" id="result-container">
+            <div class="result-username">用户: <span id="result-username-text">匿名用户</span></div>
             <div class="progress-bar">
-                <div class="progress" id="progress"></div>
+                <div class="progress-fill" id="progress-fill"></div>
             </div>
-            <div class="length-display" id="length-display"></div>
-            <div class="comment" id="comment"></div>
+            <div class="length-display" id="length-display">
+                <span class="length-digit" id="length-digit"></span>
+            </div>
+            <div class="comment" id="comment-text"></div>
+            <button class="copy-btn" id="copy-btn">复制我的长度</button>
+            <div class="copy-tip" id="copy-tip">复制成功！快去分享吧~</div>
+        </div>
+
+        <!-- 评论区：Powr容器直接嵌入body，SDK在容器后加载 -->
+        <div class="comments-section">
+            <div class="comments-title">用户互动</div>
+            <!-- 1. Powr评论容器：直接嵌入body的comments-section内 -->
+            <div class="powr-comments" id="9fbdf0c9_1760278017"></div>
+            <!-- 2. Powr SDK：移到body内，放在容器后（确保先有容器再加载SDK） -->
+            <script src="https://www.powr.io/powr.js?platform=html"></script>
+        </div>
+
+        <!-- 广告位2 -->
+        <div class="ad-space" id="ad-space-bottom">
+            <div class="ad-title">广告位招租</div>
+            <div class="ad-desc">支持表白/祝福，联系微信详谈</div>
         </div>
         
         <div class="footer">
-            长度仅供参考 请以实物为准
+            本工具仅供娱乐 | 数据以实物为准
+        </div>
+    </div>
+
+    <!-- 广告弹窗 -->
+    <div class="ad-modal" id="ad-modal">
+        <div class="modal-content">
+            <span class="close-modal" id="close-modal">&times;</span>
+            <div class="modal-title">广告位合作详情</div>
+            
+            <div class="contact-info">
+                <span class="contact-label">联系方式（微信ID）：</span>
+                <span class="contact-value">YGWFK2024</span>
+            </div>
+            
+            <div class="price-list">
+                <div class="price-item">短期合作：1元 / 7天</div>
+                <div class="price-item">长期合作：3元 / 月</div>
+            </div>
+            
+            <div class="confession-note">
+                支持定制内容：表白留言、生日祝福、友情寄语等
+            </div>
         </div>
     </div>
 
     <script>
+        // 核心元素获取
         const analyzeBtn = document.getElementById('analyze-btn');
-        const resultContainer = document.getElementById('result-container');
-        const resultUsername = document.getElementById('result-username');
-        const lengthDisplay = document.getElementById('length-display');
-        const comment = document.getElementById('comment');
-        const progress = document.getElementById('progress');
         const cameraContainer = document.getElementById('camera-container');
         const cameraView = document.getElementById('camera-view');
         const countdown = document.getElementById('countdown');
+        const resultContainer = document.getElementById('result-container');
+        const progressFill = document.getElementById('progress-fill');
+        const lengthDisplay = document.getElementById('length-display');
+        const lengthDigit = document.getElementById('length-digit');
+        const commentText = document.getElementById('comment-text');
+        const resultUsernameText = document.getElementById('result-username-text');
+        const usernameInput = document.getElementById('username');
+        const copyBtn = document.getElementById('copy-btn');
+        const copyTip = document.getElementById('copy-tip');
+        const adSpaces = document.querySelectorAll('.ad-space');
+        const adModal = document.getElementById('ad-modal');
+        const closeModal = document.getElementById('close-modal');
 
-        // 模拟调用后置摄像头并显示倒计时拍摄效果
-        function startCamera() {
+        // 1. 200条精细化长度评价（按区间拆分）
+        const lengthComments = {
+            "3-5": [
+                "刚达到检测下限呢~建议换个角度重新测量，说不定是姿势影响了结果哦",
+                "这个长度有点小巧呀！别灰心，日常状态波动很正常，放松点再试一次",
+                "检测到长度偏短，可能是物体摆放角度问题，调整后再扫描会更准",
+                "当前结果偏短，记得保持物体与摄像头平行，这样数据才更可靠",
+                "小巧玲珑的长度~如果对结果有疑问，建议多测几次取平均值",
+                "这个数值略低，可能是环境光线太暗，找个亮一点的地方再试试",
+                "长度偏短啦！检查下是不是物体没完全对准扫描区域，重新来一次吧",
+                "刚过3cm的门槛，别着急，调整好位置再测，说不定有惊喜",
+                "这个长度有点迷你，确认下是不是只扫描了物体的一部分哦",
+                "检测结果偏短，可能是摄像头距离太远，拉近一点再扫描试试",
+                "小巧型长度~如果是第一次测，建议多熟悉下操作，结果会更准",
+                "这个数值略低，是不是物体没放正呀？调整后再测一次吧",
+                "刚达到可检测范围，别灰心，多试几次说不定会有不一样的结果",
+                "长度偏短，可能是扫描时手晃动了，稳住摄像头再试一次",
+                "这个长度有点可爱~如果对结果不满意，换个姿势重新来",
+                "检测到长度偏低，检查下扫描区域是不是只框住了物体的一部分",
+                "刚过3cm，放松心态再测一次，有时候状态对结果影响很大",
+                "这个数值略小，可能是光线太暗，补点光再扫描会更好",
+                "长度偏短啦！确保物体完全在扫描区域内，再试一次吧",
+                "小巧的长度~多测几次，说不定能找到最准的那个数值"
+            ],
+            "5-6": [
+                "处于偏短区间，不过日常状态波动很正常，别太在意哦",
+                "这个长度略低于平均水平，调整下物体位置，说不定结果会更好",
+                "检测到5-6cm，这个数值很常见，要是觉得不准可以再测一次",
+                "这个数值还算常见，要是觉得不准，换个角度重新扫描试试",
+                "处于偏短区间，不过每个人的情况不同，开心最重要啦",
+                "5cm出头的长度，确认下是不是物体没完全展开，再试一次吧",
+                "这个长度略低，可能是摄像头角度问题，调整后再测会更可靠",
+                "检测结果在5-6cm，属于正常波动范围，不用太纠结",
+                "这个数值还算可以，要是不满意，找个更亮的地方再测一次",
+                "处于偏短区间，不过多测几次，说不定能测出更理想的结果",
+                "5cm多一点，检查下扫描区域是不是只框住了一部分，重新来",
+                "这个长度略低于平均，不过放松心态，状态好的时候结果会更好",
+                "检测到5-6cm的长度，属于常见范围，不用太担心",
+                "这个数值还算正常，要是觉得不准，稳住手再扫描一次",
+                "处于偏短区间，调整下物体摆放，说不定会有惊喜",
+                "5cm出头，可能是光线影响了检测，补点光再试一次吧",
+                "这个长度略低，不过每个人的情况不同，自己满意就好",
+                "检测结果在5-6cm，属于正常范围，多测几次取平均值更准",
+                "这个数值还算常见，要是不满意，换个姿势重新来一次",
+                "处于偏短区间，别着急，调整好位置再测，结果会更准"
+            ],
+            "6-7": [
+                "处于平均区间偏下，不过很常见，不用太在意哦",
+                "6cm多的长度，属于大多数人的正常范围，放心啦",
+                "检测到6-7cm，这个数值很常见，要是觉得不准可以再测一次",
+                "这个长度还算不错，处于平均水平，不用纠结细节",
+                "6cm出头，属于正常范围，多测几次取平均值会更准",
+                "检测结果在6-7cm，很常见的数值，开心就好",
+                "这个长度还算可以，要是不满意，调整下角度再试一次",
+                "6cm多一点，属于平均区间，每个人的情况都不一样哦",
+                "检测到6-7cm，正常范围，不用太担心结果",
+                "这个长度还算不错，要是觉得不准，换个亮的地方再测",
+                "6cm出头，属于常见范围，多熟悉下操作结果会更好",
+                "检测结果在6-7cm，很正常的数值，不用太在意",
+                "这个长度还算可以，要是不满意，稳住手再扫描一次",
+                "6cm多一点，处于平均区间偏下，不过很常见",
+                "检测到6-7cm，正常范围，多测几次说不定会有惊喜",
+                "这个长度还算可以，要是不满意，调整下位置再试",
+                "6cm出头，属于常见范围，自己满意就好啦",
+                "检测结果在6-7cm，很正常的数值，不用太纠结",
+                "这个长度还算可以，要是不满意，换个姿势重新来",
+                "6cm多一点，处于平均区间，每个人都有自己的特点"
+            ],
+            "7-8": [
+                "刚好在平均区间中间，很标准的长度，不用太担心哦",
+                "7cm多的长度，属于大众平均水平，非常常见啦",
+                "检测到7-8cm，这个数值很标准，大多数人都在这个范围",
+                "这个长度很理想，处于平均区间，不用纠结细节",
+                "7cm出头，标准的平均长度，放心吧",
+                "检测结果在7-8cm，非常常见的数值，开心就好",
+                "这个长度很标准，要是觉得不准可以再测一次确认",
+                "7cm多一点，处于中上水平，很理想的数值",
+                "检测到7-8cm，标准范围，不用太担心结果",
+                "这个长度很标准，要是不满意，换个角度再试一次",
+                "7cm出头，中上水平，多测几次取平均值会更准",
+                "检测结果在7-8cm，很标准的数值，不用太在意",
+                "这个长度很理想，要是觉得不准，稳住手再扫描一次",
+                "7cm多一点，处于平均区间之上，非常不错",
+                "检测到7-8cm，标准范围，多测几次也无妨",
+                "这个长度很标准，要是不满意，调整下位置再试",
+                "7cm出头，中上水平，自己满意就好啦",
+                "检测结果在7-8cm，很标准的数值，不用太纠结",
+                "这个长度很理想，要是觉得不准，换个姿势重新来",
+                "7cm多一点，标准的平均长度，每个人都有自己的优势"
+            ],
+            "8-9": [
+                "处于平均区间偏上，很不错的长度，继续保持哦",
+                "8cm多的长度，已经超过不少人了，值得开心呀",
+                "检测到8-9cm，这个数值很优秀，属于中上水平",
+                "这个长度很理想，已经超越平均，不用再纠结啦",
+                "8cm出头，很不错的长度，大多数人都会羡慕哦",
+                "检测结果在8-9cm，非常优秀的数值，值得骄傲",
+                "这个长度很出色，要是觉得不准可以再测一次确认",
+                "8cm多一点，处于中上水平，很理想的数值",
+                "检测到8-9cm，优秀范围，不用太担心结果",
+                "这个长度很出色，要是不满意，换个角度再试一次",
+                "8cm出头，中上水平，多测几次取平均值会更准",
+                "检测结果在8-9cm，很优秀的数值，不用太在意",
+                "这个长度很理想，要是觉得不准，稳住手再扫描一次",
+                "8cm多一点，处于平均区间之上，非常不错",
+                "检测到8-9cm，优秀范围，多测几次也无妨",
+                "这个长度很出色，要是不满意，调整下位置再试",
+                "8cm出头，中上水平，自己满意就好啦",
+                "检测结果在8-9cm，很优秀的数值，不用太纠结",
+                "这个长度很理想，要是觉得不准，换个姿势重新来",
+                "8cm多一点，超越平均水平，继续保持呀"
+            ],
+            "9-10": [
+                "已经达到优秀区间啦！9cm多的长度，非常不错哦",
+                "检测到9-10cm，这个数值很出色，已经超越多数人",
+                "9cm出头，优秀的长度，很多人都达不到这个水平呢",
+                "这个长度很理想，9-10cm的范围，值得骄傲呀",
+                "检测结果在9-10cm，非常优秀，继续保持好状态",
+                "9cm多一点，出色的长度，不用再怀疑自己啦",
+                "这个数值很优秀，9-10cm属于难得的好结果",
+                "检测到9-10cm，已经是优秀水平，开心就好",
+                "9cm出头，很棒的长度，要是觉得不准可以再测一次",
+                "这个长度很出色，9-10cm的范围，非常理想",
+                "检测结果在9-10cm，优秀数值，不用太纠结细节",
+                "9cm多一点，超越多数人的长度，值得开心",
+                "这个数值很优秀，9-10cm属于中上偏上水平",
+                "检测到9-10cm，很棒的结果，继续保持",
+                "9cm出头，优秀的长度，多测几次确认下更放心",
+                "这个长度很出色，9-10cm的范围，不用再担心",
+                "检测结果在9-10cm，优秀数值，自己满意最重要",
+                "9cm多一点，很棒的长度，换个角度测也差不多哦",
+                "这个数值很优秀，9-10cm属于难得的好结果",
+                "检测到9-10cm，已经超越多数人，值得骄傲"
+            ],
+            "10-12": [
+                "10cm以上啦！已经进入优秀区间，非常棒哦",
+                "检测到10-12cm，这个数值很出色，很少有人能达到",
+                "10cm出头，优秀的长度，绝对是让人羡慕的水平",
+                "这个长度很理想，10-12cm的范围，值得炫耀呀",
+                "检测结果在10-12cm，非常优秀，继续保持好状态",
+                "11cm左右，出色的长度，不用再怀疑自己啦",
+                "这个数值很优秀，10-12cm属于难得的好结果",
+                "检测到10-12cm，已经是顶尖水平，开心就好",
+                "10cm出头，超棒的长度，要是觉得不准可以再测一次",
+                "这个长度很出色，10-12cm的范围，非常理想",
+                "检测结果在10-12cm，优秀数值，不用太纠结细节",
+                "11cm左右，超越绝大多数人的长度，值得开心",
+                "这个数值很优秀，10-12cm属于顶尖水平",
+                "检测到10-12cm，超棒的结果，继续保持",
+                "10cm出头，优秀的长度，多测几次确认下更放心",
+                "这个长度很出色，10-12cm的范围，不用再担心",
+                "检测结果在10-12cm，优秀数值，自己满意最重要",
+                "11cm左右，超棒的长度，换个角度测也差不多哦",
+                "这个数值很优秀，10-12cm属于难得的好结果",
+                "检测到10-12cm，已经超越绝大多数人，值得骄傲"
+            ],
+            "12-15": [
+                "12cm以上！已经是顶尖水平，太让人羡慕啦",
+                "检测到12-15cm，这个数值太出色了，很少有人能企及",
+                "12cm出头，超优秀的长度，绝对是人群中的佼佼者",
+                "这个长度很惊艳，12-15cm的范围，必须骄傲呀",
+                "检测结果在12-15cm，顶尖水平，继续保持好状态",
+                "13cm左右，惊艳的长度，不用再怀疑自己啦",
+                "这个数值太优秀，12-15cm属于极少数人的水平",
+                "检测到12-15cm，已经是天花板级别，开心炸了吧",
+                "12cm出头，神仙长度，要是觉得不准可以再测一次",
+                "这个长度很惊艳，12-15cm的范围，非常理想",
+                "检测结果在12-15cm，顶尖数值，不用太纠结细节",
+                "13cm左右，超越90%人的长度，必须开心",
+                "这个数值太优秀，12-15cm属于天花板水平",
+                "检测到12-15cm，神仙结果，继续保持",
+                "12cm出头，超棒的长度，多测几次确认下更放心",
+                "这个长度很惊艳，12-15cm的范围，不用再担心",
+                "检测结果在12-15cm，顶尖数值，自己满意最重要",
+                "13cm左右，神仙长度，换个角度测也差不多哦",
+                "这个数值太优秀，12-15cm属于极少数人的水平",
+                "检测到12-15cm，已经超越绝大多数人，必须骄傲"
+            ],
+            "15-18": [
+                "15cm以上！堪称完美的长度，太让人惊喜啦",
+                "检测到15-18cm，这个数值太惊艳了，几乎没人能达到",
+                "15cm出头，神仙级别的长度，绝对是人群中的天花板",
+                "这个长度太完美，15-18cm的范围，必须炫耀呀",
+                "检测结果在15-18cm，完美水平，继续保持好状态",
+                "16cm左右，惊艳的长度，不用再怀疑自己啦",
+                "这个数值太完美，15-18cm属于凤毛麟角的水平",
+                "检测到15-18cm，已经是传说级别，开心到飞起吧",
+                "15cm出头，梦幻长度，要是觉得不准可以再测一次",
+                "这个长度太完美，15-18cm的范围，非常理想",
+                "检测结果在15-18cm，完美数值，不用太纠结细节",
+                "16cm左右，超越95%人的长度，必须开心到爆",
+                "这个数值太完美，15-18cm属于传说级水平",
+                "检测到15-18cm，梦幻结果，继续保持",
+                "15cm出头，神仙长度，多测几次确认下更放心",
+                "这个长度太完美，15-18cm的范围，不用再担心",
+                "检测结果在15-18cm，完美数值，自己满意最重要",
+                "16cm左右，梦幻长度，换个角度测也差不多哦",
+                "这个数值太完美，15-18cm属于凤毛麟角的水平",
+                "检测到15-18cm，已经超越99%的人，必须骄傲到炸"
+            ],
+            "18+": [
+                "我的天！18cm以上，这简直是传说中的长度，太震撼了",
+                "检测到18cm+，这个数值已经突破常规，绝对是天花板中的天花板",
+                "18cm出头，神话级别的长度，恐怕没几个人能见到这样的结果",
+                "这个长度太夸张，18cm以上的范围，必须记录下来炫耀呀",
+                "检测结果在18cm+，已经超出常规范围，确定不是测量错了？再测一次确认下！",
+                "20cm左右，这已经不是优秀能形容的了，简直是奇迹长度",
+                "这个数值太夸张，18cm+属于极少数人的神话水平",
+                "检测到18cm+，已经突破认知，开心到不敢相信吧",
+                "18cm出头，传说中的长度，必须多测几次确认是不是真的",
+                "这个长度太震撼，18cm以上的范围，简直不敢想象",
+                "检测结果在18cm+，突破常规数值，不用太纠结细节，这就是你的实力",
+                "20cm左右，已经超越99.9%人的长度，必须好好庆祝下",
+                "这个数值太夸张，18cm+属于神话级水平，太让人羡慕了",
+                "检测到18cm+，奇迹般的结果，继续保持这份优秀",
+                "18cm出头，传说中的长度，多测几次确认下，太不可思议了",
+                "这个长度太震撼，18cm以上的范围，不用再担心，你就是最棒的",
+                "检测结果在18cm+，突破常规数值，自己满意最重要，这就是你的优势",
+                "20cm左右，神话级别的长度，换个角度测也差不多，这就是实力",
+                "这个数值太夸张，18cm+属于极少数人的神话水平，太让人惊艳了",
+                "检测到18cm+，已经突破所有常规，必须骄傲到不行，你就是天花板"
+            ]
+        };
+
+        // 2. 广告弹窗控制
+        adSpaces.forEach(ad => {
+            ad.addEventListener('click', () => {
+                adModal.classList.add('active');
+            });
+        });
+        closeModal.addEventListener('click', () => {
+            adModal.classList.remove('active');
+        });
+        adModal.addEventListener('click', (e) => {
+            if (e.target === adModal) adModal.classList.remove('active');
+        });
+
+        // 3. 摄像头调用（增强兼容性）
+        function initCamera() {
             cameraContainer.style.display = 'block';
-            if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-                navigator.mediaDevices.getUserMedia({ 
-                    video: { 
-                        facingMode: 'environment', // 后置摄像头
-                        width: { ideal: 640 },
-                        height: { ideal: 480 }
-                    } 
-                })
-                    .then(stream => {
-                        cameraView.srcObject = stream;
-                        // 等待5秒后显示倒计时
-                        setTimeout(() => {
-                            let count = 3;
-                            const countdownInterval = setInterval(() => {
-                                countdown.textContent = count;
-                                countdown.style.animation = 'countdownAnim 1s ease-in-out';
-                                countdown.style.opacity = 1;
-                                count--;
-                                if (count < 0) {
-                                    clearInterval(countdownInterval);
-                                    countdown.style.opacity = 0;
-                                    // 停顿持续展示当前画面2秒
-                                    setTimeout(() => {
-                                        analyzeLength();
-                                    }, 2000);
-                                }
-                            }, 1000);
-                        }, 5000); // 保持5秒扫描时间
-                    })
-                    .catch(err => {
-                        console.error('获取摄像头失败: ', err);
-                        // 模拟摄像头画面（无摄像头时显示提示）
-                        cameraView.style.backgroundColor = '#111928';
-                        cameraView.innerHTML = '<div style="width:100%;height:100%;display:flex;justify-content:center;align-items:center;color:#66758c;">无法访问摄像头，将模拟分析</div>';
-                        // 等待5秒后模拟倒计时
-                        setTimeout(() => {
-                            let count = 3;
-                            const countdownInterval = setInterval(() => {
-                                countdown.textContent = count;
-                                countdown.style.animation = 'countdownAnim 1s ease-in-out';
-                                countdown.style.opacity = 1;
-                                count--;
-                                if (count < 0) {
-                                    clearInterval(countdownInterval);
-                                    countdown.style.opacity = 0;
-                                    setTimeout(() => {
-                                        analyzeLength();
-                                    }, 2000);
-                                }
-                            }, 1000);
-                        }, 5000);
-                    });
-            } else {
-                // 不支持 getUserMedia 时模拟分析
-                cameraView.style.backgroundColor = '#111928';
-                cameraView.innerHTML = '<div style="width:100%;height:100%;display:flex;justify-content:center;align-items:center;color:#66758c;">您的浏览器不支持摄像头功能</div>';
-                // 等待5秒后模拟倒计时
-                setTimeout(() => {
-                    let count = 3;
-                    const countdownInterval = setInterval(() => {
-                        countdown.textContent = count;
-                        countdown.style.animation = 'countdownAnim 1s ease-in-out';
-                        countdown.style.opacity = 1;
-                        count--;
-                        if (count < 0) {
-                            clearInterval(countdownInterval);
-                            countdown.style.opacity = 0;
-                            setTimeout(() => {
-                                analyzeLength();
-                            }, 2000);
-                        }
-                    }, 1000);
-                }, 5000);
+            const getUserMedia = navigator.mediaDevices.getUserMedia || 
+                                 navigator.webkitGetUserMedia || 
+                                 navigator.mozGetUserMedia;
+
+            if (!getUserMedia) {
+                showCameraFallback('您的浏览器不支持摄像头功能，将自动模拟分析');
+                startCountdown();
+                return;
             }
+
+            const constraints = {
+                video: {
+                    facingMode: { ideal: 'environment' },
+                    width: { ideal: 640 },
+                    height: { ideal: 480 },
+                    frameRate: { ideal: 30 }
+                }
+            };
+
+            getUserMedia.call(navigator.mediaDevices, constraints)
+                .then(stream => {
+                    cameraView.srcObject = stream;
+                    cameraView.onloadedmetadata = () => {
+                        setTimeout(startCountdown, 1500);
+                    };
+                })
+                .catch(err => {
+                    console.log('后置摄像头调用失败，尝试前置：', err);
+                    const frontConstraints = { video: { facingMode: 'user' } };
+                    getUserMedia.call(navigator.mediaDevices, frontConstraints)
+                        .then(stream => {
+                            cameraView.srcObject = stream;
+                            cameraView.onloadedmetadata = () => {
+                                setTimeout(startCountdown, 1500);
+                            };
+                        })
+                        .catch(err2 => {
+                            console.log('前置摄像头也失败：', err2);
+                            showCameraFallback('无法访问摄像头，将为您模拟分析');
+                            startCountdown();
+                        });
+                });
         }
 
-        function analyzeLength() {
-            // 隐藏摄像头视图
+        function showCameraFallback(text) {
+            cameraView.style.display = 'none';
+            const fallbackDiv = document.createElement('div');
+            fallbackDiv.className = 'camera-fallback';
+            fallbackDiv.textContent = text;
+            cameraView.parentNode.appendChild(fallbackDiv);
+        }
+
+        // 4. 倒计时动画
+        function startCountdown() {
+            let count = 3;
+            const countInterval = setInterval(() => {
+                countdown.textContent = count;
+                countdown.classList.add('active');
+                setTimeout(() => {
+                    countdown.classList.remove('active');
+                }, 1000);
+                count--;
+                if (count < 0) {
+                    clearInterval(countInterval);
+                    setTimeout(showAnalysisResult, 1000);
+                }
+            }, 1000);
+        }
+
+        // 5. 分析结果展示（含精细化评价）
+        function showAnalysisResult() {
             if (cameraView.srcObject) {
                 cameraView.srcObject.getTracks().forEach(track => track.stop());
             }
             cameraContainer.style.display = 'none';
 
-            // 生成更精细的随机长度（范围：3.00000 ~ 25.99999）
-            const randomBase = Math.random() * 22.99999 + 3.00000;
-            const randomLength = randomBase.toFixed(5);
-            const lengthValue = parseFloat(randomLength);
+            const randomLen = (Math.random() * 22.99999 + 3.00000).toFixed(5);
+            const lenNum = parseFloat(randomLen);
+            const username = usernameInput.value.trim() || '匿名用户';
+            resultUsernameText.textContent = username;
 
-            // 进度条动画
-            progress.style.width = '100%';
+            progressFill.style.width = '100%';
+            lengthDigit.textContent = `${randomLen} cm`;
+            lengthDigit.classList.add('length-digit');
 
-            // 显示结果
-            resultUsername.textContent = document.getElementById('username').value || '匿名用户';
-            lengthDisplay.textContent = `${lengthValue} cm`;
+            // 匹配评价区间
+            let commentArr = [];
+            if (lenNum >= 3 && lenNum < 5) commentArr = lengthComments["3-5"];
+            else if (lenNum >= 5 && lenNum < 6) commentArr = lengthComments["5-6"];
+            else if (lenNum >= 6 && lenNum < 7) commentArr = lengthComments["6-7"];
+            else if (lenNum >= 7 && lenNum < 8) commentArr = lengthComments["7-8"];
+            else if (lenNum >= 8 && lenNum < 9) commentArr = lengthComments["8-9"];
+            else if (lenNum >= 9 && lenNum < 10) commentArr = lengthComments["9-10"];
+            else if (lenNum >= 10 && lenNum < 12) commentArr = lengthComments["10-12"];
+            else if (lenNum >= 12 && lenNum < 15) commentArr = lengthComments["12-15"];
+            else if (lenNum >= 15 && lenNum < 18) commentArr = lengthComments["15-18"];
+            else if (lenNum >= 18) commentArr = lengthComments["18+"];
+            
+            const randomComment = commentArr[Math.floor(Math.random() * commentArr.length)];
+            commentText.textContent = randomComment;
+            sessionStorage.setItem('currentLength', randomLen);
 
-            // 更丰富的评论逻辑
-            let commentText = '';
-            if (lengthValue < 5.00000) {
-                commentText = '这长度也太寒酸了吧！建议找个安静的环境再仔细测量，或许是操作方式影响了结果～';
-            } else if (lengthValue < 8.00000) {
-                commentText = '长度处于平均区间偏下，别灰心，日常状态和测量方式都会有影响哦～';
-            } else if (lengthValue < 12.00000) {
-                commentText = '很不错的长度表现，属于大众认可的舒适区间，继续保持良好状态！';
-            } else if (lengthValue < 18.00000) {
-                commentText = '相当优秀的长度，已经超越了多数人的水平，这可是很多人羡慕的程度～';
-            } else {
-                commentText = '哇哦，这长度太厉害了吧！妥妥的“佼佼者”级别，建议再找专业方式复核确认～';
-            }
-            comment.textContent = commentText;
-
-            resultContainer.style.display = 'block';
+            setTimeout(() => {
+                resultContainer.style.display = 'block';
+            }, 500);
         }
 
-        analyzeBtn.addEventListener('click', startCamera);
+        // 6. 复制长度功能（指定格式）
+        copyBtn.addEventListener('click', () => {
+            const currentLen = sessionStorage.getItem('currentLength');
+            if (!currentLen) return;
+            const copyText = `我的78长度为${currentLen}cm 你也快来https://yzbjfpv.top/dick.html测测吧！`;
+            navigator.clipboard.writeText(copyText)
+                .then(() => {
+                    copyTip.classList.add('active');
+                    setTimeout(() => copyTip.classList.remove('active'), 3000);
+                })
+                .catch(err => {
+                    console.error('复制失败：', err);
+                    copyTip.textContent = '复制失败，请手动复制~';
+                    copyTip.style.color = '#ef4444';
+                    copyTip.classList.add('active');
+                    setTimeout(() => {
+                        copyTip.classList.remove('active');
+                        copyTip.textContent = '复制成功！快去分享吧~';
+                        copyTip.style.color = '#22c55e';
+                    }, 3000);
+                });
+        });
 
-        // 页面加载时的渐显动画
+        // 7. 按钮点击事件
+        analyzeBtn.addEventListener('click', () => {
+            resultContainer.style.display = 'none';
+            progressFill.style.width = '0';
+            lengthDigit.classList.remove('length-digit');
+            copyTip.classList.remove('active');
+            const fallbackEl = document.querySelector('.camera-fallback');
+            if (fallbackEl) fallbackEl.remove();
+            cameraView.style.display = 'block';
+            initCamera();
+        });
+
+        // 8. 初始化Powr评论（确保深色模式适配）
         window.addEventListener('load', () => {
-            setTimeout(() => {
-                document.querySelector('.subtitle').style.opacity = 1;
-            }, 300);
+            if (window.Powr) {
+                window.Powr.loadModules(['comments'], {
+                    selector: '#9fbdf0c9_1760278017',
+                    darkMode: true // 适配深色背景
+                });
+            }
         });
     </script>
 </body>
