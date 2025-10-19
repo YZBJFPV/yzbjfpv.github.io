@@ -1,0 +1,1046 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>万食赞 - 工位001</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.8/dist/chart.umd.min.js"></script>
+  
+  <!-- 配置Tailwind自定义主题 -->
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#E67E22', // 万食赞主色调-橙色
+            secondary: '#3498DB',
+            neutral: '#F5F5F5',
+            dark: '#2C3E50'
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+          },
+        },
+      }
+    }
+  </script>
+  
+  <style type="text/tailwindcss">
+    @layer utilities {
+      .text-shadow {
+        text-shadow: 0 2px 8px rgba(0,0,0,0.15);
+      }
+      .bg-gradient-custom {
+        background: linear-gradient(135deg, #fefefe 0%, #f8e9d9 100%);
+      }
+      .card-hover {
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      }
+      .card-hover:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 15px 30px -5px rgba(0, 0, 0, 0.15), 0 10px 10px -5px rgba(0, 0, 0, 0.05);
+      }
+      .keyboard-key {
+        transition: all 0.15s ease;
+      }
+      .keyboard-key:active {
+        transform: scale(0.95);
+        background-color: rgba(230, 126, 34, 0.2);
+      }
+      .module-drag {
+        cursor: move;
+      }
+      .floating {
+        animation: floating 6s ease-in-out infinite;
+      }
+      @keyframes floating {
+        0% { transform: translateY(0px); }
+        50% { transform: translateY(-10px); }
+        100% { transform: translateY(0px); }
+      }
+      .pulse-slow {
+        animation: pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+      }
+    }
+  </style>
+</head>
+<body class="bg-gradient-custom min-h-screen overflow-hidden relative">
+  <!-- 动态背景装饰 -->
+  <div class="fixed inset-0 overflow-hidden pointer-events-none z-0">
+    <div class="absolute -top-24 -right-24 w-96 h-96 bg-primary/10 rounded-full blur-3xl pulse-slow"></div>
+    <div class="absolute top-1/3 -left-32 w-80 h-80 bg-secondary/10 rounded-full blur-3xl pulse-slow" style="animation-delay: 1s;"></div>
+    <div class="absolute bottom-0 right-1/4 w-64 h-64 bg-primary/5 rounded-full blur-3xl pulse-slow" style="animation-delay: 2s;"></div>
+  </div>
+
+  <!-- 功能模块容器 -->
+  <div id="modules-container" class="absolute inset-0 p-6 z-10">
+    <!-- 模块将通过JS动态添加 -->
+  </div>
+
+  <!-- 添加模块按钮 -->
+  <button id="add-module-btn" class="fixed top-6 right-6 w-12 h-12 bg-primary text-white rounded-full shadow-lg flex items-center justify-center z-50 hover:bg-primary/90 transition-all transform hover:scale-110 active:scale-95">
+    <i class="fa fa-plus text-xl"></i>
+  </button>
+
+  <!-- 模块选择菜单 -->
+  <div id="module-menu" class="fixed top-20 right-6 w-48 bg-white rounded-lg shadow-xl z-50 hidden animate__animated animate__fadeIn">
+    <div class="py-2">
+      <button data-module="clock" class="w-full text-left px-4 py-2 hover:bg-gray-100 transition flex items-center">
+        <i class="fa fa-clock-o w-6 text-primary"></i> 时钟日期
+      </button>
+      <button data-module="tasks" class="w-full text-left px-4 py-2 hover:bg-gray-100 transition flex items-center">
+        <i class="fa fa-list w-6 text-primary"></i> 今日待办
+      </button>
+      <button data-module="weather" class="w-full text-left px-4 py-2 hover:bg-gray-100 transition flex items-center">
+        <i class="fa fa-cloud w-6 text-primary"></i> 天气信息
+      </button>
+      <button data-module="notes" class="w-full text-left px-4 py-2 hover:bg-gray-100 transition flex items-center">
+        <i class="fa fa-sticky-note w-6 text-primary"></i> 便签
+      </button>
+      <button data-module="calculator" class="w-full text-left px-4 py-2 hover:bg-gray-100 transition flex items-center">
+        <i class="fa fa-calculator w-6 text-primary"></i> 计算器
+      </button>
+    </div>
+  </div>
+
+  <!-- 虚拟键盘 -->
+  <div id="virtual-keyboard" class="fixed bottom-6 left-1/2 transform -translate-x-1/2 bg-white/95 backdrop-blur-sm rounded-xl shadow-2xl p-4 w-[90%] max-w-2xl z-40 hidden animate__animated animate__slideInUp">
+    <!-- 键盘标题栏 -->
+    <div class="flex justify-between items-center mb-3">
+      <span class="text-gray-600 font-medium">虚拟键盘</span>
+      <button id="close-keyboard" class="text-gray-400 hover:text-gray-600 p-1">
+        <i class="fa fa-times"></i>
+      </button>
+    </div>
+    
+    <!-- 键盘按键区域 -->
+    <div class="grid grid-cols-10 gap-2 mb-2">
+      <div class="keyboard-key col-span-1 bg-gray-100 rounded-md p-2 text-center" data-key="q">q</div>
+      <div class="keyboard-key col-span-1 bg-gray-100 rounded-md p-2 text-center" data-key="w">w</div>
+      <div class="keyboard-key col-span-1 bg-gray-100 rounded-md p-2 text-center" data-key="e">e</div>
+      <div class="keyboard-key col-span-1 bg-gray-100 rounded-md p-2 text-center" data-key="r">r</div>
+      <div class="keyboard-key col-span-1 bg-gray-100 rounded-md p-2 text-center" data-key="t">t</div>
+      <div class="keyboard-key col-span-1 bg-gray-100 rounded-md p-2 text-center" data-key="y">y</div>
+      <div class="keyboard-key col-span-1 bg-gray-100 rounded-md p-2 text-center" data-key="u">u</div>
+      <div class="keyboard-key col-span-1 bg-gray-100 rounded-md p-2 text-center" data-key="i">i</div>
+      <div class="keyboard-key col-span-1 bg-gray-100 rounded-md p-2 text-center" data-key="o">o</div>
+      <div class="keyboard-key col-span-1 bg-gray-100 rounded-md p-2 text-center" data-key="p">p</div>
+    </div>
+    
+    <div class="grid grid-cols-10 gap-2 mb-2">
+      <div class="keyboard-key col-span-1 bg-gray-100 rounded-md p-2 text-center" data-key="a">a</div>
+      <div class="keyboard-key col-span-1 bg-gray-100 rounded-md p-2 text-center" data-key="s">s</div>
+      <div class="keyboard-key col-span-1 bg-gray-100 rounded-md p-2 text-center" data-key="d">d</div>
+      <div class="keyboard-key col-span-1 bg-gray-100 rounded-md p-2 text-center" data-key="f">f</div>
+      <div class="keyboard-key col-span-1 bg-gray-100 rounded-md p-2 text-center" data-key="g">g</div>
+      <div class="keyboard-key col-span-1 bg-gray-100 rounded-md p-2 text-center" data-key="h">h</div>
+      <div class="keyboard-key col-span-1 bg-gray-100 rounded-md p-2 text-center" data-key="j">j</div>
+      <div class="keyboard-key col-span-1 bg-gray-100 rounded-md p-2 text-center" data-key="k">k</div>
+      <div class="keyboard-key col-span-1 bg-gray-100 rounded-md p-2 text-center" data-key="l">l</div>
+      <div class="keyboard-key col-span-1 bg-gray-100 rounded-md p-2 text-center" data-key="del">
+        <i class="fa fa-backspace"></i>
+      </div>
+    </div>
+    
+    <div class="grid grid-cols-10 gap-2">
+      <div class="keyboard-key col-span-1 bg-gray-100 rounded-md p-2 text-center" data-key="shift">
+        <i class="fa fa-arrow-up"></i>
+      </div>
+      <div class="keyboard-key col-span-1 bg-gray-100 rounded-md p-2 text-center" data-key="z">z</div>
+      <div class="keyboard-key col-span-1 bg-gray-100 rounded-md p-2 text-center" data-key="x">x</div>
+      <div class="keyboard-key col-span-1 bg-gray-100 rounded-md p-2 text-center" data-key="c">c</div>
+      <div class="keyboard-key col-span-1 bg-gray-100 rounded-md p-2 text-center" data-key="v">v</div>
+      <div class="keyboard-key col-span-1 bg-gray-100 rounded-md p-2 text-center" data-key="b">b</div>
+      <div class="keyboard-key col-span-1 bg-gray-100 rounded-md p-2 text-center" data-key="n">n</div>
+      <div class="keyboard-key col-span-1 bg-gray-100 rounded-md p-2 text-center" data-key="m">m</div>
+      <div class="keyboard-key col-span-1 bg-gray-100 rounded-md p-2 text-center" data-key="space">空格</div>
+      <div class="keyboard-key col-span-1 bg-primary/10 text-primary rounded-md p-2 text-center" data-key="enter">
+        <i class="fa fa-arrow-right"></i>
+      </div>
+    </div>
+    
+    <!-- 数字和符号切换 -->
+    <div class="grid grid-cols-12 gap-2 mt-2">
+      <div class="keyboard-key col-span-1 bg-gray-100 rounded-md p-2 text-center" data-key="1">1</div>
+      <div class="keyboard-key col-span-1 bg-gray-100 rounded-md p-2 text-center" data-key="2">2</div>
+      <div class="keyboard-key col-span-1 bg-gray-100 rounded-md p-2 text-center" data-key="3">3</div>
+      <div class="keyboard-key col-span-1 bg-gray-100 rounded-md p-2 text-center" data-key="4">4</div>
+      <div class="keyboard-key col-span-1 bg-gray-100 rounded-md p-2 text-center" data-key="5">5</div>
+      <div class="keyboard-key col-span-1 bg-gray-100 rounded-md p-2 text-center" data-key="6">6</div>
+      <div class="keyboard-key col-span-1 bg-gray-100 rounded-md p-2 text-center" data-key="7">7</div>
+      <div class="keyboard-key col-span-1 bg-gray-100 rounded-md p-2 text-center" data-key="8">8</div>
+      <div class="keyboard-key col-span-1 bg-gray-100 rounded-md p-2 text-center" data-key="9">9</div>
+      <div class="keyboard-key col-span-1 bg-gray-100 rounded-md p-2 text-center" data-key="0">0</div>
+      <div class="keyboard-key col-span-1 bg-gray-100 rounded-md p-2 text-center" data-key=",">，</div>
+      <div class="keyboard-key col-span-1 bg-gray-100 rounded-md p-2 text-center" data-key=".">。</div>
+    </div>
+  </div>
+
+  <!-- 品牌信息 -->
+  <div class="fixed bottom-6 left-6 z-20 animate__animated animate__fadeIn">
+    <div class="flex items-center space-x-3">
+      <div class="w-10 h-10 bg-primary rounded-lg flex items-center justify-center shadow-lg transform transition-transform hover:rotate-12">
+        <i class="fa fa-cutlery text-white text-xl"></i>
+      </div>
+      <div>
+        <h1 class="text-lg font-bold text-dark text-shadow">万食赞</h1>
+        <p class="text-gray-500 text-xs">工位 001</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // 当前激活的输入框
+    let activeInput = null;
+    // 键盘大小写状态
+    let isShiftActive = false;
+    // 模块ID计数器
+    let moduleIdCounter = 0;
+    // 已添加的模块
+    const addedModules = [];
+
+    // 初始化页面
+    window.addEventListener('DOMContentLoaded', () => {
+      // 默认添加几个常用模块
+      addModule('clock', { x: 50, y: 30 });
+      addModule('tasks', { x: 20, y: 50 });
+      addModule('weather', { x: 70, y: 50 });
+      
+      // 绑定添加模块按钮事件
+      document.getElementById('add-module-btn').addEventListener('click', toggleModuleMenu);
+      
+      // 绑定模块选择事件
+      document.querySelectorAll('#module-menu button').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const moduleType = e.currentTarget.dataset.module;
+          // 随机位置添加模块
+          const randomX = 20 + Math.random() * 60;
+          const randomY = 20 + Math.random() * 60;
+          addModule(moduleType, { x: randomX, y: randomY });
+          toggleModuleMenu();
+        });
+      });
+      
+      // 绑定虚拟键盘事件
+      bindKeyboardEvents();
+    });
+
+    // 切换模块菜单显示/隐藏
+    function toggleModuleMenu() {
+      const menu = document.getElementById('module-menu');
+      menu.classList.toggle('hidden');
+    }
+
+    // 添加新模块
+    function addModule(type, position) {
+      const moduleId = `module-${type}-${moduleIdCounter++}`;
+      const container = document.getElementById('modules-container');
+      
+      // 创建模块元素
+      const module = document.createElement('div');
+      module.id = moduleId;
+      module.dataset.type = type;
+      module.className = `absolute bg-white/90 backdrop-blur-md rounded-2xl shadow-lg p-5 w-72 card-hover animate__animated animate__fadeIn`;
+      module.style.left = `${position.x}%`;
+      module.style.top = `${position.y}%`;
+      module.style.transform = 'translate(-50%, -50%)';
+      
+      // 根据模块类型设置内容
+      switch(type) {
+        case 'clock':
+          module.innerHTML = `
+            <div class="flex justify-between items-center mb-3">
+              <h3 class="font-semibold text-dark flex items-center">
+                <i class="fa fa-clock-o mr-2 text-primary"></i>时钟日期
+              </h3>
+              <div class="flex space-x-1">
+                <button class="module-drag p-1 text-gray-400 hover:text-gray-600">
+                  <i class="fa fa-arrows"></i>
+                </button>
+                <button class="delete-module p-1 text-gray-400 hover:text-red-500">
+                  <i class="fa fa-times"></i>
+                </button>
+              </div>
+            </div>
+            <div id="clock-display-${moduleId}" class="text-3xl md:text-4xl font-bold text-dark text-center leading-tight">
+              00:00:00
+            </div>
+            <div id="date-display-${moduleId}" class="text-gray-500 text-center mt-2">
+              星期一, 2023年1月1日
+            </div>
+          `;
+          break;
+          
+        case 'tasks':
+          module.innerHTML = `
+            <div class="flex justify-between items-center mb-3">
+              <h3 class="font-semibold text-dark flex items-center">
+                <i class="fa fa-list mr-2 text-primary"></i>今日待办
+              </h3>
+              <div class="flex space-x-1">
+                <button class="module-drag p-1 text-gray-400 hover:text-gray-600">
+                  <i class="fa fa-arrows"></i>
+                </button>
+                <button class="delete-module p-1 text-gray-400 hover:text-red-500">
+                  <i class="fa fa-times"></i>
+                </button>
+              </div>
+            </div>
+            <div id="task-list-${moduleId}" class="space-y-2 max-h-60 overflow-y-auto pr-2 mb-3">
+              <div class="task-item flex items-center space-x-2 p-2 rounded-lg hover:bg-gray-50">
+                <input type="checkbox" class="task-checkbox w-4 h-4 rounded text-primary focus:ring-primary">
+                <span class="task-text flex-1 text-sm">审核新季度食材供应商</span>
+              </div>
+              <div class="task-item flex items-center space-x-2 p-2 rounded-lg hover:bg-gray-50">
+                <input type="checkbox" class="task-checkbox w-4 h-4 rounded text-primary focus:ring-primary" checked>
+                <span class="task-text flex-1 text-sm line-through text-gray-400">完成周度销售报表</span>
+              </div>
+            </div>
+            <div class="flex">
+              <input type="text" id="new-task-input-${moduleId}" placeholder="添加新任务..." class="flex-1 px-3 py-2 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary text-sm">
+              <button id="show-keyboard-${moduleId}" class="ml-2 w-8 h-8 rounded-lg bg-primary/10 text-primary flex items-center justify-center hover:bg-primary/20 transition">
+                <i class="fa fa-keyboard-o"></i>
+              </button>
+            </div>
+          `;
+          break;
+          
+        case 'weather':
+          module.innerHTML = `
+            <div class="flex justify-between items-center mb-3">
+              <h3 class="font-semibold text-dark flex items-center">
+                <i class="fa fa-cloud mr-2 text-primary"></i>天气信息
+              </h3>
+              <div class="flex space-x-1">
+                <button class="module-drag p-1 text-gray-400 hover:text-gray-600">
+                  <i class="fa fa-arrows"></i>
+                </button>
+                <button class="delete-module p-1 text-gray-400 hover:text-red-500">
+                  <i class="fa fa-times"></i>
+                </button>
+              </div>
+            </div>
+            <div id="weather-info-${moduleId}" class="flex items-center justify-center space-x-3 text-gray-600 mb-4">
+              <i class="fa fa-sun-o text-yellow-500 text-3xl animate__pulse"></i>
+              <div class="text-center">
+                <div class="text-2xl font-bold" id="temperature-${moduleId}">24°C</div>
+                <div class="text-sm" id="weather-desc-${moduleId}">晴朗</div>
+                <div class="text-xs text-gray-400" id="weather-location-${moduleId}">加载中...</div>
+              </div>
+            </div>
+            <div class="h-24">
+              <canvas id="temperature-chart-${moduleId}"></canvas>
+            </div>
+          `;
+          break;
+          
+        case 'notes':
+          module.innerHTML = `
+            <div class="flex justify-between items-center mb-3">
+              <h3 class="font-semibold text-dark flex items-center">
+                <i class="fa fa-sticky-note mr-2 text-primary"></i>便签
+              </h3>
+              <div class="flex space-x-1">
+                <button class="module-drag p-1 text-gray-400 hover:text-gray-600">
+                  <i class="fa fa-arrows"></i>
+                </button>
+                <button class="delete-module p-1 text-gray-400 hover:text-red-500">
+                  <i class="fa fa-times"></i>
+                </button>
+              </div>
+            </div>
+            <div id="notes-content-${moduleId}" class="min-h-32 bg-gray-50 rounded-lg p-3 text-sm mb-3 outline-none" contenteditable="true">
+              点击此处开始编辑便签...
+            </div>
+            <button id="show-notes-keyboard-${moduleId}" class="w-full py-2 rounded-lg bg-primary/10 text-primary hover:bg-primary/20 transition text-sm">
+              <i class="fa fa-keyboard-o mr-1"></i> 显示键盘
+            </button>
+          `;
+          break;
+          
+        case 'calculator':
+          module.innerHTML = `
+            <div class="flex justify-between items-center mb-3">
+              <h3 class="font-semibold text-dark flex items-center">
+                <i class="fa fa-calculator mr-2 text-primary"></i>计算器
+              </h3>
+              <div class="flex space-x-1">
+                <button class="module-drag p-1 text-gray-400 hover:text-gray-600">
+                  <i class="fa fa-arrows"></i>
+                </button>
+                <button class="delete-module p-1 text-gray-400 hover:text-red-500">
+                  <i class="fa fa-times"></i>
+                </button>
+              </div>
+            </div>
+            <div id="calc-display-${moduleId}" class="bg-gray-50 rounded-lg p-3 mb-3 text-right font-mono text-lg">0</div>
+            <div class="grid grid-cols-4 gap-2">
+              <button class="calc-btn bg-gray-100 rounded-md p-2" data-value="C">C</button>
+              <button class="calc-btn bg-gray-100 rounded-md p-2" data-value="←">←</button>
+              <button class="calc-btn bg-gray-100 rounded-md p-2" data-value="%">%</button>
+              <button class="calc-btn bg-primary/10 text-primary rounded-md p-2" data-value="/">÷</button>
+              
+              <button class="calc-btn bg-gray-100 rounded-md p-2" data-value="7">7</button>
+              <button class="calc-btn bg-gray-100 rounded-md p-2" data-value="8">8</button>
+              <button class="calc-btn bg-gray-100 rounded-md p-2" data-value="9">9</button>
+              <button class="calc-btn bg-primary/10 text-primary rounded-md p-2" data-value="*">×</button>
+              
+              <button class="calc-btn bg-gray-100 rounded-md p-2" data-value="4">4</button>
+              <button class="calc-btn bg-gray-100 rounded-md p-2" data-value="5">5</button>
+              <button class="calc-btn bg-gray-100 rounded-md p-2" data-value="6">6</button>
+              <button class="calc-btn bg-primary/10 text-primary rounded-md p-2" data-value="-">-</button>
+              
+              <button class="calc-btn bg-gray-100 rounded-md p-2" data-value="1">1</button>
+              <button class="calc-btn bg-gray-100 rounded-md p-2" data-value="2">2</button>
+              <button class="calc-btn bg-gray-100 rounded-md p-2" data-value="3">3</button>
+              <button class="calc-btn bg-primary/10 text-primary rounded-md p-2" data-value="+">+</button>
+              
+              <button class="calc-btn bg-gray-100 rounded-md p-2" data-value="+/-">±</button>
+              <button class="calc-btn bg-gray-100 rounded-md p-2" data-value="0">0</button>
+              <button class="calc-btn bg-gray-100 rounded-md p-2" data-value=".">.</button>
+              <button class="calc-btn bg-primary text-white rounded-md p-2" data-value="=">=</button>
+            </div>
+          `;
+          break;
+      }
+      
+      // 添加到容器
+      container.appendChild(module);
+      addedModules.push({ id: moduleId, type: type });
+      
+      // 绑定模块事件
+      bindModuleEvents(moduleId, type);
+      
+      // 初始化模块功能
+      initModuleFunctions(moduleId, type);
+    }
+
+    // 绑定模块事件
+    function bindModuleEvents(moduleId, type) {
+      const module = document.getElementById(moduleId);
+      
+      // 删除模块事件
+      module.querySelector('.delete-module').addEventListener('click', () => {
+        module.classList.add('animate__animated', 'animate__fadeOut');
+        setTimeout(() => {
+          module.remove();
+          // 从已添加模块列表中移除
+          const index = addedModules.findIndex(m => m.id === moduleId);
+          if (index !== -1) {
+            addedModules.splice(index, 1);
+          }
+        }, 500);
+      });
+      
+      // 模块拖拽功能
+      makeModuleDraggable(module);
+      
+      // 特定模块的事件
+      switch(type) {
+        case 'tasks':
+          // 显示键盘按钮
+          document.getElementById(`show-keyboard-${moduleId}`).addEventListener('click', () => {
+            activeInput = document.getElementById(`new-task-input-${moduleId}`);
+            showKeyboard();
+          });
+          
+          // 任务复选框事件
+          module.querySelectorAll('.task-checkbox').forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+              const taskText = this.nextElementSibling;
+              if (this.checked) {
+                taskText.classList.add('line-through', 'text-gray-400');
+              } else {
+                taskText.classList.remove('line-through', 'text-gray-400');
+              }
+            });
+          });
+          break;
+          
+        case 'notes':
+          // 便签点击事件
+          const notesContent = document.getElementById(`notes-content-${moduleId}`);
+          notesContent.addEventListener('click', () => {
+            if (notesContent.textContent === '点击此处开始编辑便签...') {
+              notesContent.textContent = '';
+            }
+          });
+          
+          // 显示键盘按钮
+          document.getElementById(`show-notes-keyboard-${moduleId}`).addEventListener('click', () => {
+            activeInput = notesContent;
+            showKeyboard();
+          });
+          break;
+          
+        case 'calculator':
+          // 计算器按钮事件
+          const display = document.getElementById(`calc-display-${moduleId}`);
+          let calcValue = '0';
+          let lastOperator = '';
+          let resetOnNextInput = false;
+          
+          module.querySelectorAll('.calc-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+              const value = this.dataset.value;
+              
+              // 数字和小数点
+              if (/[0-9.]/.test(value)) {
+                if (calcValue === '0' || resetOnNextInput) {
+                  calcValue = value === '.' ? '0.' : value;
+                  resetOnNextInput = false;
+                } else {
+                  // 防止多个小数点
+                  if (value === '.' && calcValue.includes('.')) return;
+                  calcValue += value;
+                }
+                display.textContent = calcValue;
+              } 
+              // 运算符
+              else if (/[+*/-]/.test(value)) {
+                if (lastOperator && !resetOnNextInput) {
+                  // 计算当前结果
+                  calculateResult(moduleId);
+                }
+                lastOperator = value;
+                calcValue = display.textContent;
+                resetOnNextInput = true;
+              } 
+              // 等于
+              else if (value === '=') {
+                calculateResult(moduleId);
+                lastOperator = '';
+              } 
+              // 清除
+              else if (value === 'C') {
+                calcValue = '0';
+                lastOperator = '';
+                display.textContent = calcValue;
+              } 
+              // 退格
+              else if (value === '←') {
+                if (calcValue.length > 1) {
+                  calcValue = calcValue.slice(0, -1);
+                } else {
+                  calcValue = '0';
+                }
+                display.textContent = calcValue;
+              } 
+              // 正负号
+              else if (value === '+/-') {
+                calcValue = (parseFloat(calcValue) * -1).toString();
+                display.textContent = calcValue;
+              } 
+              // 百分比
+              else if (value === '%') {
+                calcValue = (parseFloat(calcValue) / 100).toString();
+                display.textContent = calcValue;
+              }
+            });
+          });
+          break;
+      }
+    }
+
+    // 初始化模块功能
+    function initModuleFunctions(moduleId, type) {
+      switch(type) {
+        case 'clock':
+          // 初始化时钟并每秒更新
+          updateClock(moduleId);
+          setInterval(() => updateClock(moduleId), 1000);
+          break;
+          
+        case 'weather':
+          // 初始化天气
+          getWeather(moduleId);
+          // 每小时更新一次天气
+          setInterval(() => getWeather(moduleId), 3600000);
+          break;
+      }
+    }
+
+    // 更新时钟
+    function updateClock(moduleId) {
+      const now = new Date();
+      
+      // 更新时间
+      const hours = String(now.getHours()).padStart(2, '0');
+      const minutes = String(now.getMinutes()).padStart(2, '0');
+      const seconds = String(now.getSeconds()).padStart(2, '0');
+      const currentTime = `${hours}:${minutes}:${seconds}`;
+      
+      // 更新日期
+      const weekdays = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
+      const weekday = weekdays[now.getDay()];
+      const year = now.getFullYear();
+      const month = now.getMonth() + 1;
+      const day = now.getDate();
+      const currentDate = `${weekday}, ${year}年${month}月${day}日`;
+      
+      // 更新显示
+      document.getElementById(`clock-display-${moduleId}`).textContent = currentTime;
+      document.getElementById(`date-display-${moduleId}`).textContent = currentDate;
+    }
+
+    // 获取天气信息
+    const API_KEY = 'a8e542f0904856259d3f09e0d94e1c3'; // 公开测试API密钥
+    
+    function getWeather(moduleId) {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          position => {
+            const lat = position.coords.latitude;
+            const lon = position.coords.longitude;
+            fetchWeatherByCoordinates(lat, lon, moduleId);
+          },
+          error => {
+            console.log('无法获取位置信息，使用默认城市', error);
+            fetchWeatherByCity('北京', moduleId);
+          }
+        );
+      } else {
+        fetchWeatherByCity('北京', moduleId);
+      }
+    }
+    
+    function fetchWeatherByCoordinates(lat, lon, moduleId) {
+      const url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${API_KEY}&units=metric&lang=zh_cn`;
+      fetch(url)
+        .then(response => response.json())
+        .then(data => {
+          updateWeatherUI(data, moduleId);
+          fetchForecastByCoordinates(lat, lon, moduleId);
+        })
+        .catch(error => {
+          console.error('获取天气失败', error);
+          updateWeatherError(moduleId);
+        });
+    }
+    
+    function fetchWeatherByCity(city, moduleId) {
+      const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${API_KEY}&units=metric&lang=zh_cn`;
+      fetch(url)
+        .then(response => response.json())
+        .then(data => {
+          updateWeatherUI(data, moduleId);
+          fetchForecastByCity(city, moduleId);
+        })
+        .catch(error => {
+          console.error('获取天气失败', error);
+          updateWeatherError(moduleId);
+        });
+    }
+    
+    function updateWeatherUI(data, moduleId) {
+      const temp = Math.round(data.main.temp);
+      const description = data.weather[0].description;
+      const icon = getWeatherIcon(data.weather[0].id);
+      
+      document.getElementById(`temperature-${moduleId}`).textContent = `${temp}°C`;
+      document.getElementById(`weather-desc-${moduleId}`).textContent = description;
+      document.getElementById(`weather-location-${moduleId}`).textContent = data.name;
+      
+      const weatherInfo = document.getElementById(`weather-info-${moduleId}`);
+      weatherInfo.querySelector('i').className = `fa ${icon.class} ${icon.color} text-3xl animate__pulse`;
+    }
+    
+    function updateWeatherError(moduleId) {
+      document.getElementById(`temperature-${moduleId}`).textContent = '--';
+      document.getElementById(`weather-desc-${moduleId}`).textContent = '获取失败';
+      document.getElementById(`weather-location-${moduleId}`).textContent = '请检查网络';
+    }
+    
+    function getWeatherIcon(weatherId) {
+      if (weatherId >= 200 && weatherId < 300) {
+        return { class: 'fa-bolt', color: 'text-purple-500' }; // 雷暴
+      } else if (weatherId >= 300 && weatherId < 400) {
+        return { class: 'fa-tint', color: 'text-blue-400' }; // 毛毛雨
+      } else if (weatherId >= 500 && weatherId < 600) {
+        return { class: 'fa-tint', color: 'text-blue-500' }; // 雨
+      } else if (weatherId >= 600 && weatherId < 700) {
+        return { class: 'fa-snowflake-o', color: 'text-blue-100' }; // 雪
+      } else if (weatherId >= 700 && weatherId < 800) {
+        return { class: 'fa-cloud', color: 'text-gray-400' }; // 雾等
+      } else if (weatherId === 800) {
+        return { class: 'fa-sun-o', color: 'text-yellow-500' }; // 晴天
+      } else if (weatherId > 800) {
+        return { class: 'fa-cloud', color: 'text-gray-500' }; // 多云
+      }
+      return { class: 'fa-question-circle', color: 'text-gray-400' }; // 默认
+    }
+    
+    function fetchForecastByCoordinates(lat, lon, moduleId) {
+      const url = `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${API_KEY}&units=metric&lang=zh_cn`;
+      fetch(url)
+        .then(response => response.json())
+        .then(data => {
+          createTemperatureChart(data, moduleId);
+        })
+        .catch(error => console.error('获取预报失败', error));
+    }
+    
+    function fetchForecastByCity(city, moduleId) {
+      const url = `https://api.openweathermap.org/data/2.5/forecast?q=${city}&appid=${API_KEY}&units=metric&lang=zh_cn`;
+      fetch(url)
+        .then(response => response.json())
+        .then(data => {
+          createTemperatureChart(data, moduleId);
+        })
+        .catch(error => console.error('获取预报失败', error));
+    }
+    
+    function createTemperatureChart(forecastData, moduleId) {
+      const ctx = document.getElementById(`temperature-chart-${moduleId}`).getContext('2d');
+      
+      // 提取未来24小时的每3小时数据
+      const next24hData = forecastData.list.slice(0, 8);
+      const labels = next24hData.map(item => {
+        const date = new Date(item.dt * 1000);
+        return `${date.getHours()}:00`;
+      });
+      
+      const temps = next24hData.map(item => Math.round(item.main.temp));
+      
+      new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: '温度 (°C)',
+            data: temps,
+            borderColor: '#E67E22',
+            backgroundColor: 'rgba(230, 126, 34, 0.1)',
+            tension: 0.4,
+            fill: true,
+            pointBackgroundColor: '#E67E22',
+            pointRadius: 3,
+            pointHoverRadius: 5
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          animation: {
+            duration: 2000,
+            easing: 'easeOutQuart'
+          },
+          plugins: {
+            legend: {
+              display: false
+            },
+            tooltip: {
+              backgroundColor: 'rgba(255, 255, 255, 0.9)',
+              titleColor: '#2C3E50',
+              bodyColor: '#2C3E50',
+              borderColor: 'rgba(230, 126, 34, 0.2)',
+              borderWidth: 1,
+              padding: 5,
+              displayColors: false,
+              callbacks: {
+                label: function(context) {
+                  return `${context.raw}°C`;
+                }
+              }
+            }
+          },
+          scales: {
+            x: {
+              grid: {
+                display: false
+              },
+              ticks: {
+                font: {
+                  size: 8
+                }
+              }
+            },
+            y: {
+              grid: {
+                borderDash: [2, 4],
+                color: 'rgba(0, 0, 0, 0.05)'
+              },
+              ticks: {
+                font: {
+                  size: 8
+                },
+                callback: function(value) {
+                  return value + '°';
+                }
+              }
+            }
+          }
+        }
+      });
+    }
+
+    // 计算器计算结果
+    function calculateResult(moduleId) {
+      const display = document.getElementById(`calc-display-${moduleId}`);
+      const calcValue = display.textContent;
+      const lastOperator = document.querySelector(`#${moduleId} .calc-btn[data-value="${['+', '-', '*', '/'].find(op => op)}"]`)?.dataset.value;
+      
+      if (!lastOperator) return;
+      
+      try {
+        // 使用更安全的计算方式替代eval
+        const prevValue = parseFloat(addedModules.find(m => m.id === moduleId).calcPrevValue || 0);
+        const currentValue = parseFloat(calcValue);
+        let result;
+        
+        switch(lastOperator) {
+          case '+':
+            result = prevValue + currentValue;
+            break;
+          case '-':
+            result = prevValue - currentValue;
+            break;
+          case '*':
+            result = prevValue * currentValue;
+            break;
+          case '/':
+            if (currentValue === 0) {
+              result = '错误';
+            } else {
+              result = prevValue / currentValue;
+            }
+            break;
+          default:
+            return;
+        }
+        
+        // 格式化结果，移除不必要的小数位
+        const formattedResult = Number.isInteger(result) ? result.toString() : result.toFixed(2);
+        display.textContent = formattedResult;
+        
+        // 存储当前结果作为下一次计算的初始值
+        const moduleIndex = addedModules.findIndex(m => m.id === moduleId);
+        if (moduleIndex !== -1) {
+          addedModules[moduleIndex].calcPrevValue = formattedResult;
+        }
+      } catch (error) {
+        display.textContent = '错误';
+      }
+    }
+
+    // 使模块可拖拽
+    function makeModuleDraggable(module) {
+      const dragHandle = module.querySelector('.module-drag');
+      let isDragging = false;
+      let offsetX, offsetY;
+      
+      dragHandle.addEventListener('mousedown', startDrag);
+      document.addEventListener('mousemove', drag);
+      document.addEventListener('mouseup', endDrag);
+      
+      function startDrag(e) {
+        e.preventDefault();
+        isDragging = true;
+        
+        // 获取模块当前位置
+        const rect = module.getBoundingClientRect();
+        const moduleX = parseFloat(module.style.left);
+        const moduleY = parseFloat(module.style.top);
+        
+        // 计算鼠标偏移量
+        offsetX = (e.clientX / window.innerWidth * 100) - moduleX;
+        offsetY = (e.clientY / window.innerHeight * 100) - moduleY;
+        
+        // 添加拖拽样式
+        module.classList.add('scale-105', 'z-30');
+      }
+      
+      function drag(e) {
+        if (!isDragging) return;
+        e.preventDefault();
+        
+        // 计算新位置（百分比）
+        const newX = (e.clientX / window.innerWidth * 100) - offsetX;
+        const newY = (e.clientY / window.innerHeight * 100) - offsetY;
+        
+        // 限制在屏幕内
+        const limitedX = Math.max(10, Math.min(90, newX));
+        const limitedY = Math.max(10, Math.min(90, newY));
+        
+        // 更新位置
+        module.style.left = `${limitedX}%`;
+        module.style.top = `${limitedY}%`;
+      }
+      
+      function endDrag() {
+        if (!isDragging) return;
+        isDragging = false;
+        
+        // 移除拖拽样式
+        module.classList.remove('scale-105', 'z-30');
+      }
+    }
+
+    // 绑定虚拟键盘事件
+    function bindKeyboardEvents() {
+      // 关闭键盘按钮
+      document.getElementById('close-keyboard').addEventListener('click', hideKeyboard);
+      
+      // 键盘按键事件
+      document.querySelectorAll('.keyboard-key').forEach(key => {
+        key.addEventListener('click', function() {
+          const keyValue = this.dataset.key;
+          
+          if (!activeInput) return;
+          
+          // 处理特殊键
+          switch(keyValue) {
+            case 'del':
+              // 删除最后一个字符
+              if (activeInput.tagName === 'INPUT') {
+                activeInput.value = activeInput.value.slice(0, -1);
+              } else {
+                // 处理contenteditable元素
+                const selection = window.getSelection();
+                if (selection.rangeCount > 0) {
+                  const range = selection.getRangeAt(0);
+                  if (range.collapsed) {
+                    // 如果没有选中文本，删除前一个字符
+                    range.setStart(range.startContainer, Math.max(0, range.startOffset - 1));
+                    range.deleteContents();
+                  } else {
+                    // 删除选中的文本
+                    range.deleteContents();
+                  }
+                }
+              }
+              break;
+              
+            case 'enter':
+              // 对于任务输入框，按回车添加任务
+              if (activeInput.id.includes('new-task-input')) {
+                const moduleId = activeInput.id.split('-').slice(-1)[0];
+                addNewTask(moduleId);
+              } else {
+                // 其他输入框添加换行
+                insertText('\n');
+              }
+              break;
+              
+            case 'space':
+              insertText(' ');
+              break;
+              
+            case 'shift':
+              // 切换大小写
+              isShiftActive = !isShiftActive;
+              this.classList.toggle('bg-primary/20', isShiftActive);
+              break;
+              
+            default:
+              // 普通字符
+              let text = keyValue;
+              // 处理大小写
+              if (isShiftActive && /[a-z]/.test(text)) {
+                text = text.toUpperCase();
+                // 按下字母后自动关闭shift
+                isShiftActive = false;
+                document.querySelector('.keyboard-key[data-key="shift"]').classList.remove('bg-primary/20');
+              }
+              insertText(text);
+          }
+        });
+      });
+    }
+
+    // 插入文本到激活的输入框
+    function insertText(text) {
+      if (!activeInput) return;
+      
+      if (activeInput.tagName === 'INPUT') {
+        // 处理普通输入框
+        activeInput.value += text;
+        // 移动光标到末尾
+        activeInput.focus();
+      } else if (activeInput.isContentEditable) {
+        // 处理可编辑元素
+        const selection = window.getSelection();
+        if (selection.rangeCount > 0) {
+          const range = selection.getRangeAt(0);
+          range.deleteContents();
+          
+          const textNode = document.createTextNode(text);
+          range.insertNode(textNode);
+          
+          // 移动光标到插入的文本后面
+          range.setStartAfter(textNode);
+          range.setEndAfter(textNode);
+          selection.removeAllRanges();
+          selection.addRange(range);
+        }
+      }
+    }
+
+    // 显示虚拟键盘
+    function showKeyboard() {
+      const keyboard = document.getElementById('virtual-keyboard');
+      keyboard.classList.remove('hidden');
+      
+      // 如果有活跃输入框，给予焦点
+      if (activeInput) {
+        if (activeInput.tagName === 'INPUT') {
+          activeInput.focus();
+        } else if (activeInput.isContentEditable) {
+          activeInput.focus();
+        }
+      }
+    }
+
+    // 隐藏虚拟键盘
+    function hideKeyboard() {
+      const keyboard = document.getElementById('virtual-keyboard');
+      keyboard.classList.add('hidden');
+    }
+
+    // 添加新任务
+    function addNewTask(moduleId) {
+      const input = document.getElementById(`new-task-input-${moduleId}`);
+      const taskText = input.value.trim();
+      
+      if (taskText) {
+        const taskList = document.getElementById(`task-list-${moduleId}`);
+        
+        // 创建新任务项
+        const taskItem = document.createElement('div');
+        taskItem.className = 'task-item flex items-center space-x-2 p-2 rounded-lg hover:bg-gray-50 opacity-0 transform translate-y-2';
+        
+        taskItem.innerHTML = `
+          <input type="checkbox" class="task-checkbox w-4 h-4 rounded text-primary focus:ring-primary">
+          <span class="task-text flex-1 text-sm">${taskText}</span>
+        `;
+        
+        // 添加到列表
+        taskList.appendChild(taskItem);
+        
+        // 添加动画
+        setTimeout(() => {
+          taskItem.classList.add('transition-all', 'duration-300', 'opacity-100', 'translate-y-0');
+        }, 10);
+        
+        // 绑定复选框事件
+        taskItem.querySelector('.task-checkbox').addEventListener('change', function() {
+          const taskText = this.nextElementSibling;
+          if (this.checked) {
+            taskText.classList.add('line-through', 'text-gray-400');
+          } else {
+            taskText.classList.remove('line-through', 'text-gray-400');
+          }
+        });
+        
+        // 清空输入框
+        input.value = '';
+        // 隐藏键盘
+        hideKeyboard();
+      }
+    }
+  </script>
+</body>
+</html>
