@@ -4,520 +4,766 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no, user-scalable=no" />
 <meta charset="UTF-8" />
 <link rel="shortcut icon" href="favicon.ico">
-<script type="text/javascript" src="speedtest.js"></script>
+<!-- 替换为用户提供的测速核心脚本路径 -->
+<script type="text/javascript" src="https://yzbjfpv.top/tools/%E7%BD%91%E9%80%9F%E6%B5%8B%E8%AF%95/%E6%B5%8B%E9%80%9F%E6%A8%A1%E5%9D%97.js"></script>
+<!-- 引入Chart.js用于绘制速度曲线图（轻量且适配性强） -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.8/dist/chart.umd.min.js"></script>
 <script type="text/javascript">
 function I(i){return document.getElementById(i);}
-//INITIALIZE SPEEDTEST
-var s=new Speedtest(); //create speedtest object
-s.setParameter("telemetry_level","none"); //disable telemetry
-s.setParameter("getIp_ispInfo",false);     //disable getispInfo 
-s.setParameter("time_dl_max",5); //5 seconds for the download test
-s.setParameter("time_ul_max",5); //5 seconds for the upload test
+// 初始化测速对象
+var s=new Speedtest(); 
+s.setParameter("telemetry_level","none"); // 关闭数据上报（符合隐私说明）
+s.setParameter("getIp_ispInfo",false);     // 不获取ISP信息
+s.setParameter("time_dl_max",8); // 下载测试时长（8秒，平衡精度与体验）
+s.setParameter("time_ul_max",5); // 上传测试时长（5秒）
+s.setParameter("count_dl",10);   // 下载测试数据包数量
+s.setParameter("count_ul",8);    // 上传测试数据包数量
 
-// 科技感配色方案
-var meterBk = "rgba(30, 41, 59, 0.2)";
-var dlColor = "rgba(56, 189, 248, 0.8)";
-var ulColor = "rgba(16, 185, 129, 0.8)";
-var progColor = "rgba(56, 189, 248, 0.5)";
+// 配色方案（科技感深蓝系）
+const theme = {
+    primary: 'rgba(6, 182, 212, 0.8)',
+    secondary: 'rgba(16, 185, 129, 0.8)',
+    dark: 'rgba(15, 23, 42, 0.9)',
+    light: 'rgba(248, 250, 252, 0.9)',
+    gray: 'rgba(100, 116, 139, 0.7)',
+    bgGradient: 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)'
+};
 
-// 仪表盘绘制函数
-function drawMeter(c, amount, bk, fg, progress, prog) {
-    var ctx = c.getContext("2d");
-    var dp = window.devicePixelRatio || 1;
-    var cw = c.clientWidth * dp, ch = c.clientHeight * dp;
-    var sizScale = ch * 0.0055;
-    
-    // 处理高DPI显示
+// 速度曲线数据存储
+const speedData = {
+    download: [], // 下载速度（Mbps）
+    upload: [],   // 上传速度（Mbps）
+    time: [],     // 时间轴（秒）
+    maxPoints: 30 // 曲线最大数据点（避免图表过载）
+};
+let chartInstance = null; // 曲线图实例
+let testStartTime = null; // 测试开始时间（用于计算时间轴）
+
+// 初始化速度曲线图
+function initSpeedChart() {
+    const ctx = I('speedChart').getContext('2d');
+    // 图表背景渐变
+    const chartBg = ctx.createLinearGradient(0, 0, 0, 250);
+    chartBg.addColorStop(0, 'rgba(15, 23, 42, 0.5)');
+    chartBg.addColorStop(1, 'rgba(15, 23, 42, 0.9)');
+
+    chartInstance = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: [], // 时间轴标签（动态更新）
+            datasets: [
+                {
+                    label: '下载速度 (Mbps)',
+                    data: [],
+                    borderColor: theme.primary,
+                    backgroundColor: 'rgba(6, 182, 212, 0.1)',
+                    borderWidth: 2,
+                    tension: 0.4, // 曲线平滑度
+                    fill: true,   // 填充曲线下方区域
+                    pointRadius: 0, // 隐藏数据点（避免杂乱）
+                    pointHoverRadius: 4,
+                    pointHoverBackgroundColor: theme.primary
+                },
+                {
+                    label: '上传速度 (Mbps)',
+                    data: [],
+                    borderColor: theme.secondary,
+                    backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                    borderWidth: 2,
+                    tension: 0.4,
+                    fill: true,
+                    pointRadius: 0,
+                    pointHoverRadius: 4,
+                    pointHoverBackgroundColor: theme.secondary,
+                    hidden: true // 初始隐藏上传曲线（仅下载时显示）
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'top',
+                    labels: {
+                        color: theme.light,
+                        font: { size: 12, family: 'Segoe UI, Roboto' }
+                    }
+                },
+                tooltip: {
+                    backgroundColor: theme.dark,
+                    titleColor: theme.light,
+                    bodyColor: theme.light,
+                    borderColor: theme.primary,
+                    borderWidth: 1,
+                    padding: 10,
+                    cornerRadius: 6,
+                    displayColors: true,
+                    callbacks: {
+                        label: function(context) {
+                            return `${context.dataset.label}: ${context.raw.toFixed(2)}`;
+                        }
+                    }
+                }
+            },
+            scales: {
+                x: {
+                    title: { display: true, text: '测试时间 (秒)', color: theme.gray, font: { size: 11 } },
+                    ticks: { color: theme.gray, font: { size: 10 } },
+                    grid: { color: 'rgba(100, 116, 139, 0.1)' }
+                },
+                y: {
+                    title: { display: true, text: '速度 (Mbps)', color: theme.gray, font: { size: 11 } },
+                    ticks: { color: theme.gray, font: { size: 10 }, min: 0 },
+                    grid: { color: 'rgba(100, 116, 139, 0.1)' },
+                    suggestedMax: 100 // 初始y轴最大值（动态调整）
+                }
+            },
+            animation: { duration: 0 }, // 关闭初始动画（避免卡顿）
+            interaction: {
+                intersect: false,
+                mode: 'index' // 鼠标悬停时显示对应时间轴所有数据
+            },
+            backgroundColor: chartBg
+        }
+    });
+}
+
+// 高级仪表盘绘制（带流光效果）
+function drawAdvancedMeter(c, value, maxValue, color, label) {
+    const ctx = c.getContext("2d");
+    const dp = window.devicePixelRatio || 1;
+    const cw = c.clientWidth * dp;
+    const ch = c.clientHeight * dp;
+    const centerX = cw / 2;
+    const centerY = ch / 2;
+    const radius = Math.min(centerX, centerY) - 15; // 仪表盘半径（预留边距）
+    const startAngle = 1.3 * Math.PI; // 起始角度（左下）
+    const endAngle = 2.7 * Math.PI;   // 结束角度（右下）
+    const angleRange = endAngle - startAngle; // 角度范围
+    const valueRatio = Math.min(value / maxValue, 1); // 数值占比（最大1）
+    const currentAngle = startAngle + (valueRatio * angleRange); // 当前角度
+
+    // 适配高DPI屏幕
     if (c.width !== cw || c.height !== ch) {
         c.width = cw;
         c.height = ch;
     } else {
         ctx.clearRect(0, 0, cw, ch);
     }
-    
-    // 绘制背景圆环 - 带渐变效果增强科技感
-    var bgGradient = ctx.createLinearGradient(0, 0, cw, ch);
-    bgGradient.addColorStop(0, "rgba(30, 41, 59, 0.1)");
-    bgGradient.addColorStop(1, "rgba(30, 41, 59, 0.3)");
-    
+
+    // 1. 绘制背景圆环（暗灰色）
     ctx.beginPath();
-    ctx.strokeStyle = bgGradient;
-    ctx.lineWidth = 12 * sizScale;
-    ctx.lineCap = "round"; // 圆角线条增强现代感
-    ctx.arc(c.width/2, c.height-58*sizScale, c.height/1.8 - ctx.lineWidth, -Math.PI*1.1, Math.PI*0.1);
+    ctx.arc(centerX, centerY, radius, startAngle, endAngle);
+    ctx.strokeStyle = 'rgba(100, 116, 139, 0.2)';
+    ctx.lineWidth = 12;
+    ctx.lineCap = 'round';
     ctx.stroke();
-    
-    // 绘制前景圆环 - 带渐变效果
-    var fgGradient = ctx.createLinearGradient(0, ch, cw, 0);
-    fgGradient.addColorStop(0, fg);
-    fgGradient.addColorStop(1, shadeColor(fg, 30));
-    
+
+    // 2. 绘制进度圆环（主题色+渐变）
+    const gradient = ctx.createLinearGradient(0, 0, cw, ch);
+    gradient.addColorStop(0, color);
+    gradient.addColorStop(1, shadeColor(color, -30)); // 深色渐变
+
     ctx.beginPath();
-    ctx.strokeStyle = fgGradient;
-    ctx.lineWidth = 12 * sizScale;
-    ctx.lineCap = "round";
-    ctx.arc(c.width/2, c.height-58*sizScale, c.height/1.8 - ctx.lineWidth, -Math.PI*1.1, amount*Math.PI*1.2 - Math.PI*1.1);
+    ctx.arc(centerX, centerY, radius, startAngle, currentAngle);
+    ctx.strokeStyle = gradient;
+    ctx.lineWidth = 12;
+    ctx.lineCap = 'round';
     ctx.stroke();
-    
-    // 绘制进度条
-    if (typeof progress !== "undefined") {
-        ctx.fillStyle = prog;
-        ctx.fillRect(c.width*0.3, c.height-16*sizScale, c.width*0.4*progress, 4*sizScale);
+
+    // 3. 绘制流光效果（仅当有进度时）
+    if (valueRatio > 0) {
+        ctx.save();
+        ctx.beginPath();
+        const glowAngle = currentAngle - 0.1; // 流光位置（进度末端）
+        const glowRadius = radius + 5;
+        ctx.arc(centerX, centerY, glowRadius, glowAngle - 0.05, glowAngle + 0.05);
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.8)';
+        ctx.lineWidth = 4;
+        ctx.stroke();
+        ctx.restore();
     }
+
+    // 4. 绘制中心数值与单位
+    ctx.font = `bold ${ch * 0.2}px Segoe UI, Roboto`;
+    ctx.fillStyle = theme.light;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    const displayValue = value > 0 ? value.toFixed(value < 10 ? 2 : 1) : '0.00';
+    ctx.fillText(displayValue, centerX, centerY);
+
+    // 5. 绘制单位标签
+    ctx.font = `${ch * 0.08}px Segoe UI, Roboto`;
+    ctx.fillStyle = theme.gray;
+    ctx.fillText(label, centerX, centerY + (ch * 0.12));
 }
 
 // 辅助函数：调整颜色亮度
 function shadeColor(color, percent) {
-    var R = parseInt(color.substring(5, 8), 16);
-    var G = parseInt(color.substring(10, 13), 16);
-    var B = parseInt(color.substring(15, 18), 16);
+    const rgbaMatch = color.match(/rgba\((\d+),\s*(\d+),\s*(\d+),\s*(\d+(\.\d+)?)\)/);
+    if (!rgbaMatch) return color;
+    
+    let r = parseInt(rgbaMatch[1]);
+    let g = parseInt(rgbaMatch[2]);
+    let b = parseInt(rgbaMatch[3]);
+    const a = rgbaMatch[4];
 
-    R = parseInt(R * (100 + percent) / 100);
-    G = parseInt(G * (100 + percent) / 100);
-    B = parseInt(B * (100 + percent) / 100);
+    // 调整亮度（避免超出0-255）
+    r = Math.min(Math.max(Math.round(r * (100 + percent) / 100), 0), 255);
+    g = Math.min(Math.max(Math.round(g * (100 + percent) / 100), 0), 255);
+    b = Math.min(Math.max(Math.round(b * (100 + percent) / 100), 0), 255);
 
-    R = (R < 255) ? R : 255;
-    G = (G < 255) ? G : 255;
-    B = (B < 255) ? B : 255;
-
-    R = Math.round(R);
-    G = Math.round(G);
-    B = Math.round(B);
-
-    var RR = ((R.toString(16).length === 1) ? "0" + R.toString(16) : R.toString(16));
-    var GG = ((G.toString(16).length === 1) ? "0" + G.toString(16) : G.toString(16));
-    var BB = ((B.toString(16).length === 1) ? "0" + B.toString(16) : B.toString(16));
-
-    return "rgba(" + R + ", " + G + ", " + B + ", 0.8)";
+    return `rgba(${r}, ${g}, ${b}, ${a})`;
 }
 
-function mbpsToAmount(s) {
-    return 1 - (1 / (Math.pow(1.3, Math.sqrt(s))));
-}
-
-function format(d) {
+// 格式化数值显示（动态保留小数位）
+function formatValue(d) {
     d = Number(d);
     if (d < 10) return d.toFixed(2);
     if (d < 100) return d.toFixed(1);
     return d.toFixed(0);
 }
 
-// UI 相关代码
-var uiData = null;
+// 更新速度曲线数据
+function updateSpeedChart(type, value) {
+    if (!chartInstance || !testStartTime) return;
+    
+    // 计算当前测试时长（秒）
+    const currentTime = Math.round((Date.now() - testStartTime) / 1000);
+    const datasetIndex = type === 'download' ? 0 : 1;
+
+    // 1. 更新数据数组（限制最大长度）
+    if (speedData.time.length === 0 || speedData.time[speedData.time.length - 1] !== currentTime) {
+        speedData.time.push(currentTime);
+        speedData[type].push(value);
+        
+        // 超出最大数据点时删除最早的
+        if (speedData.time.length > speedData.maxPoints) {
+            speedData.time.shift();
+            speedData.download.shift();
+            speedData.upload.shift();
+        }
+    } else {
+        // 同一秒内更新最新值
+        speedData[type][speedData[type].length - 1] = value;
+    }
+
+    // 2. 更新图表
+    chartInstance.data.labels = speedData.time.map(t => `${t}s`);
+    chartInstance.data.datasets[datasetIndex].data = speedData[type];
+    
+    // 动态调整y轴最大值（预留20%空间）
+    const allValues = [...speedData.download, ...speedData.upload].filter(v => v > 0);
+    if (allValues.length > 0) {
+        const maxValue = Math.max(...allValues);
+        chartInstance.options.scales.y.suggestedMax = maxValue * 1.2;
+    }
+
+    chartInstance.update('none'); // 无动画更新（避免卡顿）
+}
+
+// 测速状态管理与UI更新
+let uiData = null;
 function startStop() {
-    if (s.getState() == 3) {
+    const btn = I('startStopBtn');
+    if (s.getState() === 3) {
         // 终止测速
         s.abort();
-        data = null;
-        I("startStopBtn").className = "";
-        initUI();
+        btn.className = '';
+        btn.innerHTML = '<span>开始测速</span>';
+        resetTestData();
+        updateUI(true);
     } else {
         // 开始测速
-        I("startStopBtn").className = "running";
+        btn.className = 'running';
+        btn.innerHTML = '<span>终止测速</span>';
+        testStartTime = Date.now();
+        resetTestData();
+        initSpeedChart(); // 初始化曲线图
+
+        // 测速更新回调（实时获取数据）
         s.onupdate = function(data) {
             uiData = data;
+            const { testState, dlStatus, ulStatus } = data;
+            
+            // 实时更新速度曲线
+            if (testState === 1 && dlStatus > 0) { // 下载测试中
+                updateSpeedChart('download', dlStatus);
+            } else if (testState === 3 && ulStatus > 0) { // 上传测试中
+                chartInstance.data.datasets[1].hidden = false; // 显示上传曲线
+                updateSpeedChart('upload', ulStatus);
+            }
         };
+
+        // 测速结束回调
         s.onend = function(aborted) {
-            I("startStopBtn").className = "";
+            btn.className = '';
+            btn.innerHTML = '<span>重新测速</span>';
             updateUI(true);
+            if (!aborted) {
+                // 结束后高亮最终速度（1秒）
+                setTimeout(() => {
+                    const dlMeter = I('dlMeter');
+                    const ulMeter = I('ulMeter');
+                    dlMeter.classList.add('highlight');
+                    ulMeter.classList.add('highlight');
+                    setTimeout(() => {
+                        dlMeter.classList.remove('highlight');
+                        ulMeter.classList.remove('highlight');
+                    }, 1000);
+                }, 300);
+            }
         };
+
         s.start();
     }
 }
 
+// 重置测试数据（用于重新测速）
+function resetTestData() {
+    uiData = null;
+    speedData.download = [];
+    speedData.upload = [];
+    speedData.time = [];
+    if (chartInstance) chartInstance.destroy();
+}
+
+// 整体UI更新
 function updateUI(forced) {
-    if (!forced && s.getState() != 3) return;
-    if (uiData == null) return;
-    
-    var status = uiData.testState;
-    I("ip").textContent = uiData.clientIp;
-    
-    // 下载速度显示
-    I("dlText").textContent = (status == 1 && uiData.dlStatus == 0) ? "..." : format(uiData.dlStatus);
-    drawMeter(I("dlMeter"), mbpsToAmount(Number(uiData.dlStatus * (status == 1 ? oscillate() : 1))), meterBk, dlColor, Number(uiData.dlProgress), progColor);
-    
-    // 上传速度显示
-    I("ulText").textContent = (status == 3 && uiData.ulStatus == 0) ? "..." : format(uiData.ulStatus);
-    drawMeter(I("ulMeter"), mbpsToAmount(Number(uiData.ulStatus * (status == 3 ? oscillate() : 1))), meterBk, ulColor, Number(uiData.ulProgress), progColor);
-    
-    // 延迟和抖动显示
-    I("pingText").textContent = format(uiData.pingStatus);
-    I("jitText").textContent = format(uiData.jitterStatus);
+    if (!forced && s.getState() !== 3) return;
+    if (!uiData) {
+        // 初始化UI
+        drawAdvancedMeter(I('dlMeter'), 0, 1000, theme.primary, 'Mbps');
+        drawAdvancedMeter(I('ulMeter'), 0, 1000, theme.secondary, 'Mbps');
+        I('pingText').textContent = '--';
+        I('jitText').textContent = '--';
+        I('ip').textContent = '';
+        return;
+    }
+
+    const { testState, dlStatus, ulStatus, pingStatus, jitterStatus, clientIp } = uiData;
+    const maxSpeed = 1000; // 仪表盘最大显示速度（Mbps，适配千兆网络）
+
+    // 1. 更新仪表盘
+    drawAdvancedMeter(I('dlMeter'), dlStatus || 0, maxSpeed, theme.primary, 'Mbps');
+    drawAdvancedMeter(I('ulMeter'), ulStatus || 0, maxSpeed, theme.secondary, 'Mbps');
+
+    // 2. 更新延迟与抖动
+    I('pingText').textContent = pingStatus > 0 ? `${pingStatus.toFixed(0)} ms` : '-- ms';
+    I('jitText').textContent = jitterStatus > 0 ? `${jitterStatus.toFixed(0)} ms` : '-- ms';
+
+    // 3. 更新IP显示
+    I('ip').textContent = clientIp ? `当前IP: ${clientIp}` : '';
 }
 
-// 波动动画函数，增强科技感
-function oscillate() {
-    return 1 + 0.02 * Math.sin(Date.now() / 100);
-}
+// 动画帧循环（确保UI流畅更新）
+window.requestAnimationFrame = window.requestAnimationFrame || 
+    window.webkitRequestAnimationFrame || 
+    window.mozRequestAnimationFrame || 
+    (callback => setTimeout(callback, 1000/60));
 
-// 动画帧更新
-window.requestAnimationFrame = window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || window.msRequestAnimationFrame || (function(callback) { setTimeout(callback, 1000/60); });
-
-function frame() {
-    requestAnimationFrame(frame);
+function frameLoop() {
+    requestAnimationFrame(frameLoop);
     updateUI();
 }
-frame(); // 启动动画循环
+frameLoop();
 
-// 初始化UI
-function initUI() {
-    drawMeter(I("dlMeter"), 0, meterBk, dlColor, 0);
-    drawMeter(I("ulMeter"), 0, meterBk, ulColor, 0);
-    I("dlText").textContent = "";
-    I("ulText").textContent = "";
-    I("pingText").textContent = "";
-    I("jitText").textContent = "";
-    I("ip").textContent = "";
-}
+// 页面加载完成初始化
+window.onload = function() {
+    initSpeedChart(); // 预初始化曲线图（避免首次点击延迟）
+    updateUI(true);
+};
 </script>
 <style type="text/css">
-    :root {
-        --primary: #38bdf8;
-        --secondary: #10b981;
-        --dark: #1e293b;
-        --light: #f8fafc;
-        --gray: #64748b;
-        --shadow: 0 10px 25px -5px rgba(56, 189, 248, 0.1), 0 8px 10px -6px rgba(56, 189, 248, 0.1);
-        --transition: all 0.3s ease;
+:root {
+    --primary: #06b6d4;
+    --secondary: #10b981;
+    --dark: #0f172a;
+    --light: #f8fafc;
+    --gray: #64748b;
+    --shadow: 0 10px 25px -5px rgba(6, 182, 212, 0.1), 0 8px 10px -6px rgba(6, 182, 212, 0.1);
+    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    min-height: 100vh;
+    background: var(--dark);
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+    color: var(--light);
+    font-family: "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    overflow-x: hidden;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+}
+
+/* 页面标题 */
+.page-title {
+    text-align: center;
+    margin-bottom: 2.5rem;
+    position: relative;
+    display: inline-block;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.page-title h1 {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--light);
+    text-shadow: 0 2px 10px rgba(6, 182, 212, 0.3);
+    margin-bottom: 0.5rem;
+}
+
+.page-title p {
+    font-size: 0.9rem;
+    color: var(--gray);
+}
+
+/* 测速按钮 */
+#startStopBtn {
+    display: block;
+    width: 180px;
+    height: 50px;
+    margin: 0 auto 2rem;
+    background: linear-gradient(135deg, var(--primary) 0%, #0891b2 100%);
+    border: none;
+    border-radius: 50px;
+    color: var(--light);
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: var(--shadow);
+    transition: var(--transition);
+    position: relative;
+    overflow: hidden;
+}
+
+#startStopBtn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.1);
+    transform: skewX(-20deg);
+    transition: left 0.5s ease;
+}
+
+#startStopBtn:hover::before {
+    left: 100%;
+}
+
+#startStopBtn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 15px 30px -5px rgba(6, 182, 212, 0.2);
+}
+
+#startStopBtn.running {
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    box-shadow: 0 10px 25px -5px rgba(239, 68, 68, 0.2);
+}
+
+#startStopBtn.running:hover {
+    box-shadow: 0 15px 30px -5px rgba(239, 68, 68, 0.3);
+}
+
+/* 核心测试区域 */
+.test-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    margin-bottom: 2rem;
+}
+
+@media (max-width: 768px) {
+    .test-container {
+        grid-template-columns: 1fr;
     }
-    
-    html, body {
-        border: none;
-        padding: 0;
-        margin: 0;
-        background: #0f172a;
-        background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-        color: var(--light);
-        min-height: 100vh;
-    }
-    
-    body {
-        text-align: center;
-        font-family: "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-        padding: 20px;
-        box-sizing: border-box;
-    }
-    
-    .container {
-        max-width: 1000px;
-        margin: 0 auto;
-        padding: 20px 0;
-    }
-    
-    h1 {
-        color: var(--light);
-        font-weight: 700;
-        margin-bottom: 30px;
-        text-shadow: 0 2px 10px rgba(56, 189, 248, 0.3);
-        position: relative;
-        display: inline-block;
-    }
-    
-    h1:after {
-        content: '';
-        position: absolute;
-        bottom: -10px;
-        left: 10%;
-        width: 80%;
-        height: 3px;
-        background: linear-gradient(90deg, transparent, var(--primary), transparent);
-    }
-    
-    #startStopBtn {
-        display: inline-block;
-        margin: 0 auto 30px;
-        color: var(--light);
-        background: linear-gradient(135deg, var(--primary) 0%, #0ea5e9 100%);
-        border: none;
-        border-radius: 50px;
-        transition: var(--transition);
-        box-sizing: border-box;
-        width: 12em;
-        height: 3.5em;
-        line-height: 3.5em;
-        cursor: pointer;
-        box-shadow: var(--shadow);
-        font-weight: 600;
-        font-size: 1.1em;
-        position: relative;
-        overflow: hidden;
-    }
-    
-    #startStopBtn:before {
-        content: "开始测速";
-        position: relative;
-        z-index: 2;
-    }
-    
-    #startStopBtn.running:before {
-        content: "终止测速";
-    }
-    
-    #startStopBtn:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 15px 30px -5px rgba(56, 189, 248, 0.2), 0 8px 10px -6px rgba(56, 189, 248, 0.2);
-    }
-    
-    #startStopBtn.running {
-        background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
-        box-shadow: 0 10px 25px -5px rgba(239, 68, 68, 0.2), 0 8px 10px -6px rgba(239, 68, 68, 0.2);
-    }
-    
-    #startStopBtn.running:hover {
-        box-shadow: 0 15px 30px -5px rgba(239, 68, 68, 0.3), 0 8px 10px -6px rgba(239, 68, 68, 0.3);
-    }
-    
-    #test {
-        margin-top: 2em;
-    }
-    
-    .testGroup {
-        display: flex;
-        justify-content: center;
-        flex-wrap: wrap;
-        gap: 30px;
-        margin-bottom: 40px;
-    }
-    
-    .testArea, .testArea2 {
-        background: rgba(30, 41, 59, 0.5);
-        backdrop-filter: blur(10px);
-        border-radius: 15px;
-        padding: 20px;
-        box-shadow: var(--shadow);
-        transition: var(--transition);
-    }
-    
-    .testArea:hover, .testArea2:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 20px 35px -10px rgba(56, 189, 248, 0.2);
-    }
-    
-    .testArea {
-        width: 280px;
-        height: 220px;
-        position: relative;
-        box-sizing: border-box;
-    }
-    
-    .testArea2 {
-        width: 220px;
-        height: 160px;
-        position: relative;
-        box-sizing: border-box;
-        text-align: center;
-    }
-    
-    .testName {
-        color: var(--primary);
-        font-weight: 600;
-        margin-bottom: 15px;
-        font-size: 1.2em;
-    }
-    
-    .testArea .testName {
-        position: absolute;
-        top: 20px;
-        left: 0;
-        width: 100%;
-        z-index: 9;
-    }
-    
-    .meterText {
-        font-size: 2.5em;
-        font-weight: 700;
-        color: var(--light);
-        transition: var(--transition);
-    }
-    
-    .testArea .meterText {
-        position: absolute;
-        bottom: 40px;
-        left: 0;
-        width: 100%;
-        z-index: 9;
-    }
-    
-    .unit {
-        color: var(--gray);
-        font-size: 1em;
-    }
-    
-    .testArea .unit {
-        position: absolute;
-        bottom: 20px;
-        left: 0;
-        width: 100%;
-        z-index: 9;
-    }
-    
-    .testArea canvas {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        z-index: 1;
-    }
-    
-    #ipArea {
-        margin: 20px 0 30px;
-        color: var(--gray);
-        font-size: 0.9em;
-    }
-    
-    #privacyPolicy {
-        position: fixed;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        width: 90%;
-        max-width: 600px;
-        max-height: 80vh;
-        overflow-y: auto;
-        background: rgba(15, 23, 42, 0.95);
-        backdrop-filter: blur(15px);
-        border-radius: 15px;
-        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-        z-index: 999999;
-        text-align: left;
-        padding: 30px;
-        border: 1px solid rgba(56, 189, 248, 0.1);
-        display: none;
-    }
-    
-    #privacyPolicy h2 {
-        color: var(--primary);
-        margin-top: 0;
-        border-bottom: 1px solid rgba(56, 189, 248, 0.2);
-        padding-bottom: 15px;
-    }
-    
-    #privacyPolicy h4 {
-        color: var(--light);
-    }
-    
-    #privacyPolicy ul {
-        color: var(--light);
-        line-height: 1.8;
-    }
-    
-    .wechat-contact {
-        color: var(--secondary);
-        font-weight: 600;
-    }
-    
-    a.privacy {
-        color: var(--primary);
-        text-decoration: none;
-        font-size: 0.9em;
-        transition: var(--transition);
-        display: inline-block;
-        margin-bottom: 20px;
-    }
-    
-    a.privacy:hover {
-        color: #0ea5e9;
-        text-decoration: underline;
-    }
-    
-    .closePrivacyPolicy {
-        text-align: center;
-        margin-top: 30px;
-    }
-    
-    .closePrivacyPolicy a.privacy {
-        background: var(--primary);
-        color: var(--light);
-        padding: 10px 25px;
-        border-radius: 50px;
-        margin-top: 20px;
-    }
-    
-    .closePrivacyPolicy a.privacy:hover {
-        background: #0ea5e9;
-        text-decoration: none;
-        transform: translateY(-2px);
-    }
-    
-    .footer {
-        margin-top: 50px;
-        padding-top: 20px;
-        border-top: 1px solid rgba(56, 189, 248, 0.1);
-        color: var(--gray);
-        font-size: 0.9em;
-        line-height: 1.6;
-    }
-    
-    .tech-support {
-        color: var(--primary);
-    }
-    
-    @media all and (max-width: 768px) {
-        .testGroup {
-            gap: 20px;
-        }
-        
-        .testArea, .testArea2 {
-            width: 100%;
-            max-width: 300px;
-        }
-        
-        h1 {
-            font-size: 1.8em;
-        }
-    }
+}
+
+/* 仪表盘样式 */
+.meter-card {
+    background: rgba(30, 41, 59, 0.5);
+    backdrop-filter: blur(12px);
+    border-radius: 16px;
+    padding: 1.5rem;
+    box-shadow: var(--shadow);
+    transition: var(--transition);
+    text-align: center;
+}
+
+.meter-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 20px 35px -10px rgba(6, 182, 212, 0.2);
+}
+
+.meter-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--primary);
+    margin-bottom: 1rem;
+}
+
+.meter-canvas {
+    width: 100%;
+    height: 200px;
+    margin: 0 auto;
+}
+
+/* 仪表盘高亮动画（测试结束时） */
+.meter-canvas.highlight {
+    animation: pulse 1s ease;
+}
+
+@keyframes pulse {
+    0% { box-shadow: 0 0 0 0 rgba(6, 182, 212, 0.4); }
+    70% { box-shadow: 0 0 0 15px rgba(6, 182, 212, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(6, 182, 212, 0); }
+}
+
+/* 延迟与抖动显示 */
+.latency-card {
+    grid-column: 1 / -1;
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    background: rgba(30, 41, 59, 0.5);
+    backdrop-filter: blur(12px);
+    border-radius: 16px;
+    padding: 1.5rem;
+    box-shadow: var(--shadow);
+}
+
+.latency-item {
+    text-align: center;
+    padding: 0 1rem;
+}
+
+.latency-title {
+    font-size: 1rem;
+    color: var(--gray);
+    margin-bottom: 0.5rem;
+}
+
+.latency-value {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--light);
+}
+
+/* 速度曲线图 */
+.chart-card {
+    grid-column: 1 / -1;
+    background: rgba(30, 41, 59, 0.5);
+    backdrop-filter: blur(12px);
+    border-radius: 16px;
+    padding: 1.5rem;
+    box-shadow: var(--shadow);
+}
+
+.chart-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--primary);
+    margin-bottom: 1rem;
+    text-align: center;
+}
+
+#speedChart {
+    width: 100%;
+    height: 250px;
+    border-radius: 8px;
+}
+
+/* IP显示 */
+.ip-display {
+    text-align: center;
+    font-size: 0.9rem;
+    color: var(--gray);
+    margin: 1rem 0;
+}
+
+/* 隐私说明链接 */
+.privacy-link {
+    display: block;
+    text-align: center;
+    color: var(--primary);
+    text-decoration: none;
+    font-size: 0.9rem;
+    margin: 1rem 0;
+    transition: var(--transition);
+}
+
+.privacy-link:hover {
+    color: #0891b2;
+    text-decoration: underline;
+}
+
+/* 页脚 */
+.footer {
+    text-align: center;
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid rgba(100, 116, 139, 0.1);
+    color: var(--gray);
+    font-size: 0.9rem;
+    line-height: 1.6;
+}
+
+.wechat-contact {
+    color: var(--secondary);
+    font-weight: 600;
+}
+
+.tech-support {
+    color: var(--primary);
+}
+
+/* 隐私说明弹窗 */
+#privacyPolicy {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 90%;
+    max-width: 600px;
+    max-height: 80vh;
+    overflow-y: auto;
+    background: rgba(15, 23, 42, 0.95);
+    backdrop-filter: blur(15px);
+    border-radius: 16px;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    z-index: 999999;
+    text-align: left;
+    padding: 2rem;
+    border: 1px solid rgba(6, 182, 212, 0.1);
+    display: none;
+}
+
+#privacyPolicy h2 {
+    color: var(--primary);
+    margin-top: 0;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid rgba(6, 182, 212, 0.2);
+    padding-bottom: 0.8rem;
+    font-size: 1.5rem;
+}
+
+#privacyPolicy h4 {
+    color: var(--light);
+    margin: 1rem 0 0.5rem;
+    font-size: 1.1rem;
+}
+
+#privacyPolicy ul {
+    color: var(--light);
+    line-height: 1.8;
+    margin-left: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+#privacyPolicy li {
+    margin-bottom: 0.5rem;
+}
+
+.closePrivacyPolicy {
+    text-align: center;
+    margin-top: 1.5rem;
+}
+
+.closePrivacyPolicy button {
+    background: var(--primary);
+    color: var(--light);
+    border: none;
+    border-radius: 50px;
+    padding: 0.8rem 2rem;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.closePrivacyPolicy button:hover {
+    background: #0891b2;
+    transform: translateY(-2px);
+}
 </style>
 <title>测速|Flyz远征飞官网</title>
 </head>
 <body>
     <div class="container">
-        <h1>Flyz远征飞官网 - 网络测速工具</h1>
-        
-        <div id="startStopBtn" onclick="startStop()"></div>
-        
-        <a class="privacy" href="#" onclick="I('privacyPolicy').style.display='block'">隐私说明</a>
-        
-        <div id="test">
-            <div class="testGroup">
-                <div class="testArea2">
-                    <div class="testName">网络延迟</div>
-                    <div id="pingText" class="meterText"></div>
-                    <div class="unit">ms</div>
+        <!-- 页面标题 -->
+        <div class="page-title">
+            <h1>Flyz远征飞官网 - 网络测速工具</h1>
+            <p>精准测试下载/上传速度、网络延迟与抖动</p>
+        </div>
+
+        <!-- 测速按钮 -->
+        <button id="startStopBtn">
+            <span>开始测速</span>
+        </button>
+
+        <!-- 隐私说明链接 -->
+        <a href="javascript:;" class="privacy-link" onclick="I('privacyPolicy').style.display='block'">隐私说明</a>
+
+        <!-- 核心测试区域 -->
+        <div class="test-container">
+            <!-- 下载速度仪表盘 -->
+            <div class="meter-card">
+                <div class="meter-title">下载速度</div>
+                <canvas id="dlMeter" class="meter-canvas"></canvas>
+            </div>
+
+            <!-- 上传速度仪表盘 -->
+            <div class="meter-card">
+                <div class="meter-title">上传速度</div>
+                <canvas id="ulMeter" class="meter-canvas"></canvas>
+            </div>
+
+            <!-- 延迟与抖动 -->
+            <div class="latency-card">
+                <div class="latency-item">
+                    <div class="latency-title">网络延迟</div>
+                    <div id="pingText" class="latency-value">-- ms</div>
                 </div>
-                <div class="testArea2">
-                    <div class="testName">延迟抖动</div>
-                    <div id="jitText" class="meterText"></div>
-                    <div class="unit">ms</div>
+                <div class="latency-item">
+                    <div class="latency-title">延迟抖动</div>
+                    <div id="jitText" class="latency-value">-- ms</div>
                 </div>
             </div>
-            
-            <div class="testGroup">
-                <div class="testArea">
-                    <div class="testName">下载速度</div>
-                    <canvas id="dlMeter" class="meter"></canvas>
-                    <div id="dlText" class="meterText"></div>
-                    <div class="unit">Mbps</div>
-                </div>
-                <div class="testArea">
-                    <div class="testName">上传速度</div>
-                    <canvas id="ulMeter" class="meter"></canvas>
-                    <div id="ulText" class="meterText"></div>
-                    <div class="unit">Mbps</div>
-                </div>
-            </div>
-            
-            <div id="ipArea">
-                <span id="ip"></span>
+
+            <!-- 速度曲线图 -->
+            <div class="chart-card">
+                <div class="chart-title">实时速度变化曲线</div>
+                <canvas id="speedChart"></canvas>
             </div>
         </div>
-        
+
+        <!-- IP显示 -->
+        <div id="ipArea" class="ip-display">
+            <span id="ip"></span>
+        </div>
+
+        <!-- 页脚 -->
         <div class="footer">
             <p>如有问题可添加微信: <span class="wechat-contact">YGWFK2024</span></p>
             <p>测速技术支持由 <span class="tech-support">中国科学技术大学</span> 提供</p>
         </div>
     </div>
-    
+
+    <!-- 隐私说明弹窗 -->
     <div id="privacyPolicy">
         <h2>隐私说明</h2>
         <h4>本测速工具尊重并保护所有用户的个人隐私权，特此说明：</h4>
@@ -530,13 +776,8 @@ function initUI() {
             <li>本测速工具使用中国科学技术大学提供的技术支持，但其不获取任何用户数据</li>
         </ul>
         <div class="closePrivacyPolicy">
-            <a class="privacy" href="#" onclick="I('privacyPolicy').style.display='none'">关闭</a>
+            <button onclick="I('privacyPolicy').style.display='none'">关闭</button>
         </div>
     </div>
-    
-    <script type="text/javascript">
-        setTimeout(function(){initUI()},100);
-        // 初始化时不自动开始测速，让用户手动触发
-    </script>
 </body>
 </html>
