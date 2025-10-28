@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>管理员后台|Flyz远征飞官网</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#1E293B',
+                        accent: '#3B82F6',
+                    },
+                }
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .bg-grid {
+                background-size: 40px 40px;
+                background-image: 
+                    linear-gradient(to right, rgba(255,255,255,0.05) 1px, transparent 1px),
+                    linear-gradient(to bottom, rgba(255,255,255,0.05) 1px, transparent 1px);
+            }
+            .text-glow {
+                text-shadow: 0 0 10px rgba(59, 130, 246, 0.5);
+            }
+            .folder-content {
+                max-height: 0;
+                overflow: hidden;
+                transition: max-height 0.3s ease;
+            }
+            .folder-expanded .folder-content {
+                max-height: 1000px;
+            }
+            .btn-pop {
+                transition: transform 0.2s, box-shadow 0.2s;
+            }
+            .btn-pop:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 10px 25px -5px rgba(59, 130, 246, 0.2);
+            }
+        }
+    </style>
+</head>
+<body class="bg-primary text-gray-100 min-h-screen">
+    <!-- 登录弹窗 -->
+    <div id="login" class="fixed inset-0 z-50 flex items-center justify-center bg-grid">
+        <div class="absolute inset-0 bg-primary/80 backdrop-blur-sm"></div>
+        <div class="relative w-full max-w-xs p-8 bg-primary border border-gray-700 rounded-xl shadow-2xl z-10">
+            <div class="mb-6 text-center">
+                <div class="inline-flex items-center justify-center w-16 h-16 mb-4 rounded-full bg-accent/20">
+                    <i class="fa fa-shield text-accent text-2xl"></i>
+                </div>
+                <h2 class="text-2xl font-bold text-glow">管理员认证</h2>
+                <p class="text-gray-400 mt-2">请输入账号密码访问文件中心</p>
+            </div>
+            
+            <form id="loginForm" class="space-y-4">
+                <div>
+                    <label class="block text-sm text-gray-400 mb-1">用户名</label>
+                    <input type="text" id="user" class="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent" required>
+                </div>
+                <div>
+                    <label class="block text-sm text-gray-400 mb-1">密码</label>
+                    <input type="password" id="pass" class="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent" required>
+                </div>
+                <button type="submit" class="w-full py-3 bg-accent text-white rounded-lg font-medium btn-pop">
+                    <i class="fa fa-sign-in mr-2"></i>登录
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- 主内容区 -->
+    <div id="content" class="hidden container mx-auto px-4 py-8">
+        <header class="mb-8 pb-4 border-b border-gray-800">
+            <div class="flex justify-between items-center">
+                <h1 class="text-2xl font-bold">文件管理中心</h1>
+                <div class="flex items-center">
+                    <span class="text-gray-400 mr-3"><i class="fa fa-user-circle text-accent"></i> 管理员</span>
+                    <button id="logout" class="text-gray-400 hover:text-accent transition-colors">
+                        <i class="fa fa-sign-out"></i> 退出
+                    </button>
+                </div>
+            </div>
+            <p class="text-gray-400 mt-2">点击下方链接访问对应文件，所有链接均指向 yzbjfpv.top 域名</p>
+        </header>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+            <!-- 根目录文件 -->
+            <a href="https://yzbjfpv.top/index.html" target="_blank" class="p-4 bg-gray-800/50 rounded-lg border border-gray-700 btn-pop">
+                <i class="fa fa-file-html-o text-accent mr-2"></i>index.html
+            </a>
+            <a href="https://yzbjfpv.top/index2.html" target="_blank" class="p-4 bg-gray-800/50 rounded-lg border border-gray-700 btn-pop">
+                <i class="fa fa-file-html-o text-accent mr-2"></i>index2.html
+            </a>
+            <a href="https://yzbjfpv.top/oldindex.html" target="_blank" class="p-4 bg-gray-800/50 rounded-lg border border-gray-700 btn-pop">
+                <i class="fa fa-file-html-o text-accent mr-2"></i>oldindex.html
+            </a>
+            <a href="https://yzbjfpv.top/404.html" target="_blank" class="p-4 bg-gray-800/50 rounded-lg border border-gray-700 btn-pop">
+                <i class="fa fa-file-html-o text-accent mr-2"></i>404.html
+            </a>
+            <a href="https://yzbjfpv.top/ai.html" target="_blank" class="p-4 bg-gray-800/50 rounded-lg border border-gray-700 btn-pop">
+                <i class="fa fa-file-html-o text-accent mr-2"></i>ai.html
+            </a>
+            <a href="https://yzbjfpv.top/game.html" target="_blank" class="p-4 bg-gray-800/50 rounded-lg border border-gray-700 btn-pop">
+                <i class="fa fa-file-html-o text-accent mr-2"></i>game.html
+            </a>
+            <a href="https://yzbjfpv.top/spy.html" target="_blank" class="p-4 bg-gray-800/50 rounded-lg border border-gray-700 btn-pop">
+                <i class="fa fa-file-html-o text-accent mr-2"></i>spy.html
+            </a>
+            <a href="https://yzbjfpv.top/fix.html" target="_blank" class="p-4 bg-gray-800/50 rounded-lg border border-gray-700 btn-pop">
+                <i class="fa fa-file-html-o text-accent mr-2"></i>fix.html
+            </a>
+            <a href="https://yzbjfpv.top/info.html" target="_blank" class="p-4 bg-gray-800/50 rounded-lg border border-gray-700 btn-pop">
+                <i class="fa fa-file-html-o text-accent mr-2"></i>info.html
+            </a>
+            <a href="https://yzbjfpv.top/question.html" target="_blank" class="p-4 bg-gray-800/50 rounded-lg border border-gray-700 btn-pop">
+                <i class="fa fa-file-html-o text-accent mr-2"></i>question.html
+            </a>
+            <a href="https://yzbjfpv.top/wxtalk.html" target="_blank" class="p-4 bg-gray-800/50 rounded-lg border border-gray-700 btn-pop">
+                <i class="fa fa-file-html-o text-accent mr-2"></i>wxtalk.html
+            </a>
+            <a href="https://yzbjfpv.top/down.html" target="_blank" class="p-4 bg-gray-800/50 rounded-lg border border-gray-700 btn-pop">
+                <i class="fa fa-file-html-o text-accent mr-2"></i>down.html
+            </a>
+            <a href="https://yzbjfpv.top/spare-download.html" target="_blank" class="p-4 bg-gray-800/50 rounded-lg border border-gray-700 btn-pop">
+                <i class="fa fa-file-html-o text-accent mr-2"></i>spare-download.html
+            </a>
+            <a href="https://yzbjfpv.top/20250709.html" target="_blank" class="p-4 bg-gray-800/50 rounded-lg border border-gray-700 btn-pop">
+                <i class="fa fa-file-html-o text-accent mr-2"></i>20250709.html
+            </a>
+            <a href="https://yzbjfpv.top/78.html" target="_blank" class="p-4 bg-gray-800/50 rounded-lg border border-gray-700 btn-pop">
+                <i class="fa fa-file-html-o text-accent mr-2"></i>78.html
+            </a>
+            <a href="https://yzbjfpv.top/86.html" target="_blank" class="p-4 bg-gray-800/50 rounded-lg border border-gray-700 btn-pop">
+                <i class="fa fa-file-html-o text-accent mr-2"></i>86.html
+            </a>
+            <a href="https://yzbjfpv.top/dj.html" target="_blank" class="p-4 bg-gray-800/50 rounded-lg border border-gray-700 btn-pop">
+                <i class="fa fa-file-html-o text-accent mr-2"></i>dj.html
+            </a>
+            <a href="https://yzbjfpv.top/ffzbzq.html" target="_blank" class="p-4 bg-gray-800/50 rounded-lg border border-gray-700 btn-pop">
+                <i class="fa fa-file-html-o text-accent mr-2"></i>ffzbzq.html
+            </a>
+            <a href="https://yzbjfpv.top/mxgs.html" target="_blank" class="p-4 bg-gray-800/50 rounded-lg border border-gray-700 btn-pop">
+                <i class="fa fa-file-html-o text-accent mr-2"></i>mxgs.html
+            </a>
+            <a href="https://yzbjfpv.top/ys.html" target="_blank" class="p-4 bg-gray-800/50 rounded-lg border border-gray-700 btn-pop">
+                <i class="fa fa-file-html-o text-accent mr-2"></i>ys.html
+            </a>
+            <a href="https://yzbjfpv.top/zxcs.html" target="_blank" class="p-4 bg-gray-800/50 rounded-lg border border-gray-700 btn-pop">
+                <i class="fa fa-file-html-o text-accent mr-2"></i>zxcs.html
+            </a>
+            <a href="https://yzbjfpv.top/yz.html" target="_blank" class="p-4 bg-gray-800/50 rounded-lg border border-gray-700 btn-pop">
+                <i class="fa fa-file-html-o text-accent mr-2"></i>yz.html
+            </a>
+            <a href="https://yzbjfpv.top/tx.html" target="_blank" class="p-4 bg-gray-800/50 rounded-lg border border-gray-700 btn-pop">
+                <i class="fa fa-file-html-o text-accent mr-2"></i>tx.html
+            </a>
+            <a href="https://yzbjfpv.top/dick.html" target="_blank" class="p-4 bg-gray-800/50 rounded-lg border border-gray-700 btn-pop">
+                <i class="fa fa-file-html-o text-accent mr-2"></i>dick.html
+            </a>
+
+            <!-- school文件夹 -->
+            <div class="col-span-full md:col-span-1 lg:col-span-4 xl:col-span-5 folder-item p-4 bg-gray-800/30 rounded-lg border border-gray-700 cursor-pointer">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center">
+                        <i class="fa fa-folder text-yellow-500 mr-2 transition-transform duration-300"></i>
+                        <span class="font-medium">school 文件夹</span>
+                    </div>
+                    <i class="fa fa-chevron-down text-gray-500 transition-transform duration-300"></i>
+                </div>
+                <div class="folder-content ml-6 mt-3 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+                    <!-- 信息技术课子文件夹 -->
+                    <div class="col-span-full sm:col-span-2 md:col-span-3 lg:col-span-4 folder-item p-3 bg-gray-800/50 rounded-lg border border-gray-700 cursor-pointer">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center">
+                                <i class="fa fa-folder text-yellow-400 mr-2 transition-transform duration-300"></i>
+                                <span class="font-medium">信息技术课</span>
+                            </div>
+                            <i class="fa fa-chevron-down text-gray-500 transition-transform duration-300"></i>
+                        </div>
+                        <div class="folder-content ml-6 mt-2 grid grid-cols-1 sm:grid-cols-2 gap-2">
+                            <a href="https://yzbjfpv.top/school/%E4%BF%A1%E6%81%E8%E6%E6%E5%E8%E8%E8%E6%E6%E5%E8%E8/%E6%9E%81%E5%9F%E5%87%E6%9D%E5%8D%E6%89%E8%95%E6%8E%89/" target="_blank" class="p-2 bg-gray-800/50 rounded-lg border border-gray-700 btn-pop text-sm">
+                                <i class="fa fa-folder-open text-yellow-400 mr-2"></i>极域杀手
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- 2025暑假作业子文件夹 -->
+                    <div class="col-span-full sm:col-span-2 md:col-span-3 lg:col-span-4 folder-item p-3 bg-gray-800/50 rounded-lg border border-gray-700 cursor-pointer">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center">
+                                <i class="fa fa-folder text-yellow-400 mr-2 transition-transform duration-300"></i>
+                                <span class="font-medium">2025暑假作业</span>
+                            </div>
+                            <i class="fa fa-chevron-down text-gray-500 transition-transform duration-300"></i>
+                        </div>
+                        <div class="folder-content ml-6 mt-2 grid grid-cols-1 sm:grid-cols-2 gap-2">
+                            <a href="https://yzbjfpv.top/school/2025%E6%9A%E9%97%B4%E4%BD%E4%BD%E4%B8%E9%97%E4%B8%E9%97/index.html" target="_blank" class="p-2 bg-gray-800/50 rounded-lg border border-gray-700 btn-pop text-sm">
+                                <i class="fa fa-file-html-o text-accent mr-2"></i>index.html
+                            </a>
+                            <a href="https://yzbjfpv.top/school/2025%E6%9A%E9%97%B4%E4%BD%E4%BD%E4%B8%E9%97%E4%B8%E9%97/%E6%95%B0%E5%AD%A6.html" target="_blank" class="p-2 bg-gray-800/50 rounded-lg border border-gray-700 btn-pop text-sm">
+                                <i class="fa fa-file-html-o text-accent mr-2"></i>数学.html
+                            </a>
+                            <a href="https://yzbjfpv.top/school/2025%E6%9A%E9%97%B4%E4%BD%E4%BD%E4%B8%E9%97%E4%B8%E9%97/%E7%89%A9%E7%90%E5%AD%A6.html" target="_blank" class="p-2 bg-gray-800/50 rounded-lg border border-gray-700 btn-pop text-sm">
+                                <i class="fa fa-file-html-o text-accent mr-2"></i>物理.html
+                            </a>
+                            <a href="https://yzbjfpv.top/school/2025%E6%9A%E9%97%B4%E4%BD%E4%BD%E4%B8%E9%97%E4%B8%E9%97/%E8%8B%B1%E8%AF%AD.html" target="_blank" class="p-2 bg-gray-800/50 rounded-lg border border-gray-700 btn-pop text-sm">
+                                <i class="fa fa-file-html-o text-accent mr-2"></i>英语.html
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 工具文件夹 -->
+            <div class="col-span-full md:col-span-1 lg:col-span-4 xl:col-span-5 folder-item p-4 bg-gray-800/30 rounded-lg border border-gray-700 cursor-pointer">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center">
+                        <i class="fa fa-folder text-yellow-500 mr-2 transition-transform duration-300"></i>
+                        <span class="font-medium">tools 文件夹</span>
+                    </div>
+                    <i class="fa fa-chevron-down text-gray-500 transition-transform duration-300"></i>
+                </div>
+                <div class="folder-content ml-6 mt-3 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+                    <a href="https://yzbjfpv.top/tools/%E7%BD%91%E9%80%9F%E6%B5%8B%E8%AF%95/" target="_blank" class="p-3 bg-gray-800/50 rounded-lg border border-gray-700 btn-pop text-sm">
+                        <i class="fa fa-file-html-o text-accent mr-2"></i>网速测试
+                    </a>
+                    <a href="https://yzbjfpv.top/tools/%E7%BD%91%E9%80%9F%E6%B5%8B%E8%AF%95/%E6%B5%8B%E9%80%9F%E6%A8%A1%E5%9D%97.js" target="_blank" class="p-3 bg-gray-800/50 rounded-lg border border-gray-700 btn-pop text-sm">
+                        <i class="fa fa-file-js-o text-yellow-400 mr-2"></i>测速模块.js
+                    </a>
+                </div>
+            </div>
+
+            <!-- 其他文件 -->
+            <a href="https://yzbjfpv.top/logo.png" target="_blank" class="p-4 bg-gray-800/50 rounded-lg border border-gray-700 btn-pop">
+                <i class="fa fa-file-image-o text-green-400 mr-2"></i>logo.png
+            </a>
+            <a href="https://yzbjfpv.top/favicon.ico" target="_blank" class="p-4 bg-gray-800/50 rounded-lg border border-gray-700 btn-pop">
+                <i class="fa fa-file-image-o text-green-400 mr-2"></i>favicon.ico
+            </a>
+        </div>
+    </div>
+
+    <script>
+        // 登录功能
+        const loginForm = document.getElementById('loginForm');
+        const loginModal = document.getElementById('login');
+        const content = document.getElementById('content');
+        const logoutBtn = document.getElementById('logout');
+
+        loginForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const user = document.getElementById('user').value;
+            const pass = document.getElementById('pass').value;
+            
+            if (user === 'yzfpv' && pass === 'yzfpv') {
+                loginModal.classList.add('opacity-0', 'pointer-events-none');
+                setTimeout(() => {
+                    loginModal.classList.add('hidden');
+                    content.classList.remove('hidden');
+                }, 300);
+            }
+        });
+
+        // 退出功能
+        logoutBtn.addEventListener('click', () => {
+            content.classList.add('hidden');
+            loginModal.classList.remove('hidden', 'opacity-0', 'pointer-events-none');
+            document.getElementById('user').value = '';
+            document.getElementById('pass').value = '';
+        });
+
+        // 文件夹展开/折叠交互
+        document.querySelectorAll('.folder-item').forEach(folder => {
+            folder.addEventListener('click', () => {
+                folder.classList.toggle('folder-expanded');
+                const icon = folder.querySelector('.fa-folder');
+                const chevron = folder.querySelector('.fa-chevron-down');
+                
+                if (folder.classList.contains('folder-expanded')) {
+                    icon.classList.add('fa-folder-open');
+                    chevron.style.transform = 'rotate(180deg)';
+                } else {
+                    icon.classList.remove('fa-folder-open');
+                    chevron.style.transform = 'rotate(0)';
+                }
+            });
+        });
+    </script>
+</body>
+</html>
