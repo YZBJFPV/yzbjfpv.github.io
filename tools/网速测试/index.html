@@ -10,11 +10,27 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.8/dist/chart.umd.min.js"></script>
 <script type="text/javascript">
 function I(i){return document.getElementById(i);}
+
 // 初始化测速对象
 var s = new Speedtest(); 
-// 配置测速参数（与核心模块适配）
+
+// 配置中科大测速服务器（关键修改：使用中科大的IP获取接口）
+const ustcServer = {
+    name: "中国科学技术大学",
+    server: "https://speed.ustc.edu.cn/",  // 中科大测速服务器根地址
+    dlURL: "garbage.php",                 // 中科大下载测试路径
+    ulURL: "empty.php",                   // 中科大上传测试路径
+    pingURL: "empty.php",                 // 中科大延迟测试路径
+    getIpURL: "getIP.php"                 // 中科大IP获取接口（核心）
+};
+
+// 添加并选中中科大服务器（确保IP从该服务器获取）
+s.addTestPoint(ustcServer);
+s.setSelectedServer(ustcServer);
+
+// 配置测速参数（启用IP获取）
 s.setParameter("telemetry_level", "none"); // 关闭数据上报
-s.setParameter("getIp_ispInfo", false);    // 不获取ISP信息
+s.setParameter("getIp_ispInfo", true);     // 开启ISP信息获取（中科大支持）
 s.setParameter("time_dl_max", 8);          // 下载测试时长（秒）
 s.setParameter("time_ul_max", 5);          // 上传测试时长（秒）
 s.setParameter("count_dl", 10);            // 下载测试数据包数量
@@ -26,29 +42,23 @@ const theme = {
     secondary: 'rgba(16, 185, 129, 0.8)',  // 上传颜色
     dark: 'rgba(15, 23, 42, 0.9)',
     light: 'rgba(248, 250, 252, 0.9)',
-    gray: 'rgba(100, 116, 139, 0.7)',
-    bgGradient: 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)'
+    gray: 'rgba(100, 116, 139, 0.7)'
 };
 
-// 速度曲线数据存储（增加长度限制）
+// 速度曲线数据存储
 const speedData = {
     download: [], 
     upload: [],   
     time: [],     
-    maxPoints: 50,       // 最大数据点数
-    maxLength: 10000     // 最大像素长度限制（px）
+    maxPoints: 50
 };
 let chartInstance = null; 
 let testStartTime = null; 
-let uiData = null;      // 存储UI展示数据
+let uiData = null;
 
 // 初始化速度曲线图
 function initSpeedChart() {
     const ctx = I('speedChart').getContext('2d');
-    const chartBg = ctx.createLinearGradient(0, 0, 0, 250);
-    chartBg.addColorStop(0, 'rgba(15, 23, 42, 0.5)');
-    chartBg.addColorStop(1, 'rgba(15, 23, 42, 0.9)');
-
     chartInstance = new Chart(ctx, {
         type: 'line',
         data: {
@@ -62,9 +72,7 @@ function initSpeedChart() {
                     borderWidth: 2,
                     tension: 0.4,
                     fill: true,
-                    pointRadius: 0,
-                    pointHoverRadius: 4,
-                    pointHoverBackgroundColor: theme.primary
+                    pointRadius: 0
                 },
                 {
                     label: '上传速度 (Mbps)',
@@ -75,8 +83,6 @@ function initSpeedChart() {
                     tension: 0.4,
                     fill: true,
                     pointRadius: 0,
-                    pointHoverRadius: 4,
-                    pointHoverBackgroundColor: theme.secondary,
                     hidden: true
                 }
             ]
@@ -84,48 +90,10 @@ function initSpeedChart() {
         options: {
             responsive: true,
             maintainAspectRatio: false,
-            plugins: {
-                legend: {
-                    position: 'top',
-                    labels: {
-                        color: theme.light,
-                        font: { size: 12, family: 'Segoe UI, Roboto' }
-                    }
-                },
-                tooltip: {
-                    backgroundColor: theme.dark,
-                    titleColor: theme.light,
-                    bodyColor: theme.light,
-                    borderColor: theme.primary,
-                    borderWidth: 1,
-                    padding: 10,
-                    cornerRadius: 6,
-                    callbacks: {
-                        label: function(context) {
-                            return `${context.dataset.label}: ${context.raw.toFixed(2)}`;
-                        }
-                    }
-                }
-            },
             scales: {
-                x: {
-                    title: { display: true, text: '测试时间 (秒)', color: theme.gray, font: { size: 11 } },
-                    ticks: { color: theme.gray, font: { size: 10 } },
-                    grid: { color: 'rgba(100, 116, 139, 0.1)' }
-                },
-                y: {
-                    title: { display: true, text: '速度 (Mbps)', color: theme.gray, font: { size: 11 } },
-                    ticks: { color: theme.gray, font: { size: 10 }, min: 0 },
-                    grid: { color: 'rgba(100, 116, 139, 0.1)' },
-                    suggestedMax: 100
-                }
-            },
-            animation: { duration: 0 },
-            interaction: {
-                intersect: false,
-                mode: 'index'
-            },
-            backgroundColor: chartBg
+                x: { title: { display: true, text: '测试时间 (秒)' } },
+                y: { title: { display: true, text: '速度 (Mbps)' }, min: 0 }
+            }
         }
     });
 }
@@ -133,9 +101,8 @@ function initSpeedChart() {
 // 绘制仪表盘
 function drawAdvancedMeter(c, value, maxValue, color, label) {
     const ctx = c.getContext("2d");
-    const dp = window.devicePixelRatio || 1;
-    const cw = c.clientWidth * dp;
-    const ch = c.clientHeight * dp;
+    const cw = c.width;
+    const ch = c.height;
     const centerX = cw / 2;
     const centerY = ch / 2;
     const radius = Math.min(centerX, centerY) - 15;
@@ -145,12 +112,7 @@ function drawAdvancedMeter(c, value, maxValue, color, label) {
     const valueRatio = Math.min(value / maxValue, 1);
     const currentAngle = startAngle + (valueRatio * angleRange);
 
-    if (c.width !== cw || c.height !== ch) {
-        c.width = cw;
-        c.height = ch;
-    } else {
-        ctx.clearRect(0, 0, cw, ch);
-    }
+    ctx.clearRect(0, 0, cw, ch);
 
     // 背景圆环
     ctx.beginPath();
@@ -161,32 +123,15 @@ function drawAdvancedMeter(c, value, maxValue, color, label) {
     ctx.stroke();
 
     // 进度圆环
-    const gradient = ctx.createLinearGradient(0, 0, cw, ch);
-    gradient.addColorStop(0, color);
-    gradient.addColorStop(1, shadeColor(color, -30));
-
     ctx.beginPath();
     ctx.arc(centerX, centerY, radius, startAngle, currentAngle);
-    ctx.strokeStyle = gradient;
+    ctx.strokeStyle = color;
     ctx.lineWidth = 12;
     ctx.lineCap = 'round';
     ctx.stroke();
 
-    // 流光效果
-    if (valueRatio > 0) {
-        ctx.save();
-        ctx.beginPath();
-        const glowAngle = currentAngle - 0.1;
-        const glowRadius = radius + 5;
-        ctx.arc(centerX, centerY, glowRadius, glowAngle - 0.05, glowAngle + 0.05);
-        ctx.strokeStyle = 'rgba(255, 255, 255, 0.8)';
-        ctx.lineWidth = 4;
-        ctx.stroke();
-        ctx.restore();
-    }
-
     // 中心数值
-    ctx.font = `bold ${ch * 0.2}px Segoe UI, Roboto`;
+    ctx.font = `bold ${ch * 0.2}px Segoe UI`;
     ctx.fillStyle = theme.light;
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
@@ -194,7 +139,7 @@ function drawAdvancedMeter(c, value, maxValue, color, label) {
     ctx.fillText(displayValue, centerX, centerY);
 
     // 单位标签
-    ctx.font = `${ch * 0.08}px Segoe UI, Roboto`;
+    ctx.font = `${ch * 0.08}px Segoe UI`;
     ctx.fillStyle = theme.gray;
     ctx.fillText(label, centerX, centerY + (ch * 0.12));
 }
@@ -216,40 +161,17 @@ function shadeColor(color, percent) {
     return `rgba(${r}, ${g}, ${b}, ${a})`;
 }
 
-// 格式化数值显示
-function formatValue(d) {
-    d = Number(d);
-    if (d < 10) return d.toFixed(2);
-    if (d < 100) return d.toFixed(1);
-    return d.toFixed(0);
-}
-
-// 更新速度曲线数据（增加长度限制）
+// 更新速度曲线数据
 function updateSpeedChart(type, value) {
     if (!chartInstance || !testStartTime) return;
     
     const currentTime = Math.round((Date.now() - testStartTime) / 1000);
     const datasetIndex = type === 'download' ? 0 : 1;
 
-    // 检查并限制图表长度
-    const canvas = I('speedChart');
-    const ctx = canvas.getContext('2d');
-    const textMetrics = ctx.measureText(speedData.time.map(t => `${t}s`).join(','));
-    const currentWidth = textMetrics.width;
-
-    // 超过最大长度时删除最早数据
-    if (currentWidth > speedData.maxLength && speedData.time.length > 10) {
-        speedData.time.shift();
-        speedData.download.shift();
-        speedData.upload.shift();
-    }
-
-    // 更新数据数组
     if (speedData.time.length === 0 || speedData.time[speedData.time.length - 1] !== currentTime) {
         speedData.time.push(currentTime);
         speedData[type].push(value);
         
-        // 限制最大数据点
         if (speedData.time.length > speedData.maxPoints) {
             speedData.time.shift();
             speedData.download.shift();
@@ -259,18 +181,9 @@ function updateSpeedChart(type, value) {
         speedData[type][speedData[type].length - 1] = value;
     }
 
-    // 更新图表
     chartInstance.data.labels = speedData.time.map(t => `${t}s`);
     chartInstance.data.datasets[datasetIndex].data = speedData[type];
     
-    // 动态调整y轴最大值
-    const allValues = [...speedData.download, ...speedData.upload].filter(v => v > 0);
-    if (allValues.length > 0) {
-        const maxValue = Math.max(...allValues);
-        chartInstance.options.scales.y.suggestedMax = maxValue * 1.2;
-    }
-    
-    // 上传测试时显示上传曲线
     if (type === 'upload') {
         chartInstance.data.datasets[1].hidden = false;
     }
@@ -278,19 +191,31 @@ function updateSpeedChart(type, value) {
     chartInstance.update('none');
 }
 
-// 更新UI显示
+// 更新UI显示（重点修复IP显示逻辑）
 function updateUI(force) {
     if (!uiData && !force) return;
     
+    // 更新仪表盘
     drawAdvancedMeter(I('dlMeter'), uiData.dlStatus, 1000, theme.primary, '下载 (Mbps)');
     drawAdvancedMeter(I('ulMeter'), uiData.ulStatus, 500, theme.secondary, '上传 (Mbps)');
     drawAdvancedMeter(I('pingMeter'), uiData.pingStatus, 500, '#f59e0b', '延迟 (ms)');
     drawAdvancedMeter(I('jitterMeter'), uiData.jitterStatus, 100, '#ef4444', '抖动 (ms)');
     
-    I('ipDisplay').textContent = `IP: ${uiData.clientIp || '获取中...'}`;
+    // 显示IP信息（从科大服务器获取）
+    const ipDisplay = I('ipDisplay');
+    if (uiData.clientIp) {
+        ipDisplay.textContent = `IP: ${uiData.clientIp}`;
+        // 中科大接口可能返回ISP信息，一并显示
+        if (uiData.ispInfo) {
+            I('ispInfo').textContent = `ISP: ${uiData.ispInfo}`;
+        }
+    } else {
+        ipDisplay.textContent = 'IP: 获取中...';
+        I('ispInfo').textContent = '';
+    }
 }
 
-// 存储测试结果到本地存储
+// 存储测试结果
 function saveTestResultToLocalStorage() {
     if (!uiData) return;
     
@@ -301,18 +226,14 @@ function saveTestResultToLocalStorage() {
         uploadSpeed: uiData.ulStatus.toFixed(2),
         ping: uiData.pingStatus.toFixed(0),
         jitter: uiData.jitterStatus.toFixed(0),
-        ip: uiData.clientIp || '未知'
+        ip: uiData.clientIp || '未知',
+        isp: uiData.ispInfo || '未知'
     };
     
-    // 获取现有记录并限制数量
     let testHistory = JSON.parse(localStorage.getItem('speedTestHistory') || '[]');
-    if (testHistory.length >= 100) {
-        testHistory = testHistory.slice(-99); // 保留最新99条
-    }
-    
+    if (testHistory.length >= 100) testHistory = testHistory.slice(-99);
     testHistory.push(testResult);
     localStorage.setItem('speedTestHistory', JSON.stringify(testHistory));
-    console.log('测试结果已保存到本地存储');
 }
 
 // 页面加载完成后初始化
@@ -329,11 +250,9 @@ window.onload = function() {
     const btn = I('startBtn');
     btn.addEventListener('click', function() {
         if (s.getState() === 3) {
-            // 正在测试时点击则中止
             s.abort();
             btn.innerHTML = '<span>开始测速</span>';
         } else {
-            // 开始新测试
             btn.className = 'running';
             btn.innerHTML = '<span>测试中...</span>';
             
@@ -346,22 +265,19 @@ window.onload = function() {
             chartInstance.update('none');
             testStartTime = Date.now();
             
-            // 开始测试
+            // 开始测试（触发IP获取）
             s.start();
         }
     });
     
-    // 测速更新回调（与核心模块适配）
+    // 测速更新回调（实时获取IP）
     s.onupdate = function(data) {
         uiData = data;
         updateUI();
         
-        // 更新曲线数据
         if (data.testState === 1) {
-            // 下载测试
             updateSpeedChart('download', data.dlStatus);
         } else if (data.testState === 3) {
-            // 上传测试
             updateSpeedChart('upload', data.ulStatus);
         }
     };
@@ -373,23 +289,27 @@ window.onload = function() {
         btn.innerHTML = '<span>重新测速</span>';
         
         if (!aborted) {
-            // 保存结果到本地存储
             saveTestResultToLocalStorage();
             
-            // 高亮显示结果
+            // 高亮效果
             setTimeout(() => {
                 const meters = ['dlMeter', 'ulMeter', 'pingMeter', 'jitterMeter'];
                 meters.forEach(id => I(id).classList.add('highlight'));
-                setTimeout(() => {
-                    meters.forEach(id => I(id).classList.remove('highlight'));
-                }, 1000);
+                setTimeout(() => meters.forEach(id => I(id).classList.remove('highlight')), 1000);
             }, 300);
         }
     };
+
+    // 页面加载后主动触发IP获取（无需等待点击测速）
+    if (s.getState() === 2) {
+        // 仅获取IP，不进行完整测速（通过修改参数实现）
+        s.setParameter("time_dl_max", 0);   // 关闭下载测试
+        s.setParameter("time_ul_max", 0);   // 关闭上传测试
+        s.start();
+    }
 };
 </script>
 <style>
-/* 基础样式 */
 body {
     margin: 0;
     padding: 0;
@@ -420,7 +340,20 @@ h1 {
     color: transparent;
 }
 
-/* 按钮样式 */
+#ipDisplay {
+    text-align: center;
+    color: rgba(100, 116, 139, 0.9);
+    margin: 10px 0;
+    font-size: 0.9rem;
+}
+
+#ispInfo {
+    text-align: center;
+    color: rgba(100, 116, 139, 0.9);
+    margin: -5px 0 15px 0;
+    font-size: 0.8rem;
+}
+
 #startBtn {
     background: linear-gradient(90deg, #06b6d4, #0ea5e9);
     border: none;
@@ -440,13 +373,6 @@ h1 {
     animation: pulse 1.5s infinite;
 }
 
-@keyframes pulse {
-    0% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.4); }
-    70% { box-shadow: 0 0 0 10px rgba(245, 158, 11, 0); }
-    100% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0); }
-}
-
-/* 仪表盘容器 */
 .meters-container {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -464,17 +390,6 @@ h1 {
     height: 100%;
 }
 
-.meter.highlight {
-    animation: glow 1s ease;
-}
-
-@keyframes glow {
-    0% { box-shadow: 0 0 0 0 rgba(6, 182, 212, 0.5); }
-    50% { box-shadow: 0 0 0 10px rgba(6, 182, 212, 0.2); }
-    100% { box-shadow: 0 0 0 0 rgba(6, 182, 212, 0); }
-}
-
-/* 图表样式 */
 .chart-container {
     width: 100%;
     height: 300px;
@@ -483,28 +398,16 @@ h1 {
     overflow: hidden;
 }
 
-#speedChart {
-    width: 100%;
-    height: 100%;
-}
-
-/* IP显示 */
-#ipDisplay {
-    text-align: center;
-    color: rgba(100, 116, 139, 0.9);
-    margin: 10px 0;
-    font-size: 0.9rem;
-}
-
-/* 响应式调整 */
 @media (max-width: 768px) {
     .meters-container {
         grid-template-columns: 1fr;
     }
-    
-    .chart-container {
-        height: 250px;
-    }
+}
+
+@keyframes pulse {
+    0% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.4); }
+    70% { box-shadow: 0 0 0 10px rgba(245, 158, 11, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0); }
 }
 </style>
 </head>
@@ -513,6 +416,7 @@ h1 {
         <header>
             <h1>网速测试工具</h1>
             <p id="ipDisplay">IP: 获取中...</p>
+            <p id="ispInfo"></p> <!-- 新增：显示ISP信息 -->
             <button id="startBtn"><span>开始测速</span></button>
         </header>
         
