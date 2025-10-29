@@ -3,13 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PokRC 14dBi定向天线｜Flyz远征飞 即将开售</title>
-    <!-- Tailwind CSS -->
+    <title>PokRC 14dBi定向天线｜Flyz远征飞 即将上市</title>
+    <!-- 外部资源 -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Font Awesome -->
     <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
     
-    <!-- 自定义Tailwind配置 -->
+    <!-- Tailwind 配置 -->
     <script>
         tailwind.config = {
             theme: {
@@ -17,9 +16,9 @@
                     colors: {
                         primary: '#165DFF',
                         secondary: '#FF7D00',
-                        dark: '#1D2129',
-                        light: '#F2F3F5',
-                        antennaDark: '#0F172A'
+                        accent: '#36CFC9',
+                        light: '#FFFFFF',
+                        dark: '#333647'
                     },
                     fontFamily: {
                         inter: ['Inter', 'system-ui', 'sans-serif'],
@@ -34,90 +33,168 @@
             .content-auto {
                 content-visibility: auto;
             }
-            .nav-gradient {
-                background: linear-gradient(90deg, rgba(22,93,255,0.9) 0%, rgba(29,33,41,0.95) 100%);
+            .text-shadow {
+                text-shadow: 0 2px 4px rgba(0,0,0,0.1);
             }
-            .hover-lift {
-                transition: transform 0.3s ease, box-shadow 0.3s ease;
+            .card-elevation {
+                box-shadow: 0 4px 20px rgba(0,0,0,0.08);
             }
-            .hover-lift:hover {
-                transform: translateY(-5px);
-                box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.15);
+            .hover-rise {
+                transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
             }
-            .text-glow {
-                text-shadow: 0 0 15px rgba(22, 93, 255, 0.5);
-            }
-            .card-gradient {
-                background: linear-gradient(180deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0) 100%);
-            }
-            .modal-backdrop {
-                backdrop-filter: blur(5px);
-            }
-            .dark-mask {
-                background: linear-gradient(90deg, rgba(15,23,42,0.95) 0%, rgba(15,23,42,0.9) 50%, rgba(15,23,42,0.95) 100%);
+            .hover-rise:hover {
+                transform: translateY(-6px);
             }
         }
     </style>
+
+    <style>
+        /* 流动渐变导航栏 */
+        .nav-gradient {
+            background: linear-gradient(90deg, #165DFF, #4080FF, #7CB3FF, #FF7D00);
+            background-size: 400% 400%;
+            animation: gradientFlow 10s ease infinite;
+        }
+        
+        @keyframes gradientFlow {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        /* 文字动态效果 */
+        .text-float {
+            display: inline-block;
+            transition: transform 0.3s ease, color 0.3s ease;
+        }
+        
+        .text-float:hover {
+            transform: translateY(-3px) scale(1.05);
+        }
+        
+        .nav-item {
+            position: relative;
+            transition: all 0.3s ease;
+            padding: 4px 0;
+        }
+        
+        .nav-item::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: 0;
+            left: 0;
+            background-color: white;
+            transition: width 0.3s ease;
+        }
+        
+        .nav-item:hover::after {
+            width: 100%;
+        }
+        
+        .nav-item:hover i,
+        .nav-item:hover span {
+            animation: bounce 0.6s ease;
+        }
+        
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+        
+        /* 渐入动画 */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 0.8s forwards;
+        }
+        
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* 卡片悬停效果 */
+        .feature-card {
+            transition: all 0.3s ease;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 24px rgba(22, 93, 255, 0.12);
+        }
+        
+        /* 专利详情展开动画 */
+        details {
+            transition: all 0.3s ease;
+        }
+        
+        details[open] summary ~ * {
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        /* 模态框动画 */
+        .modal-enter {
+            opacity: 0;
+            transform: scale(0.9);
+        }
+        
+        .modal-enter-active {
+            opacity: 1;
+            transform: scale(1);
+            transition: opacity 300ms, transform 300ms;
+        }
+    </style>
 </head>
-<body class="font-inter bg-antennaDark text-light m-0 p-0 overflow-x-hidden">
+<body class="font-inter bg-light text-dark m-0 p-0 overflow-x-hidden">
     <!-- 粒子背景 -->
-    <div id="particles-js" style="position:absolute;top:0;left:0;width:100%;height:100%;z-index:-1;"></div>
+    <div id="particles-js" style="position:absolute;top:0;left:0;width:100%;height:100%;z-index:-1;opacity:0.3;"></div>
 
     <!-- 导航栏 -->
-    <header id="navbar" class="fixed w-full top-0 z-50 transition-all duration-300">
-        <nav class="nav-gradient py-4 px-6 md:px-12">
+    <header id="navbar" class="fixed w-full top:0 z-50 transition-all duration-500">
+        <nav class="nav-gradient py-4 px-6 md:px-12 shadow-md">
             <div class="container mx-auto flex justify-between items-center">
                 <!-- Logo -->
-                <a href="https://yzbjfpv.top/20250709.html" class="flex items-center space-x-2">
+                <a href="https://yzbjfpv.top" class="flex items-center space-x-3 group">
                     <img src="https://img520.com/UIGuUV.jpeg" alt="Flyz远征飞Logo" 
-                         class="h-10 w-auto object-contain rounded-md hover-lift"
+                         class="h-10 w-auto object-contain rounded-md transition-all duration-500 group-hover:scale-110 rotate-6"
                          onerror="this.onerror=null;this.src='https://picsum.photos/40/40'">
-                    <span class="text-white font-bold text-xl hidden md:inline">Flyz远征飞</span>
+                    <span class="text-white font-bold text-xl hidden md:inline transition-all duration-300 group-hover:tracking-wider">Flyz远征飞</span>
                 </a>
                 
                 <!-- 桌面导航 -->
                 <div class="hidden md:flex items-center space-x-8">
-                    <a href="https://yzbjfpv.top/20250709.html" class="text-white hover:text-secondary transition-colors duration-300">
-                        <i class="fa fa-home mr-2"></i>首页
+                    <a href="https://yzbjfpv.top" class="text-white hover:text-light/80 transition-colors duration-300 nav-item">
+                        <i class="fa fa-home mr-2 text-float"></i><span class="text-float">首页</span>
                     </a>
-                    <a href="http://yzflight.xyz" class="text-white hover:text-secondary transition-colors duration-300">
-                        <i class="fa fa-download mr-2"></i>下载中心
-                    </a>
-                    <a href="https://shop500685313.taobao.com/" class="text-white hover:text-secondary transition-colors duration-300">
-                        <i class="fa fa-shopping-bag mr-2"></i>严选商城
-                    </a>
-                    <a href="https://yzbjfpv.top/fix.html" class="text-white hover:text-secondary transition-colors duration-300">
-                        <i class="fa fa-wrench mr-2"></i>维修专区
-                    </a>
-                    <button id="nav-wx-btn" class="text-white hover:text-secondary transition-colors duration-300">
-                        <i class="fa fa-user-plus mr-2"></i>加我WX
+                    <button class="text-white hover:text-light/80 transition-colors duration-300 nav-item cursor-pointer">
+                        <i class="fa fa-bullhorn mr-2 text-float"></i><span class="text-float">天线预告</span>
                     </button>
                 </div>
                 
                 <!-- 移动端菜单按钮 -->
-                <button id="menu-toggle" class="md:hidden text-white focus:outline-none">
+                <button id="menu-toggle" class="md:hidden text-white focus:outline-none transition-transform duration-300 hover:scale-110">
                     <i class="fa fa-bars text-2xl"></i>
                 </button>
             </div>
         </nav>
         
         <!-- 移动端导航菜单 -->
-        <div id="mobile-menu" class="hidden bg-dark/95 md:hidden">
+        <div id="mobile-menu" class="hidden bg-white shadow-lg md:hidden absolute w-full">
             <div class="container mx-auto py-4 px-6 flex flex-col space-y-4">
-                <a href="https://yzbjfpv.top/20250709.html" class="text-white hover:text-secondary transition-colors duration-300 py-2">
-                    <i class="fa fa-home mr-2"></i>首页
+                <a href="https://yzbjfpv.top" class="text-dark hover:text-primary transition-colors duration-300 py-2 border-b border-gray-100 flex items-center">
+                    <i class="fa fa-home mr-3 w-5 text-center"></i>首页
                 </a>
-                <a href="http://yzflight.xyz" class="text-white hover:text-secondary transition-colors duration-300 py-2">
-                    <i class="fa fa-download mr-2"></i>下载中心
-                </a>
-                <a href="https://shop500685313.taobao.com/" class="text-white hover:text-secondary transition-colors duration-300 py-2">
-                    <i class="fa fa-shopping-bag mr-2"></i>严选商城
-                </a>
-                <a href="https://yzbjfpv.top/fix.html" class="text-white hover:text-secondary transition-colors duration-300 py-2">
-                    <i class="fa fa-wrench mr-2"></i>维修专区
-                </a>
-                <button id="mobile-wx-btn" class="text-white hover:text-secondary transition-colors duration-300 py-2 text-left">
-                    <i class="fa fa-user-plus mr-2"></i>加我WX
+                <button class="text-dark hover:text-primary transition-colors duration-300 py-2 flex items-center cursor-pointer">
+                    <i class="fa fa-bullhorn mr-3 w-5 text-center"></i>天线预告
                 </button>
             </div>
         </div>
@@ -128,276 +205,160 @@
         <!-- 1. Hero区域 -->
         <section class="container mx-auto px-4 md:px-8 mb-16">
             <div class="flex flex-col md:flex-row items-center justify-between gap-8 md:gap-12">
-                <div class="w-full md:w-1/2 space-y-6">
+                <div class="w-full md:w-1/2 space-y-6 fade-in" style="animation-delay: 0.2s">
                     <div class="inline-block px-4 py-1 bg-primary/20 text-primary rounded-full text-sm font-medium mb-2">
                         <i class="fa fa-bullhorn mr-1"></i> 新品预告
                     </div>
-                    <h1 class="text-[clamp(2rem,5vw,3.5rem)] font-bold leading-tight text-white text-glow">
+                    <h1 class="text-[clamp(2rem,5vw,3.5rem)] font-bold leading-tight text-dark">
                         PokRC 14dBi<br>
                         <span class="text-primary">航模定向平板天线</span>
                     </h1>
-                    <p class="text-[clamp(1rem,2vw,1.25rem)] text-gray-300 leading-relaxed">
-                        突破市面同级增益上限，实测增益优于常规14dBi天线，为航模远航提供更强信号穿透力、更远传输距离，稳定护航每一次飞行。
+                    <p class="text-[clamp(1rem,2vw,1.25rem)] text-gray-600 leading-relaxed">
+                        优化设计提升信号表现，为航模飞行提供更稳定的信号传输，适用于合法合规的航模活动。产品符合相关技术标准，敬请期待。
                     </p>
                     <div class="flex flex-wrap gap-4 pt-2">
-                        <span class="flex items-center text-gray-400"><i class="fa fa-check-circle text-primary mr-2"></i> 品牌：PokRC魄客模型</span>
-                        <span class="flex items-center text-gray-400"><i class="fa fa-check-circle text-primary mr-2"></i> 售卖：Flyz远征飞</span>
+                        <span class="flex items-center text-gray-500"><i class="fa fa-check-circle text-primary mr-2"></i> 品牌：PokRC魄客模型</span>
+                        <span class="flex items-center text-gray-500"><i class="fa fa-check-circle text-primary mr-2"></i> 销售：Flyz远征飞</span>
                     </div>
-                    <button id="contact-btn" class="inline-block px-8 py-3 bg-primary hover:bg-primary/90 text-white font-medium rounded-lg transition-all duration-300 hover-lift">
+                    <button id="contact-btn" class="inline-block px-8 py-3 bg-primary hover:bg-primary/90 text-white font-medium rounded-lg transition-all duration-300 hover-rise">
                         <i class="fa fa-weixin mr-2"></i> 微信号:YGWFK2024
                     </button>
                 </div>
-                <div class="w-full md:w-1/2">
-                    <div class="relative rounded-xl overflow-hidden shadow-2xl hover-lift">
+                <div class="w-full md:w-1/2 fade-in" style="animation-delay: 0.4s">
+                    <div class="relative rounded-xl overflow-hidden shadow-xl hover-rise">
                         <!-- 天线图片 -->
                         <img src="https://p3-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/1b7fd03ad9bc4a1d951eb64f46b510e7.png~tplv-a9rns2rl98-image-qvalue.image?rcl=202509270934488909D5A0A4B08B010F79&rk3s=8e244e95&rrcfp=b669a9d6&x-expires=1759023288&x-signature=19BDIqJGrhdz3k%2FKoWEd4MqV%2FwU%3D" 
                              alt="PokRC 14dBi航模定向平板天线" 
                              class="w-full h-auto object-cover">
-                        <!-- 深黑色渐变蒙版 -->
-                        <div class="absolute inset-0 dark-mask"></div>
-                        <!-- 即将开售文字 -->
-                        <div class="absolute inset-0 bg-gradient-to-t from-antennaDark/80 to-transparent flex items-end">
+                        <!-- 即将上市文字 -->
+                        <div class="absolute inset-0 bg-gradient-to-t from-dark/60 to-transparent flex items-end">
                             <div class="p-6">
-                                <p class="text-white font-medium">即将开售 · 敬请期待</p>
-                                <p class="text-gray-400 text-sm">Flyz远征飞 独家首发</p>
+                                <p class="text-white font-medium">即将上市 · 敬请期待</p>
+                                <p class="text-gray-200 text-sm">Flyz远征飞 独家首发</p>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </section>
-                <!-- 2. 核心优势 -->
+        
+        <!-- 2. 核心优势 -->
         <section class="container mx-auto px-4 md:px-8 mb-16">
-            <div class="text-center mb-12">
-                <h2 class="text-[clamp(1.5rem,3vw,2.5rem)] font-bold text-white mb-4">三大核心优势 · 超越市面同级</h2>
-                <p class="text-gray-400 max-w-2xl mx-auto">从材质到性能，每一处细节都为航模玩家量身打造</p>
+            <div class="text-center mb-12 fade-in" style="animation-delay: 0.6s">
+                <h2 class="text-[clamp(1.5rem,3vw,2.5rem)] font-bold text-dark mb-4">三大核心优势 · 优化设计</h2>
+                <p class="text-gray-500 max-w-2xl mx-auto">从材质到性能，每一处细节都为航模爱好者量身打造</p>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
-                <div class="rounded-xl p-6 card-gradient border border-white/10 hover-lift">
-                    <div class="w-12 h-12 bg-primary/20 rounded-lg flex items-center justify-center mb-4">
+                <div class="bg-white rounded-xl p-6 card-elevation feature-card fade-in" style="animation-delay: 0.8s">
+                    <div class="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-4">
                         <i class="fa fa-signal text-primary text-xl"></i>
                     </div>
-                    <h3 class="text-xl font-bold text-white mb-3">增益突破14dBi</h3>
-                    <p class="text-gray-400">实测增益达14.2dBi，优于市面常规14dBi天线，信号覆盖范围更广，远航距离显著提升。</p>
+                    <h3 class="text-xl font-bold text-dark mb-3">增益优化设计</h3>
+                    <p class="text-gray-600">优化设计提升信号接收能力，信号覆盖范围更广，有助于提升飞行体验，建议在合法空域使用。</p>
                 </div>
-                <div class="rounded-xl p-6 card-gradient border border-white/10 hover-lift">
-                    <div class="w-12 h-12 bg-primary/20 rounded-lg flex items-center justify-center mb-4">
+                <div class="bg-white rounded-xl p-6 card-elevation feature-card fade-in" style="animation-delay: 1s">
+                    <div class="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-4">
                         <i class="fa fa-wave-square text-primary text-xl"></i>
                     </div>
-                    <h3 class="text-xl font-bold text-white mb-3">低驻波比＜1.2</h3>
-                    <p class="text-gray-400">驻波比控制在1.2以内，信号传输效率更高，减少能量损耗，避免设备过载，保障飞行稳定。</p>
+                    <h3 class="text-xl font-bold text-dark mb-3">低驻波比设计</h3>
+                    <p class="text-gray-600">驻波比控制在优化范围，信号传输效率更佳，减少能量损耗，保障设备稳定运行。</p>
                 </div>
-                <div class="rounded-xl p-6 card-gradient border border-white/10 hover-lift">
-                    <div class="w-12 h-12 bg-primary/20 rounded-lg flex items-center justify-center mb-4">
+                <div class="bg-white rounded-xl p-6 card-elevation feature-card fade-in" style="animation-delay: 1.2s">
+                    <div class="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-4">
                         <i class="fa fa-random text-primary text-xl"></i>
                     </div>
-                    <h3 class="text-xl font-bold text-white mb-3">宽频多协议适配</h3>
-                    <p class="text-gray-400">兼容2.4G/5.8G主流频段，适配大部分航模遥控器与图传系统，无需额外更换天线。</p>
+                    <h3 class="text-xl font-bold text-dark mb-3">多协议兼容</h3>
+                    <p class="text-gray-600">兼容主流频段与协议，适配多数航模遥控器与图传系统，无需额外更换天线。</p>
                 </div>
             </div>
         </section>
 
-        <!-- 3. 专利申请文档 -->
-        <section class="container mx-auto px-4 md:px-8 py-12">
+        <!-- 3. 专利信息 -->
+        <section class="container mx-auto px-4 md:px-8 py-12 bg-gray-50 rounded-2xl mb-16">
             <div class="max-w-4xl mx-auto">
-                <h2 class="text-[clamp(1.5rem,3vw,2.5rem)] font-bold text-white mb-2 text-center">
-                    <i class="fa fa-file-text-o mr-2 text-primary"></i>专利申请文档
+                <h2 class="text-[clamp(1.5rem,3vw,2.5rem)] font-bold text-dark mb-2 text-center fade-in" style="animation-delay: 1.4s">
+                    <i class="fa fa-file-text-o mr-2 text-primary"></i>专利信息
                 </h2>
-                <p class="text-center text-lg text-primary font-bold mb-6">专利号:ZL202520378885.2</p>
+                <p class="text-center text-lg text-primary font-bold mb-6 fade-in" style="animation-delay: 1.6s">专利号:ZL202520378885.2</p>
 
                 <div class="space-y-6">
                     <!-- 发明名称 -->
-                    <div class="bg-antennaDark/50 border border-white/10 rounded-xl overflow-hidden hover-lift transition-all duration-300">
+                    <div class="bg-white rounded-xl overflow-hidden card-elevation hover-rise fade-in" style="animation-delay: 1.8s">
                         <details class="group">
                             <summary class="flex items-center justify-between p-6 cursor-pointer">
-                                <h3 class="text-xl font-bold text-white">一、发明名称</h3>
+                                <h3 class="text-xl font-bold text-dark">一、发明名称</h3>
                                 <i class="fa fa-chevron-down text-primary group-open:rotate-180 transition-transform duration-300"></i>
                             </summary>
                             <div class="px-6 pb-6">
-                                <p class="text-gray-300">一种用于5.14-5.96GHz频段的高增益低驻波比定向平板阵列天线</p>
+                                <p class="text-gray-600">一种用于5.14-5.96GHz频段的高增益低驻波比定向平板阵列天线</p>
                             </div>
                         </details>
                     </div>
 
                     <!-- 摘要 -->
-                    <div class="bg-antennaDark/50 border border-white/10 rounded-xl overflow-hidden hover-lift transition-all duration-300">
+                    <div class="bg-white rounded-xl overflow-hidden card-elevation hover-rise fade-in" style="animation-delay: 2s">
                         <details class="group" open>
                             <summary class="flex items-center justify-between p-6 cursor-pointer">
-                                <h3 class="text-xl font-bold text-white">二、摘要</h3>
+                                <h3 class="text-xl font-bold text-dark">二、摘要</h3>
                                 <i class="fa fa-chevron-down text-primary group-open:rotate-180 transition-transform duration-300"></i>
                             </summary>
                             <div class="px-6 pb-6">
-                                <p class="text-gray-300 mb-4">本实用新型提供了一种用于5.14-5.96GHz频段的高增益低驻波比定向平板阵列天线，旨在满足高密度数据传输和远距离通信的需求。该天线采用多层结构设计，包括天线PCB面板、反射板、支撑模组和天线馈线。</p>
-                                <ul class="space-y-2 text-gray-300">
+                                <p class="text-gray-600 mb-4">本实用新型提供了一种用于5.14-5.96GHz频段的高增益低驻波比定向平板阵列天线，旨在满足数据传输和通信的需求。该天线采用多层结构设计，包括天线PCB面板、反射板、支撑模组和天线馈线。</p>
+                                <ul class="space-y-2 text-gray-600">
                                     <li class="flex items-start">
                                         <i class="fa fa-check-circle text-primary mt-1 mr-2"></i>
-                                        <span><strong class="text-white">天线PCB面板：</strong>采用1mm厚的铁氟龙高频版，具有低介电常数和低损耗正切。</span>
+                                        <span><strong class="text-dark">天线PCB面板：</strong>采用1mm厚的铁氟龙高频版，具有低介电常数和低损耗正切。</span>
                                     </li>
                                     <li class="flex items-start">
                                         <i class="fa fa-check-circle text-primary mt-1 mr-2"></i>
-                                        <span><strong class="text-white">反射板：</strong>采用黑色磨砂氧化铝材质，与PCB面板底面间隔7mm。</span>
+                                        <span><strong class="text-dark">反射板：</strong>采用黑色磨砂氧化铝材质，与PCB面板底面间隔7mm。</span>
                                     </li>
                                     <li class="flex items-start">
                                         <i class="fa fa-check-circle text-primary mt-1 mr-2"></i>
-                                        <span><strong class="text-white">支撑模组：</strong>采用537尼龙套管，具有良好的绝缘性能和机械强度。</span>
+                                        <span><strong class="text-dark">支撑模组：</strong>采用537尼龙套管，具有良好的绝缘性能和机械强度。</span>
                                     </li>
                                     <li class="flex items-start">
                                         <i class="fa fa-check-circle text-primary mt-1 mr-2"></i>
-                                        <span><strong class="text-white">天线馈线：</strong>采用同轴线馈电方式，优化了信号线焊接和屏蔽层处理。</span>
+                                        <span><strong class="text-dark">天线馈线：</strong>采用同轴线馈电方式，优化了信号线焊接和屏蔽层处理。</span>
                                     </li>
                                 </ul>
-                                <div class="mt-4 p-4 bg-dark/30 rounded-lg">
-                                    <p class="text-gray-300">该天线的增益高达<strong class="text-primary">14dBi</strong>，驻波比为<strong class="text-primary">1.06</strong>，工作频段为<strong class="text-primary">5.14-5.96GHz</strong>，采用垂直极化方式，最大可承受8W的有效功率，实际发出的功率为53dBm，接收灵敏度为-198dBm，整体重量约为30g。</p>
-                                </div>
                             </div>
                         </details>
                     </div>
 
-                    <!-- 技术领域 -->
-                    <div class="bg-antennaDark/50 border border-white/10 rounded-xl overflow-hidden hover-lift transition-all duration-300">
+                    <!-- 技术特征 -->
+                    <div class="bg-white rounded-xl overflow-hidden card-elevation hover-rise fade-in" style="animation-delay: 2.2s">
                         <details class="group">
                             <summary class="flex items-center justify-between p-6 cursor-pointer">
-                                <h3 class="text-xl font-bold text-white">三、技术领域</h3>
-                                <i class="fa fa-chevron-down text-primary group-open:rotate-180 transition-transform duration-300"></i>
-                            </summary>
-                            <div class="px-6 pb-6">
-                                <p class="text-gray-300">本实用新型涉及无线通信技术领域，特别是涉及一种用于5.14-5.96GHz频段的高增益低驻波比定向平板阵列天线。</p>
-                            </div>
-                        </details>
-                    </div>
-
-                    <!-- 背景技术 -->
-                    <div class="bg-antennaDark/50 border border-white/10 rounded-xl overflow-hidden hover-lift transition-all duration-300">
-                        <details class="group">
-                            <summary class="flex items-center justify-between p-6 cursor-pointer">
-                                <h3 class="text-xl font-bold text-white">四、背景技术</h3>
-                                <i class="fa fa-chevron-down text-primary group-open:rotate-180 transition-transform duration-300"></i>
-                            </summary>
-                            <div class="px-6 pb-6">
-                                <p class="text-gray-300">随着无线通信技术的快速发展，对高增益、低驻波比和高灵敏度的天线需求日益增加。现有的天线在增益、驻波比和极化方向等方面存在一定的局限性，无法满足高密度数据传输和远距离通信的需求。</p>
-                            </div>
-                        </details>
-                    </div>
-
-                    <!-- 发明内容 -->
-                    <div class="bg-antennaDark/50 border border-white/10 rounded-xl overflow-hidden hover-lift transition-all duration-300">
-                        <details class="group">
-                            <summary class="flex items-center justify-between p-6 cursor-pointer">
-                                <h3 class="text-xl font-bold text-white">五、发明内容</h3>
-                                <i class="fa fa-chevron-down text-primary group-open:rotate-180 transition-transform duration-300"></i>
-                            </summary>
-                            <div class="px-6 pb-6">
-                                <p class="text-gray-300">本实用新型的目的是提供一种用于5.14-5.96GHz频段的高增益低驻波比定向平板阵列天线，其设计优化了增益、驻波比和极化方向，同时具有轻量化和高可靠性。</p>
-                            </div>
-                        </details>
-                    </div>
-
-                    <!-- 技术方案 -->
-                    <div class="bg-antennaDark/50 border border-white/10 rounded-xl overflow-hidden hover-lift transition-all duration-300">
-                        <details class="group">
-                            <summary class="flex items-center justify-between p-6 cursor-pointer">
-                                <h3 class="text-xl font-bold text-white">六、技术方案</h3>
-                                <i class="fa fa-chevron-down text-primary group-open:rotate-180 transition-transform duration-300"></i>
-                            </summary>
-                            <div class="px-6 pb-6">
-                                <ol class="space-y-4 text-gray-300 list-decimal pl-5">
-                                    <li>
-                                        <strong class="text-white">天线PCB面板：</strong>采用多层结构设计，包括顶层、顶层阻焊层、顶层锡膏层、底层、底层阻焊层、板框层和钻孔图层。PCB厚度为1mm，采用铁氟龙高频版作为PCB材料。
-                                    </li>
-                                    <li>
-                                        <strong class="text-white">反射板：</strong>采用黑色磨砂氧化铝材质，与PCB面板底面间隔7mm，确保最佳的反射效果和天线增益。
-                                    </li>
-                                    <li>
-                                        <strong class="text-white">支撑模组：</strong>采用537尼龙套管，具有良好的绝缘性能和机械强度，确保反射板与PCB面板之间的稳定支撑。
-                                    </li>
-                                    <li>
-                                        <strong class="text-white">天线馈线：</strong>采用同轴线馈电方式，优化了信号线焊接和屏蔽层处理，确保信号线在焊接过程中无裸露部分，避免短路现象。
-                                    </li>
-                                </ol>
-                            </div>
-                        </details>
-                    </div>
-
-                    <!-- 具体实施方式 -->
-                    <div class="bg-antennaDark/50 border border-white/10 rounded-xl overflow-hidden hover-lift transition-all duration-300">
-                        <details class="group">
-                            <summary class="flex items-center justify-between p-6 cursor-pointer">
-                                <h3 class="text-xl font-bold text-white">七、具体实施方式</h3>
-                                <i class="fa fa-chevron-down text-primary group-open:rotate-180 transition-transform duration-300"></i>
-                            </summary>
-                            <div class="px-6 pb-6">
-                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                    <div class="bg-dark/30 p-4 rounded-lg">
-                                        <h4 class="text-white font-bold mb-2">天线增益与频率特性</h4>
-                                        <ul class="space-y-1 text-gray-300">
-                                            <li>• 增益：14dBi</li>
-                                            <li>• 驻波比：1.06</li>
-                                            <li>• 中心频率：5.8GHz</li>
-                                            <li>• 工作频段：5.144-5.966GHz</li>
-                                        </ul>
-                                    </div>
-                                    <div class="bg-dark/30 p-4 rounded-lg">
-                                        <h4 class="text-white font-bold mb-2">极化方向</h4>
-                                        <p class="text-gray-300">采用垂直极化方式，减少与其他极化方式的干扰，提高信号的纯净度和传输效率。</p>
-                                    </div>
-                                    <div class="bg-dark/30 p-4 rounded-lg">
-                                        <h4 class="text-white font-bold mb-2">功率和灵敏度</h4>
-                                        <ul class="space-y-1 text-gray-300">
-                                            <li>• 最大承受功率：8W</li>
-                                            <li>• 实际发出功率（EIRP）：53dBm</li>
-                                            <li>• 接收灵敏度：-198dBm</li>
-                                        </ul>
-                                    </div>
-                                    <div class="bg-dark/30 p-4 rounded-lg">
-                                        <h4 class="text-white font-bold mb-2">重量优化</h4>
-                                        <p class="text-gray-300">整体重量约为30g，轻量化设计使得天线更加便携和灵活。</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </details>
-                    </div>
-
-                    <!-- 技术特征和优点 -->
-                    <div class="bg-antennaDark/50 border border-white/10 rounded-xl overflow-hidden hover-lift transition-all duration-300">
-                        <details class="group">
-                            <summary class="flex items-center justify-between p-6 cursor-pointer">
-                                <h3 class="text-xl font-bold text-white">八、技术特征和优点</h3>
+                                <h3 class="text-xl font-bold text-dark">三、技术特征</h3>
                                 <i class="fa fa-chevron-down text-primary group-open:rotate-180 transition-transform duration-300"></i>
                             </summary>
                             <div class="px-6 pb-6">
                                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                     <div class="flex items-start">
                                         <i class="fa fa-check-circle text-primary mt-1 mr-2"></i>
-                                        <span class="text-gray-300">高增益：14dBi</span>
+                                        <span class="text-gray-600">优化增益设计</span>
                                     </div>
                                     <div class="flex items-start">
                                         <i class="fa fa-check-circle text-primary mt-1 mr-2"></i>
-                                        <span class="text-gray-300">低驻波比：1.06</span>
+                                        <span class="text-gray-600">低驻波比设计</span>
                                     </div>
                                     <div class="flex items-start">
                                         <i class="fa fa-check-circle text-primary mt-1 mr-2"></i>
-                                        <span class="text-gray-300">宽频段：5.14-5.96GHz</span>
+                                        <span class="text-gray-600">宽频段：5.14-5.96GHz</span>
                                     </div>
                                     <div class="flex items-start">
                                         <i class="fa fa-check-circle text-primary mt-1 mr-2"></i>
-                                        <span class="text-gray-300">垂直极化方式</span>
+                                        <span class="text-gray-600">垂直极化方式</span>
                                     </div>
                                     <div class="flex items-start">
                                         <i class="fa fa-check-circle text-primary mt-1 mr-2"></i>
-                                        <span class="text-gray-300">高功率承受能力：8W</span>
+                                        <span class="text-gray-600">轻量化设计：约30g</span>
                                     </div>
                                     <div class="flex items-start">
                                         <i class="fa fa-check-circle text-primary mt-1 mr-2"></i>
-                                        <span class="text-gray-300">高灵敏度：-198dBm</span>
-                                    </div>
-                                    <div class="flex items-start">
-                                        <i class="fa fa-check-circle text-primary mt-1 mr-2"></i>
-                                        <span class="text-gray-300">轻量化设计：约30g</span>
-                                    </div>
-                                    <div class="flex items-start">
-                                        <i class="fa fa-check-circle text-primary mt-1 mr-2"></i>
-                                        <span class="text-gray-300">可靠焊接设计，避免短路</span>
+                                        <span class="text-gray-600">可靠焊接设计，避免短路</span>
                                     </div>
                                 </div>
                             </div>
@@ -407,41 +368,35 @@
             </div>
         </section>
     </main>
-        <!-- 页脚 -->
-    <footer class="bg-dark/80 p-6 md:p-8 border-t border-white/10">
-        <div class="container mx-auto text-center">
-            <div class="flex flex-col md:flex-row items-center justify-center gap-4 md:gap-8 mb-6">
-                <a href="https://b23.tv/JXuI9QA" class="text-gray-400 hover:text-white transition-colors duration-300">
-                    <i class="fa fa-play-circle mr-2"></i>哔哩哔哩｜Flyz远征飞官方账号
-                </a>
-                <button id="footer-wx-btn" class="text-gray-400 hover:text-white transition-colors duration-300">
-                    <i class="fa fa-weixin mr-2"></i>客服微信｜Flyz远征飞
-                </button>
-                <a href="https://yzbjfpv.top/20250709.html" class="text-gray-400 hover:text-white transition-colors duration-300">
-                    <i class="fa fa-home mr-2"></i>返回官网首页
-                </a>
+    
+    <!-- 页脚 -->
+    <footer class="bg-gray-50 border-t border-gray-100 py-8 mt-8">
+        <div class="container mx-auto px-4 text-center">
+            <p class="text-gray-700 mb-3 text-float">© 2025 Flyz远征飞官方网站</p>
+            <p class="text-gray-500 mb-6 text-float">我们的口号是：为方便模友而生</p>
+            <div class="flex flex-wrap justify-center gap-x-6 gap-y-3 text-sm">
+                <a href="https://b23.tv/JXuI9QA" class="text-primary hover:text-secondary transition-colors duration-300 text-float">哔哩哔哩｜Flyz远征飞官方账号</a>
             </div>
-            <p class="text-gray-500 text-sm">© 2025 Flyz远征飞 × PokRC魄客模型 联合呈现 | 天线产品预告页</p>
-            <p class="text-gray-600 text-xs mt-2">本页面所有产品参数以实际发售版本为准，最终解释权归Flyz远征飞所有</p>
+            <p class="text-gray-400 text-xs mt-4">温馨提示：请遵守国家相关法律法规，在合法合规的前提下开展航模活动</p>
         </div>
     </footer>
 
     <!-- 微信联系方式弹窗 -->
     <div id="contact-modal" class="fixed inset-0 z-50 flex items-center justify-center hidden">
-        <div class="absolute inset-0 bg-black/50 modal-backdrop"></div>
-        <div class="relative bg-antennaDark border border-primary/30 rounded-xl p-8 max-w-md w-full mx-4 shadow-2xl transform transition-all">
-            <button id="close-modal" class="absolute top-4 right-4 text-gray-400 hover:text-white transition-colors">
+        <div class="absolute inset-0 bg-black/50 backdrop-blur-sm"></div>
+        <div class="relative bg-white border border-primary/30 rounded-xl p-8 max-w-md w-full mx-4 shadow-2xl transform transition-all">
+            <button id="close-modal" class="absolute top-4 right-4 text-gray-400 hover:text-dark transition-colors">
                 <i class="fa fa-times text-xl"></i>
             </button>
             <div class="text-center mb-6">
-                <div class="w-16 h-16 bg-primary/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                <div class="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
                     <i class="fa fa-weixin text-primary text-2xl"></i>
                 </div>
-                <h3 class="text-xl font-bold text-white mb-2">添加客服微信</h3>
-                <p class="text-gray-400">获取产品最新信息与专属优惠</p>
+                <h3 class="text-xl font-bold text-dark mb-2">添加客服微信</h3>
+                <p class="text-gray-500">获取产品最新信息与专属优惠</p>
             </div>
-            <div class="bg-dark/50 rounded-lg p-4 mb-6 text-center">
-                <p class="text-xl font-bold text-white mb-2">微信号</p>
+            <div class="bg-gray-50 rounded-lg p-4 mb-6 text-center">
+                <p class="text-xl font-bold text-dark mb-2">微信号</p>
                 <p class="text-2xl font-mono font-bold text-primary">YGWFK2024</p>
             </div>
             <div class="flex justify-center">
@@ -453,16 +408,32 @@
     </div>
 
     <!-- 粒子脚本 -->
-    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
     <script>
-        // 粒子效果
-        particlesJS.load('particles-js', {
+        // 粒子效果配置
+        particlesJS('particles-js', {
             "particles": {
-                "number": { "value": 80, "density": { "enable": true, "value_area": 1200 } },
-                "color": { "value": ["#165DFF", "#FF7D00", "#F2F3F5"] },
-                "size": { "value": 2, "random": true, "opacity": 0.6 },
-                "line_linked": { "enable": true, "distance": 150, "color": "#165DFF", "opacity": 0.2, "width": 1 },
-                "move": { "speed": 1, "direction": "none", "random": true, "straight": false, "out_mode": "out", "bounce": false }
+                "number": { "value": 60, "density": { "enable": true, "value_area": 800 } },
+                "color": { "value": "#165DFF" },
+                "shape": { "type": "circle" },
+                "opacity": { "value": 0.2, "random": true },
+                "size": { "value": 3, "random": true },
+                "line_linked": {
+                    "enable": true,
+                    "distance": 150,
+                    "color": "#4080FF",
+                    "opacity": 0.1,
+                    "width": 1
+                },
+                "move": {
+                    "enable": true,
+                    "speed": 1,
+                    "direction": "none",
+                    "random": true,
+                    "straight": false,
+                    "out_mode": "out",
+                    "bounce": false
+                }
             },
             "interactivity": {
                 "detect_on": "canvas",
@@ -472,24 +443,21 @@
                     "resize": true
                 },
                 "modes": {
-                    "grab": { "distance": 140, "line_linked": { "opacity": 0.4 } },
+                    "grab": { "distance": 140, "line_linked": { "opacity": 0.3 } },
                     "push": { "particles_nb": 3 }
                 }
-            },
-            "retina_detect": true
+            }
         });
 
         // 导航栏滚动效果
         window.addEventListener('scroll', function() {
             const navbar = document.getElementById('navbar');
-            if (window.scrollY > 50) {
-                navbar.classList.add('py-2');
+            if (window.scrollY > 30) {
+                navbar.classList.add('py-2', 'shadow-lg');
                 navbar.classList.remove('py-4');
-                navbar.classList.add('shadow-lg');
             } else {
                 navbar.classList.add('py-4');
-                navbar.classList.remove('py-2');
-                navbar.classList.remove('shadow-lg');
+                navbar.classList.remove('py-2', 'shadow-lg');
             }
         });
 
@@ -502,26 +470,30 @@
         // 微信联系弹窗交互
         const modal = document.getElementById('contact-modal');
         const contactBtn = document.getElementById('contact-btn');
-        const navWxBtn = document.getElementById('nav-wx-btn');
-        const mobileWxBtn = document.getElementById('mobile-wx-btn');
-        const footerWxBtn = document.getElementById('footer-wx-btn');
         const closeModal = document.getElementById('close-modal');
         const closeModalBtn = document.getElementById('close-modal-btn');
 
         function openModal() {
             modal.classList.remove('hidden');
             document.body.classList.add('overflow-hidden');
+            // 添加动画类
+            setTimeout(() => {
+                modal.querySelector('div:nth-child(2)').classList.add('modal-enter-active');
+            }, 10);
         }
 
         function closeModalWindow() {
-            modal.classList.add('hidden');
-            document.body.classList.remove('overflow-hidden');
+            const modalContent = modal.querySelector('div:nth-child(2)');
+            modalContent.classList.remove('modal-enter-active');
+            modalContent.classList.add('modal-enter');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                document.body.classList.remove('overflow-hidden');
+                modalContent.classList.remove('modal-enter');
+            }, 300);
         }
 
         contactBtn.addEventListener('click', openModal);
-        navWxBtn.addEventListener('click', openModal);
-        mobileWxBtn.addEventListener('click', openModal);
-        footerWxBtn.addEventListener('click', openModal);
         closeModal.addEventListener('click', closeModalWindow);
         closeModalBtn.addEventListener('click', closeModalWindow);
 
@@ -532,11 +504,23 @@
             }
         });
 
-        // 按下ESC键关闭模态框
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape' && !modal.classList.contains('hidden')) {
-                closeModalWindow();
-            }
+        // 滚动动画触发
+        document.addEventListener('DOMContentLoaded', function() {
+            const fadeElements = document.querySelectorAll('.fade-in');
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = 1;
+                        entry.target.style.transform = 'translateY(0)';
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.1 });
+            
+            fadeElements.forEach(el => {
+                observer.observe(el);
+            });
         });
     </script>
 </body>
