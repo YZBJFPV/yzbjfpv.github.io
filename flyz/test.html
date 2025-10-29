@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="zh-CN" id="html-lang">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>首页｜内测网页</title>
+    <!-- 外部资源 -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- Tailwind 配置 -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#165DFF',
+                        secondary: '#FF7D00',
+                        accent: '#36CFC9',
+                        light: '#FFFFFF',
+                        dark: '#333647'
+                    },
+                    fontFamily: {
+                        inter: ['Inter', 'system-ui', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .content-auto { content-visibility: auto; }
+            .card-elevation { box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
+            .hover-rise { transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1); }
+            .hover-rise:hover { transform: translateY(-6px); }
+            /* 精灵球与弹窗样式 */
+            .pokeball-btn { transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); }
+            .pokeball-btn:hover { transform: scale(1.1) rotate(15deg); box-shadow: 0 0 20px rgba(22, 93, 255, 0.4); }
+            .nav-modal { transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); transform: scale(0.8); opacity: 0; pointer-events: none; }
+            .nav-modal.active { transform: scale(1); opacity: 1; pointer-events: auto; }
+            .nav-item-modal { transition: all 0.3s ease; opacity: 0; transform: translateY(10px); }
+            .nav-modal.active .nav-item-modal { opacity: 1; transform: translateY(0); }
+            /* 折叠面板样式 */
+            .battery-collapse { max-height: 0; overflow: hidden; transition: max-height 0.6s ease; }
+            .battery-collapse.active { max-height: 500px; }
+        }
+    </style>
+
+    <style>
+        /* 流动渐变导航栏 */
+        .nav-gradient {
+            background: linear-gradient(90deg, #165DFF, #4080FF, #7CB3FF, #FF7D00);
+            background-size: 400% 400%;
+            animation: gradientFlow 10s ease infinite;
+        }
+        @keyframes gradientFlow { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+        
+        /* 文字动态效果 */
+        .text-float { display: inline-block; transition: transform 0.3s ease, color 0.3s ease; }
+        .text-float:hover { transform: translateY(-3px) scale(1.05); }
+        
+        /* 渐入动画 */
+        .fade-in { opacity: 0; transform: translateY(20px); animation: fadeInUp 0.8s forwards; }
+        @keyframes fadeInUp { to { opacity: 1; transform: translateY(0); } }
+        
+        /* 视频容器效果 */
+        .video-wrapper { position: relative; overflow: hidden; border-radius: 12px; }
+        .video-wrapper::before {
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(to top, rgba(0,0,0,0.1) 0%, transparent 100%);
+            z-index: 1; transition: opacity 0.3s ease;
+        }
+        .video-wrapper:hover::before { opacity: 0.2; }
+        
+        /* 粒子背景 */
+        #particles-js { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; opacity: 0.6; }
+        
+        /* 公告动画 */
+        .announcement-text { display: inline-block; animation: scrollText 15s linear infinite; }
+        @keyframes scrollText { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
+        
+        /* 案例卡片效果 */
+        .case-link::after { content: ''; position: absolute; bottom: 0; left: 0; width: 0; height: 2px; background: #165DFF; transition: width 0.3s ease; }
+        .case-link:hover::after { width: 100%; }
+        
+        /* 关闭按钮动画 */
+        .close-btn { transition: all 0.3s ease; }
+        .close-btn:hover { transform: rotate(90deg) scale(1.1); }
+    </style>
+</head>
+
+<body class="font-inter bg-light text-dark m-0 p-0 overflow-x-hidden">
+    <!-- 粒子背景 -->
+    <div id="particles-js"></div>
+
+    <!-- 1. 简化导航栏：仅保留Logo和文字 -->
+    <header id="navbar" class="fixed w-full top:0 z-40 transition-all duration-500">
+        <nav class="nav-gradient py-3 px-4 md:px-6 shadow-md">
+            <div class="container mx-auto flex justify-between items-center">
+                <a href="https://yzbjfpv.top/20250709.html" class="flex items-center space-x-2 group">
+                    <img src="https://img520.com/UIGuUV.jpeg" alt="Flyz远征飞Logo" 
+                         class="h-8 w-auto rounded-md transition-all duration-500 group-hover:scale-110 rotate-6"
+                         onerror="this.onerror=null;this.src='https://picsum.photos/35/35'">
+                    <span class="text-white font-bold text-lg md:text-xl transition-all duration-300 group-hover:tracking-wider">Flyz远征飞</span>
+                </a>
+            </div>
+        </nav>
+    </header>
+
+    <!-- 2. 右侧吸附精灵球按钮 -->
+    <button id="pokeball-trigger" class="pokeball-btn fixed right-4 top-1/3 z-50 w-12 h-12 md:w-14 md:h-14 bg-white rounded-full flex items-center justify-center shadow-lg border-2 border-primary">
+        <div class="w-8 h-8 md:w-10 md:h-10 bg-primary rounded-full flex items-center justify-center">
+            <i class="fa fa-bars text-white text-lg md:text-xl"></i>
+        </div>
+    </button>
+
+    <!-- 3. 居中弹出导航菜单（默认隐藏） -->
+    <div id="nav-modal" class="nav-modal fixed inset-0 z-50 flex items-center justify-center bg-dark/50 backdrop-blur-sm p-4">
+        <div class="bg-white rounded-2xl w-full max-w-md p-6 md:p-8 shadow-2xl relative">
+            <button id="close-nav" class="close-btn absolute top-4 right-4 text-gray-500 hover:text-primary transition-colors">
+                <i class="fa fa-times text-xl"></i>
+            </button>
+            <h3 class="text-center text-primary font-bold text-xl md:text-2xl mb-8">
+                <i class="fa fa-compass mr-2"></i>导航菜单
+            </h3>
+            <div class="flex flex-col space-y-5">
+                <a href="https://yzbjfpv.top/20250709.html" class="nav-item-modal flex items-center p-3 rounded-lg bg-gray-50 hover:bg-primary/10 transition-colors">
+                    <div class="w-10 h-10 bg-primary/20 rounded-full flex items-center justify-center mr-4"><i class="fa fa-home text-primary"></i></div>
+                    <span class="text-dark hover:text-primary transition-colors">首页</span>
+                </a>
+                <a href="http://yzflight.xyz" class="nav-item-modal flex items-center p-3 rounded-lg bg-gray-50 hover:bg-primary/10 transition-colors">
+                    <div class="w-10 h-10 bg-primary/20 rounded-full flex items-center justify-center mr-4"><i class="fa fa-download text-primary"></i></div>
+                    <span class="text-dark hover:text-primary transition-colors">下载中心</span>
+                </a>
+                <a href="https://shop500685313.taobao.com/" class="nav-item-modal flex items-center p-3 rounded-lg bg-gray-50 hover:bg-primary/10 transition-colors">
+                    <div class="w-10 h-10 bg-primary/20 rounded-full flex items-center justify-center mr-4"><i class="fa fa-shopping-bag text-primary"></i></div>
+                    <span class="text-dark hover:text-primary transition-colors">严选商城</span>
+                </a>
+                <a href="https://yzbjfpv.top/fix.html" class="nav-item-modal flex items-center p-3 rounded-lg bg-gray-50 hover:bg-primary/10 transition-colors">
+                    <div class="w-10 h-10 bg-primary/20 rounded-full flex items-center justify-center mr-4"><i class="fa fa-wrench text-primary"></i></div>
+                    <span class="text-dark hover:text-primary transition-colors">维修专区</span>
+                </a>
+                <a href="https://yzbjfpv.top/wxtalk.html" class="nav-item-modal flex items-center p-3 rounded-lg bg-gray-50 hover:bg-primary/10 transition-colors">
+                    <div class="w-10 h-10 bg-primary/20 rounded-full flex items-center justify-center mr-4"><i class="fa fa-user-plus text-primary"></i></div>
+                    <span class="text-dark hover:text-primary transition-colors">加我WX</span>
+                </a>
+            </div>
+        </div>
+    </div>
+        <!-- 1. 视频模块 -->
+    <div class="pt-16 md:pt-20 px-4 md:px-6">
+        <div class="container mx-auto">
+            <div class="video-wrapper hover-rise">
+                <iframe 
+                    src="https://player.bilibili.com/player.html?bvid=BV1MWjgzvEED&autoplay=1&dm=0" 
+                    style="width: 100%; aspect-ratio: 16/9; border: none;" 
+                    allowfullscreen allow="autoplay; fullscreen; encrypted-media"
+                ></iframe>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. 产品特点（含折叠电池详情） -->
+    <div class="container mx-auto px-4 md:px-6 my-12">
+        <h2 class="text-center mb-10 text-[clamp(1.8rem,5vw,2.5rem)] font-bold text-primary fade-in" style="animation-delay: 0.2s">
+            <span class="text-float">P</span><span class="text-float" style="animation-delay: 0.1s">o</span><span class="text-float" style="animation-delay: 0.2s">k</span><span class="text-float" style="animation-delay: 0.3s">r</span><span class="text-float" style="animation-delay: 0.4s">c</span> × 
+            <span class="text-float" style="animation-delay: 0.5s">F</span><span class="text-float" style="animation-delay: 0.6s">l</span><span class="text-float" style="animation-delay: 0.7s">y</span><span class="text-float" style="animation-delay: 0.8s">z</span>联名
+            <br class="md:hidden">
+            <span class="text-float" style="animation-delay: 0.9s">FPV穿越机远航电池</span>
+        </h2>
+        
+        <!-- 2.1 产品核心亮点 -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-10">
+            <div class="bg-white rounded-xl p-6 md:p-8 card-elevation hover-rise fade-in" style="animation-delay: 0.4s">
+                <div class="w-14 h-14 bg-primary/10 rounded-full flex items-center justify-center mb-5">
+                    <i class="fa fa-bolt text-primary text-2xl"></i>
+                </div>
+                <h4 class="text-primary font-bold text-xl mb-4 text-float">核心配置</h4>
+                <p class="text-gray-600 leading-relaxed">
+                    21700特供电芯 | FPV高爆发远航专用<br>
+                    35C瞬时放电 肆意花飞
+                </p>
+            </div>
+            
+            <div class="bg-white rounded-xl p-6 md:p-8 card-elevation hover-rise fade-in" style="animation-delay: 0.6s">
+                <div class="w-14 h-14 bg-primary/10 rounded-full flex items-center justify-center mb-5">
+                    <i class="fa fa-sliders text-primary text-2xl"></i>
+                </div>
+                <h4 class="text-primary font-bold text-xl mb-4 text-float">定制方案</h4>
+                <p class="text-gray-600 leading-relaxed">
+                    1-16S电压组合 | 电芯参数可选<br>
+                    FPV设备供电接口适配
+                </p>
+            </div>
+            
+            <div class="bg-white rounded-xl p-6 md:p-8 card-elevation hover-rise fade-in" style="animation-delay: 0.8s">
+                <div class="w-14 h-14 bg-primary/10 rounded-full flex items-center justify-center mb-5">
+                    <i class="fa fa-dashboard text-primary text-2xl"></i>
+                </div>
+                <h4 class="text-primary font-bold text-xl mb-4 text-float">易用设计</h4>
+                <p class="text-gray-600 leading-relaxed">
+                    集成电压显示 | 单芯状态实时查<br>
+                    智能保护 不惧过放过充
+                </p>
+            </div>
+        </div>
+        
+        <!-- 2.2 折叠式电池详细介绍（默认折叠） -->
+        <div class="bg-white rounded-xl p-6 md:p-8 card-elevation fade-in" style="animation-delay: 1s">
+            <!-- 折叠触发按钮 -->
+            <button id="battery-toggle" class="w-full flex items-center justify-between text-left mb-4 focus:outline-none">
+                <h4 class="text-primary font-bold text-xl text-float">
+                    <i class="fa fa-battery-full mr-2"></i>电池详细参数
+                </h4>
+                <i id="battery-icon" class="fa fa-chevron-down text-primary transition-transform duration-300"></i>
+            </button>
+            
+            <!-- 折叠内容（默认隐藏） -->
+            <div id="battery-details" class="battery-collapse border-t border-gray-100 pt-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <h5 class="text-dark font-semibold mb-3">基础参数</h5>
+                        <ul class="space-y-2 text-gray-600">
+                            <li><i class="fa fa-check-circle text-primary mr-2"></i>电芯型号：21700 高容量版</li>
+                            <li><i class="fa fa-check-circle text-primary mr-2"></i>标称电压：3.7V/单芯</li>
+                            <li><i class="fa fa-check-circle text-primary mr-2"></i>容量范围：4000mAh-5000mAh</li>
+                            <li><i class="fa fa-check-circle text-primary mr-2"></i>持续放电：25C，瞬时放电：35C</li>
+                            <li><i class="fa fa-check-circle text-primary mr-2"></i>充电限制电压：4.2V±0.05V</li>
+                            <li><i class="fa fa-check-circle text-primary mr-2"></i>工作温度：-10℃~60℃</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h5 class="text-dark font-semibold mb-3">安全与保护</h5>
+                        <ul class="space-y-2 text-gray-600">
+                            <li><i class="fa fa-shield text-primary mr-2"></i>过充保护：4.35V±0.05V</li>
+                            <li><i class="fa fa-shield text-primary mr-2"></i>过放保护：2.5V±0.05V</li>
+                            <li><i class="fa fa-shield text-primary mr-2"></i>短路保护：≤10ms响应</li>
+                            <li><i class="fa fa-shield text-primary mr-2"></i>过流保护：5A~100A可调</li>
+                            <li><i class="fa fa-shield text-primary mr-2"></i>均衡精度：±20mV以内</li>
+                            <li><i class="fa fa-shield text-primary mr-2"></i>外壳材质：阻燃ABS+PC</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="mt-6 pt-4 border-t border-gray-100">
+                    <h5 class="text-dark font-semibold mb-3">适配场景</h5>
+                    <div class="flex flex-wrap gap-3">
+                        <span class="px-3 py-1 bg-primary/10 text-primary rounded-full text-sm">5-8寸穿越机</span>
+                        <span class="px-3 py-1 bg-primary/10 text-primary rounded-full text-sm">远航长续航机型</span>
+                        <span class="px-3 py-1 bg-primary/10 text-primary rounded-full text-sm">高清数字图传设备</span>
+                        <span class="px-3 py-1 bg-primary/10 text-primary rounded-full text-sm">FPV竞赛级配置</span>
+                        <span class="px-3 py-1 bg-primary/10 text-primary rounded-full text-sm">多轴航拍飞行器</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. 新品预告 -->
+    <div class="bg-gradient-to-r from-primary/5 to-secondary/5 py-8 my-12">
+        <div class="container mx-auto px-4 md:px-6">
+            <div class="announcement relative overflow-hidden py-4">
+                <h3 class="text-center text-primary font-bold text-xl md:text-2xl mb-2 text-float">新品预告</h3>
+                <div class="announcement-text whitespace-nowrap text-center text-dark font-medium">
+                    <a href="https://yzbjfpv.top/flyz/new/tx" class="inline-flex items-center hover:text-primary transition-colors duration-300">
+                        <i class="fa fa-bullhorn mr-2 text-secondary"></i>
+                        新联名专利定向平板天线即将发布，敬请期待！
+                        <i class="fa fa-arrow-right ml-2 text-secondary"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 4. 网站案例 -->
+    <div class="container mx-auto px-4 md:px-6 my-12">
+        <h3 class="text-center mb-8 text-2xl font-bold text-primary fade-in text-float">网站定制案例</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="bg-white rounded-xl p-6 card-elevation hover-rise fade-in" style="animation-delay: 0.2s">
+                <h4 class="text-dark font-bold text-lg mb-2 text-float">嘟嘟电池官网</h4>
+                <a href="https://www.wanshizan.com.cn/dudurc" target="_blank" class="case-link text-primary hover:text-secondary transition-colors duration-300 text-float">
+                    <i class="fa fa-link mr-1"></i> www.wanshizan.com.cn/dudurc
+                </a>
+            </div>
+            <div class="bg-white rounded-xl p-6 card-elevation hover-rise fade-in" style="animation-delay: 0.4s">
+                <h4 class="text-dark font-bold text-lg mb-2 text-float">康易安科技官网</h4>
+                <a href="https://www.wanshizan.com.cn" target="_blank" class="case-link text-primary hover:text-secondary transition-colors duration-300 text-float">
+                    <i class="fa fa-link mr-1"></i> www.wanshizan.com.cn
+                </a>
+            </div>
+        </div>
+    </div>
+        <!-- 页脚 -->
+    <footer class="bg-gray-50 border-t border-gray-100 py-8 mt-16">
+        <div class="container mx-auto px-4 text-center">
+            <p class="text-gray-700 mb-3 text-float">© 2025 Flyz远征飞官方网站 首页V3.0.7版</p>
+            <p class="text-gray-500 mb-6 text-float">我们的口号是：为方便模友而生</p>
+            <div class="flex flex-wrap justify-center gap-x-6 gap-y-3 text-sm">
+                <a href="https://b23.tv/JXuI9QA" class="text-primary hover:text-secondary transition-colors duration-300 text-float">哔哩哔哩｜Flyz远征飞官方账号</a>
+                <span class="text-gray-300">|</span>
+                <a href="https://www.wanshizan.com.cn/dudurc" class="text-primary hover:text-secondary transition-colors duration-300 text-float">嘟嘟电池官网</a>
+                <span class="text-gray-300">|</span>
+                <a href="https://www.wanshizan.com.cn" class="text-primary hover:text-secondary transition-colors duration-300 text-float">康易安科技官网</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- 粒子背景脚本 -->
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <script>
+        // 粒子效果配置
+        particlesJS('particles-js', {
+            "particles": {
+                "number": { "value": 60, "density": { "enable": true, "value_area": 800 } },
+                "color": { "value": "#165DFF" },
+                "shape": { "type": "circle" },
+                "opacity": { "value": 0.2, "random": true },
+                "size": { "value": 3, "random": true },
+                "line_linked": {
+                    "enable": true,
+                    "distance": 150,
+                    "color": "#4080FF",
+                    "opacity": 0.1,
+                    "width": 1
+                },
+                "move": {
+                    "enable": true,
+                    "speed": 1,
+                    "direction": "none",
+                    "random": true,
+                    "straight": false,
+                    "out_mode": "out",
+                    "bounce": false
+                }
+            },
+            "interactivity": {
+                "detect_on": "canvas",
+                "events": {
+                    "onhover": { "enable": true, "mode": "grab" },
+                    "onclick": { "enable": true, "mode": "push" },
+                    "resize": true
+                },
+                "modes": {
+                    "grab": { "distance": 140, "line_linked": { "opacity": 0.3 } },
+                    "push": { "particles_nb": 3 }
+                }
+            }
+        });
+    </script>
+
+    <script>
+        // 1. 导航栏滚动效果
+        window.addEventListener('scroll', function() {
+            const navbar = document.getElementById('navbar');
+            if (window.scrollY > 30) {
+                navbar.classList.add('py-2', 'shadow-lg');
+                navbar.classList.remove('py-3');
+            } else {
+                navbar.classList.add('py-3');
+                navbar.classList.remove('py-2', 'shadow-lg');
+            }
+        });
+
+        // 2. 精灵球导航弹窗控制
+        const pokeballTrigger = document.getElementById('pokeball-trigger');
+        const closeNav = document.getElementById('close-nav');
+        const navModal = document.getElementById('nav-modal');
+
+        // 打开弹窗
+        pokeballTrigger.addEventListener('click', function() {
+            navModal.classList.add('active');
+            document.body.style.overflow = 'hidden'; // 防止背景滚动
+        });
+
+        // 关闭弹窗
+        closeNav.addEventListener('click', function() {
+            navModal.classList.remove('active');
+            document.body.style.overflow = ''; // 恢复滚动
+        });
+
+        // 点击弹窗外部关闭
+        navModal.addEventListener('click', function(e) {
+            if (e.target === navModal) {
+                navModal.classList.remove('active');
+                document.body.style.overflow = '';
+            }
+        });
+
+        // 3. 电池详情折叠面板控制
+        const batteryToggle = document.getElementById('battery-toggle');
+        const batteryDetails = document.getElementById('battery-details');
+        const batteryIcon = document.getElementById('battery-icon');
+
+        batteryToggle.addEventListener('click', function() {
+            batteryDetails.classList.toggle('active');
+            // 图标旋转动画
+            if (batteryDetails.classList.contains('active')) {
+                batteryIcon.style.transform = 'rotate(180deg)';
+            } else {
+                batteryIcon.style.transform = 'rotate(0)';
+            }
+        });
+
+        // 4. 滚动动画触发
+        document.addEventListener('DOMContentLoaded', function() {
+            const fadeElements = document.querySelectorAll('.fade-in');
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = 1;
+                        entry.target.style.transform = 'translateY(0)';
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.1 });
+            
+            fadeElements.forEach(el => {
+                observer.observe(el);
+            });
+        });
+
+        // 5. 平滑滚动
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href');
+                if (targetId !== '#') {
+                    const target = document.querySelector(targetId);
+                    if (target) {
+                        target.scrollIntoView({ behavior: 'smooth' });
+                    }
+                }
+                // 关闭导航弹窗（如果打开）
+                if (navModal.classList.contains('active')) {
+                    navModal.classList.remove('active');
+                    document.body.style.overflow = '';
+                }
+            });
+        });
+    </script>
+</body>
+</html>
