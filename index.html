@@ -45,6 +45,9 @@
       .hover-scale:hover {
         transform: scale(1.05);
       }
+      .countdown-animation {
+        transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      }
     }
   </style>
 </head>
@@ -95,7 +98,7 @@
     
     <!-- 倒计时 -->
     <div class="flex justify-center mb-6">
-      <div class="text-4xl font-bold text-white/90" id="seconds">10</div>
+      <div class="text-4xl font-bold text-white/90 countdown-animation" id="seconds">10</div>
       <div class="ml-2 flex items-end text-white/60 mb-1">秒后跳转</div>
     </div>
     
@@ -112,31 +115,44 @@
     </div>
     
     <!-- 底部备注 -->
-    <div class="absolute bottom-4 left-0 right-0 text-center text-white/40 text-xs">
-      即将跳转至: https://yzbjfpv.top/flyz/202510/index.html
+    <div class="absolute bottom-4 left-0 right-0 text-center text-white/40 text-xs" id="redirectNote">
+      即将跳转至: 
     </div>
   </div>
 
   <script>
+    // ==========================
+    // 配置参数 - 只需修改这里的网址
+    // ==========================
+    const targetUrl = "https://yzbjfpv.top/flyz/202510";  // 在此处修改目标网址
+    
     // 设置当前日期
     document.addEventListener('DOMContentLoaded', () => {
       const now = new Date();
       const options = { year: 'numeric', month: 'long', day: 'numeric' };
       const formattedDate = now.toLocaleDateString('zh-CN', options);
       document.getElementById('updateDate').textContent = `更新日期: ${formattedDate}`;
+      
+      // 同步更新底部跳转提示
+      document.getElementById('redirectNote').innerHTML = `即将跳转至: ${targetUrl}`;
     });
 
-    // 配置参数
-    const targetUrl = "https://yzbjfpv.top/";
+    // 倒计时配置
     let countdownSeconds = 10;
     
     // DOM元素
     const secondsElement = document.getElementById('seconds');
     const redirectBtn = document.getElementById('redirectBtn');
     
-    // 倒计时更新
+    // 倒计时更新（带数字动画）
     function updateCountdown() {
-      secondsElement.textContent = countdownSeconds;
+      // 添加数字变化动画效果
+      secondsElement.classList.add('scale-125', 'opacity-70', 'text-secondary');
+      
+      setTimeout(() => {
+        secondsElement.textContent = countdownSeconds;
+        secondsElement.classList.remove('scale-125', 'opacity-70', 'text-secondary');
+      }, 150);
       
       if (countdownSeconds <= 0) {
         window.location.href = targetUrl;
