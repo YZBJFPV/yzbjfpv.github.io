@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Flyz远征飞 - 网站更新中</title>
+  <!-- 引入外部资源 -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+  
+  <!-- Tailwind 配置 -->
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#165DFF',
+            secondary: '#4080FF',
+            dark: '#0A0F1F'
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+          },
+        },
+      }
+    }
+  </script>
+  
+  <!-- 自定义样式 -->
+  <style type="text/tailwindcss">
+    @layer utilities {
+      .bg-glass {
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(10px);
+      }
+      .text-gradient {
+        background-clip: text;
+        -webkit-background-clip: text;
+        color: transparent;
+        background-image: linear-gradient(90deg, #165DFF, #4080FF);
+      }
+      .hover-scale {
+        transition: transform 0.3s ease;
+      }
+      .hover-scale:hover {
+        transform: scale(1.05);
+      }
+      .countdown-animation {
+        transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      }
+    }
+  </style>
+</head>
+
+<body class="font-sans bg-dark text-white min-h-screen flex items-center justify-center p-4">
+  <!-- 背景装饰 -->
+  <div class="fixed inset-0 z-0">
+    <div class="absolute top-0 left-1/4 w-96 h-96 bg-primary/10 rounded-full blur-3xl"></div>
+    <div class="absolute bottom-0 right-1/4 w-96 h-96 bg-secondary/10 rounded-full blur-3xl"></div>
+  </div>
+
+  <!-- 主内容卡片 -->
+  <div class="relative z-10 w-full max-w-md bg-glass rounded-2xl p-8 md:p-10 border border-white/10 shadow-xl">
+    <!-- 品牌标识 -->
+    <div class="flex justify-center mb-6">
+      <div class="w-20 h-20 rounded-full bg-gradient-to-r from-primary to-secondary flex items-center justify-center">
+        <i class="fa fa-paper-plane text-3xl"></i>
+      </div>
+    </div>
+    
+    <!-- 核心信息 -->
+    <div class="text-center mb-6">
+      <h1 class="text-[clamp(1.8rem,5vw,2.5rem)] font-bold mb-4">
+        <span class="text-gradient">Flyz远征飞</span>
+      </h1>
+      <p class="text-xl text-white/80 mb-2">官网更新中</p>
+      <p class="text-white/60 mb-4">此页面即将停用</p>
+      
+      <!-- 标语 -->
+      <p class="text-white/70 text-sm md:text-base italic">
+        感谢大家一年多来的陪伴<br>
+        我们将持续创造免费精致的全国综合性航模服务网站
+      </p>
+    </div>
+    
+    <!-- 更新日期 -->
+    <div class="text-center text-white/50 text-sm mb-6" id="updateDate">
+      更新日期: 2025年10月29日
+    </div>
+    
+    <!-- 快速链接 -->
+    <div class="text-center mb-6">
+      <p class="text-white/60 text-sm mb-2">快速链接</p>
+      <a href="https://yzflight.xyz" class="text-secondary hover:underline text-sm flex items-center justify-center">
+        <i class="fa fa-download mr-1"></i>下载中心: https://yzflight.xyz
+      </a>
+    </div>
+    
+    <!-- 倒计时 -->
+    <div class="flex justify-center mb-6">
+      <div class="text-4xl font-bold text-white/90 countdown-animation" id="seconds">10</div>
+      <div class="ml-2 flex items-end text-white/60 mb-1">秒后跳转</div>
+    </div>
+    
+    <!-- 跳转按钮 -->
+    <button id="redirectBtn" class="w-full bg-primary hover:bg-primary/90 text-white font-medium py-3 px-6 rounded-lg transition-colors duration-300 hover-scale mb-6">
+      马上跳转新网页
+    </button>
+    
+    <!-- 联系信息 -->
+    <div class="text-center text-white/60 text-sm">
+      <i class="fa fa-weixin text-secondary mr-1"></i>
+      如有问题请联系: 
+      <span class="text-secondary">YGWFK2024</span>
+    </div>
+    
+    <!-- 底部备注 -->
+    <div class="absolute bottom-4 left-0 right-0 text-center text-white/40 text-xs" id="redirectNote">
+      即将跳转至: 
+    </div>
+  </div>
+
+  <script>
+    // ==========================
+    // 配置参数 - 只需修改这里的网址
+    // ==========================
+    const targetUrl = "https://yzbjfpv.top/tools/78%E9%95%BF%E5%BA%A6%E6%B5%8B%E8%AF%95";  // 在此处修改目标网址
+    
+    // 设置当前日期
+    document.addEventListener('DOMContentLoaded', () => {
+      const now = new Date();
+      const options = { year: 'numeric', month: 'long', day: 'numeric' };
+      const formattedDate = now.toLocaleDateString('zh-CN', options);
+      document.getElementById('updateDate').textContent = `更新日期: ${formattedDate}`;
+      
+      // 同步更新底部跳转提示
+      document.getElementById('redirectNote').innerHTML = `即将跳转至: ${targetUrl}`;
+    });
+
+    // 倒计时配置
+    let countdownSeconds = 10;
+    
+    // DOM元素
+    const secondsElement = document.getElementById('seconds');
+    const redirectBtn = document.getElementById('redirectBtn');
+    
+    // 倒计时更新（带数字动画）
+    function updateCountdown() {
+      // 添加数字变化动画效果
+      secondsElement.classList.add('scale-125', 'opacity-70', 'text-secondary');
+      
+      setTimeout(() => {
+        secondsElement.textContent = countdownSeconds;
+        secondsElement.classList.remove('scale-125', 'opacity-70', 'text-secondary');
+      }, 150);
+      
+      if (countdownSeconds <= 0) {
+        window.location.href = targetUrl;
+        return;
+      }
+      
+      countdownSeconds--;
+    }
+    
+    // 初始化倒计时
+    updateCountdown();
+    const countdownInterval = setInterval(updateCountdown, 1000);
+    
+    // 立即跳转按钮
+    redirectBtn.addEventListener('click', () => {
+      clearInterval(countdownInterval);
+      window.location.href = targetUrl;
+    });
+  </script>
+</body>
+</html>
