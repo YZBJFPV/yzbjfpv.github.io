@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FlyzAI-GPT5 | Advanced AI Chat</title>
+    
+    <!-- External Resources -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.8/dist/chart.umd.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind Configuration -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#165DFF',
+                        secondary: '#0FC6C2',
+                        accent: '#722ED1',
+                        dark: '#0A0F1C',
+                        'dark-light': '#141B2D',
+                        wechat: '#07C160' // WeChat green color
+                    },
+                    fontFamily: { inter: ['Inter', 'sans-serif'] }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Custom Utilities -->
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .text-gradient {
+                background-clip: text;
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+            }
+            .bg-glass {
+                background: rgba(255,255,255,0.05);
+                backdrop-filter: blur(10px);
+            }
+            .bg-tech {
+                background-size: 40px 40px;
+                background-image: 
+                    linear-gradient(to right, rgba(22, 93, 255, 0.08) 1px, transparent 1px),
+                    linear-gradient(to bottom, rgba(22, 93, 255, 0.08) 1px, transparent 1px);
+            }
+            .neon {
+                box-shadow: 0 0 15px rgba(22, 93, 255, 0.5);
+            }
+            .float {
+                animation: float 5s ease-in-out infinite;
+            }
+            .rise {
+                animation: rise 0.8s ease-out forwards;
+            }
+            .btn-hover {
+                transition: all 0.3s ease;
+            }
+            .btn-hover:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 8px 20px rgba(22, 93, 255, 0.3);
+            }
+            .wechat-hover {
+                transition: all 0.3s ease;
+            }
+            .wechat-hover:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 8px 20px rgba(7, 193, 96, 0.3);
+            }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+
+        @keyframes rise {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body class="font-inter bg-dark text-white min-h-screen overflow-x-hidden bg-tech">
+    <!-- Tech Background Elements -->
+    <div class="fixed inset-0 z-0">
+        <!-- Floating gradient orbs -->
+        <div class="absolute top-[5%] right-[10%] w-72 h-72 bg-primary/20 rounded-full filter blur-3xl float"></div>
+        <div class="absolute top-[40%] left-[5%] w-64 h-64 bg-secondary/20 rounded-full filter blur-3xl float" style="animation-delay: 1s;"></div>
+        <div class="absolute bottom-[15%] right-[15%] w-56 h-56 bg-accent/20 rounded-full filter blur-3xl float" style="animation-delay: 2s;"></div>
+        
+        <!-- Circuit patterns -->
+        <svg class="absolute inset-0 w-full h-full opacity-10" xmlns="http://www.w3.org/2000/svg">
+            <path d="M0,150 L150,100 L300,200 L450,120 L600,250 L750,180 L900,300 L1050,220 L1200,350 L1350,280 L1500,400" 
+                  stroke="#165DFF" stroke-width="1" fill="none"/>
+            <path d="M0,350 L150,300 L300,400 L450,320 L600,450 L750,380 L900,500 L1050,420 L1200,550 L1350,480 L1500,600" 
+                  stroke="#0FC6C2" stroke-width="1" fill="none"/>
+        </svg>
+    </div>
+
+    <!-- Particle Background -->
+    <div id="particles-js" class="fixed inset-0 z-0 opacity-30"></div>
+
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full z-50 bg-glass border-b border-primary/20 py-3">
+        <div class="container mx-auto px-4 flex justify-between items-center">
+            <!-- Logo -->
+            <div class="flex items-center gap-2">
+                <div class="w-9 h-9 rounded-lg bg-gradient-to-br from-primary to-secondary flex items-center justify-center neon">
+                    <i class="fa fa-bolt"></i>
+                </div>
+                <span class="font-bold text-lg">FlyzAI<span class="text-primary">GPT5</span></span>
+            </div>
+            
+            <!-- Desktop Navigation -->
+            <div class="hidden md:flex items-center gap-6">
+                <a href="#features" class="text-gray-300 hover:text-primary transition-colors">Features</a>
+                <a href="#capabilities" class="text-gray-300 hover:text-primary transition-colors">Capabilities</a>
+                <a href="#performance" class="text-gray-300 hover:text-primary transition-colors">Performance</a>
+                <button id="contactBtn" class="bg-primary/10 hover:bg-primary/20 text-primary px-4 py-2 rounded-full text-sm transition-all border border-primary/30">
+                    <i class="fa fa-wechat mr-1"></i>Contact
+                </button>
+            </div>
+            
+            <!-- Mobile Menu Button -->
+            <button class="md:hidden text-lg" id="mobileMenuBtn">
+                <i class="fa fa-bars"></i>
+            </button>
+        </div>
+        
+        <!-- Mobile Menu -->
+        <div id="mobileMenu" class="md:hidden hidden bg-dark-light border-t border-primary/20 py-2 px-4">
+            <div class="flex flex-col gap-2">
+                <a href="#features" class="text-gray-300 hover:text-primary transition-colors py-1">Features</a>
+                <a href="#capabilities" class="text-gray-300 hover:text-primary transition-colors py-1">Capabilities</a>
+                <a href="#performance" class="text-gray-300 hover:text-primary transition-colors py-1">Performance</a>
+                <button id="mobileContactBtn" class="bg-primary/10 hover:bg-primary/20 text-primary px-4 py-2 rounded-full text-sm transition-all border border-primary/30 w-full">
+                    <i class="fa fa-wechat mr-1"></i>Contact
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="relative z-10 pt-16 pb-16">
+        <!-- Hero Section -->
+        <section class="container mx-auto px-4 mb-10">
+            <div class="text-center max-w-4xl mx-auto rise">
+                <div class="inline-block px-3 py-1 bg-primary/10 text-primary text-xs rounded-full mb-4 border border-primary/30">
+                    Next-gen AI Conversation
+                </div>
+                
+                <h1 class="text-[clamp(2rem,5vw,3.5rem)] font-bold mb-4 leading-tight">
+                    <span class="bg-gradient-to-r from-primary via-secondary to-accent text-gradient">
+                        Intelligent. Fast. Unlimited.
+                    </span>
+                </h1>
+                
+                <p class="text-gray-300 mb-6 max-w-2xl mx-auto">
+                    Experience GPT5-powered conversations without login or restrictions
+                </p>
+                
+                <!-- Action Buttons -->
+                <div class="flex flex-col sm:flex-row gap-4 justify-center mb-8">
+                    <a href="https://yzbjfpv.top/flyzai-login" class="btn-hover bg-gradient-to-r from-primary to-secondary text-white font-semibold py-3 px-8 rounded-full">
+                        <i class="fa fa-user-circle mr-2"></i>Login to Chat
+                    </a>
+                    <a href="https://yzbjfpv.top/flyzai-guest" class="btn-hover bg-white/10 border border-white/20 text-white font-semibold py-3 px-8 rounded-full">
+                        <i class="fa fa-eye mr-2"></i>Try as Guest
+                    </a>
+                </div>
+            </div>
+            
+            <!-- Chat Preview -->
+            <div class="relative h-56 md:h-64 max-w-3xl mx-auto rounded-xl overflow-hidden bg-glass border border-primary/20 rise" style="animation-delay: 0.2s;">
+                <div class="absolute inset-0 flex items-center justify-center p-4">
+                    <!-- Simulated chat interface -->
+                    <div class="w-full max-w-md space-y-3">
+                        <div class="flex gap-2">
+                            <div class="w-7 h-7 rounded-full bg-primary/30 flex-shrink-0"></div>
+                            <div class="bg-primary/10 rounded-lg rounded-tl-none px-3 py-2 text-sm max-w-[80%]">
+                                Hello! I'm FlyzAI. How can I help you?
+                            </div>
+                        </div>
+                        <div class="flex gap-2 justify-end">
+                            <div class="bg-white/10 rounded-lg rounded-tr-none px-3 py-2 text-sm max-w-[80%]">
+                                What makes you different?
+                            </div>
+                            <div class="w-7 h-7 rounded-full bg-gray-600 flex-shrink-0"></div>
+                        </div>
+                        <div class="flex gap-2">
+                            <div class="w-7 h-7 rounded-full bg-primary/30 flex-shrink-0"></div>
+                            <div class="bg-primary/10 rounded-lg rounded-tl-none px-3 py-2 text-sm max-w-[80%]">
+                                I offer faster responses, better understanding, and no login requirements.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Features Section -->
+        <section id="features" class="container mx-auto px-4 mb-12 rise" style="animation-delay: 0.4s;">
+            <h2 class="text-2xl font-bold mb-8 text-center">
+                <span class="bg-gradient-to-r from-primary to-secondary text-gradient">Core Features</span>
+            </h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Feature 1 -->
+                <div class="bg-glass p-5 rounded-xl border border-white/10 hover:border-primary/30 transition-all hover:-translate-y-1">
+                    <div class="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center mb-4">
+                        <i class="fa fa-comments text-primary"></i>
+                    </div>
+                    <h3 class="font-semibold mb-2">Natural Chat</h3>
+                    <p class="text-gray-400 text-sm">Human-like conversations with context awareness</p>
+                </div>
+                
+                <!-- Feature 2 -->
+                <div class="bg-glass p-5 rounded-xl border border-white/10 hover:border-primary/30 transition-all hover:-translate-y-1">
+                    <div class="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center mb-4">
+                        <i class="fa fa-bolt text-primary"></i>
+                    </div>
+                    <h3 class="font-semibold mb-2">Instant Responses</h3>
+                    <p class="text-gray-400 text-sm">Optimized for speed without quality loss</p>
+                </div>
+                
+                <!-- Feature 3 -->
+                <div class="bg-glass p-5 rounded-xl border border-white/10 hover:border-primary/30 transition-all hover:-translate-y-1">
+                    <div class="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center mb-4">
+                        <i class="fa fa-unlock-alt text-primary"></i>
+                    </div>
+                    <h3 class="font-semibold mb-2">No Restrictions</h3>
+                    <p class="text-gray-400 text-sm">Free access with no login or usage limits</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Capabilities Section -->
+        <section id="capabilities" class="container mx-auto px-4 mb-12 rise" style="animation-delay: 0.6s;">
+            <h2 class="text-2xl font-bold mb-8 text-center">
+                <span class="bg-gradient-to-r from-primary to-secondary text-gradient">What It Can Do</span>
+            </h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Capability 1 -->
+                <div class="bg-glass rounded-xl overflow-hidden border border-white/10 hover:border-primary/30 transition-all group">
+                    <div class="h-40 overflow-hidden">
+                        <img src="https://picsum.photos/id/0/600/400" alt="Content creation" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
+                    </div>
+                    <div class="p-5">
+                        <h3 class="font-semibold mb-2">Create Content</h3>
+                        <p class="text-gray-400 text-sm">Write articles, stories, and messages with ease</p>
+                    </div>
+                </div>
+                
+                <!-- Capability 2 -->
+                <div class="bg-glass rounded-xl overflow-hidden border border-white/10 hover:border-primary/30 transition-all group">
+                    <div class="h-40 overflow-hidden">
+                        <img src="https://picsum.photos/id/160/600/400" alt="Code assistance" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
+                    </div>
+                    <div class="p-5">
+                        <h3 class="font-semibold mb-2">Assist Coding</h3>
+                        <p class="text-gray-400 text-sm">Generate, debug and explain code in any language</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Performance Section -->
+        <section id="performance" class="container mx-auto px-4 mb-12 rise" style="animation-delay: 0.8s;">
+            <h2 class="text-2xl font-bold mb-8 text-center">
+                <span class="bg-gradient-to-r from-primary to-secondary text-gradient">Performance</span>
+            </h2>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center max-w-5xl mx-auto">
+                <!-- Performance Chart -->
+                <div class="bg-glass p-5 rounded-xl border border-white/10">
+                    <h3 class="text-base font-semibold mb-4">Capability Comparison</h3>
+                    <div class="h-64">
+                        <canvas id="performanceChart"></canvas>
+                    </div>
+                </div>
+                
+                <!-- Key Metrics -->
+                <div class="space-y-4">
+                    <div class="bg-glass p-5 rounded-xl border border-white/10 hover:border-primary/30 transition-all">
+                        <div class="flex items-start gap-3">
+                            <div class="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center flex-shrink-0">
+                                <i class="fa fa-bolt text-primary"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold mb-1">Faster Responses</h4>
+                                <p class="text-gray-400 text-sm">5x quicker than standard AI chatbots</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-glass p-5 rounded-xl border border-white/10 hover:border-primary/30 transition-all">
+                        <div class="flex items-start gap-3">
+                            <div class="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center flex-shrink-0">
+                                <i class="fa fa-brain text-primary"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold mb-1">Better Understanding</h4>
+                                <p class="text-gray-400 text-sm">Superior context retention and comprehension</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CTA Section -->
+        <section class="container mx-auto px-4 rise" style="animation-delay: 1s;">
+            <div class="bg-gradient-to-r from-primary/20 to-secondary/20 rounded-xl p-6 md:p-8 text-center border border-primary/30 relative overflow-hidden">
+                <!-- Background elements -->
+                <div class="absolute -top-16 -right-16 w-48 h-48 bg-primary/30 rounded-full filter blur-3xl"></div>
+                <div class="absolute -bottom-16 -left-16 w-48 h-48 bg-secondary/30 rounded-full filter blur-3xl"></div>
+                
+                <div class="relative z-10">
+                    <h2 class="text-2xl md:text-3xl font-bold mb-4">Ready to Experience?</h2>
+                    <p class="text-gray-300 mb-6 max-w-md mx-auto">
+                        Try the advanced GPT5-powered chat without limitations
+                    </p>
+                    <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                        <a href="https://yzbjfpv.top/flyzai-login" class="btn-hover bg-gradient-to-r from-primary to-secondary text-white font-semibold py-3 px-8 rounded-full neon">
+                            <i class="fa fa-user-circle mr-2"></i>Login to Chat
+                        </a>
+                        <a href="https://yzbjfpv.top/flyzai-guest" class="btn-hover bg-white/10 border border-white/20 text-white font-semibold py-3 px-8 rounded-full">
+                            <i class="fa fa-eye mr-2"></i>Try as Guest
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-dark-light border-t border-primary/20 py-8 relative z-10">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
+                <div>
+                    <div class="flex items-center gap-2 mb-3">
+                        <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-secondary flex items-center justify-center neon">
+                            <i class="fa fa-bolt text-sm"></i>
+                        </div>
+                        <span class="font-bold">FlyzAI<span class="text-primary">GPT5</span></span>
+                    </div>
+                    <p class="text-gray-400 text-sm mb-3">
+                        Advanced AI conversation platform
+                    </p>
+                    <div class="flex gap-3">
+                        <a href="#" class="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-gray-400 hover:text-primary transition-colors">
+                            <i class="fa fa-twitter"></i>
+                        </a>
+                        <a href="#" class="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-gray-400 hover:text-wechat transition-colors">
+                            <i class="fa fa-wechat"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <div>
+                    <h4 class="font-semibold mb-3 text-sm">Product</h4>
+                    <ul class="space-y-1 text-sm">
+                        <li><a href="#features" class="text-gray-400 hover:text-primary transition-colors">Features</a></li>
+                        <li><a href="#capabilities" class="text-gray-400 hover:text-primary transition-colors">Capabilities</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="font-semibold mb-3 text-sm">Resources</h4>
+                    <ul class="space-y-1 text-sm">
+                        <li><a href="#" class="text-gray-400 hover:text-primary transition-colors">Docs</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-primary transition-colors">Tutorials</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="font-semibold mb-3 text-sm">Contact</h4>
+                    <ul class="space-y-2 text-sm">
+                        <li class="flex items-center gap-2">
+                            <i class="fa fa-wechat text-wechat"></i>
+                            <span class="text-gray-400">WeChat: YGWFK2024</span>
+                        </li>
+                        <li>
+                            <a href="#" class="text-gray-400 hover:text-primary transition-colors flex items-center gap-2">
+                                <i class="fa fa-envelope"></i>
+                                <span>Message Us</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="pt-4 border-t border-white/10 text-center text-gray-500 text-xs">
+                <p>© 2025 FlyzAI Technologies. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Contact Modal with WeChat Info -->
+    <div id="contactModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center opacity-0 pointer-events-none transition-opacity duration-300">
+        <div class="bg-dark-light border border-primary/30 rounded-xl p-6 max-w-md w-full mx-4 transform scale-95 transition-transform duration-300">
+            <button id="closeModal" class="absolute top-3 right-3 text-gray-400 hover:text-white transition-colors">
+                <i class="fa fa-times"></i>
+            </button>
+            <div class="text-center mb-4">
+                <div class="w-14 h-14 rounded-full bg-wechat/20 flex items-center justify-center mx-auto mb-4">
+                    <i class="fa fa-wechat text-wechat text-2xl"></i>
+                </div>
+                <h3 class="text-xl font-bold mb-2">Contact Us</h3>
+                <p class="text-gray-400 text-sm mb-4">Connect with us on WeChat for support</p>
+                
+                <!-- WeChat ID Display -->
+                <div class="bg-white/5 rounded-lg p-4 mb-5 border border-wechat/30">
+                    <div class="flex items-center justify-center gap-3">
+                        <i class="fa fa-wechat text-wechat text-xl"></i>
+                        <span class="font-semibold text-white">YGWFK2024</span>
+                    </div>
+                    <p class="text-center text-gray-400 text-xs mt-2">Add this WeChat ID to connect</p>
+                </div>
+            </div>
+            
+            <a href="weixin://dl/chat?YGWFK2024" class="wechat-hover block w-full py-3 bg-wechat text-white rounded-lg transition-colors text-center font-medium">
+                <i class="fa fa-wechat mr-2"></i>Open in WeChat
+            </a>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script>
+        // Mobile menu toggle
+        document.getElementById('mobileMenuBtn').addEventListener('click', function() {
+            const menu = document.getElementById('mobileMenu');
+            menu.classList.toggle('hidden');
+            this.innerHTML = menu.classList.contains('hidden') 
+                ? '<i class="fa fa-bars"></i>' 
+                : '<i class="fa fa-times"></i>';
+        });
+
+        // Contact modal functionality
+        const contactModal = document.getElementById('contactModal');
+        const modalContent = contactModal.querySelector('div');
+        
+        function openModal() {
+            contactModal.classList.remove('opacity-0', 'pointer-events-none');
+            modalContent.classList.remove('scale-95');
+            modalContent.classList.add('scale-100');
+            document.body.style.overflow = 'hidden';
+        }
+        
+        function closeModal() {
+            contactModal.classList.add('opacity-0', 'pointer-events-none');
+            modalContent.classList.remove('scale-100');
+            modalContent.classList.add('scale-95');
+            document.body.style.overflow = 'auto';
+        }
+        
+        document.getElementById('contactBtn').addEventListener('click', openModal);
+        document.getElementById('mobileContactBtn').addEventListener('click', openModal);
+        document.getElementById('closeModal').addEventListener('click', closeModal);
+        
+        contactModal.addEventListener('click', (e) => {
+            if (e.target === contactModal) closeModal();
+        });
+
+        // Particles.js configuration
+        particlesJS('particles-js', {
+            "particles": {
+                "number": { "value": 60 },
+                "color": { "value": "#165DFF" },
+                "shape": { "type": "circle" },
+                "opacity": { "value": 0.5, "random": true },
+                "size": { "value": 2, "random": true },
+                "line_linked": {
+                    "enable": true,
+                    "distance": 120,
+                    "color": "#165DFF",
+                    "opacity": 0.2,
+                    "width": 1
+                },
+                "move": {
+                    "enable": true,
+                    "speed": 1,
+                    "direction": "none",
+                    "random": true
+                }
+            },
+            "interactivity": {
+                "onhover": {
+                    "enable": true,
+                    "mode": "grab"
+                },
+                "onclick": {
+                    "enable": true,
+                    "mode": "push"
+                }
+            }
+        });
+
+        // Performance chart
+        const ctx = document.getElementById('performanceChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'radar',
+            data: {
+                labels: ['Speed', 'Understanding', 'Accuracy', 'Creativity', 'Code'],
+                datasets: [
+                    {
+                        label: 'FlyzAI-GPT5',
+                        data: [95, 92, 90, 94, 89],
+                        backgroundColor: 'rgba(22, 93, 255, 0.2)',
+                        borderColor: 'rgba(22, 93, 255, 1)',
+                        pointBackgroundColor: 'rgba(22, 93, 255, 1)',
+                        pointBorderColor: '#fff'
+                    },
+                    {
+                        label: 'Standard AI',
+                        data: [70, 75, 72, 68, 65],
+                        backgroundColor: 'rgba(15, 198, 194, 0.2)',
+                        borderColor: 'rgba(15, 198, 194, 1)',
+                        pointBackgroundColor: 'rgba(15, 198, 194, 1)',
+                        pointBorderColor: '#fff'
+                    }
+                ]
+            },
+            options: {
+                scales: {
+                    r: {
+                        angleLines: { color: 'rgba(255,255,255,0.1)' },
+                        grid: { color: 'rgba(255,255,255,0.1)' },
+                        pointLabels: { color: 'rgba(255,255,255,0.7)', font: { size: 10 } },
+                        ticks: { color: 'rgba(255,255,255,0.5)', backdropColor: 'transparent' }
+                    }
+                },
+                plugins: {
+                    legend: { labels: { color: 'rgba(255,255,255,0.7)', font: { size: 10 } } }
+                }
+            }
+        });
+
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth' });
+                    
+                    // Close mobile menu if open
+                    const mobileMenu = document.getElementById('mobileMenu');
+                    if (!mobileMenu.classList.contains('hidden')) {
+                        mobileMenu.classList.add('hidden');
+                        document.getElementById('mobileMenuBtn').innerHTML = '<i class="fa fa-bars"></i>';
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>
