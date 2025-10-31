@@ -45,6 +45,12 @@
             .hover-rise:hover {
                 transform: translateY(-6px);
             }
+            .click-scale {
+                transition: transform 0.2s ease;
+            }
+            .click-scale:active {
+                transform: scale(0.95);
+            }
         }
     </style>
 
@@ -117,29 +123,6 @@
             }
         }
         
-        /* 视频容器效果 */
-        .video-wrapper {
-            position: relative;
-            overflow: hidden;
-            border-radius: 12px;
-        }
-        
-        .video-wrapper::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(to top, rgba(0,0,0,0.1) 0%, transparent 100%);
-            z-index: 1;
-            transition: opacity 0.3s ease;
-        }
-        
-        .video-wrapper:hover::before {
-            opacity: 0.2;
-        }
-        
         /* 粒子背景 */
         #particles-js {
             position: absolute;
@@ -151,41 +134,82 @@
             opacity: 0.6;
         }
         
-        /* 公告动画 */
-        .announcement {
+        /* 导航栏下方广播栏 */
+        .broadcast-bar {
+            background: linear-gradient(90deg, #FF7D00, #FFB042, #FF7D00);
+            background-size: 200% 100%;
+            animation: broadcastFlow 8s linear infinite;
             overflow: hidden;
-            position: relative;
+            height: 40px;
+            line-height: 40px;
         }
         
-        .announcement-text {
+        @keyframes broadcastFlow {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 200% 50%; }
+        }
+        
+        .broadcast-text {
             display: inline-block;
-            animation: scrollText 15s linear infinite;
+            white-space: nowrap;
+            animation: scrollBroadcast 20s linear infinite;
         }
         
-        @keyframes scrollText {
+        @keyframes scrollBroadcast {
             0% { transform: translateX(100%); }
             100% { transform: translateX(-100%); }
         }
         
-        /* 案例卡片效果 */
-        .case-link {
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .case-link::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
+        /* 微信弹窗样式 */
+        .wx-modal {
+            position: fixed;
+            top: 0;
             left: 0;
-            width: 0;
-            height: 2px;
-            background-color: #165DFF;
-            transition: width 0.3s ease;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
         }
         
-        .case-link:hover::after {
-            width: 100%;
+        .wx-modal.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            text-align: center;
+            transform: translateY(-20px);
+            transition: transform 0.3s ease;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            min-width: 280px;
+        }
+        
+        .wx-modal.active .modal-content {
+            transform: translateY(0);
+        }
+        
+        .modal-close {
+            margin-top: 20px;
+            padding: 6px 20px;
+            background-color: #165DFF;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        
+        .modal-close:hover {
+            background-color: #0E4CD1;
         }
     </style>
 </head>
@@ -193,12 +217,22 @@
     <!-- 粒子背景 -->
     <div id="particles-js"></div>
 
+    <!-- 微信弹窗 -->
+    <div id="wx-modal" class="wx-modal">
+        <div class="modal-content">
+            <i class="fa fa-weixin text-green-500 text-5xl mb-4"></i>
+            <h3 class="text-xl font-bold mb-2">微信号</h3>
+            <p class="text-2xl font-mono bg-gray-100 py-2 px-4 rounded mb-4">YGWFK2024</p>
+            <button class="modal-close click-scale">关闭</button>
+        </div>
+    </div>
+
     <!-- 导航栏 -->
     <header id="navbar" class="fixed w-full top:0 z-50 transition-all duration-500">
         <nav class="nav-gradient py-4 px-6 md:px-12 shadow-md">
             <div class="container mx-auto flex justify-between items-center">
                 <!-- Logo -->
-                <a href="https://yzbjfpv.top/20250709.html" class="flex items-center space-x-3 group">
+                <a href="https://yzbjfpv.top/20250709.html" class="flex items-center space-x-3 group click-scale">
                     <img src="https://img520.com/UIGuUV.jpeg" alt="Flyz远征飞Logo" 
                          class="h-10 w-auto object-contain rounded-md transition-all duration-500 group-hover:scale-110 rotate-6"
                          onerror="this.onerror=null;this.src='https://picsum.photos/40/40'">
@@ -207,56 +241,73 @@
                 
                 <!-- 桌面导航 -->
                 <div class="hidden md:flex items-center space-x-8">
-                    <a href="https://yzbjfpv.top/20250709.html" class="text-white hover:text-light/80 transition-colors duration-300 nav-item">
+                    <a href="https://yzbjfpv.top/20250709.html" class="text-white hover:text-light/80 transition-colors duration-300 nav-item click-scale">
                         <i class="fa fa-home mr-2 text-float"></i><span class="text-float">首页</span>
                     </a>
-                    <a href="http://yzflight.xyz" class="text-white hover:text-light/80 transition-colors duration-300 nav-item">
+                    <a href="http://yzflight.xyz" class="text-white hover:text-light/80 transition-colors duration-300 nav-item click-scale">
                         <i class="fa fa-download mr-2 text-float"></i><span class="text-float">下载中心</span>
                     </a>
-                    <a href="https://shop500685313.taobao.com/" class="text-white hover:text-light/80 transition-colors duration-300 nav-item">
+                    <a href="https://shop500685313.taobao.com/" class="text-white hover:text-light/80 transition-colors duration-300 nav-item click-scale">
                         <i class="fa fa-shopping-bag mr-2 text-float"></i><span class="text-float">严选商城</span>
                     </a>
-                    <a href="https://yzbjfpv.top/flyz/202510/维修专区.html" class="text-white hover:text-light/80 transition-colors duration-300 nav-item">
+                    <a href="https://yzbjfpv.top/flyz/202510/维修专区.html" class="text-white hover:text-light/80 transition-colors duration-300 nav-item click-scale">
                         <i class="fa fa-wrench mr-2 text-float"></i><span class="text-float">维修专区</span>
                     </a>
-                    <a href="https://yzbjfpv.top/wxtalk.html" class="text-white hover:text-light/80 transition-colors duration-300 nav-item">
+                    <a id="wx-link" class="text-white hover:text-light/80 transition-colors duration-300 nav-item click-scale">
                         <i class="fa fa-user-plus mr-2 text-float"></i><span class="text-float">加我WX</span>
                     </a>
                 </div>
                 
                 <!-- 移动端菜单按钮 -->
-                <button id="menu-toggle" class="md:hidden text-white focus:outline-none transition-transform duration-300 hover:scale-110">
+                <button id="menu-toggle" class="md:hidden text-white focus:outline-none transition-transform duration-300 hover:scale-110 click-scale">
                     <i class="fa fa-bars text-2xl"></i>
                 </button>
             </div>
         </nav>
         
+        <!-- 导航栏下方广播栏 -->
+        <div class="broadcast-bar">
+            <div class="container mx-auto px-4">
+                <div class="broadcast-text">
+                    <span class="text-white font-medium flex items-center">
+                        <i class="fa fa-bullhorn mr-3 text-yellow-200"></i>
+                        新品预告：新联名专利定向平板天线即将发布，敬请期待！
+                        <a href="https://yzbjfpv.top/flyz/new/tx" class="text-white hover:text-yellow-200 transition-colors duration-300 ml-4 click-scale">
+                            <i class="fa fa-arrow-right mr-1"></i>了解详情
+                        </a>
+                    </span>
+                </div>
+            </div>
+        </div>
+        
         <!-- 移动端导航菜单 -->
         <div id="mobile-menu" class="hidden bg-white shadow-lg md:hidden absolute w-full">
             <div class="container mx-auto py-4 px-6 flex flex-col space-y-4">
-                <a href="https://yzbjfpv.top/20250709.html" class="text-dark hover:text-primary transition-colors duration-300 py-2 border-b border-gray-100 flex items-center">
+                <a href="https://yzbjfpv.top/20250709.html" class="text-dark hover:text-primary transition-colors duration-300 py-2 border-b border-gray-100 flex items-center click-scale">
                     <i class="fa fa-home mr-3 w-5 text-center"></i>首页
                 </a>
-                <a href="http://yzflight.xyz" class="text-dark hover:text-primary transition-colors duration-300 py-2 border-b border-gray-100 flex items-center">
+                <a href="http://yzflight.xyz" class="text-dark hover:text-primary transition-colors duration-300 py-2 border-b border-gray-100 flex items-center click-scale">
                     <i class="fa fa-download mr-3 w-5 text-center"></i>下载中心
                 </a>
-                <a href="https://shop500685313.taobao.com/" class="text-dark hover:text-primary transition-colors duration-300 py-2 border-b border-gray-100 flex items-center">
+                <a href="https://shop500685313.taobao.com/" class="text-dark hover:text-primary transition-colors duration-300 py-2 border-b border-gray-100 flex items-center click-scale">
                     <i class="fa fa-shopping-bag mr-3 w-5 text-center"></i>严选商城
                 </a>
-                <a href="https://yzbjfpv.top/fix.html" class="text-dark hover:text-primary transition-colors duration-300 py-2 border-b border-gray-100 flex items-center">
+                <a href="https://yzbjfpv.top/fix.html" class="text-dark hover:text-primary transition-colors duration-300 py-2 border-b border-gray-100 flex items-center click-scale">
                     <i class="fa fa-wrench mr-3 w-5 text-center"></i>维修专区
                 </a>
-                <a href="https://yzbjfpv.top/wxtalk.html" class="text-dark hover:text-primary transition-colors duration-300 py-2 flex items-center">
+                <a id="mobile-wx-link" class="text-dark hover:text-primary transition-colors duration-300 py-2 flex items-center click-scale">
                     <i class="fa fa-user-plus mr-3 w-5 text-center"></i>加我WX
                 </a>
             </div>
         </div>
     </header>
-
-    <!-- 视频模块 -->
-    <div class="pt-20 px-4 md:px-6">
+        <!-- 视频模块 -->
+    <div class="pt-30 px-4 md:px-6">
         <div class="container mx-auto">
-            <div class="video-wrapper hover-rise">
+            <div class="video-wrapper hover-rise click-scale opacity-0 transform translate-y-8 transition-all duration-1000" id="video-container">
+                <div class="absolute inset-0 bg-primary/5 z-10 flex items-center justify-center opacity-80 transition-opacity duration-500 hover:opacity-0">
+                    <i class="fa fa-play-circle-o text-white text-5xl transform transition-transform duration-300 hover:scale-110"></i>
+                </div>
                 <iframe 
                     src="https://player.bilibili.com/player.html?bvid=BV1MWjgzvEED&autoplay=1&dm=0" 
                     style="width: 100%; aspect-ratio: 16/9; border: none;" 
@@ -267,97 +318,245 @@
         </div>
     </div>
 
-    <!-- 产品特点 -->
-    <div class="container mx-auto px-4 md:px-6 my-12">
-        <h2 class="text-center mb-10 text-[clamp(1.8rem,5vw,2.5rem)] font-bold text-primary fade-in" style="animation-delay: 0.2s">
-            <span class="text-float">P</span><span class="text-float" style="animation-delay: 0.1s">o</span><span class="text-float" style="animation-delay: 0.2s">k</span><span class="text-float" style="animation-delay: 0.3s">r</span><span class="text-float" style="animation-delay: 0.4s">c</span> × 
-            <span class="text-float" style="animation-delay: 0.5s">F</span><span class="text-float" style="animation-delay: 0.6s">l</span><span class="text-float" style="animation-delay: 0.7s">y</span><span class="text-float" style="animation-delay: 0.8s">z</span>联名
+    <!-- 产品特点（带折叠面板） -->
+    <div class="container mx-auto px-4 md:px-6 my-16">
+        <h2 class="text-center mb-12 text-[clamp(1.8rem,5vw,2.5rem)] font-bold text-primary opacity-0 transform translate-y-8 transition-all duration-800" id="product-title">
+            <span class="text-float inline-block transition-all duration-500 hover:text-secondary">P</span>
+            <span class="text-float inline-block transition-all duration-500 hover:text-secondary" style="transition-delay: 0.1s">o</span>
+            <span class="text-float inline-block transition-all duration-500 hover:text-secondary" style="transition-delay: 0.2s">k</span>
+            <span class="text-float inline-block transition-all duration-500 hover:text-secondary" style="transition-delay: 0.3s">r</span>
+            <span class="text-float inline-block transition-all duration-500 hover:text-secondary" style="transition-delay: 0.4s">c</span> × 
+            <span class="text-float inline-block transition-all duration-500 hover:text-secondary" style="transition-delay: 0.5s">F</span>
+            <span class="text-float inline-block transition-all duration-500 hover:text-secondary" style="transition-delay: 0.6s">l</span>
+            <span class="text-float inline-block transition-all duration-500 hover:text-secondary" style="transition-delay: 0.7s">y</span>
+            <span class="text-float inline-block transition-all duration-500 hover:text-secondary" style="transition-delay: 0.8s">z</span>联名
             <br class="md:hidden">
-            <span class="text-float" style="animation-delay: 0.9s">FPV穿越机远航电池</span>
+            <span class="text-float inline-block transition-all duration-500 hover:text-secondary" style="transition-delay: 0.9s">FPV穿越机远航电池</span>
         </h2>
         
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div class="bg-white rounded-xl p-6 md:p-8 card-elevation hover-rise fade-in" style="animation-delay: 0.4s">
-                <div class="w-14 h-14 bg-primary/10 rounded-full flex items-center justify-center mb-5">
-                    <i class="fa fa-bolt text-primary text-2xl"></i>
+            <!-- 核心配置卡片 -->
+            <div class="bg-white rounded-xl p-6 md:p-8 card-elevation hover-rise opacity-0 transform translate-y-8 transition-all duration-700 click-scale" style="transition-delay: 0.2s">
+                <div class="w-14 h-14 bg-primary/10 rounded-full flex items-center justify-center mb-5 transform transition-transform duration-500 hover:rotate-12 hover:bg-primary/20">
+                    <i class="fa fa-bolt text-primary text-2xl transition-transform duration-500 hover:scale-125"></i>
                 </div>
                 <h4 class="text-primary font-bold text-xl mb-4 text-float">核心配置</h4>
-                <p class="text-gray-600 leading-relaxed text-float">
+                <p class="text-gray-600 leading-relaxed mb-3">
                     21700特供电芯 | FPV高爆发远航专用<br>
                     35C瞬时放电 肆意花飞
                 </p>
+                <div class="collapse-btn mt-2" data-target="config-panel">
+                    <span>查看详细参数</span>
+                    <i class="fa fa-chevron-down transition-transform duration-300"></i>
+                </div>
+                <div id="config-panel" class="collapse-panel mt-4">
+                    <div class="border-t border-gray-100 pt-4 space-y-2 animate-fadeIn">
+                        <p class="text-gray-600"><i class="fa fa-check-circle text-primary mr-2"></i>电芯类型：高容量21700动力电芯</p>
+                        <p class="text-gray-600"><i class="fa fa-check-circle text-primary mr-2"></i>电压范围：3.7V-4.2V（单节）</p>
+                        <p class="text-gray-600"><i class="fa fa-check-circle text-primary mr-2"></i>持续放电：25C</p>
+                        <p class="text-gray-600"><i class="fa fa-check-circle text-primary mr-2"></i>瞬时放电：35C（10秒内）</p>
+                        <p class="text-gray-600"><i class="fa fa-check-circle text-primary mr-2"></i>工作温度：-10℃~60℃</p>
+                    </div>
+                </div>
             </div>
             
-            <div class="bg-white rounded-xl p-6 md:p-8 card-elevation hover-rise fade-in" style="animation-delay: 0.6s">
-                <div class="w-14 h-14 bg-primary/10 rounded-full flex items-center justify-center mb-5">
-                    <i class="fa fa-sliders text-primary text-2xl"></i>
+            <!-- 定制方案卡片 -->
+            <div class="bg-white rounded-xl p-6 md:p-8 card-elevation hover-rise opacity-0 transform translate-y-8 transition-all duration-700 click-scale" style="transition-delay: 0.4s">
+                <div class="w-14 h-14 bg-primary/10 rounded-full flex items-center justify-center mb-5 transform transition-transform duration-500 hover:rotate-12 hover:bg-primary/20">
+                    <i class="fa fa-sliders text-primary text-2xl transition-transform duration-500 hover:scale-125"></i>
                 </div>
                 <h4 class="text-primary font-bold text-xl mb-4 text-float">定制方案</h4>
-                <p class="text-gray-600 leading-relaxed text-float">
+                <p class="text-gray-600 leading-relaxed mb-3">
                     1-16S电压组合 | 电芯参数可选<br>
                     FPV设备供电接口适配
                 </p>
+                <div class="collapse-btn mt-2" data-target="custom-panel">
+                    <span>查看详细参数</span>
+                    <i class="fa fa-chevron-down transition-transform duration-300"></i>
+                </div>
+                <div id="custom-panel" class="collapse-panel mt-4">
+                    <div class="border-t border-gray-100 pt-4 space-y-2 animate-fadeIn">
+                        <p class="text-gray-600"><i class="fa fa-check-circle text-primary mr-2"></i>电压组合：1S~16S灵活定制</p>
+                        <p class="text-gray-600"><i class="fa fa-check-circle text-primary mr-2"></i>容量选项：2000mAh~10000mAh</p>
+                        <p class="text-gray-600"><i class="fa fa-check-circle text-primary mr-2"></i>接口类型：XT60/XT90/XT30可选</p>
+                        <p class="text-gray-600"><i class="fa fa-check-circle text-primary mr-2"></i>均衡头：支持JST-XH平衡充</p>
+                        <p class="text-gray-600"><i class="fa fa-check-circle text-primary mr-2"></i>出线方式：可定制长度与方向</p>
+                    </div>
+                </div>
             </div>
             
-            <div class="bg-white rounded-xl p-6 md:p-8 card-elevation hover-rise fade-in" style="animation-delay: 0.8s">
-                <div class="w-14 h-14 bg-primary/10 rounded-full flex items-center justify-center mb-5">
-                    <i class="fa fa-dashboard text-primary text-2xl"></i>
+            <!-- 易用设计卡片 -->
+            <div class="bg-white rounded-xl p-6 md:p-8 card-elevation hover-rise opacity-0 transform translate-y-8 transition-all duration-700 click-scale" style="transition-delay: 0.6s">
+                <div class="w-14 h-14 bg-primary/10 rounded-full flex items-center justify-center mb-5 transform transition-transform duration-500 hover:rotate-12 hover:bg-primary/20">
+                    <i class="fa fa-dashboard text-primary text-2xl transition-transform duration-500 hover:scale-125"></i>
                 </div>
                 <h4 class="text-primary font-bold text-xl mb-4 text-float">易用设计</h4>
-                <p class="text-gray-600 leading-relaxed text-float">
+                <p class="text-gray-600 leading-relaxed mb-3">
                     集成电压显示 | 单芯状态实时查<br>
                     智能保护 不惧过放过充
                 </p>
+                <div class="collapse-btn mt-2" data-target="design-panel">
+                    <span>查看详细参数</span>
+                    <i class="fa fa-chevron-down transition-transform duration-300"></i>
+                </div>
+                <div id="design-panel" class="collapse-panel mt-4">
+                    <div class="border-t border-gray-100 pt-4 space-y-2 animate-fadeIn">
+                        <p class="text-gray-600"><i class="fa fa-check-circle text-primary mr-2"></i>保护功能：过充/过放/过流/短路保护</p>
+                        <p class="text-gray-600"><i class="fa fa-check-circle text-primary mr-2"></i>显示方式：LED电压指示灯</p>
+                        <p class="text-gray-600"><i class="fa fa-check-circle text-primary mr-2"></i>外壳材质：防火ABS+PC复合材料</p>
+                        <p class="text-gray-600"><i class="fa fa-check-circle text-primary mr-2"></i>尺寸规格：根据容量定制（约100-180mm）</p>
+                        <p class="text-gray-600"><i class="fa fa-check-circle text-primary mr-2"></i>重量：根据容量定制（约150-450g）</p>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- 新品预告 -->
-    <div class="bg-gradient-to-r from-primary/5 to-secondary/5 py-8 my-12">
-        <div class="container mx-auto px-4 md:px-6">
-            <div class="announcement relative overflow-hidden py-4">
-                <h3 class="text-center text-primary font-bold text-xl md:text-2xl mb-2 text-float">新品预告</h3>
-                <div class="announcement-text whitespace-nowrap text-center text-dark font-medium">
-                    <a href="https://yzbjfpv.top/flyz/new/tx" class="inline-flex items-center hover:text-primary transition-colors duration-300">
-                        <i class="fa fa-bullhorn mr-2 text-secondary"></i>
-                        新联名专利定向平板天线即将发布，敬请期待！
-                        <i class="fa fa-arrow-right ml-2 text-secondary"></i>
+    <style>
+        /* 新增动画样式 */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .animate-fadeIn {
+            animation: fadeIn 0.5s ease forwards;
+        }
+        
+        /* 卡片元素进入动画延迟 */
+        .card-elevation:nth-child(1) { animation-delay: 0.1s; }
+        .card-elevation:nth-child(2) { animation-delay: 0.3s; }
+        .card-elevation:nth-child(3) { animation-delay: 0.5s; }
+        
+        /* 视频容器悬停效果增强 */
+        .video-wrapper:hover {
+            box-shadow: 0 15px 30px rgba(22, 93, 255, 0.15);
+        }
+        
+        /* 折叠面板内容动画 */
+        .collapse-panel p {
+            opacity: 0;
+            transform: translateY(10px);
+            animation: fadeIn 0.3s ease forwards;
+        }
+        
+        .collapse-panel p:nth-child(1) { animation-delay: 0.1s; }
+        .collapse-panel p:nth-child(2) { animation-delay: 0.2s; }
+        .collapse-panel p:nth-child(3) { animation-delay: 0.3s; }
+        .collapse-panel p:nth-child(4) { animation-delay: 0.4s; }
+        .collapse-panel p:nth-child(5) { animation-delay: 0.5s; }
+    </style>
+
+    <script>
+        // 滚动触发动画
+        document.addEventListener('DOMContentLoaded', function() {
+            // 视频容器动画
+            const videoContainer = document.getElementById('video-container');
+            const productTitle = document.getElementById('product-title');
+            const featureCards = document.querySelectorAll('.card-elevation');
+            
+            // 初始延迟动画
+            setTimeout(() => {
+                videoContainer.classList.remove('opacity-0', 'translate-y-8');
+            }, 300);
+            
+            setTimeout(() => {
+                productTitle.classList.remove('opacity-0', 'translate-y-8');
+            }, 600);
+            
+            // 卡片动画依次触发
+            featureCards.forEach((card, index) => {
+                setTimeout(() => {
+                    card.classList.remove('opacity-0', 'translate-y-8');
+                }, 900 + (index * 200));
+            });
+
+            // 折叠面板交互
+            const collapseBtns = document.querySelectorAll('.collapse-btn');
+            collapseBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const targetId = this.getAttribute('data-target');
+                    const targetPanel = document.getElementById(targetId);
+                    
+                    // 切换按钮状态
+                    this.classList.toggle('active');
+                    // 切换面板显示
+                    targetPanel.classList.toggle('active');
+                    
+                    // 添加点击反馈动画
+                    this.classList.add('scale-95');
+                    setTimeout(() => {
+                        this.classList.remove('scale-95');
+                    }, 200);
+                });
+            });
+        });
+    </script>
+        <!-- 网站案例（折叠面板版） -->
+    <div class="container mx-auto px-4 md:px-6 my-20">
+        <h3 class="text-center mb-10 text-2xl md:text-3xl font-bold text-primary opacity-0 transform translate-y-8 transition-all duration-800" id="case-title">
+            <span class="text-float inline-block transition-all duration-500 hover:text-secondary">网站定制案例</span>
+        </h3>
+        
+        <!-- 折叠面板容器 -->
+        <div class="max-w-2xl mx-auto bg-white rounded-xl p-6 md:p-8 card-elevation opacity-0 transform translate-y-8 transition-all duration-700" id="case-container">
+            <div class="collapse-btn w-full justify-center text-lg" data-target="cases-panel">
+                <span>点击查看我们的定制案例</span>
+                <i class="fa fa-chevron-down transition-transform duration-300"></i>
+            </div>
+            
+            <div id="cases-panel" class="collapse-panel mt-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 animate-fadeIn">
+                    <!-- 案例1按钮 -->
+                    <a href="https://www.wanshizan.com.cn/dudurc" target="_blank" class="group relative overflow-hidden bg-primary/5 hover:bg-primary/10 transition-all duration-300 rounded-lg p-6 flex flex-col items-center text-center click-scale">
+                        <div class="w-16 h-16 bg-primary text-white rounded-full flex items-center justify-center mb-4 transform transition-transform duration-500 group-hover:rotate-12 group-hover:scale-110">
+                            <i class="fa fa-battery-full text-2xl"></i>
+                        </div>
+                        <h4 class="text-dark font-bold text-lg mb-2">嘟嘟电池官网</h4>
+                        <p class="text-gray-500 text-sm mb-3">专业电池品牌展示平台</p>
+                        <span class="inline-flex items-center text-primary group-hover:text-secondary transition-colors duration-300">
+                            访问官网 <i class="fa fa-arrow-right ml-2 transform transition-transform duration-300 group-hover:translate-x-1"></i>
+                        </span>
+                    </a>
+                    
+                    <!-- 案例2按钮 -->
+                    <a href="https://www.wanshizan.com.cn" target="_blank" class="group relative overflow-hidden bg-secondary/5 hover:bg-secondary/10 transition-all duration-300 rounded-lg p-6 flex flex-col items-center text-center click-scale">
+                        <div class="w-16 h-16 bg-secondary text-white rounded-full flex items-center justify-center mb-4 transform transition-transform duration-500 group-hover:rotate-12 group-hover:scale-110">
+                            <i class="fa fa-cogs text-2xl"></i>
+                        </div>
+                        <h4 class="text-dark font-bold text-lg mb-2">康易安科技官网</h4>
+                        <p class="text-gray-500 text-sm mb-3">科技企业综合展示平台</p>
+                        <span class="inline-flex items-center text-primary group-hover:text-secondary transition-colors duration-300">
+                            访问官网 <i class="fa fa-arrow-right ml-2 transform transition-transform duration-300 group-hover:translate-x-1"></i>
+                        </span>
                     </a>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- 网站案例 -->
-    <div class="container mx-auto px-4 md:px-6 my-12">
-        <h3 class="text-center mb-8 text-2xl font-bold text-primary fade-in text-float">网站定制案例</h3>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div class="bg-white rounded-xl p-6 card-elevation hover-rise fade-in" style="animation-delay: 0.2s">
-                <h4 class="text-dark font-bold text-lg mb-2 text-float">嘟嘟电池官网</h4>
-                <a href="https://www.wanshizan.com.cn/dudurc" target="_blank" class="case-link text-primary hover:text-secondary transition-colors duration-300 text-float">
-                    <i class="fa fa-link mr-1"></i> www.wanshizan.com.cn/dudurc
-                </a>
-            </div>
-            <div class="bg-white rounded-xl p-6 card-elevation hover-rise fade-in" style="animation-delay: 0.4s">
-                <h4 class="text-dark font-bold text-lg mb-2 text-float">康易安科技官网</h4>
-                <a href="https://www.wanshizan.com.cn" target="_blank" class="case-link text-primary hover:text-secondary transition-colors duration-300 text-float">
-                    <i class="fa fa-link mr-1"></i> www.wanshizan.com.cn
-                </a>
-            </div>
-        </div>
-    </div>
-
     <!-- 页脚 -->
-    <footer class="bg-gray-50 border-t border-gray-100 py-8 mt-16">
+    <footer class="bg-gray-50 border-t border-gray-100 py-10 mt-20">
         <div class="container mx-auto px-4 text-center">
-            <p class="text-gray-700 mb-3 text-float">© 2025 Flyz远征飞官方网站 首页202510版</p>
-            <p class="text-gray-500 mb-6 text-float">我们的口号是：为方便模友而生</p>
-            <div class="flex flex-wrap justify-center gap-x-6 gap-y-3 text-sm">
-                <a href="https://b23.tv/JXuI9QA" class="text-primary hover:text-secondary transition-colors duration-300 text-float">哔哩哔哩｜Flyz远征飞官方账号</a>
-                <span class="text-gray-300">|</span>
-                <a href="https://www.wanshizan.com.cn/dudurc" class="text-primary hover:text-secondary transition-colors duration-300 text-float">嘟嘟电池官网</a>
-                <span class="text-gray-300">|</span>
-                <a href="https://www.wanshizan.com.cn" class="text-primary hover:text-secondary transition-colors duration-300 text-float">康易安科技官网</a>
+            <div class="mb-6 opacity-0 transition-opacity duration-1000" id="footer-logo">
+                <img src="https://img520.com/UIGuUV.jpeg" alt="Flyz远征飞Logo" 
+                     class="h-12 w-auto object-contain rounded-md mx-auto transform transition-transform duration-500 hover:scale-110 hover:rotate-6"
+                     onerror="this.onerror=null;this.src='https://picsum.photos/48/48'">
+            </div>
+            
+            <p class="text-gray-700 mb-3 text-float opacity-0 transition-opacity duration-800" style="transition-delay: 0.2s" id="footer-copyright">
+                © 2025 Flyz远征飞官方网站 首页202510版
+            </p>
+            
+            <p class="text-gray-500 mb-8 text-float opacity-0 transition-opacity duration-800" style="transition-delay: 0.4s" id="footer-slogan">
+                我们的口号是：为方便模友而生
+            </p>
+            
+            <div class="flex justify-center gap-x-6 text-sm opacity-0 transition-opacity duration-800" style="transition-delay: 0.6s" id="footer-links">
+                <a href="https://b23.tv/JXuI9QA" class="text-primary hover:text-secondary transition-colors duration-300 text-float flex items-center group">
+                    <i class="fa fa-play-circle mr-2 transition-transform duration-300 group-hover:scale-125"></i>
+                    哔哩哔哩｜Flyz远征飞官方账号
+                </a>
             </div>
         </div>
     </footer>
@@ -365,14 +564,22 @@
     <!-- 粒子脚本 -->
     <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
     <script>
-        // 粒子效果配置
+        // 粒子效果配置（增强动画效果）
         particlesJS('particles-js', {
             "particles": {
-                "number": { "value": 60, "density": { "enable": true, "value_area": 800 } },
-                "color": { "value": "#165DFF" },
-                "shape": { "type": "circle" },
-                "opacity": { "value": 0.2, "random": true },
-                "size": { "value": 3, "random": true },
+                "number": { "value": 80, "density": { "enable": true, "value_area": 800 } },
+                "color": { "value": ["#165DFF", "#FF7D00", "#36CFC9"] },
+                "shape": { "type": ["circle", "triangle"], "stroke": { "width": 0, "color": "#fff" } },
+                "opacity": { 
+                    "value": 0.3, 
+                    "random": true,
+                    "anim": { "enable": true, "speed": 1, "opacity_min": 0.1, "sync": false }
+                },
+                "size": { 
+                    "value": 3, 
+                    "random": true,
+                    "anim": { "enable": true, "speed": 2, "size_min": 0.5, "sync": false }
+                },
                 "line_linked": {
                     "enable": true,
                     "distance": 150,
@@ -387,7 +594,8 @@
                     "random": true,
                     "straight": false,
                     "out_mode": "out",
-                    "bounce": false
+                    "bounce": false,
+                    "attract": { "enable": true, "rotateX": 600, "rotateY": 1200 }
                 }
             },
             "interactivity": {
@@ -398,61 +606,141 @@
                     "resize": true
                 },
                 "modes": {
-                    "grab": { "distance": 140, "line_linked": { "opacity": 0.3 } },
-                    "push": { "particles_nb": 3 }
+                    "grab": { "distance": 140, "line_linked": { "opacity": 0.5 } },
+                    "push": { "particles_nb": 5 }
                 }
-            }
-        });
-    </script>
-
-    <script>
-        // 导航栏滚动效果
-        window.addEventListener('scroll', function() {
-            const navbar = document.getElementById('navbar');
-            if (window.scrollY > 30) {
-                navbar.classList.add('py-2', 'shadow-lg');
-                navbar.classList.remove('py-4');
-            } else {
-                navbar.classList.add('py-4');
-                navbar.classList.remove('py-2', 'shadow-lg');
-            }
+            },
+            "retina_detect": true
         });
 
-        // 移动端菜单切换
-        document.getElementById('menu-toggle').addEventListener('click', function() {
-            const mobileMenu = document.getElementById('mobile-menu');
-            mobileMenu.classList.toggle('hidden');
-        });
-
-        // 平滑滚动
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({ behavior: 'smooth' });
-                }
-                // 关闭移动端菜单
-                document.getElementById('mobile-menu').classList.add('hidden');
-            });
-        });
-
-        // 滚动动画触发
+        // 页面滚动与交互逻辑整合
         document.addEventListener('DOMContentLoaded', function() {
-            const fadeElements = document.querySelectorAll('.fade-in');
+            // 案例区域动画触发
+            const caseTitle = document.getElementById('case-title');
+            const caseContainer = document.getElementById('case-container');
             
-            const observer = new IntersectionObserver((entries) => {
+            setTimeout(() => {
+                caseTitle.classList.remove('opacity-0', 'translate-y-8');
+                
+                setTimeout(() => {
+                    caseContainer.classList.remove('opacity-0', 'translate-y-8');
+                }, 300);
+            }, 1500);
+
+            // 案例折叠面板交互
+            const caseCollapseBtn = document.querySelector('[data-target="cases-panel"]');
+            caseCollapseBtn.addEventListener('click', function() {
+                const targetPanel = document.getElementById('cases-panel');
+                
+                // 切换按钮状态
+                this.classList.toggle('active');
+                // 切换面板显示
+                targetPanel.classList.toggle('active');
+                
+                // 添加点击反馈动画
+                this.classList.add('scale-95');
+                setTimeout(() => {
+                    this.classList.remove('scale-95');
+                }, 200);
+            });
+
+            // 页脚动画触发
+            const footerElements = [
+                document.getElementById('footer-logo'),
+                document.getElementById('footer-copyright'),
+                document.getElementById('footer-slogan'),
+                document.getElementById('footer-links')
+            ];
+            
+            // 监听滚动触发页脚动画
+            const footerObserver = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
-                        entry.target.style.opacity = 1;
-                        entry.target.style.transform = 'translateY(0)';
-                        observer.unobserve(entry.target);
+                        footerElements.forEach((el, index) => {
+                            setTimeout(() => {
+                                el.classList.remove('opacity-0');
+                            }, index * 200);
+                        });
+                        footerObserver.unobserve(entry.target);
                     }
                 });
             }, { threshold: 0.1 });
             
-            fadeElements.forEach(el => {
-                observer.observe(el);
+            footerObserver.observe(document.querySelector('footer'));
+
+            // 导航栏滚动效果
+            window.addEventListener('scroll', function() {
+                const navbar = document.getElementById('navbar');
+                if (window.scrollY > 30) {
+                    navbar.classList.add('py-2', 'shadow-lg');
+                    navbar.classList.remove('py-4');
+                } else {
+                    navbar.classList.add('py-4');
+                    navbar.classList.remove('py-2', 'shadow-lg');
+                }
+            });
+
+            // 移动端菜单切换
+            document.getElementById('menu-toggle').addEventListener('click', function() {
+                const mobileMenu = document.getElementById('mobile-menu');
+                mobileMenu.classList.toggle('hidden');
+                
+                // 菜单按钮动画
+                const icon = this.querySelector('i');
+                if (mobileMenu.classList.contains('hidden')) {
+                    icon.classList.remove('fa-times');
+                    icon.classList.add('fa-bars');
+                } else {
+                    icon.classList.remove('fa-bars');
+                    icon.classList.add('fa-times');
+                }
+            });
+
+            // 微信弹窗控制
+            const wxModal = document.getElementById('wx-modal');
+            const wxLinks = [document.getElementById('wx-link'), document.getElementById('mobile-wx-link')];
+            const modalClose = document.querySelector('.modal-close');
+            
+            wxLinks.forEach(link => {
+                if (link) {
+                    link.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        wxModal.classList.add('active');
+                        document.body.style.overflow = 'hidden'; // 防止背景滚动
+                    });
+                }
+            });
+            
+            modalClose.addEventListener('click', function() {
+                wxModal.classList.remove('active');
+                document.body.style.overflow = ''; // 恢复滚动
+            });
+            
+            // 点击弹窗外部关闭
+            wxModal.addEventListener('click', function(e) {
+                if (e.target === wxModal) {
+                    wxModal.classList.remove('active');
+                    document.body.style.overflow = '';
+                }
+            });
+
+            // 平滑滚动
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const targetId = this.getAttribute('href');
+                    if (targetId !== '#') {
+                        const target = document.querySelector(targetId);
+                        if (target) {
+                            target.scrollIntoView({ behavior: 'smooth' });
+                        }
+                    }
+                    // 关闭移动端菜单
+                    document.getElementById('mobile-menu').classList.add('hidden');
+                    const menuIcon = document.querySelector('#menu-toggle i');
+                    menuIcon.classList.remove('fa-times');
+                    menuIcon.classList.add('fa-bars');
+                });
             });
         });
     </script>
