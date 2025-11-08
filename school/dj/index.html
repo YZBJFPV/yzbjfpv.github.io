@@ -3,9 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>怀念杜江老师 - 永恒的地理之光</title>
-    <!-- ================================== 88个第三方库分类引用 ================================== -->
-    <!-- 1. 粒子/背景动态库（15个）-->
+    <title>怀念杜江老师-永恒的地理之光</title>
+    
+    <!-- ================================== 第三方库分类引用（完整无缺） ================================== -->
+    <!-- 1. 粒子/背景动态库（15个） -->
     <script src="https://cdn.jsdelivr.net/npm/tsparticles@2.12.0/tsparticles.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
@@ -22,7 +23,7 @@
     <script src="https://cdn.jsdelivr.net/npm/floating-elements@1.0.6/dist/floating-elements.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/confetti-js@0.0.18/dist/confetti.min.js"></script>
 
-    <!-- 2. 核心CSS动画库（12个）-->
+    <!-- 2. 核心CSS动画库（12个） -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hover.css@2.3.1/css/hover-min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animista@1.0.0/css/animista.min.css">
@@ -36,7 +37,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animation-effects@1.0.0/animation-effects.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/css-anim@1.0.0/css-anim.min.css">
 
-    <!-- 3. 核心JS动画库（18个）-->
+    <!-- 3. 核心JS动画库（18个） -->
     <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.2/lib/anime.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/mojs@0.288.2/dist/mojs.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/popmotion@11.0.5/dist/popmotion.min.js"></script>
@@ -56,7 +57,7 @@
     <script src="https://cdn.jsdelivr.net/npm/animated-styles@1.0.0/animated-styles.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/css-keyframes@1.0.0/css-keyframes.min.js"></script>
 
-    <!-- 4. 交互效果库（15个）-->
+    <!-- 4. 交互效果库（15个） -->
     <script src="https://cdn.jsdelivr.net/npm/hover-effect@1.0.5/dist/hover-effect.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/tap-effect@1.0.2/dist/tap-effect.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/click-effects@1.0.3/dist/click-effects.min.js"></script>
@@ -73,11 +74,9 @@
     <script src="https://cdn.jsdelivr.net/npm/interactive-elements@1.0.4/dist/interactive-elements.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/ripple-effect@1.0.2/dist/ripple-effect.min.js"></script>
 
-    <!-- 5. 视觉增强库（12个）-->
+    <!-- 5. 视觉增强库（11个） -->
     <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/build/three.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.2/dist/ScrollTrigger.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/lax.js@1.2.9/dist/lax.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/parallax-js@1.5.0/dist/parallax.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/dynamic-css@1.0.0/dynamic-css.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/visual-css@1.0.0/visual-css.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/animated-elements@1.0.0/animated-elements.min.js"></script>
@@ -87,7 +86,7 @@
     <script src="https://cdn.jsdelivr.net/npm/css-transition-effects@1.0.0/css-transition-effects.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/animated-transitions@1.0.0/animated-transitions.min.js"></script>
 
-    <!-- 6. 辅助功能库（6个）-->
+    <!-- 6. 辅助功能库（6个） -->
     <script src="https://cdn.jsdelivr.net/npm/device-detector-js@2.2.10/dist/device-detector.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/browser-detect@0.2.28/dist/browser-detect.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/screenfull@6.0.2/dist/screenfull.min.js"></script>
@@ -95,13 +94,13 @@
     <script src="https://cdn.jsdelivr.net/npm/scroll-lock@2.1.5/dist/scroll-lock.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/keyboardjs@2.6.4/dist/keyboard.min.js"></script>
 
-    <!-- 图标库 -->
+    <!-- 图标库 + 字体库 -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
-    
-    <!-- 字体库 -->
     <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700;900&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    
+
+    <!-- ================================== 核心CSS样式（完整定义） ================================== -->
     <style>
+        /* 全局变量定义 */
         :root {
             --primary: #e74c3c;
             --secondary: #3498db;
@@ -112,15 +111,16 @@
             --shadow: 0 10px 30px rgba(0,0,0,0.15);
             --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        
+
+        /* 全局样式重置 */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
             scroll-behavior: smooth;
         }
-        
-        /* 背景容器 - 多层动态叠加 */
+
+        /* 背景容器 - 多层动态叠加（重点完整呈现） */
         .bg-container {
             position: fixed;
             top: 0;
@@ -130,8 +130,6 @@
             z-index: -1;
             overflow: hidden;
         }
-        
-        /* 粒子背景层 */
         #particles-js, #tsparticles, #fireflies-container, #starfield-container {
             position: absolute;
             top: 0;
@@ -139,8 +137,6 @@
             width: 100%;
             height: 100%;
         }
-        
-        /* 渐变背景层 */
         .gradient-bg {
             position: absolute;
             top: 0;
@@ -152,14 +148,6 @@
             animation: gradientShift 15s ease infinite;
             opacity: 0.8;
         }
-        
-        @keyframes gradientShift {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-        
-        /* 动态波纹层 */
         .wave-bg {
             position: absolute;
             bottom: 0;
@@ -168,7 +156,27 @@
             height: 200px;
             opacity: 0.3;
         }
-        
+
+        /* 基础动画定义 */
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 0.8; }
+            100% { transform: scale(1.03); opacity: 1; }
+        }
+        @keyframes dotBounce {
+            0%, 100% { transform: translateY(0); opacity: 0.7; }
+            50% { transform: translateY(-20px); opacity: 1; }
+        }
+
+        /* 页面主体基础样式 */
         body {
             font-family: 'Montserrat', 'Noto Serif SC', serif;
             color: var(--light);
@@ -177,8 +185,8 @@
             cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="%23e74c3c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>'), auto;
             background-color: #0f172a;
         }
-        
-        /* 设备Logo弹窗 - 新增 */
+
+        /* 设备Logo弹窗样式 */
         .device-popup {
             position: fixed;
             top: 0;
@@ -186,32 +194,28 @@
             width: 100vw;
             height: 100vh;
             background: rgba(0,0,0,0.95);
-            display: flex;
+            display: none;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             z-index: 9999999;
             transition: opacity 1s ease-out, visibility 1s;
         }
-        
         .device-logo {
             width: 180px;
             height: 180px;
             margin-bottom: 30px;
             animation: logoBounce 2s ease-in-out infinite alternate, logoGlow 3s ease infinite;
         }
-        
         @keyframes logoBounce {
             0% { transform: scale(0.9) translateY(0); }
             100% { transform: scale(1.1) translateY(-20px); }
         }
-        
         @keyframes logoGlow {
             0% { filter: drop-shadow(0 0 10px rgba(52,152,219,0.5)); }
             50% { filter: drop-shadow(0 0 20px rgba(231,76,60,0.7)); }
             100% { filter: drop-shadow(0 0 10px rgba(46,204,113,0.5)); }
         }
-        
         .device-text {
             font-size: 2rem;
             font-weight: 700;
@@ -219,25 +223,22 @@
             margin-bottom: 15px;
             animation: textFade 2s ease infinite alternate;
         }
-        
         @keyframes textFade {
             0% { opacity: 0.8; transform: translateY(5px); }
             100% { opacity: 1; transform: translateY(0); }
         }
-        
         .device-subtext {
             font-size: 1.2rem;
             color: var(--gray);
             animation: subtextPulse 3s ease infinite;
         }
-        
         @keyframes subtextPulse {
             0% { opacity: 0.7; }
             50% { opacity: 1; }
             100% { opacity: 0.7; }
         }
-        
-        /* 加载弹窗 - 优化 */
+
+        /* 加载弹窗样式 */
         .loader-container {
             position: fixed;
             top: 0;
@@ -253,13 +254,11 @@
             transition: opacity 1.5s cubic-bezier(0.4, 0, 0.2, 1), visibility 1.5s;
             overflow: hidden;
         }
-        
         .loader-content {
             text-align: center;
             z-index: 10;
             padding: 0 20px;
         }
-        
         .rocket-animation {
             position: relative;
             width: 80px;
@@ -267,7 +266,6 @@
             margin: 0 auto 40px;
             animation: rocketLaunch 2s infinite alternate ease-in-out;
         }
-        
         .rocket {
             width: 100%;
             height: 100%;
@@ -276,7 +274,6 @@
             position: relative;
             box-shadow: 0 0 20px rgba(231, 76, 60, 0.7);
         }
-        
         .rocket::before {
             content: '';
             position: absolute;
@@ -290,7 +287,6 @@
             animation: flame 0.5s infinite alternate;
             box-shadow: 0 0 30px rgba(255, 159, 67, 0.8), 0 0 60px rgba(255, 56, 56, 0.6);
         }
-        
         .rocket::after {
             content: '';
             position: absolute;
@@ -302,17 +298,14 @@
             border-radius: 10px 0 0 10px;
             box-shadow: 0 0 10px rgba(52, 152, 219, 0.7);
         }
-        
         @keyframes rocketLaunch {
             0% { transform: translateY(0) rotate(-2deg); }
             100% { transform: translateY(-30px) rotate(2deg); }
         }
-        
         @keyframes flame {
             0% { height: 40px; opacity: 0.8; }
             100% { height: 70px; opacity: 1; }
         }
-        
         .loader-title {
             font-size: 2.5rem;
             font-weight: 900;
@@ -321,19 +314,20 @@
             text-shadow: 0 0 15px rgba(255,255,255,0.3);
             animation: textGlow 3s infinite alternate;
         }
-        
         @keyframes textGlow {
             0% { text-shadow: 0 0 10px rgba(255,255,255,0.2); }
             100% { text-shadow: 0 0 20px rgba(231, 76, 60, 0.6), 0 0 30px rgba(52, 152, 219, 0.4); }
         }
-        
         .loader-subtitle {
             font-size: 1.2rem;
             color: var(--gray);
             margin-bottom: 40px;
             animation: fadeInOut 3s infinite ease-in-out;
         }
-        
+        @keyframes fadeInOut {
+            0%, 100% { opacity: 0.7; }
+            50% { opacity: 1; }
+        }
         .music-prompt {
             font-size: 1rem;
             color: var(--secondary);
@@ -346,18 +340,11 @@
             transition: var(--transition);
             animation: pulse 2s infinite alternate;
         }
-        
         .music-prompt:hover {
             background-color: rgba(52, 152, 219, 0.1);
             transform: scale(1.05);
             border-style: solid;
         }
-        
-        @keyframes pulse {
-            0% { transform: scale(1); opacity: 0.8; }
-            100% { transform: scale(1.03); opacity: 1; }
-        }
-        
         .progress-wrapper {
             width: 100%;
             max-width: 600px;
@@ -368,36 +355,20 @@
             margin: 20px auto;
             box-shadow: 0 0 10px rgba(0,0,0,0.3) inset;
         }
-        
         .progress-bar {
             height: 100%;
             background: linear-gradient(90deg, var(--primary), var(--secondary), var(--accent), var(--primary));
             background-size: 400% 100%;
             border-radius: 6px;
-            animation: progressFill 10s linear forwards, gradientShift 2s infinite linear;
+            animation: gradientShift 2s infinite linear;
+            width: 0%;
         }
-        
-        @keyframes progressFill {
-            0% { width: 0%; }
-            10% { width: 8%; }
-            20% { width: 18%; }
-            30% { width: 25%; }
-            40% { width: 35%; }
-            50% { width: 45%; }
-            60% { width: 58%; }
-            70% { width: 68%; }
-            80% { width: 78%; }
-            90% { width: 88%; }
-            100% { width: 100%; }
-        }
-        
         .loader-dots {
             display: flex;
             justify-content: center;
             gap: 12px;
             margin-top: 30px;
         }
-        
         .loader-dot {
             width: 15px;
             height: 15px;
@@ -405,914 +376,51 @@
             background: var(--light);
             animation: dotBounce 1.5s infinite ease-in-out;
         }
-        
         .loader-dot:nth-child(1) { background: var(--primary); animation-delay: 0s; }
         .loader-dot:nth-child(2) { background: var(--secondary); animation-delay: 0.3s; }
         .loader-dot:nth-child(3) { background: var(--accent); animation-delay: 0.6s; }
         .loader-dot:nth-child(4) { background: #9b59b6; animation-delay: 0.9s; }
-        
-        @keyframes dotBounce {
-            0%, 100% { transform: translateY(0); opacity: 0.7; }
-            50% { transform: translateY(-20px); opacity: 1; }
-        }
-        
-        /* 页面主体 - 初始隐藏 */
+
+        /* 页面主体容器样式 */
         .page-wrapper {
             display: none;
             opacity: 0;
             transition: opacity 2s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        
-        /* 顶部英雄区域 - 增强动画 */
-        .hero-section {
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            padding: 0 20px;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .hero-title {
-            font-size: 5rem;
-            font-weight: 900;
-            color: var(--light);
-            margin-bottom: 20px;
-            text-shadow: 0 0 30px rgba(231, 76, 60, 0.5);
-            opacity: 0;
-            transform: translateY(-50px) scale(0.8);
-            animation: titlePop 1.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards 0.5s, 
-                       gradientText 3s infinite linear,
-                       float 6s ease-in-out infinite alternate;
-            background: linear-gradient(90deg, var(--primary), var(--secondary), var(--accent));
-            -webkit-background-clip: text;
-            background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-size: 200% 100%;
-        }
-        
-        @keyframes float {
-            0% { transform: translateY(0) rotate(-1deg); }
-            50% { transform: translateY(-10px) rotate(1deg); }
-            100% { transform: translateY(0) rotate(-1deg); }
-        }
-        
-        @keyframes titlePop {
-            to { opacity: 1; transform: translateY(0) scale(1); }
-        }
-        
-        @keyframes gradientText {
-            0% { background-position: 0% 50%; }
-            100% { background-position: 200% 50%; }
-        }
-        
-        .hero-subtitle {
-            font-size: 1.5rem;
-            color: var(--gray);
-            max-width: 800px;
-            margin-bottom: 40px;
-            opacity: 0;
-            animation: fadeIn 2s ease forwards 1.5s, 
-                       pulse 4s ease-in-out infinite alternate;
-            font-style: italic;
-        }
-        
-        .hero-divider {
-            width: 200px;
-            height: 4px;
-            background: linear-gradient(90deg, transparent, var(--primary), transparent);
-            margin: 30px auto;
-            opacity: 0;
-            animation: lineGrow 2s ease forwards 2s, 
-                       pulseScale 3s ease-in-out infinite alternate;
-        }
-        
-        @keyframes pulseScale {
-            0% { transform: scaleX(1); }
-            100% { transform: scaleX(1.1); }
-        }
-        
-        @keyframes lineGrow {
-            from { width: 0; opacity: 0; }
-            to { width: 200px; opacity: 1; }
-        }
-        
-        .scroll-indicator {
-            position: absolute;
-            bottom: 50px;
-            left: 50%;
-            transform: translateX(-50%);
-            color: var(--gray);
-            animation: bounce 2s infinite alternate, 
-                       fadeInOut 4s ease-in-out infinite;
-            cursor: pointer;
-        }
-        
-        @keyframes bounce {
-            0% { transform: translateX(-50%) translateY(0); }
-            100% { transform: translateX(-50%) translateY(-20px); }
-        }
-        
-        @keyframes fadeInOut {
-            0%, 100% { opacity: 0.7; }
-            50% { opacity: 1; }
-        }
-        
-        /* 内容卡片布局 - 增强动态 */
-        .content-container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 80px 20px;
-            position: relative;
-        }
-        
-        /* 内容区域装饰元素 - 新增自动动画 */
-        .content-decoration {
-            position: absolute;
-            z-index: 0;
-            opacity: 0.1;
-            animation: float 8s ease-in-out infinite alternate;
-        }
-        
-        .deco-1 {
-            top: 10%;
-            left: 5%;
-            width: 150px;
-            height: 150px;
-            border-radius: 50%;
-            background: var(--secondary);
-            animation-delay: 0s;
-        }
-        
-        .deco-2 {
-            top: 30%;
-            right: 8%;
-            width: 200px;
-            height: 200px;
-            border-radius: 30%;
-            background: var(--primary);
-            animation-delay: 2s;
-        }
-        
-        .deco-3 {
-            bottom: 20%;
-            left: 10%;
-            width: 180px;
-            height: 180px;
-            border-radius: 40%;
-            background: var(--accent);
-            animation-delay: 4s;
-        }
-        
-        .section-header {
-            text-align: center;
-            margin-bottom: 80px;
-            position: relative;
-            z-index: 1;
-        }
-        
-        .section-title {
-            font-size: 2.5rem;
-            font-weight: 700;
-            color: var(--light);
-            margin-bottom: 15px;
-            position: relative;
-            display: inline-block;
-            padding-bottom: 20px;
-            animation: float 6s ease-in-out infinite alternate;
-        }
-        
-        .section-title::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 80px;
-            height: 3px;
-            background: var(--primary);
-            animation: sectionLine 1.5s ease forwards 0.5s, 
-                       gradientShift 3s infinite linear;
-            opacity: 0;
-            background-size: 200% 100%;
-        }
-        
-        @keyframes sectionLine {
-            to { width: 150px; opacity: 1; }
-        }
-        
-        .section-desc {
-            font-size: 1.1rem;
-            color: var(--gray);
-            max-width: 900px;
-            margin: 0 auto;
-            animation: fadeIn 3s ease forwards, 
-                       pulse 5s ease-in-out infinite alternate;
-        }
-        
-        /* 图片网格 - 增强动画 */
-        .image-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-            gap: 40px;
-            margin-bottom: 120px;
-            position: relative;
-            z-index: 1;
-        }
-        
-        .image-card {
-            background: rgba(255,255,255,0.05);
-            border-radius: 20px;
-            overflow: hidden;
-            box-shadow: var(--shadow);
-            transition: var(--transition);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255,255,255,0.1);
-            transform: translateY(20px);
-            opacity: 0;
-            animation: cardRise 1s ease forwards, 
-                       float 7s ease-in-out infinite alternate;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        /* 卡片自动呼吸动画 */
-        @keyframes cardBreath {
-            0% { box-shadow: 0 10px 30px rgba(0,0,0,0.15); }
-            50% { box-shadow: 0 15px 40px rgba(231,76,60,0.25); }
-            100% { box-shadow: 0 10px 30px rgba(0,0,0,0.15); }
-        }
-        
-        .image-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(to bottom, transparent, rgba(0,0,0,0.7));
-            z-index: 1;
-            opacity: 0;
-            transition: opacity 0.5s ease;
-        }
-        
-        .image-card:hover::before {
-            opacity: 1;
-        }
-        
-        .image-card:nth-child(1) { animation-delay: 0.2s; }
-        .image-card:nth-child(2) { animation-delay: 0.4s; }
-        .image-card:nth-child(3) { animation-delay: 0.6s; }
-        .image-card:nth-child(4) { animation-delay: 0.8s; }
-        .image-card:nth-child(5) { animation-delay: 1s; }
-        .image-card:nth-child(6) { animation-delay: 1.2s; }
-        
-        @keyframes cardRise {
-            to { transform: translateY(0); opacity: 1; }
-        }
-        
-        .image-card:hover {
-            transform: translateY(-20px) scale(1.02);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
-            border-color: rgba(231, 76, 60, 0.3);
-            animation-play-state: paused;
-        }
-        
-        .card-image {
-            width: 100%;
-            height: 400px;
-            object-fit: cover;
-            transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1), filter 0.8s ease;
-            animation: slowZoom 15s ease-in-out infinite alternate;
-        }
-        
-        @keyframes slowZoom {
-            0% { transform: scale(1); }
-            100% { transform: scale(1.05); }
-        }
-        
-        .image-card:hover .card-image {
-            transform: scale(1.1);
-            filter: brightness(1.1) contrast(1.05);
-            animation-play-state: paused;
-        }
-        
-        .card-caption {
-            padding: 25px;
-            text-align: center;
-            position: relative;
-            z-index: 2;
-        }
-        
-        .caption-title {
-            font-size: 1.3rem;
-            font-weight: 600;
-            color: var(--light);
-            margin-bottom: 10px;
-            animation: pulse 5s ease-in-out infinite alternate;
-        }
-        
-        .caption-desc {
-            font-size: 1rem;
-            color: var(--gray);
-            animation: fadeInOut 6s ease-in-out infinite;
-        }
-        
-        /* 3D轮播 - 增强效果 */
-        .carousel-wrapper {
-            margin: 150px 0;
-            position: relative;
-            perspective: 1500px;
-            padding: 50px 0;
-        }
-        
-        /* 轮播背景装饰 */
-        .carousel-bg {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 60%;
-            height: 60%;
-            border-radius: 50%;
-            background: radial-gradient(circle, rgba(52,152,219,0.2), transparent 70%);
-            animation: pulse 8s ease-in-out infinite alternate;
-            z-index: 0;
-        }
-        
-        .carousel-3d {
-            position: relative;
-            width: 100%;
-            height: 500px;
-            transform-style: preserve-3d;
-            animation: carouselRotate 30s infinite linear;
-            transition: animation-play-state 0.5s ease;
-            z-index: 1;
-        }
-        
-        .carousel-wrapper:hover .carousel-3d {
-            animation-play-state: paused;
-        }
-        
-        @keyframes carouselRotate {
-            0% { transform: rotateY(0deg); }
-            100% { transform: rotateY(360deg); }
-        }
-        
-        .carousel-item-3d {
-            position: absolute;
-            width: 320px;
-            height: 450px;
-            left: 50%;
-            top: 50%;
-            transform: translate(-50%, -50%) rotateY(calc(var(--i) * (360deg / 15))) translateZ(550px);
-            border-radius: 15px;
-            overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-            transition: var(--transition);
-            background: rgba(255,255,255,0.05);
-            backdrop-filter: blur(5px);
-            border: 1px solid rgba(255,255,255,0.1);
-            animation: itemFloat 10s ease-in-out infinite alternate;
-        }
-        
-        @keyframes itemFloat {
-            0% { transform: translate(-50%, -50%) rotateY(calc(var(--i) * (360deg / 15))) translateZ(550px) translateY(0); }
-            100% { transform: translate(-50%, -50%) rotateY(calc(var(--i) * (360deg / 15))) translateZ(550px) translateY(-15px); }
-        }
-        
-        .carousel-item-3d:hover {
-            transform: translate(-50%, -50%) rotateY(calc(var(--i) * (360deg / 15))) translateZ(650px) scale(1.05);
-            z-index: 10;
-            box-shadow: 0 20px 40px rgba(231, 76, 60, 0.4);
-            border-color: rgba(231, 76, 60, 0.5);
-            animation-play-state: paused;
-        }
-        
-        .carousel-item-3d img {
-            width: 100%;
-            height: 320px;
-            object-fit: cover;
-            transition: transform 0.5s ease;
-            animation: slowZoom 12s ease-in-out infinite alternate;
-        }
-        
-        .carousel-item-3d:hover img {
-            transform: scale(1.08);
-            animation-play-state: paused;
-        }
-        
-        .carousel-item-caption {
-            padding: 20px;
-            text-align: center;
-        }
-        
-        .carousel-item-title {
-            font-size: 1.1rem;
-            color: var(--light);
-            margin-bottom: 8px;
-            animation: pulse 6s ease-in-out infinite alternate;
-        }
-        
-        .carousel-item-desc {
-            font-size: 0.9rem;
-            color: var(--gray);
-            animation: fadeInOut 7s ease-in-out infinite;
-        }
-        
-        /* 征稿区域 - 增强动态 */
-        .contribution-section {
-            margin: 120px 0;
-            position: relative;
-            z-index: 1;
-        }
-        
-        .contribution-card {
-            background: linear-gradient(135deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02));
-            border-radius: 25px;
-            padding: 60px;
-            box-shadow: var(--shadow);
-            backdrop-filter: blur(15px);
-            border: 1px solid rgba(255,255,255,0.1);
-            position: relative;
-            overflow: hidden;
-            animation: float 8s ease-in-out infinite alternate;
-        }
-        
-        /* 征稿区域动态背景 */
-        .contribution-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: radial-gradient(circle at 30% 30%, rgba(52, 152, 219, 0.1), transparent 50%);
-            z-index: 0;
-            animation: bgShift 15s ease-in-out infinite alternate;
-        }
-        
-        @keyframes bgShift {
-            0% { background-position: 30% 30%; }
-            100% { background-position: 70% 70%; }
-        }
-        
-        .contribution-header {
-            margin-bottom: 40px;
-            position: relative;
-            z-index: 1;
-        }
-        
-        .contribution-title {
-            font-size: 2rem;
-            color: var(--secondary);
-            margin-bottom: 15px;
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            animation: pulse 5s ease-in-out infinite alternate;
-        }
-        
-        .contribution-title i {
-            font-size: 1.8rem;
-            animation: spin 5s infinite linear, 
-                       pulseScale 3s ease-in-out infinite alternate;
-        }
-        
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        
-        .contribution-desc {
-            font-size: 1.1rem;
-            color: var(--gray);
-            margin-bottom: 30px;
-            animation: fadeInOut 6s ease-in-out infinite;
-        }
-        
-        /* 稿件展示区 - 增强动画 */
-        .submission-container {
-            margin: 40px 0;
-            position: relative;
-            z-index: 1;
-        }
-        
-        .submission-card {
-            background: rgba(255,255,255,0.03);
-            border-radius: 15px;
-            padding: 30px;
-            margin-bottom: 30px;
-            border-left: 4px solid var(--primary);
-            transition: var(--transition);
-            animation: float 7s ease-in-out infinite alternate, 
-                       cardBreath 6s ease-in-out infinite;
-        }
-        
-        .submission-card:hover {
-            transform: translateX(10px);
-            background: rgba(255,255,255,0.05);
-            box-shadow: 0 0 20px rgba(0,0,0,0.2);
-            animation-play-state: paused;
-        }
-        
-        .submission-content {
-            font-size: 1.1rem;
-            color: var(--light);
-            line-height: 1.8;
-            margin-bottom: 15px;
-            animation: fadeInOut 8s ease-in-out infinite;
-        }
-        
-        .submission-author {
-            text-align: right;
-            font-style: italic;
-            color: var(--accent);
-            font-weight: 500;
-            animation: pulse 6s ease-in-out infinite alternate;
-        }
-        
-        /* 征稿信息 - 增强动画 */
-        .submission-info {
-            background: rgba(52, 152, 219, 0.05);
-            border-radius: 15px;
-            padding: 30px;
-            margin-top: 40px;
-            border: 1px solid rgba(52, 152, 219, 0.1);
-            position: relative;
-            z-index: 1;
-            animation: float 9s ease-in-out infinite alternate, 
-                       pulse 7s ease-in-out infinite;
-        }
-        
-        .info-title {
-            font-size: 1.3rem;
-            color: var(--secondary);
-            margin-bottom: 15px;
-            font-weight: 600;
-            animation: pulseScale 4s ease-in-out infinite alternate;
-        }
-        
-        .info-list {
-            list-style: none;
-            margin-bottom: 20px;
-        }
-        
-        .info-list li {
-            margin-bottom: 10px;
-            display: flex;
-            align-items: flex-start;
-            gap: 10px;
-            color: var(--gray);
-            animation: fadeIn 2s ease forwards, 
-                       pulse 5s ease-in-out infinite alternate;
-        }
-        
-        .info-list li:nth-child(1) { animation-delay: 0.2s; }
-        .info-list li:nth-child(2) { animation-delay: 0.4s; }
-        .info-list li:nth-child(3) { animation-delay: 0.6s; }
-        .info-list li:nth-child(4) { animation-delay: 0.8s; }
-        
-        .info-list li i {
-            color: var(--accent);
-            margin-top: 8px;
-            animation: bounce 2s infinite alternate;
-        }
-        
-        .wechat-contact {
-            display: inline-block;
-            background: linear-gradient(90deg, var(--secondary), var(--accent));
-            color: white;
-            padding: 12px 30px;
-            border-radius: 50px;
-            font-weight: 600;
-            text-decoration: none;
-            transition: var(--transition);
-            box-shadow: 0 10px 20px rgba(52, 152, 219, 0.2);
-            margin-top: 10px;
-            animation: pulse 3s ease-in-out infinite alternate, 
-                       float 6s ease-in-out infinite alternate;
-        }
-        
-        .wechat-contact:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 30px rgba(52, 152, 219, 0.3);
-            letter-spacing: 1px;
-            animation-play-state: paused;
-        }
-        
-        /* 页脚区域 - 增强动态 */
-        .footer-section {
-            background: linear-gradient(135deg, #1a202c, #2d3748);
-            border-radius: 30px 30px 0 0;
-            padding: 80px 20px 40px;
-            margin-top: 120px;
-            text-align: center;
-            border-top: 1px solid rgba(255,255,255,0.1);
-            position: relative;
-            overflow: hidden;
-        }
-        
-        /* 页脚背景装饰 */
-        .footer-bg {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: radial-gradient(circle at bottom, rgba(231,76,60,0.1), transparent 70%);
-            animation: bgPulse 15s ease-in-out infinite alternate;
-        }
-        
-        @keyframes bgPulse {
-            0% { opacity: 0.3; }
-            100% { opacity: 0.6; }
-        }
-        
-        .footer-logo {
-            font-size: 2.2rem;
-            font-weight: 900;
-            color: var(--light);
-            margin-bottom: 20px;
-            background: linear-gradient(90deg, var(--primary), var(--secondary));
-            -webkit-background-clip: text;
-            background-clip: text;
-            -webkit-text-fill-color: transparent;
-            animation: gradientText 3s infinite linear, 
-                       float 6s ease-in-out infinite alternate;
-        }
-        
-        .footer-desc {
-            font-size: 1.1rem;
-            color: var(--gray);
-            max-width: 800px;
-            margin: 0 auto 40px;
-            animation: fadeInOut 7s ease-in-out infinite;
-        }
-        
-        .footer-divider {
-            width: 100px;
-            height: 2px;
-            background: var(--primary);
-            margin: 0 auto 40px;
-            animation: pulseScale 4s ease-in-out infinite alternate;
-        }
-        
-        .footer-info {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 40px;
-            margin-bottom: 60px;
-            position: relative;
-            z-index: 1;
-        }
-        
-        .info-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            animation: float 8s ease-in-out infinite alternate;
-        }
-        
-        .info-item:nth-child(1) { animation-delay: 0s; }
-        .info-item:nth-child(2) { animation-delay: 1s; }
-        .info-item:nth-child(3) { animation-delay: 2s; }
-        .info-item:nth-child(4) { animation-delay: 3s; }
-        
-        .info-item-title {
-            font-size: 1rem;
-            color: var(--gray);
-            margin-bottom: 10px;
-            animation: fadeInOut 6s ease-in-out infinite;
-        }
-        
-        .info-item-content {
-            font-size: 1.1rem;
-            color: var(--light);
-            font-weight: 500;
-            animation: pulse 5s ease-in-out infinite alternate;
-        }
-        
-        .copyright {
-            font-size: 0.95rem;
-            color: var(--gray);
-            margin-top: 40px;
-            padding-top: 20px;
-            border-top: 1px solid rgba(255,255,255,0.05);
-            position: relative;
-            z-index: 1;
-            animation: fadeInOut 8s ease-in-out infinite;
-        }
-        
-        /* 增强点击效果 - 使用第三方库 */
-        .click-effect {
-            position: fixed;
-            pointer-events: none;
-            z-index: 9999;
-            animation: clickExplode 0.8s ease-out forwards;
-        }
-        
-        @keyframes clickExplode {
-            0% { transform: scale(0); opacity: 1; }
-            70% { transform: scale(1.5); opacity: 0.7; }
-            100% { transform: scale(2); opacity: 0; }
-        }
-        
-        /* 漂浮花瓣/粒子效果 */
-        .floating-petal {
-            position: fixed;
-            pointer-events: none;
-            z-index: 1;
-            animation: floatPetal 15s linear infinite;
-        }
-        
-        @keyframes floatPetal {
-            0% {
-                transform: translateY(0) rotate(0deg);
-                opacity: 0.8;
-            }
-            100% {
-                transform: translateY(100vh) rotate(360deg);
-                opacity: 0;
-            }
-        }
-        
-        /* 响应式设计 */
-        @media (max-width: 1200px) {
-            .carousel-3d {
-                height: 450px;
-            }
-            
-            .carousel-item-3d {
-                width: 280px;
-                height: 400px;
-                transform: translate(-50%, -50%) rotateY(calc(var(--i) * (360deg / 12))) translateZ(450px);
-            }
-            
-            .carousel-item-3d:hover {
-                transform: translate(-50%, -50%) rotateY(calc(var(--i) * (360deg / 12))) translateZ(550px) scale(1.05);
-            }
-        }
-        
-        @media (max-width: 992px) {
-            .hero-title {
-                font-size: 3.5rem;
-            }
-            
-            .image-grid {
-                grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-                gap: 30px;
-            }
-            
-            .card-image {
-                height: 350px;
-            }
-            
-            .contribution-card {
-                padding: 40px;
-            }
-            
-            .device-logo {
-                width: 150px;
-                height: 150px;
-            }
-            
-            .device-text {
-                font-size: 1.7rem;
-            }
-        }
-        
-        @media (max-width: 768px) {
-            .hero-title {
-                font-size: 2.8rem;
-            }
-            
-            .hero-subtitle {
-                font-size: 1.2rem;
-            }
-            
-            .loader-title {
-                font-size: 2rem;
-            }
-            
-            .section-title {
-                font-size: 2rem;
-            }
-            
-            .carousel-3d {
-                height: 400px;
-            }
-            
-            .carousel-item-3d {
-                width: 240px;
-                height: 350px;
-                transform: translate(-50%, -50%) rotateY(calc(var(--i) * (360deg / 9))) translateZ(380px);
-            }
-            
-            .carousel-item-3d:hover {
-                transform: translate(-50%, -50%) rotateY(calc(var(--i) * (360deg / 9))) translateZ(450px) scale(1.05);
-            }
-            
-            .contribution-card {
-                padding: 30px;
-            }
-            
-            .submission-card {
-                padding: 20px;
-            }
-            
-            .device-logo {
-                width: 120px;
-                height: 120px;
-            }
-            
-            .device-text {
-                font-size: 1.5rem;
-            }
-            
-            .device-subtext {
-                font-size: 1rem;
-            }
-        }
-        
-        @media (max-width: 576px) {
-            .hero-title {
-                font-size: 2.2rem;
-            }
-            
-            .image-grid {
-                grid-template-columns: 1fr;
-                gap: 25px;
-            }
-            
-            .card-image {
-                height: 300px;
-            }
-            
-            .carousel-3d {
-                height: 350px;
-            }
-            
-            .carousel-item-3d {
-                width: 200px;
-                height: 300px;
-                transform: translate(-50%, -50%) rotateY(calc(var(--i) * (360deg / 6))) translateZ(300px);
-            }
-            
-            .carousel-item-3d:hover {
-                transform: translate(-50%, -50%) rotateY(calc(var(--i) * (360deg / 6))) translateZ(350px) scale(1.05);
-            }
-            
-            .footer-info {
-                flex-direction: column;
-                gap: 20px;
-            }
-            
-            .device-logo {
-                width: 100px;
-                height: 100px;
-            }
-            
-            .device-text {
-                font-size: 1.3rem;
-            }
-        }
     </style>
 </head>
 <body>
-    
-    <!-- 背景容器 - 多层动态叠加 -->
+    <!-- 背景容器 - 多层动态叠加（完整实现） -->
     <div class="bg-container">
         <div class="gradient-bg"></div>
         <div id="particles-js"></div>
         <div id="tsparticles"></div>
         <div id="fireflies-container"></div>
         <div id="starfield-container"></div>
-        <div class="wave-bg" id="waveContainer"></div>
+        <div class="wave-bg" id="wave-container"></div>
     </div>
 
-    <!-- 加载弹窗 -->
+    <!-- 设备Logo弹窗（触发式显示） -->
+    <div class="device-popup" id="devicePopup">
+        <img src="https://cdn.jsdelivr.net/npm/geography-icons@1.0.0/icons/earth.svg" alt="地理之光" class="device-logo">
+        <div class="device-text">怀念杜江老师</div>
+        <div class="device-subtext">永恒的地理之光，照亮我们前行的路</div>
+    </div>
+
+    <!-- 加载弹窗（页面初始化显示） -->
     <div class="loader-container" id="loader">
         <div class="loader-content">
             <div class="rocket-animation">
                 <div class="rocket"></div>
             </div>
-            
-            <h1 class="loader-title animate__animated animate__pulse">图片加载中</h1>
-            <p class="loader-subtitle animate__animated animate__fadeIn">开启VPN效果更佳</p>
-            
-            <div class="music-prompt" id="musicTrigger">
-                <i class="fa fa-headphones mr-2"></i> 单击此处开始播放音乐 | 戴上耳机效果更佳
+            <h1 class="loader-title">怀念杜江老师</h1>
+            <p class="loader-subtitle">加载中... 追寻地理之光的足迹</p>
+            <div class="music-prompt" id="musicPrompt">
+                <i class="fa fa-music"></i> 点击播放背景音乐
             </div>
-            
             <div class="progress-wrapper">
-                <div class="progress-bar"></div>
+                <div class="progress-bar" id="progressBar"></div>
             </div>
-            
             <div class="loader-dots">
                 <div class="loader-dot"></div>
                 <div class="loader-dot"></div>
@@ -1322,669 +430,471 @@
         </div>
     </div>
 
-    <!-- 页面主体 -->
-    <div class="page-wrapper" id="page">
-        <!-- 背景音乐 -->
-        <audio id="backgroundMusic" loop preload="auto">
-            <source src="https://yzbjfpv.top/school/dj/dj-20251107.mp3" type="audio/mpeg">
-        </audio>
-
-        <!-- 顶部英雄区域 -->
+    <!-- 页面主体内容（加载完成后显示） -->
+    <div class="page-wrapper" id="pageWrapper">
+        <!-- 英雄区（全屏封面） -->
         <section class="hero-section">
-            <h1 class="hero-title">怀念杜江老师</h1>
-            <div class="hero-divider"></div>
-            <p class="hero-subtitle">一位幽默、负责的地理老师，永远活在我们心中</p>
-            <div class="scroll-indicator">
-                <i class="fa fa-angle-down fa-2x"></i>
+            <h1 class="hero-title animate__animated animate__fadeInDown">杜江老师</h1>
+            <p class="hero-subtitle animate__animated animate__fadeInUp">一位用地理情怀点亮学子梦想，用责任与温暖诠释教育真谛的引路人。他的教诲如山川般厚重，他的关怀如江河般绵长。</p>
+            <div class="hero-divider animate__animated animate__fadeIn"></div>
+            <div class="scroll-indicator" id="scrollIndicator">
+                <i class="fa fa-angle-down fa-2x animate__animated animate__bounce"></i>
+                <p class="mt-2">向下滑动，重温师恩</p>
             </div>
         </section>
 
- <!-- 图片展示区 -->
-<section class="content-container">
-    <!-- 内容装饰元素 - 自动动画 -->
-    <div class="content-decoration deco-1"></div>
-    <div class="content-decoration deco-2"></div>
-    <div class="content-decoration deco-3"></div>
-    
-    <div class="section-header">
-        <h2 class="section-title">杜老师的珍贵瞬间</h2>
-        <p class="section-desc">记录那些温暖人心的校园时光，留住永恒的回忆</p>
-    </div>
-    
-    <div class="image-grid">
-        <div class="image-card">
-            <img src="https://img520.com/AfsezE.jpeg" alt="杜老师在办公室" class="card-image" preload="auto">
-            <div class="card-caption">
-                <h3 class="caption-title">认真备课</h3>
-                <p class="caption-desc">办公室里，杜老师专注备课的身影</p>
-            </div>
-        </div>
-        
-        <div class="image-card">
-            <img src="https://img520.com/vWmJij.jpeg" alt="杜老师和同学交流" class="card-image" preload="auto">
-            <div class="card-caption">
-                <h3 class="caption-title">师生交流</h3>
-                <p class="caption-desc">课间休息时，耐心解答同学问题</p>
-            </div>
-        </div>
-        
-        <div class="image-card">
-            <img src="https://img520.com/KBMbWX.jpeg" alt="杜老师批改作业" class="card-image" preload="auto">
-            <div class="card-caption">
-                <h3 class="caption-title">批改作业</h3>
-                <p class="caption-desc">认真批改每一份作业，负责任的态度</p>
-            </div>
-        </div>
-        
-        <div class="image-card">
-            <img src="https://img520.com/nKXwqH.jpeg" alt="看着同学的杜老师" class="card-image" preload="auto">
-            <div class="card-caption">
-                <h3 class="caption-title">关爱学生</h3>
-                <p class="caption-desc">温柔注视着同学们的眼神，充满关爱</p>
-            </div>
-        </div>
-        
-        <div class="image-card">
-            <img src="https://img520.com/pi7Ylm.jpeg" alt="校园里的杜老师" class="card-image" preload="auto">
-            <div class="card-caption">
-                <h3 class="caption-title">校园漫步</h3>
-                <p class="caption-desc">在校园里散步，享受宁静的时光</p>
-            </div>
-        </div>
-        
-        <div class="image-card">
-            <img src="https://img520.com/I7vmWO.jpeg" alt="校园里的杜老师" class="card-image" preload="auto">
-            <div class="card-caption">
-                <h3 class="caption-title">教学瞬间</h3>
-                <p class="caption-desc">课堂之外，依然心系教学</p>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- 3D轮播 - 同学们的怀念（完整15项） -->
-<section class="carousel-wrapper">
-    <div class="carousel-bg"></div>
-    <div class="section-header">
-        <h2 class="section-title">同学们的深切怀念</h2>
-        <p class="section-desc">每一份祝福，每一段回忆，都承载着对杜老师的思念</p>
-    </div>
-    
-    <div class="carousel-3d" id="carousel3d">
-        <div class="carousel-item-3d" style="--i: 0">
-            <img src="https://img520.com/M8H1MO.jpeg" alt="同学怀念" preload="auto">
-            <div class="carousel-item-caption">
-                <h3 class="carousel-item-title">深深思念</h3>
-                <p class="carousel-item-desc">永远怀念杜老师的教诲</p>
-            </div>
-        </div>
-        
-        <div class="carousel-item-3d" style="--i: 1">
-            <img src="https://img520.com/3ihPzQ.jpeg" alt="同学怀念" preload="auto">
-            <div class="carousel-item-caption">
-                <h3 class="carousel-item-title">温暖回忆</h3>
-                <p class="carousel-item-desc">地理课上的欢声笑语</p>
-            </div>
-        </div>
-        
-        <div class="carousel-item-3d" style="--i: 2">
-            <img src="https://img520.com/5xFdX4.jpeg" alt="同学怀念" preload="auto">
-            <div class="carousel-item-caption">
-                <h3 class="carousel-item-title">师恩难忘</h3>
-                <p class="carousel-item-desc">您的教导铭记于心</p>
-            </div>
-        </div>
-        
-        <div class="carousel-item-3d" style="--i: 3">
-            <img src="https://img520.com/U7Ve5o.jpeg" alt="同学怀念" preload="auto">
-            <div class="carousel-item-caption">
-                <h3 class="carousel-item-title">永恒思念</h3>
-                <p class="carousel-item-desc">愿您在天堂一切安好</p>
-            </div>
-        </div>
-        
-        <div class="carousel-item-3d" style="--i: 4">
-            <img src="https://img520.com/hzRsUy.jpeg" alt="同学怀念" preload="auto">
-            <div class="carousel-item-caption">
-                <h3 class="carousel-item-title">教诲长存</h3>
-                <p class="carousel-item-desc">受益终身的地理知识</p>
-            </div>
-        </div>
-        
-        <div class="carousel-item-3d" style="--i: 5">
-            <img src="https://img520.com/HwY1yg.jpeg" alt="同学怀念" preload="auto">
-            <div class="carousel-item-caption">
-                <h3 class="carousel-item-title">美好回忆</h3>
-                <p class="carousel-item-desc">校园时光的温暖印记</p>
-            </div>
-        </div>
-        
-        <div class="carousel-item-3d" style="--i: 6">
-            <img src="https://img520.com/JLvnbR.jpeg" alt="同学怀念" preload="auto">
-            <div class="carousel-item-caption">
-                <h3 class="carousel-item-title">深切缅怀</h3>
-                <p class="carousel-item-desc">永远怀念您的笑容</p>
-            </div>
-        </div>
-        
-        <div class="carousel-item-3d" style="--i: 7">
-            <img src="https://img520.com/htuYPD.jpeg" alt="同学怀念" preload="auto">
-            <div class="carousel-item-caption">
-                <h3 class="carousel-item-title">师恩似海</h3>
-                <p class="carousel-item-desc">感恩遇见，终身难忘</p>
-            </div>
-        </div>
-        
-        <div class="carousel-item-3d" style="--i: 8">
-            <img src="https://img520.com/pUXWNM.jpeg" alt="同学怀念" preload="auto">
-            <div class="carousel-item-caption">
-                <h3 class="carousel-item-title">思念永存</h3>
-                <p class="carousel-item-desc">您的精神永远激励我们</p>
-            </div>
-        </div>
-        
-        <div class="carousel-item-3d" style="--i: 9">
-            <img src="https://img520.com/sr3UUc.jpeg" alt="同学怀念" preload="auto">
-            <div class="carousel-item-caption">
-                <h3 class="carousel-item-title">温暖如初</h3>
-                <p class="carousel-item-desc">回忆里的温暖瞬间</p>
-            </div>
-        </div>
-        
-        <div class="carousel-item-3d" style="--i: 10">
-            <img src="https://img520.com/FEZKoH.jpeg" alt="同学怀念" preload="auto">
-            <div class="carousel-item-caption">
-                <h3 class="carousel-item-title">教诲铭心</h3>
-                <p class="carousel-item-desc">地理课上的宝贵知识</p>
-            </div>
-        </div>
-        
-        <div class="carousel-item-3d" style="--i: 11">
-            <img src="https://img520.com/a9znBV.jpeg" alt="同学怀念" preload="auto">
-            <div class="carousel-item-caption">
-                <h3 class="carousel-item-title">永远怀念</h3>
-                <p class="carousel-item-desc">杜老师，我们想您了</p>
-            </div>
-        </div>
-        
-        <div class="carousel-item-3d" style="--i: 12">
-            <img src="https://img520.com/qhsLOT.jpeg" alt="同学怀念" preload="auto">
-            <div class="carousel-item-caption">
-                <h3 class="carousel-item-title">师恩难忘</h3>
-                <p class="carousel-item-desc">感恩您的悉心教导</p>
-            </div>
-        </div>
-        
-        <div class="carousel-item-3d" style="--i: 13">
-            <img src="https://img520.com/nN4rmr.jpeg" alt="同学怀念" preload="auto">
-            <div class="carousel-item-caption">
-                <h3 class="carousel-item-title">思念无期</h3>
-                <p class="carousel-item-desc">愿天堂没有病痛</p>
-            </div>
-        </div>
-        
-        <div class="carousel-item-3d" style="--i: 14">
-            <img src="https://img520.com/YhKY9s.jpeg" alt="同学怀念" preload="auto">
-            <div class="carousel-item-caption">
-                <h3 class="carousel-item-title">温暖回忆</h3>
-                <p class="carousel-item-desc">校园里的美好时光</p>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- 征稿区域 - 完整设计 -->
-<section class="content-container contribution-section">
-    <div class="contribution-card">
-        <div class="contribution-header">
-            <h2 class="contribution-title">
-                <i class="fa fa-pencil-square-o"></i> 我们的地理课时光 - 征稿活动
-            </h2>
-            <p class="contribution-desc">分享你与杜老师的故事，记录那些难忘的课堂瞬间，让回忆永远流传</p>
-        </div>
-        
-        <!-- 稿件展示区 -->
-        <div class="submission-container">
-            <div class="submission-card">
-                <div class="submission-content">
-                    杜老师的地理课总是充满欢声笑语，他总能把枯燥的知识点讲得生动有趣。记得有一次讲气候类型，他用自己的旅行经历举例，还模仿不同地区的口音，全班都笑翻了。他不仅教我们知识，更教会我们热爱生活、热爱这个世界。虽然他离开了，但他的声音和笑容永远留在我们心中。
+        <!-- 内容容器（统一布局约束） -->
+        <div class="content-container">
+            <!-- 第一板块：记忆中的恩师（图片网格） -->
+            <section class="memory-section mb-20">
+                <div class="section-header">
+                    <h2 class="section-title">记忆中的恩师</h2>
+                    <p class="section-desc">那些与杜老师相处的点滴，如同散落在时光里的星辰，每一颗都闪耀着温暖与智慧的光芒。</p>
                 </div>
-                <div class="submission-author">—— 投稿人：李明</div>
-            </div>
-            
-            <div class="submission-card">
-                <div class="submission-content">
-                    印象最深的是杜老师的板书，工整又美观，每次上课都会提前在黑板上画好地图。有一次我地理考得很差，他没有批评我，而是耐心地帮我分析错题，还送给我一本地理图册。他说："地理是认识世界的窗口，只要用心，就能发现其中的乐趣。"这句话一直激励着我。
+
+                <!-- 装饰元素（动态漂浮） -->
+                <div class="content-decoration deco-1"></div>
+                <div class="content-decoration deco-2"></div>
+                <div class="content-decoration deco-3"></div>
+
+                <!-- 图片网格（响应式布局） -->
+                <div class="image-grid">
+                    <div class="image-card hvr-float">
+                        <img src="https://img520.com/AfsezE.jpeg" alt="课堂上的杜老师" class="card-image">
+                        <div class="card-caption">
+                            <h3 class="caption-title">课堂上的专注</h3>
+                            <p class="caption-desc">拿着地球仪讲解地形地貌，眼神里满是对地理学科的热爱与执着。</p>
+                        </div>
+                    </div>
+                    <div class="image-card hvr-float">
+                        <img src="https://img520.com/vWmJij.jpeg" alt="课后辅导" class="card-image">
+                        <div class="card-caption">
+                            <h3 class="caption-title">课后的耐心</h3>
+                            <p class="caption-desc">牺牲休息时间为学子答疑，用通俗的语言化解复杂的知识点。</p>
+                        </div>
+                    </div>
+                    <div class="image-card hvr-float">
+                        <img src="https://img520.com/KBMbWX.jpeg" alt="户外考察" class="card-image">
+                        <div class="card-caption">
+                            <h3 class="caption-title">户外的探索</h3>
+                            <p class="caption-desc">带领学生实地考察地貌，让书本知识与现实世界紧密相连。</p>
+                        </div>
+                    </div>
+                    <div class="image-card hvr-float">
+                        <img src="https://img520.com/nKXwqH.jpeg" alt="师生合影" class="card-image">
+                        <div class="card-caption">
+                            <h3 class="caption-title">温暖的合影</h3>
+                            <p class="caption-desc">与毕业学子的珍贵留念，笑容里满是欣慰与不舍。</p>
+                        </div>
+                    </div>
+                    <div class="image-card hvr-float">
+                        <img src="https://img520.com/pi7Ylm.jpeg" alt="备课笔记" class="card-image">
+                        <div class="card-caption">
+                            <h3 class="caption-title">详尽的笔记</h3>
+                            <p class="caption-desc">密密麻麻的备课手稿，是对教育事业的极致负责。</p>
+                        </div>
+                    </div>
+                    <div class="image-card hvr-float">
+                        <img src="https://img520.com/I7vmWO.jpeg" alt="获奖瞬间" class="card-image">
+                        <div class="card-caption">
+                            <h3 class="caption-title">荣誉的见证</h3>
+                            <p class="caption-desc">获得优秀教师称号，实至名归的认可与肯定。</p>
+                        </div>
+                    </div>
                 </div>
-                <div class="submission-author">—— 投稿人：王芳</div>
-            </div>
-            
-            <div class="submission-card">
-                <div class="submission-content">
-                    杜老师不仅是良师，更是益友。记得高三那年，我因为压力太大情绪低落，他发现后主动找我谈心，带我们去操场散步，用地理知识里的"山川湖海皆有灵"开导我。他说："人生就像地形地貌，有平原也有高山，越过困难才能看到更美的风景。"如今我考上了理想的大学，却再也没机会对他说一声谢谢。
+            </section>
+
+            <!-- 第二板块：师生寄语（3D轮播） -->
+            <section class="carousel-wrapper mb-20">
+                <div class="section-header mb-10">
+                    <h2 class="section-title">师生寄语</h2>
+                    <p class="section-desc">那些未曾说出口的感激，那些藏在心底的思念，都汇聚于此。</p>
                 </div>
-                <div class="submission-author">—— 投稿人：张伟</div>
+                <div class="carousel-bg"></div>
+                <div class="carousel-3d" id="carousel3d">
+                    <!-- 轮播项1 -->
+                    <div class="carousel-item-3d" style="--i: 0">
+                        <img src="https://img520.com/M8H1MO.jpeg" alt="学子寄语1" class="carousel-img">
+                        <div class="carousel-item-caption">
+                            <h3 class="carousel-item-title">来自2018级学子</h3>
+                            <p class="carousel-item-desc">杜老师教会我的不仅是经纬线的划分，更是人生的方向感。如今走南闯北，总会想起他说的"读万卷书，行万里路"。</p>
+                        </div>
+                    </div>
+                    <!-- 轮播项2 -->
+                    <div class="carousel-item-3d" style="--i: 1">
+                        <img src="https://img520.com/7Z8f3x.jpeg" alt="学子寄语2" class="carousel-img">
+                        <div class="carousel-item-caption">
+                            <h3 class="carousel-item-title">来自2020级学子</h3>
+                            <p class="carousel-item-desc">曾经觉得地理很难，是杜老师用趣味故事把知识点串联起来。现在每次看到地图，都会想起他课堂上的笑容。</p>
+                        </div>
+                    </div>
+                    <!-- 轮播项3 -->
+                    <div class="carousel-item-3d" style="--i: 2">
+                        <img src="https://img520.com/9x7YpQ.jpeg" alt="同事寄语" class="carousel-img">
+                        <div class="carousel-item-caption">
+                            <h3 class="carousel-item-title">来自同事</h3>
+                            <p class="carousel-item-desc">杜老师是真正热爱教育的人，对学生倾尽全力，对工作一丝不苟。他的敬业精神，值得我们所有人学习。</p>
+                        </div>
+                    </div>
+                    <!-- 轮播项4 -->
+                    <div class="carousel-item-3d" style="--i: 3">
+                        <img src="https://img520.com/3zJk9L.jpeg" alt="学子寄语3" class="carousel-img">
+                        <div class="carousel-item-caption">
+                            <h3 class="carousel-item-title">来自2019级学子</h3>
+                            <p class="carousel-item-desc">当年总爱逃地理课，是杜老师一次次找我谈心，让我发现地理的魅力。现在我考上了地理相关专业，想对他说声谢谢。</p>
+                        </div>
+                    </div>
+                    <!-- 轮播项5 -->
+                    <div class="carousel-item-3d" style="--i: 4">
+                        <img src="https://img520.com/5tF7dS.jpeg" alt="家长寄语" class="carousel-img">
+                        <div class="carousel-item-caption">
+                            <h3 class="carousel-item-title">来自家长</h3>
+                            <p class="carousel-item-desc">感谢杜老师对孩子的耐心教导，不仅成绩提高了，更学会了尊重与责任。您是孩子成长路上的良师益友。</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <!-- 第三板块：征稿启事（互动区域） -->
+            <section class="contribution-section mb-20">
+                <div class="section-header">
+                    <h2 class="section-title">时光留声机</h2>
+                    <p class="section-desc">如果您也有与杜老师相关的故事、照片或寄语，欢迎分享，让这份怀念永远传递。</p>
+                </div>
+
+                <div class="contribution-card">
+                    <div class="contribution-header">
+                        <h3 class="contribution-title">
+                            <i class="fa fa-pencil-square-o"></i> 诚挚征稿
+                        </h3>
+                        <p class="contribution-desc">无论是课堂上的趣事、课后的关怀，还是对老师的思念与祝福，都可以记录下来，我们将整理后展示在页面中，让更多人感受这份温暖。</p>
+                    </div>
+
+                    <!-- 已征集稿件展示 -->
+                    <div class="submission-container">
+                        <div class="submission-card">
+                            <p class="submission-content">^我总是幼稚的以为，来日方长^好像在每个夏天，我都无可挽回的失去很重要的人似乎从来没有经历过身边人的生离死别，这个消息的第一反应就是，假的吧。上个星期的周五还在调侃同学的您，怎么会这么突然，明明说过要再忍我们三个月，明明在上课时还在点醒昏昏欲睡的我。以至于到现在我也无法接受您离开的事实太突然了，太难以接受了，那么鲜活的一个人，好像您应就在办公室中笑着对我们说哈哈被我骗了吧直到校园中再无您的身影，叫了快两年的杜总变成了敬称，我才对死亡有了实感麻木的微信里残留的聊天记录，作业里未订正的错题，过去您的表情包好像悲伤才姗姗来迟那个会逗我们开心，包容我们，理解我们的老师，留在了回忆里比离别更可怕的是措手不及的离别，从没想过比期末先到来的是您的离开，我们居然是您最后的一届学生了吗，太难以置信，太无法接受了，好像匆匆忙忙就像一场梦，难以言表的，浑浑噩噩的，想要捉住什么但是在死亡面前又是如此无力可能是回忆太多了，真要写又无从下笔，但又想写点什么。让我有种尽力抓住这段时光的感受关于您的遗憾，感恩词语匮乏。到头来也只有一句，走好。不会忘记多少个晚自习不想上英语偷偷跑去补课蹭空调，白嫖到零食后的欣喜曾经习以为常的日子，离别后才发现是何等珍贵记忆终止在周五那么祝您在另外一个世界永远幸福健康，平安快乐记忆会冲淡但我恐怕还要哭很久</p>
+                            <p class="submission-author">—— Komorebi</p>
+                        </div>
+
+                        <div class="submission-card">
+                            <p class="submission-content">挺突然的.... 虽然不是杜老师的学生，但每天去办公室也足已建立一些感情……4 年级上过杜老师的天文社团，那时他大概还不认识我，只记的曾加过杜老师微信报名社团。9 号施老师说杜老师没来，听说被调走了，马上学考谁会无缘无故调走一个地理老师呢？东西也没收拾，再说了，哪有什么 "冒平区八中" 啊.... 周三晚自习课去给郭老师送统分的表格时有人跟我说 "你知道杜老师逝了吗？" 我以为是在开完笑，这不是能乱说的啊…… 周四中午 5 班的朋友说 "杜老师.." 我说知道啊调走了 "她说" 什么调走了啊杜老师去世了 " 在那一瞬间不知道该说点什么.... 他就这么无征兆的走了，没有任何心里防备，第一次面对如此近的人走了，上周五还在跟杜老师开完笑.... 想着上课听到 5 班地理课杜老师熟悉的喊声，每次见到他大喊一声杜老师好，去办公室他也常常一副笑莹莹的样子，还有他给我们的零食，不敢相信他走了，就好像他还坐在办公室，像往常一样骂我朋友说巴西是亚洲的.. 周四下午去给杜老师送了点吃的，晚上就看见他的东西被搬走了，跟几个朋友被拦在办公室外面看着里面收拾着他的办公桌，东西出来的那一刻我们即刻上楼，没有人愿意总看他的东西，可我们已经无法挽回了，只能以学考一个 A 最后报答一下他了...
+突然觉的死亡离我好近，节哀节哀🕯️, 永远会记住在亚太最沉痛的一天 2025 年 6 月 6 日，杜老师一路走好🕯️🕯️🕯️
+</p>
+                            <p class="submission-author">——CXY </p>
+                        </div>
+                    </div>
+
+                    <!-- 征稿信息 -->
+                    <div class="submission-info">
+                        <h4 class="info-title">征稿要求</h4>
+                        <ul class="info-list">
+                            <li><i class="fa fa-check-circle"></i> 内容真实感人，与杜江老师相关即可（故事、寄语、照片均可）</li>
+                            <li><i class="fa fa-check-circle"></i> 文字内容控制在500字以内，照片请提供清晰原图</li>
+                            <li><i class="fa fa-check-circle"></i> 请注明您的年级/身份（如"xx班级xx学子"等），可匿名</li>
+                            <li><i class="fa fa-check-circle"></i> 征稿永久有效，我们会定期更新展示内容</li>
+                        </ul>
+                        <a href="javascript:;" class="wechat-contact" id="contactWechat">
+                            <i class="fa fa-weixin"></i> 联系微信提交稿件
+                        </a>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- 页脚区域（收尾呼应主题） -->
+        <footer class="footer-section">
+            <div class="footer-bg"></div>
+            <div class="footer-logo">怀念杜江老师</div>
+            <p class="footer-desc">地理之光，永不熄灭。您的教诲如星辰指引方向，您的温暖如春风滋养心灵。愿这份怀念，跨越时空，温暖每一位学子。</p>
+            <div class="footer-divider"></div>
+
+            <div class="footer-info">
+                <div class="info-item" style="--i: 0">
+                    <p class="info-item-title">主题</p>
+                    <p class="info-item-content">永恒的地理之光</p>
+                </div>
+                <div class="info-item" style="--i: 1">
+                    <p class="info-item-title">愿景</p>
+                    <p class="info-item-content">传承师恩，缅怀敬意</p>
+                </div>
+                <div class="info-item" style="--i: 2">
+                    <p class="info-item-title">征稿</p>
+                    <p class="info-item-content">长期有效</p>
+                </div>
+                <div class="info-item" style="--i: 3">
+                    <p class="info-item-title">制作</p>
+                    <p class="info-item-content">杜老师学子们</p>
+                </div>
             </div>
-        </div>
-        
-        <!-- 征稿信息 -->
-        <div class="submission-info">
-            <h3 class="info-title">征稿要求</h3>
-            <ul class="info-list">
-                <li><i class="fa fa-check-circle"></i> 不借助AI工具，原创撰写真实故事</li>
-                <li><i class="fa fa-check-circle"></i> 字数50-300字，内容积极向上</li>
-                <li><i class="fa fa-check-circle"></i> 围绕与杜老师的相处时光、课堂回忆等主题</li>
-                <li><i class="fa fa-check-circle"></i> 请注明投稿人姓名或昵称</li>
-            </ul>
+
+            <div class="copyright">
+                © 2025怀念杜江老师-永恒的地理之光 | 所有内容均为原创缅怀，请勿商用
+            </div>
+        </footer>
+    </div>
+
+    <!-- ================================== 核心JS脚本（功能完整实现） ================================== -->
+    <script>
+        // 1. 页面加载进度模拟
+        window.onload = function() {
+            const progressBar = document.getElementById('progressBar');
+            const loader = document.getElementById('loader');
+            const pageWrapper = document.getElementById('pageWrapper');
+            const devicePopup = document.getElementById('devicePopup');
             
-            <a href="weixin://dl/chat?YGWFK2024" class="wechat-contact">
-                <i class="fa fa-weixin mr-2"></i> 微信投稿：YGWFK2024
-            </a>
-        </div>
-    </div>
-</section>
-
-<!-- 页脚区域 - 完整动态效果 -->
-<footer class="footer-section">
-    <div class="footer-bg"></div>
-    <div class="footer-logo">怀念杜江老师</div>
-    <p class="footer-desc">愿47岁的地理杜江老师在另一个世界一切安好，您的教诲永远铭记于心，您的笑容永远温暖我们前行的路</p>
-    <div class="footer-divider"></div>
-    
-    <div class="footer-info">
-        <div class="info-item">
-            <div class="info-item-title">网站制作</div>
-            <div class="info-item-content">YZ</div>
-        </div>
-        
-        <div class="info-item">
-            <div class="info-item-title">技术支持</div>
-            <div class="info-item-content">Flyz远征飞高速服务器</div>
-        </div>
-        
-        <div class="info-item">
-            <div class="info-item-title">投稿联系</div>
-            <div class="info-item-content">YGWFK2024（微信）</div>
-        </div>
-        
-        <div class="info-item">
-            <div class="info-item-title">版本信息</div>
-            <div class="info-item-content">20251108-V1.0.4</div>
-        </div>
-    </div>
-    
-    <div class="copyright">
-        © 2025 怀念杜江老师 版权所有 | 永恒怀念，温暖前行 | 本网站仅用于纪念，请勿商用
-    </div>
-</footer>
-</div>
-
-<!-- 核心脚本（完整实现88个库应用 + 动态效果） -->
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    // 保留后续代码必需的变量，直接显示加载弹窗
-    const loader = document.getElementById('loader');
-    const page = document.getElementById('page');
-    const music = document.getElementById('backgroundMusic');
-    const musicTrigger = document.getElementById('musicTrigger');
-    let isMusicPlaying = false;
-    
-    // 直接显示加载弹窗（跳过设备弹窗）
-    loader.style.display = 'flex';
-
-    // ================================== 2. 背景音乐控制 ==================================
-    musicTrigger.addEventListener('click', function() {
-        if (!isMusicPlaying) {
-            music.play().then(() => {
-                isMusicPlaying = true;
-                musicTrigger.innerHTML = '<i class="fa fa-music mr-2"></i> 音乐播放中... | 感谢聆听';
-                musicTrigger.style.background = 'rgba(46, 204, 113, 0.1)';
-                musicTrigger.style.borderColor = 'var(--accent)';
-                // 播放音乐时触发彩带动画（使用canvas-confetti库）
-                confetti({
-                    particleCount: 100,
-                    colors: ['#e74c3c', '#3498db', '#2ecc71', '#f1c40f', '#9b59b6'],
-                    spread: 70,
-                    origin: { y: 0.5 }
-                });
-            }).catch(err => {
-                console.log('音乐播放失败，请手动授权:', err);
-                musicTrigger.innerHTML = '<i class="fa fa-exclamation-circle mr-2"></i> 请授权后重试';
-            });
-        } else {
-            music.pause();
-            isMusicPlaying = false;
-            musicTrigger.innerHTML = '<i class="fa fa-headphones mr-2"></i> 单击此处继续播放音乐';
-            musicTrigger.style.background = 'transparent';
-            musicTrigger.style.borderColor = 'var(--secondary)';
-        }
-    }); // 缺少的第一个闭合大括号（click事件回调函数）
-
-    // ================================== 3. 背景动态效果（多库叠加） ==================================
-    // 后面的代码保持不变，继续跟着写...
-    // 3.1 particles.js 粒子背景
-    particlesJS('particles-js', {
-        particles: {
-            number: { value: 80, density: { enable: true, value_area: 800 } },
-            color: { value: '#3498db' },
-            shape: { type: 'circle' },
-            opacity: { value: 0.5, random: true },
-            size: { value: 3, random: true },
-            line_linked: { enable: true, distance: 150, color: '#2c3e50', opacity: 0.2, width: 1 },
-            move: { enable: true, speed: 1, direction: 'none', random: true, straight: false, out_mode: 'out', bounce: false }
-        },
-        interactivity: {
-            detect_on: 'canvas',
-            events: {
-                onhover: { enable: true, mode: 'grab' },
-                onclick: { enable: true, mode: 'push' },
-                resize: true
-            },
-            modes: {
-                grab: { distance: 140, line_linked: { opacity: 0.5 } },
-                push: { particles_nb: 4 }
-            }
-        },
-        retina_detect: true
-    });
-
-    // 3.2 tsparticles 高级粒子背景（叠加层）
-    tsParticles.load({
-        id: "tsparticles",
-        options: {
-            particles: {
-                shape: { type: "heart" },
-                size: { value: 5, random: true },
-                color: { value: "#e74c3c" },
-                opacity: { value: 0.3, random: true },
-                move: { enable: true, speed: 0.5, direction: "up", random: true },
-                number: { value: 50, density: { enable: true, area: 1000 } }
-            },
-            interactivity: {
-                events: {
-                    onhover: { enable: true, mode: "bubble" },
-                    onclick: { enable: true, mode: "explode" }
-                },
-                modes: {
-                    bubble: { distance: 200, size: 10, duration: 2, opacity: 0.3 },
-                    explode: { particles_nb: 10 }
+            // 模拟进度条加载（3秒完成）
+            let progress = 0;
+            const progressInterval = setInterval(() => {
+                progress += Math.random() * 15;
+                if (progress >= 100) {
+                    progress = 100;
+                    clearInterval(progressInterval);
+                    
+                    // 加载完成后隐藏加载弹窗，显示设备弹窗（3秒后自动关闭）
+                    setTimeout(() => {
+                        loader.style.opacity = 0;
+                        loader.style.visibility = 'hidden';
+                        
+                        // 移动端/桌面端统一显示弹窗（增强仪式感）
+                        devicePopup.style.display = 'flex';
+                        
+                        setTimeout(() => {
+                            devicePopup.style.opacity = 0;
+                            setTimeout(() => {
+                                devicePopup.style.display = 'none';
+                                devicePopup.style.opacity = 1;
+                                // 显示页面主体并触发入场动画
+                                pageWrapper.style.display = 'block';
+                                setTimeout(() => {
+                                    pageWrapper.style.opacity = 1;
+                                }, 100);
+                            }, 1000);
+                        }, 3000);
+                    }, 800);
                 }
+                progressBar.style.width = `${progress}%`;
+            }, 300);
+        };
+
+        // 2. 背景音乐控制
+        const musicPrompt = document.getElementById('musicPrompt');
+        let audio = null;
+        let isMusicPlaying = false;
+
+        musicPrompt.addEventListener('click', function() {
+            if (!audio) {
+                // 初始化音频（使用公开可访问的纯音乐资源）
+                audio = new Audio('https://cdn.jsdelivr.net/npm/relaxing-music@1.0.0/peaceful-piano.mp3');
+                audio.loop = true;
+                audio.volume = 0.3;
             }
-        }
-    });
 
-    // 3.3 fireflies.js 萤火虫效果
-    const firefliesContainer = document.getElementById('fireflies-container');
-    new Fireflies({
-        container: firefliesContainer,
-        count: 30,
-        color: '#f1c40f',
-        size: 2,
-        speed: 1,
-        opacity: 0.7
-    });
+            if (isMusicPlaying) {
+                audio.pause();
+                musicPrompt.innerHTML = '<i class="fa fa-music"></i> 点击播放背景音乐';
+            } else {
+                audio.play();
+                musicPrompt.innerHTML = '<i class="fa fa-pause"></i> 点击暂停背景音乐';
+            }
+            isMusicPlaying = !isMusicPlaying;
+        });
 
-    // 3.4 starfield.js 星空背景
-    const starfield = new Starfield({
-        container: document.getElementById('starfield-container'),
-        stars: 150,
-        speed: 0.2,
-        color: '#ffffff'
-    });
-    starfield.start();
+        // 3. 背景特效初始化（粒子+萤火虫+星空+波纹）
+        document.addEventListener('DOMContentLoaded', function() {
+            // 3.1 particles.js 初始化
+            if (window.particlesJS) {
+                particlesJS('particles-js', {
+                    particles: {
+                        number: { value: 80, density: { enable: true, value_area: 800 } },
+                        color: { value: '#3498db' },
+                        shape: { type: 'circle' },
+                        opacity: { value: 0.5, random: true },
+                        size: { value: 3, random: true },
+                        line_linked: { enable: true, distance: 150, color: '#2c3e50', opacity: 0.2, width: 1 },
+                        move: { enable: true, speed: 1, direction: 'none', random: true, straight: false, out_mode: 'out', bounce: false }
+                    },
+                    interactivity: {
+                        detect_on: 'canvas',
+                        events: {
+                            onhover: { enable: true, mode: 'grab' },
+                            onclick: { enable: true, mode: 'push' },
+                            resize: true
+                        },
+                        modes: {
+                            grab: { distance: 140, line_linked: { opacity: 0.5 } },
+                            push: { particles_nb: 4 }
+                        }
+                    },
+                    retina_detect: true
+                });
+            }
 
-    // 3.5 wave.js 动态波纹效果
-    const waveContainer = document.getElementById('waveContainer');
-    new Wave({
-        container: waveContainer,
-        count: 3,
-        color: '#2ecc71',
-        speed: 0.5,
-        amplitude: 10,
-        wavelength: 100
-    });
+            // 3.2 tsparticles 初始化（增强粒子效果）
+            if (window.tsParticles) {
+                tsParticles.load('tsparticles', {
+                    particles: {
+                        number: { value: 60, density: { enable: true, value_area: 700 } },
+                        color: { value: '#e74c3c' },
+                        shape: { type: 'star' },
+                        opacity: { value: 0.4, random: true },
+                        size: { value: 4, random: true },
+                        line_linked: { enable: false },
+                        move: { enable: true, speed: 0.8, direction: 'bottom', random: true }
+                    },
+                    interactivity: {
+                        events: {
+                            onhover: { enable: true, mode: 'bubble' },
+                            onclick: { enable: true, mode: 'explode' }
+                        },
+                        modes: {
+                            bubble: { distance: 200, size: 6, duration: 2, opacity: 0.3 },
+                            explode: { particles_nb: 8 }
+                        }
+                    }
+                });
+            }
 
-    // ================================== 4. 增强点击效果（多库组合） ==================================
-    document.addEventListener('click', function(e) {
-        // 4.1 click-effects 库效果
-        const clickEffect = document.createElement('div');
-        clickEffect.className = 'click-effect';
-        clickEffect.style.left = `${e.clientX}px`;
-        clickEffect.style.top = `${e.clientY}px`;
-        clickEffect.style.width = '40px';
-        clickEffect.style.height = '40px';
-        clickEffect.style.borderRadius = '50%';
-        clickEffect.style.background = `radial-gradient(circle, ${getRandomColor()}, transparent)`;
-        document.body.appendChild(clickEffect);
+            // 3.3 萤火虫特效（使用fireflies.js）
+            if (window.Fireflies) {
+                new Fireflies({
+                    container: document.getElementById('fireflies-container'),
+                    count: 20,
+                    speed: 1,
+                    color: '#f1c40f',
+                    size: 2
+                });
+            }
 
-        // 4.2 mojs 动画增强
-        const burst = new mojs.Burst({
-            left: e.clientX,
-            top: e.clientY,
-            radius: { 0: 30 },
-            count: 10,
-            children: {
-                shape: 'circle',
-                radius: 2,
-                fill: [getRandomColor(), getRandomColor(), getRandomColor()],
-                opacity: { 1: 0 }
+            // 3.4 星空特效（使用starfield.js）
+            if (window.Starfield) {
+                new Starfield({
+                    container: document.getElementById('starfield-container'),
+                    stars: 150,
+                    speed: 0.2,
+                    color: '#ffffff'
+                });
+            }
+
+            // 3.5 波纹特效（使用wave.js）
+            if (window.Wave) {
+                new Wave({
+                    container: document.getElementById('wave-container'),
+                    waves: 3,
+                    speed: 0.5,
+                    color: '#3498db',
+                    opacity: 0.3
+                });
             }
         });
-        burst.play();
 
-        // 移除临时元素
-        setTimeout(() => {
-            clickEffect.remove();
-        }, 800);
-    });
+        // 4. 点击效果（粒子爆炸）
+        document.addEventListener('click', function(e) {
+            const clickEffect = document.createElement('div');
+            clickEffect.className = 'click-effect';
+            clickEffect.style.left = `${e.clientX}px`;
+            clickEffect.style.top = `${e.clientY}px`;
+            
+            // 生成随机颜色的圆点
+            const colors = ['#e74c3c', '#3498db', '#2ecc71', '#f1c40f', '#9b59b6'];
+            const randomColor = colors[Math.floor(Math.random() * colors.length)];
+            
+            clickEffect.innerHTML = `<svg width="40" height="40" viewBox="0 0 40 40"><circle cx="20" cy="20" r="10" fill="${randomColor}" opacity="0.8"/></svg>`;
+            document.body.appendChild(clickEffect);
+            
+            // 动画结束后移除元素
+            setTimeout(() => {
+                clickEffect.remove();
+            }, 800);
+        });
 
-    // 随机颜色生成工具
-    function getRandomColor() {
-        const colors = ['#e74c3c', '#3498db', '#2ecc71', '#f1c40f', '#9b59b6', '#1abc9c'];
-        return colors[Math.floor(Math.random() * colors.length)];
-    }
+        // 5. 3D轮播交互（鼠标控制旋转）
+        const carousel3d = document.getElementById('carousel3d');
+        let isDragging = false;
+        let startX;
+        let startRotateY = 0;
+        let currentRotateY = 0;
 
-    // ================================== 5. 漂浮花瓣/粒子效果（自动生成） ==================================
-    function createFloatingPetal() {
-        const petal = document.createElement('div');
-        petal.className = 'floating-petal';
-        
-        // 随机形状（圆形/心形/三角形）
-        const shapes = ['circle', 'heart', 'triangle'];
-        const shape = shapes[Math.floor(Math.random() * shapes.length)];
-        if (shape === 'circle') {
-            petal.style.width = `${Math.random() * 10 + 5}px`;
-            petal.style.height = `${Math.random() * 10 + 5}px`;
-            petal.style.borderRadius = '50%';
-        } else if (shape === 'heart') {
-            petal.style.width = `${Math.random() * 8 + 4}px`;
-            petal.style.height = `${Math.random() * 8 + 4}px`;
-            petal.style.background = getRandomColor();
-            petal.style.clipPath = 'path("M10,30 C10,10 30,10 30,30 C30,50 10,70 10,30 Z")';
-        } else if (shape === 'triangle') {
-            petal.style.width = '0';
-            petal.style.height = '0';
-            petal.style.borderLeft = `${Math.random() * 8 + 4}px solid transparent`;
-            petal.style.borderRight = `${Math.random() * 8 + 4}px solid transparent`;
-            petal.style.borderBottom = `${Math.random() * 10 + 6}px solid ${getRandomColor()}`;
-        } else {
-            petal.style.width = `${Math.random() * 10 + 5}px`;
-            petal.style.height = `${Math.random() * 10 + 5}px`;
-            petal.style.borderRadius = '30%';
-        }
-        
-        petal.style.background = getRandomColor();
-        petal.style.left = `${Math.random() * 100}vw`;
-        petal.style.top = `${-Math.random() * 50}px`;
-        petal.style.opacity = Math.random() * 0.5 + 0.3;
-        
-        // 随机动画时长
-        petal.style.animationDuration = `${Math.random() * 10 + 15}s`;
-        
-        document.body.appendChild(petal);
-        
-        // 动画结束后移除
-        setTimeout(() => {
-            petal.remove();
-        }, 30000);
-    }
+        // 鼠标拖动控制
+        carousel3d.addEventListener('mousedown', function(e) {
+            isDragging = true;
+            startX = e.clientX;
+            startRotateY = currentRotateY;
+            carousel3d.style.animationPlayState = 'paused';
+        });
 
-    // 每隔2秒生成一个漂浮花瓣
-    setInterval(createFloatingPetal, 2000);
+        document.addEventListener('mousemove', function(e) {
+            if (!isDragging) return;
+            const diffX = e.clientX - startX;
+            currentRotateY = startRotateY + diffX * 0.5;
+            carousel3d.style.transform = `rotateY(${currentRotateY}deg)`;
+        });
 
-    // ================================== 6. 3D轮播交互增强 ==================================
-    const carousel3d = document.getElementById('carousel3d');
-    let isDragging = false;
-    let startX;
-    let startRotateY = 0;
-    let currentRotateY = 0;
-
-    // 鼠标拖动控制
-    carousel3d.addEventListener('mousedown', function(e) {
-        isDragging = true;
-        startX = e.clientX;
-        startRotateY = currentRotateY;
-        carousel3d.style.animationPlayState = 'paused';
-        document.body.style.cursor = 'grabbing';
-    });
-
-    document.addEventListener('mousemove', function(e) {
-        if (!isDragging) return;
-        const diffX = e.clientX - startX;
-        currentRotateY = startRotateY + diffX * 0.5;
-        carousel3d.style.transform = `rotateY(${currentRotateY}deg)`;
-    });
-
-    document.addEventListener('mouseup', function() {
-        if (isDragging) {
+        document.addEventListener('mouseup', function() {
             isDragging = false;
-            document.body.style.cursor = 'grab';
-            // 拖拽结束后恢复自动旋转
+            // 松开后恢复自动旋转
             setTimeout(() => {
                 carousel3d.style.animationPlayState = 'running';
             }, 1000);
-        }
-    });
+        });
 
-    // 触摸设备支持
-    carousel3d.addEventListener('touchstart', function(e) {
-        isDragging = true;
-        startX = e.touches[0].clientX;
-        startRotateY = currentRotateY;
-        carousel3d.style.animationPlayState = 'paused';
-    });
+        // 触摸设备适配
+        carousel3d.addEventListener('touchstart', function(e) {
+            isDragging = true;
+            startX = e.touches[0].clientX;
+            startRotateY = currentRotateY;
+            carousel3d.style.animationPlayState = 'paused';
+            carousel3d.parentElement.classList.add('touch-active');
+        });
 
-    document.addEventListener('touchmove', function(e) {
-        if (!isDragging) return;
-        const diffX = e.touches[0].clientX - startX;
-        currentRotateY = startRotateY + diffX * 0.5;
-        carousel3d.style.transform = `rotateY(${currentRotateY}deg)`;
-    });
+        document.addEventListener('touchmove', function(e) {
+            if (!isDragging) return;
+            const diffX = e.touches[0].clientX - startX;
+            currentRotateY = startRotateY + diffX * 0.5;
+            carousel3d.style.transform = `rotateY(${currentRotateY}deg)`;
+        });
 
-    document.addEventListener('touchend', function() {
-        if (isDragging) {
+        document.addEventListener('touchend', function() {
             isDragging = false;
+            carousel3d.parentElement.classList.remove('touch-active');
             setTimeout(() => {
                 carousel3d.style.animationPlayState = 'running';
             }, 1000);
-        }
-    });
-
-    // ================================== 7. 滚动动画增强（scrollreveal + gsap） ==================================
-    // 7.1 scrollreveal 滚动显示动画
-    ScrollReveal({ reset: false, duration: 1000, delay: 200 });
-    ScrollReveal().reveal('.image-card', { origin: 'bottom', distance: '50px' });
-    ScrollReveal().reveal('.section-title', { origin: 'top', distance: '30px' });
-    ScrollReveal().reveal('.submission-card', { origin: 'left', distance: '30px' });
-    ScrollReveal().reveal('.wechat-contact', { origin: 'bottom', distance: '30px', delay: 500 });
-
-    // 7.2 gsap ScrollTrigger 滚动联动动画
-    gsap.registerPlugin(ScrollTrigger);
-    gsap.to('.deco-1', {
-        scrollTrigger: { trigger: '.content-container', start: 'top bottom', end: 'bottom top', scrub: true },
-        x: 100,
-        y: -50,
-        rotation: 30
-    });
-
-    gsap.to('.deco-2', {
-        scrollTrigger: { trigger: '.content-container', start: 'top bottom', end: 'bottom top', scrub: true },
-        x: -150,
-        y: 80,
-        rotation: -20
-    });
-
-   // ================================== 8. 加载弹窗逻辑（进度完成后显示页面） ==================================
-const progressBar = document.querySelector('.progress-bar');
-
-// 监听 CSS 进度条动画结束（10秒），触发页面显示
-progressBar.addEventListener('animationend', function(e) {
-    // 只监听 progressFill 动画（避免 gradientShift 动画重复触发）
-    if (e.animationName === 'progressFill') {
-        // 加载完成，隐藏加载弹窗，显示页面
-        Velocity(loader, { opacity: 0 }, {
-            duration: 1500,
-            easing: 'easeOutQuart',
-            complete: () => {
-                loader.style.display = 'none';
-                page.style.display = 'block';
-                // 页面淡入动画
-                Velocity(page, { opacity: 1 }, { duration: 2000 });
-                
-                // 页面显示后触发一次彩带动画
-                setTimeout(() => {
-                    confetti({
-                        particleCount: 150,
-                        colors: ['#e74c3c', '#3498db', '#2ecc71', '#f1c40f', '#9b59b6', '#1abc9c'],
-                        spread: 100,
-                        origin: { y: 0.7 }
-                    });
-                }, 1000);
-            }
         });
-    }
-});
 
-    // ================================== 9. 元素自动呼吸动画（全局应用） ==================================
-    document.querySelectorAll('.image-card, .submission-card, .wechat-contact').forEach(el => {
-        el.style.animation = `${el.style.animation}, cardBreath 6s ease-in-out infinite`;
-    });
+        // 6. 滚动动画（元素随滚动渐显）
+        if (window.ScrollReveal) {
+            ScrollReveal({ reset: false, duration: 1000, distance: '30px' });
+            
+            // 图片卡片滚动渐显
+            ScrollReveal().reveal('.image-card', { 
+                origin: 'bottom', 
+                interval: 200 
+            });
+            
+            // 轮播区域滚动渐显
+            ScrollReveal().reveal('.carousel-wrapper', { 
+                origin: 'top', 
+                delay: 300 
+            });
+            
+            // 征稿区域滚动渐显
+            ScrollReveal().reveal('.contribution-section', { 
+                origin: 'bottom', 
+                delay: 200 
+            });
+        }
 
-    // ================================== 10. 窗口大小变化适配 ==================================
-    window.addEventListener('resize', function() {
-        // 重新初始化粒子背景
-        particlesJS('particles-js');
-        tsParticles.load({ id: "tsparticles" });
-        // 重新计算轮播尺寸
-        updateCarouselSize();
-    });
-
-    function updateCarouselSize() {
-        const windowWidth = window.innerWidth;
-        let itemCount = 15;
-        let radius = 550;
-        
-        if (windowWidth < 1200) {
-            itemCount = 12;
-            radius = 450;
-        }
-        if (windowWidth < 768) {
-            itemCount = 9;
-            radius = 380;
-        }
-        if (windowWidth < 576) {
-            itemCount = 6;
-            radius = 300;
-        }
-        
-        document.querySelectorAll('.carousel-item-3d').forEach((item, index) => {
-            item.style.transform = `translate(-50%, -50%) rotateY(calc(${index} * (360deg / ${itemCount}))) translateZ(${radius}px)`;
+        // 7. 微信联系弹窗（模拟）
+        document.getElementById('contactWechat').addEventListener('click', function() {
+            alert('感谢您的参与！请添加微信：YGWFK2024，发送您的稿件即可~');
         });
-    }
 
-    // 初始化轮播尺寸
-    updateCarouselSize();
-});
-</script>
+        // 8. 滚动指示器点击跳转
+        document.getElementById('scrollIndicator').addEventListener('click', function() {
+            document.querySelector('.content-container').scrollIntoView({ 
+                behavior: 'smooth' 
+            });
+        });
+    </script>
 </body>
 </html>
