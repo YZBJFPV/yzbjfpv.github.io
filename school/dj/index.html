@@ -1914,37 +1914,36 @@ document.addEventListener('DOMContentLoaded', function() {
         rotation: -20
     });
 
-    // ================================== 8. 加载弹窗逻辑（进度完成后显示页面） ==================================
-    const progressBar = document.querySelector('.progress-bar');
-    const progressInterval = setInterval(() => {
-        const currentWidth = parseInt(progressBar.style.width) || 0;
-        if (currentWidth >= 100) {
-            clearInterval(progressInterval);
-            // 加载完成，隐藏加载弹窗，显示页面
-            Velocity(loader, { opacity: 0 }, {
-                duration: 1500,
-                easing: 'easeOutQuart',
-                complete: () => {
-                    loader.style.display = 'none';
-                    page.style.display = 'block';
-                    // 页面淡入动画
-                    Velocity(page, { opacity: 1 }, { duration: 2000 });
-                    
-                    // 页面显示后触发一次彩带动画
-                    setTimeout(() => {
-                        confetti({
-                            particleCount: 150,
-                            colors: ['#e74c3c', '#3498db', '#2ecc71', '#f1c40f', '#9b59b6', '#1abc9c'],
-                            spread: 100,
-                            origin: { y: 0.7 }
-                        });
-                    }, 1000);
-                }
-            });
-        } else {
-            progressBar.style.width = `${currentWidth + 1}%`;
-        }
-    }, 100);
+   // ================================== 8. 加载弹窗逻辑（进度完成后显示页面） ==================================
+const progressBar = document.querySelector('.progress-bar');
+
+// 监听 CSS 进度条动画结束（10秒），触发页面显示
+progressBar.addEventListener('animationend', function(e) {
+    // 只监听 progressFill 动画（避免 gradientShift 动画重复触发）
+    if (e.animationName === 'progressFill') {
+        // 加载完成，隐藏加载弹窗，显示页面
+        Velocity(loader, { opacity: 0 }, {
+            duration: 1500,
+            easing: 'easeOutQuart',
+            complete: () => {
+                loader.style.display = 'none';
+                page.style.display = 'block';
+                // 页面淡入动画
+                Velocity(page, { opacity: 1 }, { duration: 2000 });
+                
+                // 页面显示后触发一次彩带动画
+                setTimeout(() => {
+                    confetti({
+                        particleCount: 150,
+                        colors: ['#e74c3c', '#3498db', '#2ecc71', '#f1c40f', '#9b59b6', '#1abc9c'],
+                        spread: 100,
+                        origin: { y: 0.7 }
+                    });
+                }, 1000);
+            }
+        });
+    }
+});
 
     // ================================== 9. 元素自动呼吸动画（全局应用） ==================================
     document.querySelectorAll('.image-card, .submission-card, .wechat-contact').forEach(el => {
