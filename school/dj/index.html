@@ -1622,61 +1622,15 @@
 <!-- 核心脚本（完整实现88个库应用 + 动态效果） -->
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // ================================== 1. 设备检测与弹窗逻辑 ==================================
-    const deviceDetector = new DeviceDetector();
-    const deviceData = deviceDetector.parse(navigator.userAgent);
-    const devicePopup = document.getElementById('devicePopup');
-    const deviceLogo = document.getElementById('deviceLogo');
-    const deviceText = document.getElementById('deviceText');
+    // 保留后续代码必需的变量，直接显示加载弹窗
     const loader = document.getElementById('loader');
     const page = document.getElementById('page');
     const music = document.getElementById('backgroundMusic');
     const musicTrigger = document.getElementById('musicTrigger');
     let isMusicPlaying = false;
-
-    // 设备Logo配置（使用CDN高清Logo）
-    const deviceConfigs = {
-        android: {
-            logo: 'https://cdn.jsdelivr.net/npm/android-icon@1.0.0/android-logo.svg',
-            text: '高端安卓设备专属'
-        },
-        ios: {
-            logo: 'https://cdn.jsdelivr.net/npm/apple-icon@1.0.0/apple-logo.svg',
-            text: '苹果设备专属体验'
-        },
-        windows: {
-            logo: 'https://cdn.jsdelivr.net/npm/windows-icon@1.0.0/windows-logo.svg',
-            text: 'Windows设备专属'
-        },
-        default: {
-            logo: 'https://cdn.jsdelivr.net/npm/device-icon@1.0.0/default-logo.svg',
-            text: '通用设备专属页面'
-        }
-    };
-
-    // 判断设备类型
-    let deviceType = 'default';
-    if (deviceData.os && deviceData.os.name) {
-        if (deviceData.os.name.toLowerCase() === 'android') deviceType = 'android';
-        else if (deviceData.os.name.toLowerCase() === 'ios') deviceType = 'ios';
-        else if (deviceData.os.name.toLowerCase() === 'windows') deviceType = 'windows';
-    }
-
-    // 设置设备弹窗内容
-    deviceLogo.src = deviceConfigs[deviceType].logo;
-    deviceText.textContent = deviceConfigs[deviceType].text;
-
-    // 设备弹窗3秒后隐藏，显示加载弹窗
-    setTimeout(() => {
-        Velocity(devicePopup, { opacity: 0, scale: 0.8 }, {
-            duration: 800,
-            easing: 'easeOutQuart',
-            complete: () => {
-                devicePopup.style.display = 'none';
-                loader.style.display = 'flex';
-            }
-        });
-    }, 3000);
+    
+    // 直接显示加载弹窗（跳过设备弹窗）
+    loader.style.display = 'flex';
 
     // ================================== 2. 背景音乐控制 ==================================
     musicTrigger.addEventListener('click', function() {
@@ -1704,9 +1658,10 @@ document.addEventListener('DOMContentLoaded', function() {
             musicTrigger.style.background = 'transparent';
             musicTrigger.style.borderColor = 'var(--secondary)';
         }
-    });
+    }); // 缺少的第一个闭合大括号（click事件回调函数）
 
     // ================================== 3. 背景动态效果（多库叠加） ==================================
+    // 后面的代码保持不变，继续跟着写...
     // 3.1 particles.js 粒子背景
     particlesJS('particles-js', {
         particles: {
