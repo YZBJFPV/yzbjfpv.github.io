@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>正多边形与圆-互动演示｜Flyz远征飞</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: sans-serif; }
+        body { background: #f0f4ff; padding: 20px; min-height: 100vh; }
+        .title { text-align: center; color: #2b6cb0; margin-bottom: 15px; }
+        .container { width: 600px; height: 500px; margin: 0 auto; background: white; border-radius: 12px; box-shadow: 0 4px 16px rgba(0,0,0,0.1); position: relative; }
+        .controls { margin: 15px auto; display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; max-width: 600px; }
+        button { padding: 8px 16px; border: none; border-radius: 6px; background: #3182ce; color: white; cursor: pointer; transition: 0.3s; }
+        button:hover { background: #2b6cb0; }
+        .slider-group { display: flex; align-items: center; gap: 8px; }
+        .slider-group span { color: #4a5568; }
+        .slider { width: 140px; height: 5px; background: #e2e8f0; outline: none; -webkit-appearance: none; border-radius: 3px; }
+        .slider::-webkit-slider-thumb { -webkit-appearance: none; width: 16px; height: 16px; border-radius: 50%; background: #3182ce; cursor: pointer; }
+        select { padding: 7px 10px; border-radius: 6px; border: 1px solid #e2e8f0; color: #4a5568; }
+        .label { position: absolute; background: rgba(0,0,0,0.7); color: white; padding: 3px 6px; font-size: 12px; border-radius: 4px; pointer-events: none; z-index: 100; }
+        .info { margin: 10px auto; font-size: 12px; color: #666; max-width: 600px; text-align: center; }
+        .footer { margin-top: 20px; text-align: center; font-size: 14px; color: #4a5568; }
+        .dot { position: absolute; border-radius: 50%; transition: 0.5s cubic-bezier(0.34, 1.56, 0.64, 1); }
+    </style>
+</head>
+<body>
+    <h1 class="title">正多边形与圆 核心概念演示</h1>
+    <div class="container" id="anim"></div>
+    <div class="controls">
+        <div class="slider-group">
+            <span>边数(n):</span>
+            <input type="range" min="3" max="10" value="3" class="slider" id="nSlider">
+            <span id="nText">3</span>
+        </div>
+        <button id="playBtn">播放动画</button>
+        <button id="resetBtn">重置</button>
+        <select id="typeSelect">
+            <option value="inscribed">内接</option>
+            <option value="circumscribed">外切</option>
+        </select>
+    </div>
+    <div class="info">🔵外接圆 | 🟢内切圆 | 🔴正多边形 | 🟡半径 | 🟢边心距 | 🟣中心角=360°/n</div>
+    <div class="footer">www.YZBJFPV.top</div>
+
+    <script>
+        const anim = document.getElementById('anim');
+        const [centerX, centerY, R] = [300, 250, 180];
+        let n = 3, isPlaying = false, animFrame, progress = 0, polygonType = 'inscribed';
+
+        const els = {
+            nSlider: document.getElementById('nSlider'),
+            nText: document.getElementById('nText'),
+            playBtn: document.getElementById('playBtn'),
+            resetBtn: document.getElementById('resetBtn'),
+            typeSelect: document.getElementById('typeSelect')
+        };
+
+        els.nSlider.oninput = () => { n = +els.nSlider.value; els.nText.textContent = n; reset(); };
+        els.playBtn.onclick = () => { isPlaying = !isPlaying; els.playBtn.textContent = isPlaying ? '暂停' : '播放动画'; isPlaying ? (progress=0, animate()) : cancelAnimationFrame(animFrame); };
+        els.resetBtn.onclick = reset;
+        els.typeSelect.onchange = () => { polygonType = els.typeSelect.value; reset(); };
+
+        reset();
+
+        function reset() {
+            isPlaying = false; progress = 0; els.playBtn.textContent = '播放动画';
+            cancelAnimationFrame(animFrame); anim.innerHTML = '';
+            drawAll(1);
+        }
+
+        function drawAll(p) {
+            drawCenter(); drawCircles(); drawPolygon(p); drawAux(p); drawLabels(p);
+        }
+
+        function drawCenter() {
+            const dot = document.createElement('div');
+            dot.className = 'dot';
+            dot.style.cssText = `width:6px; height:6px; background:red; left:${centerX-3}px; top:${centerY-3}px; z-index:10`;
+            anim.appendChild(dot);
+        }
+
+        function drawCircles() {
+            const circum = document.createElement('div');
+            circum.style.cssText = `position:absolute; width:${2*R}px; height:${2*R}px; left:${centerX-R}px; top:${centerY-R}px; border:2px solid #3182ce; border-radius:50%; z-index:1`;
+            anim.appendChild(circum);
+
+            const r = R * Math.cos(Math.PI/n);
+            const inner = document.createElement('div');
+            inner.style.cssText = `position:absolute; width:${2*r}px; height:${2*r}px; left:${centerX-r}px; top:${centerY-r}px; border:2px solid #48bb78; border-radius:50%; z-index:2`;
+            anim.appendChild(inner);
+        }
+
+        function drawPolygon(p) {
+            const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+            svg.style.cssText = 'position:absolute; width:100%; height:100%; z-index:5';
+            anim.appendChild(svg);
+
+            const points = [];
+            for (let i=0; i<n; i++) {
+                const ang = (i*2*Math.PI/n) - Math.PI/2;
+                let x, y;
+                if (polygonType === 'inscribed') {
+                    x = centerX + R*Math.cos(ang)*p;
+                    y = centerY + R*Math.sin(ang)*p;
+                } else {
+                    const r = R*Math.cos(Math.PI/n);
+                    x = centerX + (r/Math.cos(Math.PI/n))*Math.cos(ang)*p;
+                    y = centerY + (r/Math.cos(Math.PI/n))*Math.sin(ang)*p;
+                }
+                points.push({x,y});
+            }
+
+            points.forEach((p, i) => {
+                const next = points[(i+1)%n];
+                const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                line.setAttribute('x1', p.x); line.setAttribute('y1', p.y);
+                line.setAttribute('x2', next.x); line.setAttribute('y2', next.y);
+                line.setAttribute('stroke', 'red'); line.setAttribute('stroke-width', 2);
+                svg.appendChild(line);
+
+                const dot = document.createElement('div');
+                dot.className = 'dot';
+                dot.style.cssText = `width:4px; height:4px; background:red; left:${p.x-2}px; top:${p.y-2}px; z-index:6`;
+                anim.appendChild(dot);
+            });
+        }
+
+        function drawAux(p) {
+            const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+            svg.style.cssText = 'position:absolute; width:100%; height:100%; z-index:3';
+            anim.appendChild(svg);
+
+            const ang0 = -Math.PI/2, ang1 = ang0 + 2*Math.PI/n;
+            const x0 = centerX + R*Math.cos(ang0)*p, y0 = centerY + R*Math.sin(ang0)*p;
+            const x1 = centerX + R*Math.cos(ang1)*p, y1 = centerY + R*Math.sin(ang1)*p;
+            const midX = (x0+x1)/2, midY = (y0+y1)/2;
+
+            const radius = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+            radius.setAttribute('x1', centerX); radius.setAttribute('y1', centerY);
+            radius.setAttribute('x2', x0); radius.setAttribute('y2', y0);
+            radius.setAttribute('stroke', '#ed8936'); radius.setAttribute('stroke-width', 2);
+            svg.appendChild(radius);
+
+            const apothem = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+            apothem.setAttribute('x1', centerX); apothem.setAttribute('y1', centerY);
+            apothem.setAttribute('x2', midX); apothem.setAttribute('y2', midY);
+            apothem.setAttribute('stroke', '#48bb78'); apothem.setAttribute('stroke-width', 2);
+            svg.appendChild(apothem);
+
+            const arcR = 30;
+            const arc = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+            arc.setAttribute('d', `M ${centerX+arcR*Math.cos(ang0)*p} ${centerY+arcR*Math.sin(ang0)*p} A ${arcR*p} ${arcR*p} 0 ${2*Math.PI/n>Math.PI?1:0} 1 ${centerX+arcR*Math.cos(ang1)*p} ${centerY+arcR*Math.sin(ang1)*p}`);
+            arc.setAttribute('stroke', '#9f7aea'); arc.setAttribute('stroke-width', 2); arc.setAttribute('fill', 'none');
+            svg.appendChild(arc);
+        }
+
+        function drawLabels(p) {
+            if (p < 1) return;
+            const r = R*Math.cos(Math.PI/n);
+            const ang0 = -Math.PI/2, ang1 = ang0 + 2*Math.PI/n;
+            const x0 = centerX + R*Math.cos(ang0), y0 = centerY + R*Math.sin(ang0);
+            const midX = (x0 + centerX + R*Math.cos(ang1))/2, midY = (y0 + centerY + R*Math.sin(ang1))/2;
+            const angLabelX = centerX + 40*Math.cos(ang0 + Math.PI/n);
+            const angLabelY = centerY + 40*Math.sin(ang0 + Math.PI/n);
+
+            const labels = [
+                {x: centerX+10, y: centerY+10, text: '中心O', color: 'red'},
+                {x: centerX+R+10, y: centerY, text: '外接圆', color: '#3182ce'},
+                {x: centerX-r-40, y: centerY, text: '内切圆', color: '#48bb78'},
+                {x: (centerX+x0)/2+10, y: (centerY+y0)/2-5, text: '半径R', color: '#ed8936'},
+                {x: (centerX+midX)/2-15, y: (centerY+midY)/2, text: '边心距r', color: '#48bb78'},
+                {x: angLabelX, y: angLabelY, text: `${360/n}°`, color: '#9f7aea'}
+            ];
+
+            labels.forEach(l => {
+                const label = document.createElement('div');
+                label.className = 'label';
+                label.style.left = `${l.x}px`; label.style.top = `${l.y}px`; label.style.color = l.color;
+                label.textContent = l.text; anim.appendChild(label);
+            });
+        }
+
+        function animate() {
+            if (!isPlaying) return;
+            progress += 0.02; progress > 1 && (progress=1, isPlaying=false, els.playBtn.textContent='播放动画');
+            anim.innerHTML = ''; drawAll(progress); animFrame = requestAnimationFrame(animate);
+        }
+    </script>
+</body>
+</html>
