@@ -4,17 +4,17 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
   <title>PPT|FlyzOffice</title>
-  <!-- 引入外部资源（确保PPT动画、触屏绘画、解析生成功能正常） -->
-  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- 核心依赖（严格控制加载顺序：基础样式→工具库→PPT解析库→画布库→截图库） -->
   <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
-  <!-- 核心PPT处理库（支持动画、解析、生成） -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/es6-promise@4.2.8/dist/es6-promise.auto.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/pptxjs@1.4.1/dist/pptx.min.js"></script>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pptxjs@1.4.1/dist/pptx.css">
-  <!-- Fabric画布（优化触屏绘画） -->
   <script src="https://cdn.jsdelivr.net/npm/fabric@5.3.0/dist/fabric.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 
-  <!-- 自定义配置 -->
+  <!-- Tailwind配置 -->
   <script>
     tailwind.config = {
       theme: {
@@ -31,6 +31,7 @@
     }
   </script>
 
+  <!-- Tailwind自定义工具类 -->
   <style type="text/tailwindcss">
     @layer utilities {
       .content-auto {
@@ -42,7 +43,6 @@
       .shadow-light {
         box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05), 0 1px 2px rgba(0, 0, 0, 0.1);
       }
-      /* 触屏优化：去除点击延迟、优化触摸反馈 */
       .touch-optimized {
         touch-action: manipulation;
         -webkit-tap-highlight-color: transparent;
@@ -50,31 +50,28 @@
     }
   </style>
 
+  <!-- 基础样式（全局统一，无冗余） -->
   <style>
-    /* 基础样式优化 */
     body {
       font-feature-settings: "cv02", "cv03", "cv04", "cv11";
       overflow-x: hidden;
     }
-    /* 画布样式（优化Windows11触屏绘画） */
     #drawingCanvas {
       position: absolute;
       top: 0;
       left: 0;
       cursor: crosshair;
-      touch-action: none; /* 禁用默认触摸行为 */
-      z-index: 10; /* 确保画笔在PPT上方 */
+      touch-action: none;
+      z-index: 10;
       -webkit-user-select: none;
       user-select: none;
     }
-    /* 全屏样式优化 */
     :-webkit-full-screen {
       background-color: white;
     }
     :fullscreen {
       background-color: white;
     }
-    /* 加载动画 */
     .loader {
       border-top-color: #2563eb;
       animation: spinner 0.6s linear infinite;
@@ -83,7 +80,6 @@
       0% { transform: rotate(0deg); }
       100% { transform: rotate(360deg); }
     }
-    /* 缩略图样式优化 */
     .thumbnail-item {
       transition: all 0.15s ease;
     }
@@ -93,7 +89,6 @@
     .thumbnail-item:hover:not(.active) {
       ring: 2px ring-gray-300;
     }
-    /* PPT内容容器（确保动画正常渲染） */
     #slideContent {
       position: absolute;
       top: 0;
@@ -103,7 +98,6 @@
       z-index: 1;
       overflow: hidden;
     }
-    /* 触屏按钮优化（增大点击区域） */
     .touch-btn {
       min-width: 44px;
       min-height: 44px;
@@ -111,7 +105,6 @@
       align-items: center;
       justify-content: center;
     }
-    /* 画笔颜色选择器优化（触屏易点击） */
     [data-color] {
       width: 28px;
       height: 28px;
@@ -121,7 +114,6 @@
     [data-color]:active {
       transform: scale(0.9);
     }
-    /* 滑动条样式优化（Windows11适配） */
     input[type="range"] {
       -webkit-appearance: none;
       height: 4px;
@@ -140,28 +132,46 @@
     input[type="range"]::-webkit-slider-thumb:active {
       transform: scale(1.2);
     }
+    .notification {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      padding: 10px 16px;
+      border-radius: 6px;
+      background: white;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      z-index: 9999;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .notification.error {
+      background: #fee2e2;
+      color: #dc2626;
+    }
+    .notification.success {
+      background: #dcfce7;
+      color: #16a34a;
+    }
   </style>
 </head>
 <body class="font-sans bg-neutral text-gray-800 min-h-screen flex flex-col">
-  <!-- 顶部导航栏（含正方形Logo） -->
+  <!-- 顶部导航栏 -->
   <header class="bg-white shadow-sm sticky top-0 z-50 transition-all duration-300">
     <div class="container mx-auto px-4 py-3 flex items-center justify-between">
-      <!-- 左上角Logo+标题 -->
       <div class="flex items-center space-x-3">
         <div class="w-10 h-10 rounded-md overflow-hidden border border-gray-100 shadow-sm">
           <img src="https://www.img520.com/UIGuUV.jpeg" alt="PPT工具Logo" class="w-full h-full object-cover">
         </div>
         <h1 class="text-lg font-semibold text-gray-800">FlyzOffice</h1>
       </div>
-      
-      <!-- 右侧功能按钮（移除编辑相关，保留核心功能） -->
       <div class="flex items-center space-x-3">
         <button id="uploadBtn" class="flex items-center space-x-1 bg-primary hover:bg-primary/90 text-white px-3 py-1.5 rounded-md text-sm transition-base touch-optimized">
           <i class="fa fa-upload text-xs"></i>
           <span>上传PPT</span>
         </button>
         <input type="file" id="fileInput" accept=".pptx" class="hidden">
-        
         <button id="saveFileBtn" class="flex items-center space-x-1 bg-green-500 hover:bg-green-600 text-white px-3 py-1.5 rounded-md text-sm transition-base hidden touch-optimized" disabled>
           <i class="fa fa-save text-xs"></i>
           <span>保存批注</span>
@@ -172,7 +182,7 @@
 
   <!-- 主内容区 -->
   <main class="flex-1 container mx-auto px-4 py-6 flex flex-col lg:flex-row gap-6">
-    <!-- 左侧上传区域（初始状态） -->
+    <!-- 左侧上传区域 -->
     <div id="uploadArea" class="lg:w-1/4 bg-white rounded-xl shadow-light p-6 flex flex-col items-center justify-center text-center">
       <div class="w-20 h-20 bg-primary/5 rounded-full flex items-center justify-center mb-4">
         <i class="fa fa-file-powerpoint-o text-primary text-3xl"></i>
@@ -186,7 +196,7 @@
       <p class="text-xs text-gray-400 mt-3">最大支持666页以内文件</p>
     </div>
 
-    <!-- 左侧工具栏（移除编辑工具，保留导航和简洁画笔工具） -->
+    <!-- 左侧工具栏 -->
     <div id="toolSidebar" class="lg:w-1/4 hidden flex-col gap-4">
       <!-- 幻灯片导航 -->
       <div class="bg-white rounded-xl shadow-light p-4">
@@ -194,19 +204,16 @@
           <i class="fa fa-th-list text-primary mr-1.5 text-xs"></i>
           幻灯片导航
         </h3>
-        <div id="thumbnailContainer" class="grid grid-cols-2 gap-2 max-h-[300px] overflow-y-auto p-1">
-          <!-- 缩略图动态生成 -->
-        </div>
+        <div id="thumbnailContainer" class="grid grid-cols-2 gap-2 max-h-[300px] overflow-y-auto p-1"></div>
       </div>
 
-      <!-- 简洁批注工具（保留核心画笔功能） -->
+      <!-- 批注工具 -->
       <div class="bg-white rounded-xl shadow-light p-4">
         <h3 class="font-medium text-gray-700 text-sm mb-3 flex items-center">
           <i class="fa fa-paint-brush text-primary mr-1.5 text-xs"></i>
           批注工具
         </h3>
         <div class="space-y-3">
-          <!-- 颜色选择（增大点击区域，适配触屏） -->
           <div>
             <label class="block text-xs text-gray-500 mb-1.5">画笔颜色</label>
             <div class="flex space-x-2">
@@ -217,8 +224,6 @@
               <button class="w-7 h-7 rounded-full bg-black border-2 border-transparent hover:scale-110 transition-base" data-color="#000000"></button>
             </div>
           </div>
-          
-          <!-- 粗细调节（适配触屏滑动） -->
           <div>
             <label class="block text-xs text-gray-500 mb-1.5">画笔粗细</label>
             <input type="range" id="brushSize" min="2" max="10" value="3" class="w-full accent-primary">
@@ -227,8 +232,6 @@
               <span>粗</span>
             </div>
           </div>
-          
-          <!-- 核心操作按钮（简洁布局，适配触屏） -->
           <div class="flex space-x-2">
             <button id="clearAnnotations" class="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 px-2 py-2 rounded-md text-sm transition-base touch-optimized">
               <i class="fa fa-eraser text-xs mr-1"></i> 清除当前页
@@ -241,18 +244,13 @@
       </div>
     </div>
 
-    <!-- 右侧PPT预览与演示区（优化动画渲染和触屏体验） -->
+    <!-- 右侧PPT预览区 -->
     <div id="pptEditor" class="lg:w-3/4 bg-white rounded-xl shadow-light p-4 flex flex-col items-center justify-center hidden">
       <div class="relative w-full max-w-3xl aspect-[16/9] bg-white rounded-lg overflow-hidden border border-gray-200" id="slideContainer">
-        <!-- 幻灯片内容容器（确保动画正常播放） -->
-        <div id="slideContent" class="w-full h-full">
-          <!-- 动态生成幻灯片内容（含原动画） -->
-        </div>
-        <!-- 手写批注画布（优化Windows11触屏） -->
+        <div id="slideContent" class="w-full h-full"></div>
         <canvas id="drawingCanvas" class="w-full h-full"></canvas>
       </div>
-      
-      <!-- 控制栏（增大按钮，适配触屏） -->
+      <!-- 控制栏 -->
       <div class="mt-4 flex items-center justify-between w-full max-w-3xl">
         <div class="flex items-center space-x-4">
           <button id="prevSlide" class="p-3 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-700 transition-base disabled:opacity-50 disabled:cursor-not-allowed touch-btn" disabled>
@@ -263,7 +261,6 @@
             <i class="fa fa-chevron-right"></i>
           </button>
         </div>
-        
         <div class="flex items-center space-x-3">
           <button id="playAnimationBtn" class="px-4 py-2 rounded-md bg-primary/10 hover:bg-primary/20 text-primary text-sm transition-base touch-optimized">
             <i class="fa fa-play text-xs mr-1"></i> 播放动画
@@ -282,28 +279,32 @@
       <p class="text-gray-500 text-sm mt-1" id="loadingProgress">处理中，请稍候</p>
     </div>
   </main>
-      <!-- 页脚 -->
+
+  <!-- 页脚 -->
   <footer class="bg-white border-t border-gray-100 py-3 mt-6">
     <div class="container mx-auto px-4 text-center text-gray-500 text-xs">
       <p>版本V1.0.1_20251113 | Flyz远征飞官方出品 | 适配Windows11触屏</p>
     </div>
   </footer>
 
+  <!-- 通知容器 -->
+  <div id="notificationContainer"></div>
+
   <script>
-    // 全局核心变量（精简无用编辑相关变量）
-    let pptData = {
-      slides: [], // 存储所有幻灯片数据（含原动画信息）
-      currentSlideIndex: 0, // 当前激活的幻灯片索引
-      isDrawingMode: false, // 是否处于手写批注模式
-      brushColor: '#ef4444', // 画笔默认颜色
-      brushSize: 3, // 画笔默认粗细
-      fabricCanvas: null, // Fabric主画布对象（触屏优化）
-      slideAnnotations: [], // 存储每个幻灯片的批注（仅保留画笔轨迹）
-      isFileLoaded: false, // 是否已加载PPT文件
-      pptRenderer: null // PPT渲染器实例（用于保留原动画）
+    // 全局核心变量（唯一声明，无重复）
+    const pptData = {
+      slides: [], // 存储幻灯片数据（含原动画HTML）
+      currentSlideIndex: 0, // 当前幻灯片索引
+      isDrawingMode: false, // 手写模式状态
+      brushColor: '#ef4444', // 默认画笔颜色
+      brushSize: 3, // 默认画笔粗细
+      fabricCanvas: null, // Fabric画布实例
+      slideAnnotations: [], // 各幻灯片批注数据
+      isFileLoaded: false, // PPT加载状态
+      pptRenderer: null // PPT解析渲染器
     };
 
-    // DOM元素缓存（移除编辑功能相关元素）
+    // DOM元素缓存（唯一缓存，避免重复查询）
     const elements = {
       fileInput: document.getElementById('fileInput'),
       uploadBtn: document.getElementById('uploadBtn'),
@@ -324,217 +325,221 @@
       colorButtons: document.querySelectorAll('[data-color]'),
       loadingProgress: document.getElementById('loadingProgress'),
       header: document.querySelector('header'),
-      playAnimationBtn: document.getElementById('playAnimationBtn') // 新增动画播放按钮
+      playAnimationBtn: document.getElementById('playAnimationBtn'),
+      notificationContainer: document.getElementById('notificationContainer')
     };
 
-    // 初始化函数（程序入口）
+    // 初始化入口函数（唯一执行）
     function init() {
-      // 绑定所有事件监听（移除编辑相关事件）
-      bindAllEvents();
-      // 初始化Fabric画布（优化Windows11触屏）
+      // 检查核心依赖加载状态
+      checkDependencies();
+      // 绑定事件监听
+      bindBaseEvents();
+      // 初始化画布
       initFabricCanvas();
-      // 默认选中第一个画笔颜色
-      elements.colorButtons[0].classList.add('border-primary', 'scale-110');
-      // 监听窗口滚动，优化导航栏样式
-      window.addEventListener('scroll', () => {
-        if (window.scrollY > 10) {
-          elements.header.classList.add('py-2', 'shadow');
-          elements.header.classList.remove('py-3', 'shadow-sm');
-        } else {
-          elements.header.classList.add('py-3', 'shadow-sm');
-          elements.header.classList.remove('py-2', 'shadow');
-        }
-      });
+      // 监听窗口滚动
+      window.addEventListener('scroll', updateHeaderStyle);
     }
 
-    // 绑定所有事件处理函数（移除编辑相关事件）
-    function bindAllEvents() {
-      // 1. 文件上传相关事件
+    // 检查核心依赖是否加载完成
+    function checkDependencies() {
+      const requiredLibs = [
+        { name: 'JSZip', lib: window.JSZip },
+        { name: 'PPTX', lib: window.PPTX },
+        { name: 'fabric', lib: window.fabric },
+        { name: 'html2canvas', lib: window.html2canvas }
+      ];
+      const missingLibs = requiredLibs.filter(item => !item.lib).map(item => item.name);
+      
+      if (missingLibs.length > 0) {
+        showNotification(`核心依赖加载失败：${missingLibs.join(', ')}`, 'error');
+        elements.uploadBtn.disabled = true;
+        elements.uploadBtn.classList.add('opacity-50', 'cursor-not-allowed');
+      }
+    }
+
+    // 绑定基础事件（无重复绑定）
+    function bindBaseEvents() {
+      // 文件上传事件
       elements.uploadBtn.addEventListener('click', () => elements.fileInput.click());
       elements.fileInput.addEventListener('change', handlePPTUpload);
 
-      // 2. 幻灯片导航控制事件
-      elements.prevSlide.addEventListener('click', showPrevSlide);
-      elements.nextSlide.addEventListener('click', showNextSlide);
+      // 全屏相关事件
       elements.fullscreenBtn.addEventListener('click', toggleFullscreen);
       document.addEventListener('fullscreenchange', updateFullscreenBtn);
 
-      // 3. 批注工具事件（仅保留画笔相关）
-      elements.toggleDrawing.addEventListener('click', toggleDrawingMode);
-      elements.clearAnnotations.addEventListener('click', clearCurrentSlideAnnotations);
-      elements.brushSize.addEventListener('input', updateBrushSize);
-      elements.colorButtons.forEach(btn => {
-        btn.addEventListener('click', (e) => updateBrushColor(e));
-      });
-
-      // 4. 文件保存事件（仅保存批注）
-      elements.saveFileBtn.addEventListener('click', saveAnnotations);
-
-      // 5. 动画播放事件
-      elements.playAnimationBtn.addEventListener('click', playCurrentSlideAnimation);
+      // 导航栏滚动样式事件
+      updateHeaderStyle();
     }
 
-    // 初始化Fabric画布（重点优化Windows11触屏体验）
+    // 初始化Fabric画布（适配触屏）
     function initFabricCanvas() {
       const canvasDom = document.getElementById('drawingCanvas');
-      // 创建Fabric画布实例（开启触屏优化）
       pptData.fabricCanvas = new fabric.Canvas('drawingCanvas', {
-        isDrawingMode: false, // 初始关闭手写模式
-        preserveObjectStacking: true, // 保持批注堆叠顺序
-        selection: false, // 关闭对象选择（仅保留画笔功能）
+        isDrawingMode: false,
+        preserveObjectStacking: true,
+        selection: false,
         width: canvasDom.offsetWidth,
         height: canvasDom.offsetHeight,
-        // 触屏优化配置
-        targetFindTolerance: 10, // 增大触摸检测容错
+        targetFindTolerance: 10,
         perPixelTargetFind: true,
-        imageSmoothingEnabled: true // 优化画笔线条平滑度
+        imageSmoothingEnabled: true
       });
 
-      // 初始化画笔样式（适配触屏绘画手感）
+      // 初始化画笔样式
       const brush = new fabric.PencilBrush(pptData.fabricCanvas);
       brush.color = pptData.brushColor;
       brush.width = pptData.brushSize;
-      brush.strokeLineCap = 'round'; // 画笔端点圆润
-      brush.strokeLineJoin = 'round'; // 画笔转角圆润
-      brush.decimate = 1; // 减少线条顶点，优化性能
+      brush.strokeLineCap = 'round';
+      brush.strokeLineJoin = 'round';
+      brush.decimate = 1;
       pptData.fabricCanvas.freeDrawingBrush = brush;
 
-      // 监听容器大小变化，自适应调整画布尺寸
+      // 自适应画布尺寸
       new ResizeObserver(entries => {
         const { width, height } = entries[0].contentRect;
         canvasDom.width = width;
         canvasDom.height = height;
         pptData.fabricCanvas.setWidth(width);
         pptData.fabricCanvas.setHeight(height);
-        // 重新渲染当前幻灯片批注
         if (pptData.isFileLoaded) {
           renderCurrentSlideAnnotations();
         }
       }).observe(document.getElementById('slideContainer'));
-
-      // 优化触屏绘画体验：添加触摸开始/结束事件
-      canvasDom.addEventListener('touchstart', (e) => {
-        if (pptData.isDrawingMode) {
-          // 禁用触摸事件默认行为，避免滚动冲突
-          e.preventDefault();
-          // 模拟鼠标按下事件，确保画笔响应
-          const touch = e.touches[0];
-          const mouseEvent = new MouseEvent('mousedown', {
-            clientX: touch.clientX,
-            clientY: touch.clientY,
-            bubbles: true,
-            cancelable: true
-          });
-          canvasDom.dispatchEvent(mouseEvent);
-        }
-      });
-
-      canvasDom.addEventListener('touchend', (e) => {
-        if (pptData.isDrawingMode) {
-          e.preventDefault();
-          const touch = e.changedTouches[0];
-          const mouseEvent = new MouseEvent('mouseup', {
-            clientX: touch.clientX,
-            clientY: touch.clientY,
-            bubbles: true,
-            cancelable: true
-          });
-          canvasDom.dispatchEvent(mouseEvent);
-        }
-      });
-
-      canvasDom.addEventListener('touchmove', (e) => {
-        if (pptData.isDrawingMode) {
-          e.preventDefault();
-          const touch = e.touches[0];
-          const mouseEvent = new MouseEvent('mousemove', {
-            clientX: touch.clientX,
-            clientY: touch.clientY,
-            bubbles: true,
-            cancelable: true
-          });
-          canvasDom.dispatchEvent(mouseEvent);
-        }
-      });
     }
 
-    // 处理PPT文件上传（使用pptxjs真实解析，保留原动画）
+    // 更新导航栏滚动样式
+    function updateHeaderStyle() {
+      if (window.scrollY > 10) {
+        elements.header.classList.add('py-2', 'shadow');
+        elements.header.classList.remove('py-3', 'shadow-sm');
+      } else {
+        elements.header.classList.add('py-3', 'shadow-sm');
+        elements.header.classList.remove('py-2', 'shadow');
+      }
+    }
+
+    // 显示通知（统一实现）
+    function showNotification(message, type = 'success') {
+      const notification = document.createElement('div');
+      notification.className = `notification ${type}`;
+      notification.innerHTML = `
+        <i class="fa ${type === 'error' ? 'fa-exclamation-circle' : 'fa-check-circle'}"></i>
+        <span>${message}</span>
+      `;
+      elements.notificationContainer.appendChild(notification);
+      
+      setTimeout(() => {
+        notification.style.opacity = '0';
+        notification.style.transform = 'translateY(-20px)';
+        setTimeout(() => notification.remove(), 300);
+      }, 3000);
+    }
+
+    // 页面加载完成后初始化
+window.addEventListener('DOMContentLoaded', init);
+    // 处理PPT文件上传（核心解析逻辑）
     function handlePPTUpload(e) {
       const file = e.target.files[0];
       if (!file) return;
 
-      // 验证文件类型和大小
+      // 验证文件类型
       if (!file.name.endsWith('.pptx')) {
         showNotification('请上传.pptx格式的PPT文件', 'error');
         return;
       }
 
-      // 切换UI状态到加载中
+      // 验证文件大小（100MB限制）
+      const maxSize = 100 * 1024 * 1024; // 100MB
+      if (file.size > maxSize) {
+        showNotification('文件大小超过100MB限制，请上传更小文件', 'error');
+        elements.fileInput.value = '';
+        return;
+      }
+
+      // 切换UI到加载状态
       elements.uploadArea.classList.add('hidden');
       elements.pptEditor.classList.add('hidden');
       elements.toolSidebar.classList.add('hidden');
       elements.loadingArea.classList.remove('hidden');
+      elements.loadingProgress.textContent = '正在解析文件...';
 
-      // 使用pptxjs解析PPT（保留原动画和格式）
+      // 解析PPT文件（使用pptxjs保留原动画）
       const reader = new FileReader();
       reader.onload = function(e) {
         try {
           const data = new Uint8Array(e.target.result);
-          // 初始化PPT渲染器
           pptData.pptRenderer = new PPTX.Presentation();
           pptData.pptRenderer.load(data).then(() => {
-            parsePPTContentWithAnimations();
+            parsePPTWithAnimations();
           }).catch(error => {
-            throw error;
+            throw new Error(`PPT加载失败：${error.message}`);
           });
         } catch (error) {
-          console.error('PPT解析失败:', error);
-          elements.loadingProgress.textContent = '解析失败，请尝试其他文件';
+          console.error('PPT解析异常:', error);
+          showNotification(error.message, 'error');
+          // 恢复上传状态
           setTimeout(() => {
             elements.loadingArea.classList.add('hidden');
             elements.uploadArea.classList.remove('hidden');
+            elements.fileInput.value = '';
           }, 2000);
         }
       };
       reader.readAsArrayBuffer(file);
     }
 
-    // 解析PPT内容（保留原动画，pptxjs核心功能）
-    function parsePPTContentWithAnimations() {
+    // 解析PPT内容（保留原动画结构）
+    function parsePPTWithAnimations() {
       pptData.slides = [];
       pptData.slideAnnotations = [];
       const totalSlides = pptData.pptRenderer.getSlideCount();
       const maxSlides = Math.min(totalSlides, 666); // 限制最大666页
 
-      // 批量解析幻灯片（保留动画信息）
+      if (maxSlides === 0) {
+        showNotification('PPT文件无有效幻灯片', 'error');
+        resetUploadState();
+        return;
+      }
+
+      // 批量解析幻灯片（控制并发避免卡顿）
       const parsePromises = [];
       for (let i = 0; i < maxSlides; i++) {
         parsePromises.push(
           new Promise(resolve => {
-            elements.loadingProgress.textContent = `解析第 ${i+1}/${maxSlides} 页（保留动画）`;
-            // 获取幻灯片原始数据（含动画）
-            pptData.pptRenderer.getSlide(i).then(slide => {
-              // 生成幻灯片HTML（含动画脚本）
-              const slideHtml = slide.getHTML();
-              // 生成缩略图（简化预览）
-              const thumbnailHtml = `
-                <div class="aspect-[16/9] bg-white border border-gray-200 rounded-md flex items-center justify-center p-2">
-                  <span class="text-xs text-gray-500">第 ${i+1} 页</span>
-                </div>
-              `;
-
-              // 存储幻灯片数据（含动画HTML）
-              pptData.slides.push({
-                id: `slide-${i}`,
-                html: slideHtml, // 含原动画的HTML
-                thumbnail: thumbnailHtml,
-                hasAnimation: slide.hasAnimations() // 标记是否有动画
+            setTimeout(() => {
+              elements.loadingProgress.textContent = `解析第 ${i+1}/${maxSlides} 页（保留动画）`;
+              pptData.pptRenderer.getSlide(i).then(slide => {
+                // 获取含动画的幻灯片HTML
+                const slideHtml = slide.getHTML();
+                // 生成缩略图预览
+                const thumbnailHtml = `
+                  <div class="aspect-[16/9] bg-white border border-gray-200 rounded-md flex items-center justify-center p-2 overflow-hidden">
+                    <span class="text-xs text-gray-500 truncate">第 ${i+1} 页${slide.hasAnimations() ? '（含动画）' : ''}</span>
+                  </div>
+                `;
+                // 存储幻灯片数据
+                pptData.slides.push({
+                  id: `slide-${i}`,
+                  html: slideHtml,
+                  thumbnail: thumbnailHtml,
+                  hasAnimation: slide.hasAnimations()
+                });
+                // 初始化当前页批注容器
+                pptData.slideAnnotations[i] = [];
+                resolve();
+              }).catch(() => {
+                // 单个幻灯片解析失败降级处理
+                pptData.slides.push({
+                  id: `slide-${i}`,
+                  html: `<div class="w-full h-full flex items-center justify-center text-gray-500">第 ${i+1} 页解析失败</div>`,
+                  thumbnail: `<div class="aspect-[16/9] bg-white border border-gray-200 rounded-md flex items-center justify-center p-2"><span class="text-xs text-red-500">解析失败</span></div>`,
+                  hasAnimation: false
+                });
+                pptData.slideAnnotations[i] = [];
+                resolve();
               });
-
-              // 初始化当前幻灯片的批注容器
-              pptData.slideAnnotations[i] = [];
-              setTimeout(resolve, 100); // 控制解析速度，避免卡顿
-            });
+            }, i * 50); // 错开解析时间，降低性能占用
           })
         );
       }
@@ -552,23 +557,23 @@
       elements.toolSidebar.classList.remove('hidden');
       elements.pptEditor.classList.remove('hidden');
 
-      // 生成幻灯片缩略图导航
+      // 生成缩略图导航
       renderSlideThumbnails();
-
-      // 显示第一页幻灯片（含动画）
+      // 显示第一页幻灯片
       showSlide(0);
-
-      // 更新计数器和控制按钮状态
+      // 更新UI状态
       updateSlideCounter();
       updateNavButtonsStatus();
       updateAnimationButtonStatus();
+      // 绑定批注工具事件
+      bindAnnotationEvents();
 
       // 启用保存按钮
       pptData.isFileLoaded = true;
       elements.saveFileBtn.disabled = false;
       elements.saveFileBtn.classList.remove('hidden');
 
-      showNotification('PPT加载成功，原动画已保留');
+      showNotification(`PPT加载成功，共 ${pptData.slides.length} 页（原动画已保留）`);
     }
 
     // 渲染幻灯片缩略图导航
@@ -585,25 +590,24 @@
       });
     }
 
-    // 显示指定索引的幻灯片（含原动画和批注）
+    // 显示指定索引的幻灯片（含动画初始化）
     function showSlide(index) {
       if (index < 0 || index >= pptData.slides.length) return;
 
-      // 保存当前幻灯片的批注
+      // 保存当前页批注
       if (pptData.currentSlideIndex >= 0 && pptData.currentSlideIndex < pptData.slideAnnotations.length) {
         pptData.slideAnnotations[pptData.currentSlideIndex] = pptData.fabricCanvas.getObjects();
       }
 
-      // 更新当前幻灯片索引
+      // 更新当前索引
       pptData.currentSlideIndex = index;
+      const slide = pptData.slides[index];
 
-      // 渲染幻灯片HTML（含原动画）
-      elements.slideContent.innerHTML = pptData.slides[index].html;
-
-      // 重新初始化当前幻灯片的动画脚本
+      // 渲染幻灯片内容（含原动画）
+      elements.slideContent.innerHTML = slide.html;
+      // 初始化动画脚本
       initSlideAnimation(index);
-
-      // 渲染当前幻灯片的批注
+      // 渲染批注
       renderCurrentSlideAnnotations();
 
       // 更新UI状态
@@ -618,17 +622,16 @@
       const slide = pptData.slides[index];
       if (!slide.hasAnimation) return;
 
-      // 执行幻灯片中的动画脚本（pptxjs生成的原生动画）
+      // 执行幻灯片内置动画脚本（pptxjs生成）
       const slideScripts = elements.slideContent.querySelectorAll('script');
       slideScripts.forEach(script => {
         try {
-          // 重新执行动画脚本，确保动画可触发
           const newScript = document.createElement('script');
           newScript.textContent = script.textContent;
           elements.slideContent.appendChild(newScript);
           elements.slideContent.removeChild(newScript);
         } catch (error) {
-          console.warn('动画初始化失败:', error);
+          console.warn(`第 ${index+1} 页动画初始化失败:`, error);
         }
       });
     }
@@ -637,20 +640,19 @@
     function playCurrentSlideAnimation() {
       const slide = pptData.slides[pptData.currentSlideIndex];
       if (!slide.hasAnimation) {
-        showNotification('当前幻灯片无动画');
+        showNotification('当前幻灯片无动画', 'error');
         return;
       }
 
-      // 触发pptxjs生成的动画播放函数
       try {
-        // pptxjs会在全局注册幻灯片动画函数，格式为slide{索引}_play()
+        // 调用pptxjs生成的动画播放函数（格式：slide{索引}_play()）
         const playFunction = window[`slide${pptData.currentSlideIndex}_play`];
         if (typeof playFunction === 'function') {
           playFunction();
           showNotification('动画播放中...');
         } else {
-          // 备选方案：触发所有动画元素的播放
-          const animationElements = elements.slideContent.querySelectorAll('[data-animation]');
+          // 备选方案：触发所有动画元素
+          const animationElements = elements.slideContent.querySelectorAll('[data-animation], [style*="animation"]');
           animationElements.forEach(el => {
             el.style.animationPlayState = 'running';
           });
@@ -658,37 +660,108 @@
         }
       } catch (error) {
         console.error('动画播放失败:', error);
-        showNotification('动画播放失败', 'error');
+        showNotification('动画播放失败，请重试', 'error');
       }
     }
 
-    // 渲染当前幻灯片的批注
+    // 绑定批注工具相关事件
+    function bindAnnotationEvents() {
+      // 切换手写模式
+      elements.toggleDrawing.addEventListener('click', toggleDrawingMode);
+      // 清除当前页批注
+      elements.clearAnnotations.addEventListener('click', clearCurrentSlideAnnotations);
+      // 调整画笔粗细
+      elements.brushSize.addEventListener('input', updateBrushSize);
+      // 选择画笔颜色
+      elements.colorButtons.forEach(btn => {
+        btn.addEventListener('click', (e) => updateBrushColor(e));
+      });
+      // 幻灯片导航事件
+      elements.prevSlide.addEventListener('click', showPrevSlide);
+      elements.nextSlide.addEventListener('click', showNextSlide);
+      // 动画播放事件
+      elements.playAnimationBtn.addEventListener('click', playCurrentSlideAnimation);
+      // 保存批注事件
+      elements.saveFileBtn.addEventListener('click', saveAnnotations);
+    }
+
+    // 切换手写批注模式
+    function toggleDrawingMode() {
+      pptData.isDrawingMode = !pptData.isDrawingMode;
+      pptData.fabricCanvas.isDrawingMode = pptData.isDrawingMode;
+
+      if (pptData.isDrawingMode) {
+        // 进入手写模式
+        elements.toggleDrawing.classList.remove('bg-primary', 'text-white');
+        elements.toggleDrawing.classList.add('bg-red-500', 'text-white');
+        elements.toggleDrawing.innerHTML = '<i class="fa fa-stop text-xs mr-1"></i> 退出手写';
+        document.getElementById('drawingCanvas').style.cursor = 'crosshair';
+        showNotification('已进入手写模式，支持触屏/鼠标绘画');
+      } else {
+        // 退出手写模式（保存批注）
+        pptData.slideAnnotations[pptData.currentSlideIndex] = pptData.fabricCanvas.getObjects();
+        elements.toggleDrawing.classList.add('bg-primary', 'text-white');
+        elements.toggleDrawing.classList.remove('bg-red-500', 'text-white');
+        elements.toggleDrawing.innerHTML = '<i class="fa fa-pencil text-xs mr-1"></i> 手写模式';
+        document.getElementById('drawingCanvas').style.cursor = 'default';
+        showNotification('已退出手写模式，批注已自动保存');
+      }
+    }
+
+    // 更新画笔颜色
+    function updateBrushColor(e) {
+      // 移除所有颜色按钮选中状态
+      elements.colorButtons.forEach(btn => btn.classList.remove('border-primary', 'scale-110'));
+      // 添加当前选中状态
+      e.target.classList.add('border-primary', 'scale-110');
+      // 更新画笔颜色
+      pptData.brushColor = e.target.dataset.color;
+      pptData.fabricCanvas.freeDrawingBrush.color = pptData.brushColor;
+      showNotification(`画笔颜色已切换为 ${e.target.dataset.color}`);
+    }
+
+    // 更新画笔粗细
+    function updateBrushSize(e) {
+      pptData.brushSize = parseInt(e.target.value);
+      pptData.fabricCanvas.freeDrawingBrush.width = pptData.brushSize;
+      showNotification(`画笔粗细已调整为 ${pptData.brushSize}px`);
+    }
+
+    // 渲染当前页批注
     function renderCurrentSlideAnnotations() {
       // 清空画布
       pptData.fabricCanvas.clear();
-
-      // 恢复当前幻灯片的批注
+      // 恢复当前页批注
       const currentAnnotations = pptData.slideAnnotations[pptData.currentSlideIndex] || [];
       currentAnnotations.forEach(annotation => {
         pptData.fabricCanvas.add(annotation);
       });
-
       // 恢复手写模式状态
       pptData.fabricCanvas.isDrawingMode = pptData.isDrawingMode;
     }
 
-    // 更新缩略图选中状态
-    function updateThumbnailActiveStatus() {
-      const thumbnails = elements.thumbnailContainer.querySelectorAll('.thumbnail-item');
-      thumbnails.forEach((thumb, index) => {
-        if (index === pptData.currentSlideIndex) {
-          thumb.classList.add('ring-2', 'ring-primary');
-          thumb.classList.remove('hover:ring-2', 'hover:ring-gray-300');
-        } else {
-          thumb.classList.remove('ring-2', 'ring-primary');
-          thumb.classList.add('hover:ring-2', 'hover:ring-gray-300');
-        }
-      });
+    // 清除当前页批注
+    function clearCurrentSlideAnnotations() {
+      if (!confirm('确定要清除当前页的所有批注吗？此操作不可撤销')) {
+        return;
+      }
+      pptData.slideAnnotations[pptData.currentSlideIndex] = [];
+      renderCurrentSlideAnnotations();
+      showNotification('当前页批注已清除');
+    }
+
+    // 显示上一张幻灯片
+    function showPrevSlide() {
+      if (pptData.currentSlideIndex > 0) {
+        showSlide(pptData.currentSlideIndex - 1);
+      }
+    }
+
+    // 显示下一张幻灯片
+    function showNextSlide() {
+      if (pptData.currentSlideIndex < pptData.slides.length - 1) {
+        showSlide(pptData.currentSlideIndex + 1);
+      }
     }
 
     // 更新幻灯片计数器
@@ -714,188 +787,35 @@
       }
     }
 
-    // 显示上一张幻灯片
-    function showPrevSlide() {
-      if (pptData.currentSlideIndex > 0) {
-        showSlide(pptData.currentSlideIndex - 1);
-      }
-    }
-
-    // 显示下一张幻灯片
-    function showNextSlide() {
-      if (pptData.currentSlideIndex < pptData.slides.length - 1) {
-        showSlide(pptData.currentSlideIndex + 1);
-      }
-    }
-
-    // 切换手写批注模式（优化触屏反馈）
-    function toggleDrawingMode() {
-      pptData.isDrawingMode = !pptData.isDrawingMode;
-      pptData.fabricCanvas.isDrawingMode = pptData.isDrawingMode;
-
-      if (pptData.isDrawingMode) {
-        // 进入手写模式：切换光标和按钮样式
-        elements.toggleDrawing.classList.remove('bg-primary/10', 'text-primary');
-        elements.toggleDrawing.classList.add('bg-red-500', 'text-white');
-        elements.toggleDrawing.innerHTML = '<i class="fa fa-stop text-xs mr-1"></i> 退出手写';
-        document.getElementById('drawingCanvas').style.cursor = 'crosshair';
-        showNotification('已进入手写模式，支持触屏绘画');
-      } else {
-        // 退出手写模式：保存当前批注
-        pptData.slideAnnotations[pptData.currentSlideIndex] = pptData.fabricCanvas.getObjects();
-        elements.toggleDrawing.classList.add('bg-primary/10', 'text-primary');
-        elements.toggleDrawing.classList.remove('bg-red-500', 'text-white');
-        elements.toggleDrawing.innerHTML = '<i class="fa fa-pencil text-xs mr-1"></i> 手写模式';
-        document.getElementById('drawingCanvas').style.cursor = 'default';
-        showNotification('已退出手写模式，批注已保存');
-      }
-    }
-
-    // 更新画笔颜色（适配触屏点击）
-    function updateBrushColor(e) {
-      // 移除所有颜色按钮的选中状态
-      elements.colorButtons.forEach(btn => btn.classList.remove('border-primary', 'scale-110'));
-      // 添加当前选中状态
-      e.target.classList.add('border-primary', 'scale-110');
-      // 更新画笔颜色
-      pptData.brushColor = e.target.dataset.color;
-      pptData.fabricCanvas.freeDrawingBrush.color = pptData.brushColor;
-    }
-
-    // 更新画笔粗细（适配触屏滑动）
-    function updateBrushSize(e) {
-      pptData.brushSize = parseInt(e.target.value);
-      pptData.fabricCanvas.freeDrawingBrush.width = pptData.brushSize;
-      showNotification(`画笔粗细已调整为 ${pptData.brushSize}px`);
-    }
-
-    // 清除当前幻灯片的批注
-    function clearCurrentSlideAnnotations() {
-      if (confirm('确定要清除当前页的所有批注吗？')) {
-        pptData.slideAnnotations[pptData.currentSlideIndex] = [];
-        renderCurrentSlideAnnotations();
-        showNotification('当前页批注已清除');
-      }
-    }
-
-    // 保存批注（生成含批注的PPT预览图打包）
-    function saveAnnotations() {
-      elements.saveFileBtn.disabled = true;
-      elements.saveFileBtn.innerHTML = '<i class="fa fa-spinner fa-spin text-xs mr-1"></i> 保存中...';
-
-      try {
-        // 生成每个幻灯片的批注+内容合成图
-        const slideImages = [];
-        const originalIndex = pptData.currentSlideIndex;
-
-        // 批量生成合成图
-        const generatePromises = pptData.slides.map(async (slide, index) => {
-          // 临时切换到当前幻灯片
-          showSlide(index);
-          // 等待DOM渲染完成
-          await new Promise(resolve => setTimeout(resolve, 200));
-          // 合成PPT内容和批注
-          const canvas = document.createElement('canvas');
-          const ctx = canvas.getContext('2d');
-          canvas.width = elements.slideContent.offsetWidth;
-          canvas.height = elements.slideContent.offsetHeight;
-
-          // 绘制PPT内容（含动画当前帧）
-          const contentDataUrl = await htmlToImage(elements.slideContent);
-          const contentImg = new Image();
-          contentImg.src = contentDataUrl;
-          await new Promise(resolve => contentImg.onload = resolve);
-          ctx.drawImage(contentImg, 0, 0, canvas.width, canvas.height);
-
-          // 绘制批注
-          const annotationDataUrl = pptData.fabricCanvas.toDataURL({
-            format: 'png',
-            quality: 1.0
-          });
-          const annotationImg = new Image();
-          annotationImg.src = annotationDataUrl;
-          await new Promise(resolve => annotationImg.onload = resolve);
-          ctx.drawImage(annotationImg, 0, 0, canvas.width, canvas.height);
-
-          slideImages.push({
-            index: index + 1,
-            dataUrl: canvas.toDataURL('image/png')
-          });
-        });
-
-        // 所有图片生成完成后打包下载
-        Promise.all(generatePromises).then(() => {
-          // 切换回原始幻灯片
-          showSlide(originalIndex);
-
-          // 使用JSZip打包图片为ZIP下载
-          const zip = new JSZip();
-          slideImages.forEach(img => {
-            const fileName = `幻灯片${img.index}_带批注.png`;
-            zip.file(fileName, img.dataUrl.split(',')[1], { base64: true });
-          });
-
-          zip.generateAsync({ type: 'blob' }).then(blob => {
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `PPT批注_${new Date().getTime()}.zip`;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-
-            elements.saveFileBtn.disabled = false;
-            elements.saveFileBtn.innerHTML = '<i class="fa fa-save text-xs mr-1"></i> 保存批注';
-            showNotification('批注保存成功，已下载为图片包');
-          });
-        });
-      } catch (error) {
-        console.error('批注保存失败:', error);
-        elements.saveFileBtn.disabled = false;
-        elements.saveFileBtn.innerHTML = '<i class="fa fa-save text-xs mr-1"></i> 保存批注';
-        showNotification('批注保存失败', 'error');
-      }
-    }
-
-    // HTML转Image（用于合成PPT内容和批注）
-    function htmlToImage(element) {
-      return new Promise((resolve) => {
-        // 使用html2canvas简化实现（实际项目建议引入html2canvas库）
-        // 此处为兼容代码，实际使用时需引入：<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
-        if (window.html2canvas) {
-          html2canvas(element, {
-            scale: 2, // 提高分辨率
-            useCORS: true,
-            logging: false
-          }).then(canvas => {
-            resolve(canvas.toDataURL('image/png'));
-          });
+    // 更新缩略图选中状态
+    function updateThumbnailActiveStatus() {
+      const thumbnails = elements.thumbnailContainer.querySelectorAll('.thumbnail-item');
+      thumbnails.forEach((thumb, index) => {
+        if (index === pptData.currentSlideIndex) {
+          thumb.classList.add('ring-2', 'ring-primary');
+          thumb.classList.remove('hover:ring-2', 'hover:ring-gray-300');
+          // 滚动到可视区域
+          thumb.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         } else {
-          // 降级方案：直接截图（可能丢失样式）
-          const canvas = document.createElement('canvas');
-          const ctx = canvas.getContext('2d');
-          canvas.width = element.offsetWidth;
-          canvas.height = element.offsetHeight;
-          ctx.fillStyle = 'white';
-          ctx.fillRect(0, 0, canvas.width, canvas.height);
-          resolve(canvas.toDataURL('image/png'));
+          thumb.classList.remove('ring-2', 'ring-primary');
+          thumb.classList.add('hover:ring-2', 'hover:ring-gray-300');
         }
       });
     }
 
-    // 切换全屏
+    // 切换全屏模式
     function toggleFullscreen() {
       if (!document.fullscreenElement) {
-        document.getElementById('slideContainer').requestFullscreen().catch(error => {
-          showNotification('全屏切换失败', 'error');
+        const container = document.getElementById('slideContainer');
+        container.requestFullscreen().catch(() => {
+          showNotification('全屏切换失败，请检查浏览器权限', 'error');
         });
       } else {
         document.exitFullscreen();
       }
     }
 
-    // 更新全屏按钮样式
+    // 更新全屏按钮文本
     function updateFullscreenBtn() {
       if (document.fullscreenElement) {
         elements.fullscreenBtn.innerHTML = '<i class="fa fa-compress text-xs mr-1"></i> 退出全屏';
@@ -904,787 +824,680 @@
       }
     }
 
-    // 显示通知提示
-    function showNotification(message, type = 'success') {
-      // 创建临时通知元素
-      const notification = document.createElement('div');
-      notification.className = `fixed bottom-4 right-4 px-4 py-2 rounded-md text-sm z-50 transition-all duration-300 transform translate-y-0 opacity-100 ${
-        type === 'error' ? 'bg-red-500 text-white' : 'bg-green-500 text-white'
-      }`;
-      notification.textContent = message;
-      document.body.appendChild(notification);
-
-      // 3秒后自动消失
-      setTimeout(() => {
-        notification.classList.add('opacity-0', 'translate-y-4');
-        setTimeout(() => {
-          document.body.removeChild(notification);
-        }, 300);
-      }, 3000);
-    }
-
-    // 启动应用
-    window.addEventListener('DOMContentLoaded', init);
-  </script>
-</html>
-    // 修复Windows11触屏绘画线条断裂问题：优化Fabric画笔事件
-    function optimizeTouchDrawing() {
-      let isTouchDrawing = false;
-      const canvasDom = document.getElementById('drawingCanvas');
-
-      // 增强触摸事件处理，避免线条断裂
-      canvasDom.addEventListener('touchstart', (e) => {
-        if (!pptData.isDrawingMode) return;
-        e.preventDefault();
-        isTouchDrawing = true;
-        const touch = e.touches[0];
-        // 模拟鼠标按下+移动初始点，确保线条起始流畅
-        const mouseDownEvent = new MouseEvent('mousedown', {
-          clientX: touch.clientX,
-          clientY: touch.clientY,
-          bubbles: true,
-          cancelable: true,
-          view: window
-        });
-        canvasDom.dispatchEvent(mouseDownEvent);
-
-        const mouseMoveEvent = new MouseEvent('mousemove', {
-          clientX: touch.clientX,
-          clientY: touch.clientY,
-          bubbles: true,
-          cancelable: true,
-          view: window
-        });
-        canvasDom.dispatchEvent(mouseMoveEvent);
-      });
-
-      // 优化触摸移动事件，提升采样率
-      canvasDom.addEventListener('touchmove', (e) => {
-        if (!pptData.isDrawingMode || !isTouchDrawing) return;
-        e.preventDefault();
-        const touch = e.touches[0];
-        // 增加移动事件触发频率，避免线条断裂
-        requestAnimationFrame(() => {
-          const mouseMoveEvent = new MouseEvent('mousemove', {
-            clientX: touch.clientX,
-            clientY: touch.clientY,
-            bubbles: true,
-            cancelable: true,
-            view: window
-          });
-          canvasDom.dispatchEvent(mouseMoveEvent);
-        });
-      });
-
-      // 修复触摸结束时线条不闭合问题
-      canvasDom.addEventListener('touchend', (e) => {
-        if (!pptData.isDrawingMode || !isTouchDrawing) return;
-        e.preventDefault();
-        isTouchDrawing = false;
-        const touch = e.changedTouches[0];
-        const mouseUpEvent = new MouseEvent('mouseup', {
-          clientX: touch.clientX,
-          clientY: touch.clientY,
-          bubbles: true,
-          cancelable: true,
-          view: window
-        });
-        canvasDom.dispatchEvent(mouseUpEvent);
-
-        // 额外触发一次鼠标离开事件，确保画笔状态重置
-        const mouseOutEvent = new MouseEvent('mouseout', {
-          clientX: touch.clientX,
-          clientY: touch.clientY,
-          bubbles: true,
-          cancelable: true,
-          view: window
-        });
-        canvasDom.dispatchEvent(mouseOutEvent);
-      });
-
-      // 处理触摸取消事件（如来电打断）
-      canvasDom.addEventListener('touchcancel', (e) => {
-        if (!pptData.isDrawingMode || !isTouchDrawing) return;
-        isTouchDrawing = false;
-        const mouseUpEvent = new MouseEvent('mouseup', {
-          bubbles: true,
-          cancelable: true,
-          view: window
-        });
-        canvasDom.dispatchEvent(mouseUpEvent);
-      });
-    }
-
-    // 补充：Windows11风格右键菜单（仅保留批注相关功能）
-    function initContextMenu() {
-      const canvasDom = document.getElementById('drawingCanvas');
-      canvasDom.addEventListener('contextmenu', (e) => {
-        e.preventDefault(); // 禁用默认右键菜单
-        if (!pptData.isFileLoaded) return;
-
-        // 创建自定义右键菜单
-        const menu = document.createElement('div');
-        menu.className = 'fixed bg-white shadow-lg rounded-md p-1 z-50 w-40 text-sm border border-gray-200';
-        menu.style.left = `${e.clientX}px`;
-        menu.style.top = `${e.clientY}px`;
-        menu.innerHTML = `
-          <div class="px-3 py-1.5 cursor-pointer hover:bg-gray-100 rounded" id="ctxClear">清除当前页批注</div>
-          <div class="px-3 py-1.5 cursor-pointer hover:bg-gray-100 rounded" id="ctxToggleDrawing">${pptData.isDrawingMode ? '退出手写模式' : '进入手写模式'}</div>
-          <div class="px-3 py-1.5 cursor-pointer hover:bg-gray-100 rounded" id="ctxSave">保存所有批注</div>
-        `;
-
-        // 绑定菜单事件
-        menu.querySelector('#ctxClear').addEventListener('click', () => {
-          clearCurrentSlideAnnotations();
-          document.body.removeChild(menu);
-        });
-        menu.querySelector('#ctxToggleDrawing').addEventListener('click', () => {
-          toggleDrawingMode();
-          document.body.removeChild(menu);
-        });
-        menu.querySelector('#ctxSave').addEventListener('click', () => {
-          saveAnnotations();
-          document.body.removeChild(menu);
-        });
-
-        // 点击其他区域关闭菜单
-        document.addEventListener('click', closeMenu);
-        function closeMenu() {
-          document.body.removeChild(menu);
-          document.removeEventListener('click', closeMenu);
-        }
-
-        document.body.appendChild(menu);
-      });
-    }
-
-    // 补充：幻灯片切换动画（Windows11风格淡入淡出）
-    function addSlideTransition() {
-      const slideContent = document.getElementById('slideContent');
-      slideContent.style.transition = 'opacity 0.3s ease';
-
-      // 重写showSlide函数，添加过渡效果
-      const originalShowSlide = showSlide;
-      window.showSlide = function(index) {
-        if (index < 0 || index >= pptData.slides.length) return;
-
-        // 保存当前批注
-        if (pptData.currentSlideIndex >= 0 && pptData.currentSlideIndex < pptData.slideAnnotations.length) {
-          pptData.slideAnnotations[pptData.currentSlideIndex] = pptData.fabricCanvas.getObjects();
-        }
-
-        // 淡出当前幻灯片
-        slideContent.style.opacity = '0';
-
-        setTimeout(() => {
-          // 执行原始切换逻辑
-          originalShowSlide(index);
-          // 淡入新幻灯片
-          slideContent.style.opacity = '1';
-        }, 200);
-      };
-    }
-
-    // 补充：Windows11触屏手势支持（左右滑动切换幻灯片）
-    function initSwipeGesture() {
-      const slideContainer = document.getElementById('slideContainer');
-      let startX = 0;
-      let isSwiping = false;
-
-      slideContainer.addEventListener('touchstart', (e) => {
-        if (pptData.isDrawingMode) return; // 手写模式下禁用滑动
-        startX = e.touches[0].clientX;
-        isSwiping = true;
-      });
-
-      slideContainer.addEventListener('touchmove', (e) => {
-        if (!isSwiping || pptData.isDrawingMode) return;
-        const currentX = e.touches[0].clientX;
-        const diffX = currentX - startX;
-
-        // 滑动距离阈值（50px），避免误触
-        if (Math.abs(diffX) > 50) {
-          isSwiping = false;
-          if (diffX > 0) {
-            // 向右滑动：上一张
-            showPrevSlide();
-          } else {
-            // 向左滑动：下一张
-            showNextSlide();
-          }
-        }
-      });
-
-      slideContainer.addEventListener('touchend', () => {
-        isSwiping = false;
-      });
-
-      slideContainer.addEventListener('touchcancel', () => {
-        isSwiping = false;
-      });
-    }
-
-    // 修复：Windows11下PPT动画层级问题（避免批注遮挡动画）
-    function fixAnimationZIndex() {
-      // 监听幻灯片内容变化，确保动画元素层级低于批注
-      const observer = new MutationObserver((mutations) => {
-        mutations.forEach(mutation => {
-          if (mutation.addedNodes.length > 0) {
-            mutation.addedNodes.forEach(node => {
-              if (node.nodeType === 1 && (node.hasAttribute('data-animation') || node.tagName === 'ANIMATION')) {
-                node.style.zIndex = '1'; // 动画元素层级低于批注（z-index:10）
-              }
-            });
-          }
-        });
-      });
-
-      observer.observe(document.getElementById('slideContent'), {
-        childList: true,
-        subtree: true
-      });
-    }
-
-    // 补充：批注自动保存功能（避免意外丢失）
-    function initAutoSave() {
-      let autoSaveTimer;
-      // 切换幻灯片时触发自动保存
-      const originalShowSlide = window.showSlide;
-      window.showSlide = function(index) {
-        // 自动保存当前页批注
-        if (pptData.currentSlideIndex >= 0 && pptData.currentSlideIndex < pptData.slideAnnotations.length) {
-          pptData.slideAnnotations[pptData.currentSlideIndex] = pptData.fabricCanvas.getObjects();
-        }
-        originalShowSlide(index);
-      };
-
-      // 手写模式下每3秒自动保存一次
-      pptData.fabricCanvas.on('path:created', () => {
-        if (pptData.isDrawingMode) {
-          clearTimeout(autoSaveTimer);
-          autoSaveTimer = setTimeout(() => {
-            pptData.slideAnnotations[pptData.currentSlideIndex] = pptData.fabricCanvas.getObjects();
-          }, 3000);
-        }
-      });
-
-      // 页面关闭前提示保存
-      window.addEventListener('beforeunload', (e) => {
-        const hasAnnotations = pptData.slideAnnotations.some(annotations => annotations.length > 0);
-        if (hasAnnotations) {
-          e.preventDefault();
-          e.returnValue = '您有未保存的批注，是否确认离开？';
-          return '您有未保存的批注，是否确认离开？';
-        }
-      });
-    }
-
-    // 重写初始化函数，整合所有优化功能
-    function init() {
-      // 绑定所有事件监听（移除编辑相关事件）
-      bindAllEvents();
-      // 初始化Fabric画布（优化Windows11触屏）
-      initFabricCanvas();
-      // 优化Windows11触屏绘画（修复线条断裂）
-      optimizeTouchDrawing();
-      // 初始化右键菜单
-      initContextMenu();
-      // 添加幻灯片切换动画
-      addSlideTransition();
-      // 初始化滑动手势
-      initSwipeGesture();
-      // 修复动画层级问题
-      fixAnimationZIndex();
-      // 初始化自动保存
-      initAutoSave();
-      // 默认选中第一个画笔颜色
-      elements.colorButtons[0].classList.add('border-primary', 'scale-110');
-      // 监听窗口滚动，优化导航栏样式
-      window.addEventListener('scroll', () => {
-        if (window.scrollY > 10) {
-          elements.header.classList.add('py-2', 'shadow');
-          elements.header.classList.remove('py-3', 'shadow-sm');
-        } else {
-          elements.header.classList.add('py-3', 'shadow-sm');
-          elements.header.classList.remove('py-2', 'shadow');
-        }
-      });
-
-      // 检测Windows11系统，显示适配提示
-      if (navigator.userAgent.includes('Windows NT 10.0; Win64; x64') || navigator.userAgent.includes('Windows 11')) {
-        setTimeout(() => {
-          showNotification('已适配Windows11触屏，支持手写批注和滑动导航', 'info');
-        }, 1000);
-      }
-    }
-
-    // 修复：HTML转Image函数（提升Windows11下兼容性和清晰度）
-    function htmlToImage(element) {
-      return new Promise((resolve) => {
-        if (!window.html2canvas) {
-          // 降级方案：确保图片清晰度
-          const canvas = document.createElement('canvas');
-          const ctx = canvas.getContext('2d');
-          const rect = element.getBoundingClientRect();
-          canvas.width = rect.width * window.devicePixelRatio;
-          canvas.height = rect.height * window.devicePixelRatio;
-          ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
-          ctx.fillStyle = 'white';
-          ctx.fillRect(0, 0, rect.width, rect.height);
-          
-          // 尝试绘制DOM内容（简化版）
-          try {
-            const svg = new XMLSerializer().serializeToString(element);
-            const img = new Image();
-            img.src = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svg)));
-            img.onload = () => {
-              ctx.drawImage(img, 0, 0);
-              resolve(canvas.toDataURL('image/png', 1.0));
-            };
-            img.onerror = () => {
-              resolve(canvas.toDataURL('image/png', 1.0));
-            };
-          } catch (e) {
-            resolve(canvas.toDataURL('image/png', 1.0));
-          }
-          return;
-        }
-
-        // 优化html2canvas配置（Windows11下提升兼容性）
-        html2canvas(element, {
-          scale: window.devicePixelRatio || 2, // 适配高DPI屏幕
-          useCORS: true,
-          logging: false,
-          allowTaint: false,
-          backgroundColor: '#ffffff',
-          windowWidth: element.offsetWidth,
-          windowHeight: element.offsetHeight,
-          scrollX: -window.scrollX,
-          scrollY: -window.scrollY,
-          // 修复Windows11下字体渲染问题
-          letterRendering: true,
-          ignoreElements: (el) => {
-            // 忽略canvas元素（避免批注重复绘制）
-            return el.id === 'drawingCanvas';
-          }
-        }).then(canvas => {
-          resolve(canvas.toDataURL('image/png', 1.0));
-        }).catch((error) => {
-          console.error('html2canvas转换失败:', error);
-          // 降级处理
-          const canvas = document.createElement('canvas');
-          const ctx = canvas.getContext('2d');
-          canvas.width = element.offsetWidth;
-          canvas.height = element.offsetHeight;
-          ctx.fillStyle = 'white';
-          ctx.fillRect(0, 0, canvas.width, canvas.height);
-          resolve(canvas.toDataURL('image/png', 1.0));
-        });
-      });
-    }
-
-    // 修复：保存批注函数（优化Windows11下ZIP生成速度）
+    // 保存批注（生成带批注的图片包）
     function saveAnnotations() {
       elements.saveFileBtn.disabled = true;
       elements.saveFileBtn.innerHTML = '<i class="fa fa-spinner fa-spin text-xs mr-1"></i> 保存中...';
 
       try {
-        // 生成每个幻灯片的批注+内容合成图（并行处理，提升速度）
         const slideImages = [];
         const originalIndex = pptData.currentSlideIndex;
-        const totalSlides = pptData.slides.length;
+        const total = pptData.slides.length;
 
-        // 批量生成合成图（限制并发数为3，避免Windows11下卡顿）
-        const concurrencyLimit = 3;
-        let currentIndex = 0;
-
-        function processSlide() {
-          if (currentIndex >= totalSlides) {
-            // 所有幻灯片处理完成
-            generateZipFile(slideImages);
-            showSlide(originalIndex);
-            return;
-          }
-
-          const index = currentIndex;
-          currentIndex++;
-
+        // 批量生成带批注的幻灯片图片
+        const generatePromises = pptData.slides.map(async (slide, index) => {
           // 临时切换到当前幻灯片
           showSlide(index);
-
           // 等待DOM渲染完成
-          setTimeout(() => {
-            // 合成PPT内容和批注
-            Promise.all([
-              htmlToImage(elements.slideContent),
-              new Promise(resolve => {
-                resolve(pptData.fabricCanvas.toDataURL({
-                  format: 'png',
-                  quality: 1.0
-                }));
-              })
-            ]).then(([contentDataUrl, annotationDataUrl]) => {
-              slideImages.push({
-                index: index + 1,
-                contentDataUrl: contentDataUrl,
-                annotationDataUrl: annotationDataUrl
-              });
+          await new Promise(resolve => setTimeout(resolve, 150));
+          // 截图PPT内容+批注
+          const canvas = await html2canvas(elements.slideContainer, {
+            scale: window.devicePixelRatio || 2,
+            useCORS: true,
+            backgroundColor: '#ffffff',
+            logging: false
+          });
+          return {
+            index: index + 1,
+            dataUrl: canvas.toDataURL('image/png'),
+            hasAnnotation: pptData.slideAnnotations[index].length > 0
+          };
+        });
 
-              // 继续处理下一个幻灯片
-              processSlide();
+        // 所有图片生成完成
+        Promise.all(generatePromises).then(images => {
+          // 切换回原始幻灯片
+          showSlide(originalIndex);
+
+          // 使用JSZip打包下载
+          const zip = new JSZip();
+          const date = new Date().toLocaleDateString().replace(/\//g, '-');
+          const baseFolder = `PPT批注_${date}`;
+
+          // 创建文件夹
+          const annotatedFolder = zip.folder(`${baseFolder}/带批注幻灯片`);
+          const originalFolder = zip.folder(`${baseFolder}/原始幻灯片`);
+
+          // 分类添加图片
+          images.forEach(img => {
+            const base64Data = img.dataUrl.split(',')[1];
+            const fileName = `幻灯片${img.index}.png`;
+            // 带批注图片
+            annotatedFolder.file(fileName, base64Data, { base64: true });
+            // 原始图片（重新截图不含批注）
+            html2canvas(elements.slideContent, {
+              scale: 1,
+              useCORS: true,
+              backgroundColor: '#ffffff',
+              logging: false
+            }).then(originalCanvas => {
+              const originalBase64 = originalCanvas.toDataURL('image/png').split(',')[1];
+              originalFolder.file(fileName, originalBase64, { base64: true });
             });
-          }, 150);
-        }
+          });
 
-        // 启动并发处理
-        for (let i = 0; i < concurrencyLimit; i++) {
-          processSlide();
-        }
+          // 生成ZIP文件并下载
+          zip.generateAsync({
+            type: 'blob',
+            compression: 'DEFLATE',
+            compressionOptions: { level: 6 }
+          }).then(blob => {
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${baseFolder}.zip`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+
+            elements.saveFileBtn.disabled = false;
+            elements.saveFileBtn.innerHTML = '<i class="fa fa-save text-xs mr-1"></i> 保存批注';
+            showNotification('批注保存成功！已生成含原始+带批注的图片包');
+          });
+        }).catch(error => {
+          throw error;
+        });
       } catch (error) {
         console.error('批注保存失败:', error);
         elements.saveFileBtn.disabled = false;
         elements.saveFileBtn.innerHTML = '<i class="fa fa-save text-xs mr-1"></i> 保存批注';
-        showNotification('批注保存失败', 'error');
+        showNotification('批注保存失败，请重试', 'error');
       }
     }
 
-    // 优化：生成ZIP文件（Windows11下提升兼容性）
-    function generateZipFile(slideImages) {
-      const zip = new JSZip();
-      const date = new Date().toLocaleDateString().replace(/\//g, '-');
-      const baseFolder = `PPT批注_${date}`;
-
-      // 创建文件夹结构
-      const contentFolder = zip.folder(`${baseFolder}/原始幻灯片`);
-      const annotationFolder = zip.folder(`${baseFolder}/带批注幻灯片`);
-
-      // 添加图片文件
-      slideImages.forEach(img => {
-        // 原始幻灯片图片
-        const contentBase64 = img.contentDataUrl.split(',')[1];
-        contentFolder.file(`幻灯片${img.index}.png`, contentBase64, { base64: true });
-
-        // 带批注幻灯片图片（合成）
-        const annotationBase64 = img.annotationDataUrl.split(',')[1];
-        annotationFolder.file(`幻灯片${img.index}_带批注.png`, annotationBase64, { base64: true });
-      });
-
-      // 生成ZIP文件（优化Windows11下下载体验）
-      zip.generateAsync({ 
-        type: 'blob',
-        compression: 'DEFLATE',
-        compressionOptions: { level: 6 } // 平衡压缩速度和体积
-      }).then(function(content) {
-        // 创建下载链接（适配Windows11浏览器）
-        const url = URL.createObjectURL(content);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `${baseFolder}.zip`;
-        // 模拟点击下载（解决Edge浏览器下载问题）
-        a.click();
-        setTimeout(() => {
-          URL.revokeObjectURL(url);
-        }, 1000);
-
-        elements.saveFileBtn.disabled = false;
-        elements.saveFileBtn.innerHTML = '<i class="fa fa-save text-xs mr-1"></i> 保存批注';
-        showNotification('批注保存成功，已生成ZIP包', 'success');
-      }).catch(function(error) {
-        console.error('ZIP生成失败:', error);
-        elements.saveFileBtn.disabled = false;
-        elements.saveFileBtn.innerHTML = '<i class="fa fa-save text-xs mr-1"></i> 保存批注';
-        showNotification('ZIP包生成失败，请重试', 'error');
-      });
+    // 恢复上传状态（解析失败时调用）
+    function resetUploadState() {
+      elements.loadingArea.classList.add('hidden');
+      elements.uploadArea.classList.remove('hidden');
+      elements.fileInput.value = '';
     }
+    // Windows11环境检测（用于针对性适配）
+    function detectWindows11() {
+      const userAgent = navigator.userAgent;
+      const isWindows = userAgent.includes('Windows NT');
+      const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+      
+      // Windows 11版本判断（NT 10.0.22000+为Win11）
+      const winVersionMatch = userAgent.match(/Windows NT (\d+\.\d+)/);
+      const isWin11 = isWindows && winVersionMatch && parseFloat(winVersionMatch[1]) >= 10.0 && 
+                      (userAgent.includes('22000') || userAgent.includes('22621') || userAgent.includes('25398'));
 
-    // 补充：Windows11风格通知提示（优化视觉体验）
-    function showNotification(message, type = 'success') {
-      // 移除现有通知
-      const existingNotifications = document.querySelectorAll('.custom-notification');
-      existingNotifications.forEach(notify => notify.remove());
-
-      // 创建通知元素（Windows11风格）
-      const notification = document.createElement('div');
-      const iconClass = type === 'success' ? 'fa-check-circle' :
-                       type === 'error' ? 'fa-exclamation-circle' :
-                       type === 'info' ? 'fa-info-circle' : 'fa-warning';
-      const bgColor = type === 'success' ? 'bg-green-500' :
-                     type === 'error' ? 'bg-red-500' :
-                     type === 'info' ? 'bg-blue-500' : 'bg-yellow-500';
-
-      notification.className = `custom-notification fixed bottom-4 right-4 px-4 py-3 rounded-md ${bgColor} text-white text-sm shadow-lg z-50 transition-all duration-300 transform translate-y-0 opacity-100 flex items-center`;
-      notification.innerHTML = `
-        <i class="fa ${iconClass} mr-2 text-base"></i>
-        <span>${message}</span>
-        <button class="ml-2 text-white/80 hover:text-white">
-          <i class="fa fa-times text-xs"></i>
-        </button>
-      `;
-
-      // 关闭按钮事件
-      notification.querySelector('button').addEventListener('click', () => {
-        notification.classList.add('opacity-0', 'translate-y-4');
-        setTimeout(() => notification.remove(), 300);
-      });
-
-      // 添加到文档
-      document.body.appendChild(notification);
-
-      // 自动关闭（5秒）
-      setTimeout(() => {
-        notification.classList.add('opacity-0', 'translate-y-4');
-        setTimeout(() => {
-          if (document.body.contains(notification)) {
-            document.body.removeChild(notification);
-          }
-        }, 300);
-      }, 5000);
-    }
-              // 修复：Windows11下全屏模式批注位置偏移问题
-    function fixFullscreenAnnotationOffset() {
-      let isFullscreen = false;
-      let scaleRatio = { x: 1, y: 1 };
-
-      // 监听全屏状态变化
-      document.addEventListener('fullscreenchange', updateFullscreenScale);
-      window.addEventListener('resize', () => {
-        if (isFullscreen) updateFullscreenScale();
-      });
-
-      function updateFullscreenScale() {
-        isFullscreen = !!document.fullscreenElement;
-        const slideContainer = document.getElementById('slideContainer');
-        const canvasDom = document.getElementById('drawingCanvas');
-
-        if (isFullscreen) {
-          // 计算全屏模式下的缩放比例（解决批注位置偏移）
-          const containerRect = slideContainer.getBoundingClientRect();
-          const canvasRect = canvasDom.getBoundingClientRect();
-          scaleRatio.x = containerRect.width / canvasRect.width;
-          scaleRatio.y = containerRect.height / canvasRect.height;
-
-          // 调整画布坐标系统
-          pptData.fabricCanvas.setWidth(containerRect.width);
-          pptData.fabricCanvas.setHeight(containerRect.height);
-          pptData.fabricCanvas.setZoom(1);
-
-          // 重新渲染批注，适配全屏尺寸
-          renderCurrentSlideAnnotations();
-        } else {
-          // 退出全屏，恢复原始比例
-          const containerRect = slideContainer.getBoundingClientRect();
-          pptData.fabricCanvas.setWidth(containerRect.width);
-          pptData.fabricCanvas.setHeight(containerRect.height);
-          renderCurrentSlideAnnotations();
-        }
-      }
-
-      // 重写Fabric画笔坐标计算，适配全屏缩放
-      const originalCreatePath = pptData.fabricCanvas.freeDrawingBrush.createPath;
-      pptData.fabricCanvas.freeDrawingBrush.createPath = function(points) {
-        if (isFullscreen) {
-          // 修正全屏模式下的坐标
-          const scaledPoints = points.map(point => ({
-            x: point.x * scaleRatio.x,
-            y: point.y * scaleRatio.y
-          }));
-          return originalCreatePath.call(this, scaledPoints);
-        }
-        return originalCreatePath.call(this, points);
+      return {
+        isWin11,
+        isTouchDevice,
+        isWin11Touch: isWin11 && isTouchDevice
       };
     }
 
-    // 修复：PPT动画播放时批注遮挡问题
-    function fixAnimationOverlay() {
-      const slideContent = document.getElementById('slideContent');
-      const canvasDom = document.getElementById('drawingCanvas');
+    // 初始化Windows11适配（在init函数后调用，已整合到核心流程）
+    function initWin11Adaptation() {
+      const win11Info = detectWindows11();
+      if (!win11Info.isWin11) return;
 
-      // 监听动画元素添加事件
-      const observer = new MutationObserver((mutations) => {
-        mutations.forEach(mutation => {
-          if (mutation.addedNodes.length > 0) {
-            mutation.addedNodes.forEach(node => {
-              if (node.nodeType === 1 && (node.style.animation || node.hasAttribute('data-animation'))) {
-                // 确保动画元素层级低于批注
-                node.style.zIndex = '1';
-                // 确保批注画布始终在最上层
-                canvasDom.style.zIndex = '10';
-              }
+      console.log('检测到Windows11环境，启用专属适配优化');
+      showNotification('已启用Windows11专属优化，触屏体验更流畅');
+
+      // 1. UI风格适配Win11（毛玻璃+圆角+阴影优化）
+      applyWin11UIStyle();
+
+      // 2. 触屏体验优化（针对Win11触屏设备）
+      if (win11Info.isWin11Touch) {
+        optimizeWin11TouchExperience();
+      }
+
+      // 3. 性能适配（Win11高刷新率/高分屏优化）
+      optimizeWin11Performance();
+
+      // 4. 快捷键适配（Win11系统快捷键兼容）
+      bindWin11Shortcuts();
+    }
+
+    // 应用Windows11 UI风格（毛玻璃效果+圆角优化）
+    function applyWin11UIStyle() {
+      // 顶部导航栏毛玻璃效果（Win11标志性设计）
+      elements.header.classList.add('backdrop-blur-md', 'bg-white/80', 'border-b', 'border-gray-200/50');
+
+      // 卡片组件圆角+阴影优化（Win11更圆润的圆角）
+      const cards = document.querySelectorAll('.bg-white.rounded-xl');
+      cards.forEach(card => {
+        card.classList.remove('rounded-xl');
+        card.classList.add('rounded-2xl', 'shadow-md', 'border', 'border-gray-200/30');
+      });
+
+      // 按钮样式优化（Win11扁平化+hover效果）
+      const buttons = document.querySelectorAll('button:not(.touch-btn)');
+      buttons.forEach(btn => {
+        btn.classList.add('transition-all', 'duration-200', 'hover:shadow-md');
+        // 主按钮额外优化
+        if (btn.classList.contains('bg-primary') || btn.classList.contains('bg-green-500')) {
+          btn.classList.add('hover:brightness-105', 'active:brightness-95');
+        }
+      });
+
+      // 输入控件优化（滑块样式Win11化）
+      elements.brushSize.classList.add('accent-primary/80');
+      elements.brushSize.style.height = '6px';
+
+      // 通知组件优化（Win11通知风格）
+      document.querySelectorAll('.notification').forEach(notify => {
+        notify.classList.add('rounded-lg', 'shadow-lg', 'backdrop-blur-sm');
+      });
+    }
+
+    // Windows11触屏体验优化（核心适配点）
+    function optimizeWin11TouchExperience() {
+      // 1. 增大触屏点击区域（Win11触屏目标尺寸≥44px）
+      const touchTargets = document.querySelectorAll('.thumbnail-item, [data-color], .touch-btn');
+      touchTargets.forEach(target => {
+        target.classList.add('min-w-[44px]', 'min-h-[44px]', 'p-1');
+      });
+
+      // 2. 手写模式触屏优化（降低延迟+提升笔触流畅度）
+      pptData.fabricCanvas.freeDrawingCursor = 'none'; // 隐藏光标，提升沉浸感
+      pptData.fabricCanvas.setWidth(pptData.fabricCanvas.width * window.devicePixelRatio);
+      pptData.fabricCanvas.setHeight(pptData.fabricCanvas.height * window.devicePixelRatio);
+      pptData.fabricCanvas.setZoom(1 / window.devicePixelRatio); // 高分屏触屏精准度优化
+
+      // 3. 触屏手势支持（Win11常见手势：滑动切换幻灯片）
+      let touchStartX = 0;
+      const slideContainer = document.getElementById('slideContainer');
+      
+      slideContainer.addEventListener('touchstart', (e) => {
+        if (e.touches.length === 1) {
+          touchStartX = e.touches[0].clientX;
+        }
+      }, { passive: true });
+
+      slideContainer.addEventListener('touchend', (e) => {
+        if (e.changedTouches.length === 1) {
+          const touchEndX = e.changedTouches[0].clientX;
+          const deltaX = touchEndX - touchStartX;
+
+          // 左右滑动切换幻灯片（阈值100px，避免误触）
+          if (Math.abs(deltaX) > 100) {
+            if (deltaX < 0 && pptData.currentSlideIndex < pptData.slides.length - 1) {
+              showNextSlide(); // 左滑→下一页
+            } else if (deltaX > 0 && pptData.currentSlideIndex > 0) {
+              showPrevSlide(); // 右滑→上一页
+            }
+          }
+        }
+      }, { passive: true });
+
+      // 4. 触屏长按事件优化（避免Win11系统长按菜单干扰）
+      slideContainer.addEventListener('contextmenu', (e) => {
+        if (pptData.isDrawingMode) {
+          e.preventDefault(); // 手写模式禁用系统右键菜单
+        }
+      });
+
+      // 5. 批注工具触屏反馈（震动+视觉反馈）
+      elements.toggleDrawing.addEventListener('touchstart', () => {
+        if (navigator.vibrate) navigator.vibrate(50); // 轻微震动反馈
+      }, { passive: true });
+
+      elements.colorButtons.forEach(btn => {
+        btn.addEventListener('touchstart', () => {
+          if (navigator.vibrate) navigator.vibrate(30);
+        }, { passive: true });
+      });
+    }
+
+    // Windows11性能优化（高刷新率/高分屏/资源调度）
+    function optimizeWin11Performance() {
+      // 1. 高刷新率适配（Win11常见120Hz/144Hz屏幕，降低动画卡顿）
+      if (window.matchMedia('(prefers-reduced-motion: no-preference)').matches) {
+        document.documentElement.style.setProperty('--animation-duration', '0.2s');
+        document.querySelectorAll('.transition-base').forEach(el => {
+          el.classList.add('duration-150');
+        });
+      }
+
+      // 2. 高分屏（4K/2K）适配（避免模糊）
+      const dpr = window.devicePixelRatio || 1;
+      if (dpr > 1.5) {
+        // 调整画布缩放，提升批注清晰度
+        const canvasDom = document.getElementById('drawingCanvas');
+        const originalWidth = canvasDom.width;
+        const originalHeight = canvasDom.height;
+        
+        canvasDom.width = originalWidth * dpr;
+        canvasDom.height = originalHeight * dpr;
+        canvasDom.style.width = `${originalWidth}px`;
+        canvasDom.style.height = `${originalHeight}px`;
+        
+        pptData.fabricCanvas.setWidth(originalWidth * dpr);
+        pptData.fabricCanvas.setHeight(originalHeight * dpr);
+        pptData.fabricCanvas.setZoom(1 / dpr);
+      }
+
+      // 3. Win11后台资源调度优化（避免休眠时卡顿）
+      if (navigator.wakeLock) {
+        let wakeLock = null;
+        // 手写模式时保持屏幕常亮+资源活跃
+        elements.toggleDrawing.addEventListener('click', async () => {
+          if (pptData.isDrawingMode && !wakeLock) {
+            try {
+              wakeLock = await navigator.wakeLock.request('screen');
+            } catch (error) {
+              console.warn('Win11屏幕常亮请求失败:', error);
+            }
+          } else if (wakeLock) {
+            wakeLock.release();
+            wakeLock = null;
+          }
+        });
+      }
+
+      // 4. 幻灯片切换性能优化（Win11预加载机制）
+      pptData.slides.forEach((slide, index) => {
+        // 预加载相邻2页幻灯片HTML，提升切换速度
+        if (Math.abs(index - pptData.currentSlideIndex) <= 2) {
+          const tempDiv = document.createElement('div');
+          tempDiv.style.display = 'none';
+          tempDiv.innerHTML = slide.html;
+          document.body.appendChild(tempDiv);
+          setTimeout(() => document.body.removeChild(tempDiv), 3000);
+        }
+      });
+    }
+
+    // Windows11快捷键适配（兼容系统快捷键，新增专属操作）
+    function bindWin11Shortcuts() {
+      document.addEventListener('keydown', (e) => {
+        // Win11系统快捷键兼容：避免与系统冲突
+        if (e.metaKey && (e.key === 'd' || e.key === 'm' || e.key === 'tab')) {
+          return; // 保留Win+D/Win+M/Win+Tab等系统快捷键
+        }
+
+        // 自定义快捷键（适配Win11操作习惯）
+        switch (e.key.toLowerCase()) {
+          // 左右箭头切换幻灯片（Win11常见导航逻辑）
+          case 'arrowleft':
+            if (!e.ctrlKey && !e.shiftKey) {
+              showPrevSlide();
+              e.preventDefault();
+            }
+            break;
+          case 'arrowright':
+            if (!e.ctrlKey && !e.shiftKey) {
+              showNextSlide();
+              e.preventDefault();
+            }
+            break;
+          // Ctrl+S快速保存批注（Win11保存习惯）
+          case 's':
+            if (e.ctrlKey && pptData.isFileLoaded) {
+              saveAnnotations();
+              e.preventDefault();
+            }
+            break;
+          // Ctrl+Z撤销批注（Win11编辑习惯）
+          case 'z':
+            if (e.ctrlKey && !e.shiftKey && pptData.fabricCanvas.canUndo()) {
+              pptData.fabricCanvas.undo();
+              e.preventDefault();
+              showNotification('已撤销上一步批注');
+            }
+            break;
+          // Ctrl+Shift+Z重做批注
+          case 'z':
+            if (e.ctrlKey && e.shiftKey && pptData.fabricCanvas.canRedo()) {
+              pptData.fabricCanvas.redo();
+              e.preventDefault();
+              showNotification('已重做批注');
+            }
+            break;
+          // F5播放动画（Win11PPT默认播放快捷键）
+          case 'f5':
+            playCurrentSlideAnimation();
+            e.preventDefault();
+            break;
+        }
+      });
+    }
+
+    // 扩展Fabric画布撤销/重做功能（Win11编辑体验必备）
+    (function extendFabricUndoRedo() {
+      const fabricCanvas = pptData.fabricCanvas;
+      if (!fabricCanvas) return;
+
+      // 初始化撤销栈和重做栈
+      fabricCanvas.undoStack = [];
+      fabricCanvas.redoStack = [];
+      fabricCanvas.isRecording = false;
+
+      // 重写添加对象方法，记录撤销状态
+      const originalAdd = fabricCanvas.add;
+      fabricCanvas.add = function(...objects) {
+        if (!this.isRecording) {
+          this.recordState();
+        }
+        return originalAdd.apply(this, objects);
+      };
+
+      // 重写移除对象方法，记录撤销状态
+      const originalRemove = fabricCanvas.remove;
+      fabricCanvas.remove = function(...objects) {
+        if (!this.isRecording) {
+          this.recordState();
+        }
+        return originalRemove.apply(this, objects);
+      };
+
+      // 记录当前状态到撤销栈
+      fabricCanvas.recordState = function() {
+        this.undoStack.push(this.toJSON(['left', 'top', 'width', 'height', 'fill', 'stroke', 'strokeWidth', 'type']));
+        this.redoStack = []; // 新增操作清空重做栈
+        // 限制撤销栈大小（最多50步，避免内存占用）
+        if (this.undoStack.length > 50) {
+          this.undoStack.shift();
+        }
+      };
+
+      // 撤销操作
+      fabricCanvas.undo = function() {
+        if (!this.canUndo()) return false;
+        this.isRecording = true;
+        this.redoStack.push(this.toJSON());
+        const prevState = this.undoStack.pop();
+        this.loadFromJSON(prevState, () => {
+          this.renderAll();
+          this.isRecording = false;
+        });
+        return true;
+      };
+
+      // 重做操作
+      fabricCanvas.redo = function() {
+        if (!this.canRedo()) return false;
+        this.isRecording = true;
+        this.undoStack.push(this.toJSON());
+        const nextState = this.redoStack.pop();
+        this.loadFromJSON(nextState, () => {
+          this.renderAll();
+          this.isRecording = false;
+        });
+        return true;
+      };
+
+      // 检查是否可撤销
+      fabricCanvas.canUndo = function() {
+        return this.undoStack.length > 0;
+      };
+
+      // 检查是否可重做
+      fabricCanvas.canRedo = function() {
+        return this.redoStack.length > 0;
+      };
+    })();
+
+    // 在核心初始化流程中添加Win11适配（确保加载完成后执行）
+    window.addEventListener('DOMContentLoaded', () => {
+      // 原初始化逻辑执行后，延迟启动Win11适配（确保DOM和核心功能就绪）
+      setTimeout(initWin11Adaptation, 500);
+    });
+
+    // 修复Win11下pptxjs动画兼容性问题（部分动画不触发）
+    function fixWin11PPTAnimation() {
+      const win11Info = detectWindows11();
+      if (!win11Info.isWin11) return;
+
+      // 重写pptxjs动画触发逻辑（Win11下使用requestAnimationFrame提升兼容性）
+      if (window.PPTX && window.PPTX.Slide.prototype.hasOwnProperty('getHTML')) {
+        const originalGetHTML = PPTX.Slide.prototype.getHTML;
+        PPTX.Slide.prototype.getHTML = function() {
+          let html = originalGetHTML.apply(this, arguments);
+          // 替换动画脚本中的setTimeout为requestAnimationFrame（Win11更稳定）
+          html = html.replace(/setTimeout\(([^,]+),\s*(\d+)\)/g, (match, func, time) => {
+            return `requestAnimationFrame(() => setTimeout(${func}, ${time}))`;
+          });
+          return html;
+        };
+      }
+    }
+
+    // 提前执行动画兼容性修复（在PPT解析前生效）
+    fixWin11PPTAnimation();
+    // 一、功能完善：新增实用特性（提升整体体验）
+    // 1. 批注样式扩展（支持虚线/实线切换，Win11办公场景常用）
+    function extendAnnotationStyles() {
+      // 添加样式切换按钮到工具栏
+      const styleGroup = document.createElement('div');
+      styleGroup.className = 'flex space-x-2 mt-2';
+      styleGroup.innerHTML = `
+        <button id="solidLine" class="flex-1 bg-primary text-white px-2 py-2 rounded-md text-sm transition-base touch-optimized">
+          <i class="fa fa-minus text-xs mr-1"></i> 实线
+        </button>
+        <button id="dashedLine" class="flex-1 bg-gray-100 text-gray-700 px-2 py-2 rounded-md text-sm transition-base touch-optimized">
+          <i class="fa fa-minus text-xs mr-1" style="letter-spacing: 2px;"></i> 虚线
+        </button>
+      `;
+      elements.toolSidebar.querySelector('.space-y-3').appendChild(styleGroup);
+
+      // 绑定样式切换事件
+      document.getElementById('solidLine').addEventListener('click', () => {
+        pptData.fabricCanvas.freeDrawingBrush.strokeDashArray = [];
+        document.getElementById('solidLine').classList.add('bg-primary', 'text-white');
+        document.getElementById('solidLine').classList.remove('bg-gray-100', 'text-gray-700');
+        document.getElementById('dashedLine').classList.add('bg-gray-100', 'text-gray-700');
+        document.getElementById('dashedLine').classList.remove('bg-primary', 'text-white');
+        showNotification('批注样式已切换为实线');
+      });
+
+      document.getElementById('dashedLine').addEventListener('click', () => {
+        pptData.fabricCanvas.freeDrawingBrush.strokeDashArray = [5, 5];
+        document.getElementById('dashedLine').classList.add('bg-primary', 'text-white');
+        document.getElementById('dashedLine').classList.remove('bg-gray-100', 'text-gray-700');
+        document.getElementById('solidLine').classList.add('bg-gray-100', 'text-gray-700');
+        document.getElementById('solidLine').classList.remove('bg-primary', 'text-white');
+        showNotification('批注样式已切换为虚线');
+      });
+
+      // 初始化默认样式（实线）
+      pptData.fabricCanvas.freeDrawingBrush.strokeDashArray = [];
+    }
+
+    // 2. 单页导出功能（除了批量打包，支持单独导出当前页）
+    function addSinglePageExport() {
+      const exportBtn = document.createElement('button');
+      exportBtn.id = 'exportCurrentPage';
+      exportBtn.className = 'mt-3 w-full bg-blue-500 hover:bg-blue-600 text-white px-2 py-2 rounded-md text-sm transition-base touch-optimized';
+      exportBtn.innerHTML = '<i class="fa fa-download text-xs mr-1"></i> 导出当前页（带批注）';
+      elements.toolSidebar.querySelector('.space-y-3').appendChild(exportBtn);
+
+      exportBtn.addEventListener('click', async () => {
+        exportBtn.disabled = true;
+        exportBtn.innerHTML = '<i class="fa fa-spinner fa-spin text-xs mr-1"></i> 导出中...';
+
+        try {
+          // 截图当前页（含批注）
+          const canvas = await html2canvas(elements.slideContainer, {
+            scale: window.devicePixelRatio || 2,
+            useCORS: true,
+            backgroundColor: '#ffffff',
+            logging: false
+          });
+
+          // 生成下载链接
+          const url = canvas.toDataURL('image/png');
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = `幻灯片${pptData.currentSlideIndex + 1}_带批注.png`;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          URL.revokeObjectURL(url);
+
+          exportBtn.disabled = false;
+          exportBtn.innerHTML = '<i class="fa fa-download text-xs mr-1"></i> 导出当前页（带批注）';
+          showNotification('当前页导出成功！');
+        } catch (error) {
+          console.error('单页导出失败:', error);
+          exportBtn.disabled = false;
+          exportBtn.innerHTML = '<i class="fa fa-download text-xs mr-1"></i> 导出当前页（带批注）';
+          showNotification('单页导出失败，请重试', 'error');
+        }
+      });
+    }
+
+    // 3. 批注透明度调节（Win11专业办公场景需求）
+    function addAnnotationOpacityControl() {
+      const opacityGroup = document.createElement('div');
+      opacityGroup.className = 'mt-3';
+      opacityGroup.innerHTML = `
+        <label class="block text-xs text-gray-500 mb-1.5">批注透明度</label>
+        <input type="range" id="annotationOpacity" min="30" max="100" value="100" class="w-full accent-primary">
+        <div class="flex justify-between text-xs text-gray-400 mt-1">
+          <span>透明</span>
+          <span>不透明</span>
+        </div>
+      `;
+      elements.toolSidebar.querySelector('.space-y-3').appendChild(opacityGroup);
+
+      const opacitySlider = document.getElementById('annotationOpacity');
+      opacitySlider.addEventListener('input', (e) => {
+        const opacity = parseInt(e.target.value) / 100;
+        pptData.fabricCanvas.freeDrawingBrush.opacity = opacity;
+        // 同步更新已有批注透明度
+        pptData.fabricCanvas.getObjects().forEach(obj => {
+          obj.set('opacity', opacity);
+        });
+        pptData.fabricCanvas.renderAll();
+        showNotification(`批注透明度已调整为 ${e.target.value}%`);
+      });
+
+      // 初始化透明度（100%不透明）
+      pptData.fabricCanvas.freeDrawingBrush.opacity = 1;
+    }
+
+    // 二、错误处理强化（全流程容错，避免程序崩溃）
+    // 1. 全局错误捕获（防止未知错误导致页面卡死）
+    function initGlobalErrorHandler() {
+      // 捕获JS执行错误
+      window.addEventListener('error', (e) => {
+        console.error('全局错误:', e.message, e.filename, e.lineno);
+        showNotification('程序出现未知错误，已自动恢复', 'error');
+        // 紧急恢复措施：退出手写模式+清空画布
+        if (pptData.isDrawingMode) {
+          toggleDrawingMode();
+        }
+        if (pptData.fabricCanvas) {
+          pptData.fabricCanvas.clear();
+        }
+      });
+
+      // 捕获Promise未处理错误
+      window.addEventListener('unhandledrejection', (e) => {
+        console.error('未处理Promise错误:', e.reason);
+        showNotification('操作执行失败，请重试', 'error');
+        e.preventDefault();
+      });
+    }
+
+    // 2. 画布异常恢复（Win11下偶发画布渲染失败）
+    function initCanvasRecovery() {
+      setInterval(() => {
+        if (pptData.fabricCanvas && !pptData.fabricCanvas.isRenderingCorrectly) {
+          try {
+            pptData.fabricCanvas.renderAll();
+            pptData.fabricCanvas.isRenderingCorrectly = true;
+          } catch (error) {
+            console.warn('画布渲染异常，尝试恢复:', error);
+            renderCurrentSlideAnnotations();
+          }
+        }
+      }, 5000); // 每5秒检查一次
+    }
+
+    // 3. 网络错误处理（依赖CDN加载失败降级）
+    function initCdnFallback() {
+      // 检查核心CDN资源是否加载成功
+      const checkCdnResource = (url, name) => {
+        return new Promise((resolve) => {
+          const img = new Image();
+          img.onload = img.onerror = () => {
+            resolve(!!img.complete);
+          };
+          img.src = url;
+        });
+      };
+
+      // 检查html2canvas CDN（截图核心依赖）
+      checkCdnResource('https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js', 'html2canvas')
+        .then(isLoaded => {
+          if (!isLoaded) {
+            console.warn('html2canvas CDN加载失败，使用降级方案');
+            // 降级为纯批注数据导出（无图片截图）
+            elements.saveFileBtn.addEventListener('click', () => {
+              const annotationData = JSON.stringify({
+                slidesCount: pptData.slides.length,
+                annotations: pptData.slideAnnotations,
+                exportTime: new Date().toLocaleString()
+              });
+              const blob = new Blob([annotationData], { type: 'application/json' });
+              const url = URL.createObjectURL(blob);
+              const a = document.createElement('a');
+              a.href = url;
+              a.download = `PPT批注数据_${new Date().toLocaleDateString().replace(/\//g, '-')}.json`;
+              document.body.appendChild(a);
+              a.click();
+              document.body.removeChild(a);
+              URL.revokeObjectURL(url);
+              showNotification('批注数据导出成功（CDN加载失败，仅导出批注坐标数据）');
             });
           }
         });
-      });
-
-      observer.observe(slideContent, {
-        childList: true,
-        subtree: true,
-        attributes: true,
-        attributeFilter: ['style', 'data-animation']
-      });
     }
 
-    // 优化：Windows11低性能设备适配（降低资源占用）
-    function optimizeLowPerformanceDevices() {
-      // 检测设备性能，调整画笔参数
-      const isLowPerformance = navigator.hardwareConcurrency <= 4 || screen.width < 1080;
-      if (isLowPerformance) {
-        // 降低画笔采样率，减少内存占用
-        pptData.fabricCanvas.freeDrawingBrush.decimate = 2;
-        // 限制最大画笔粗细
-        elements.brushSize.max = 8;
-        // 关闭硬件加速（部分低性能设备兼容）
-        pptData.fabricCanvas.disableStyleCache = true;
-        showNotification('已适配低性能设备，优化运行流畅度', 'info');
-      }
+    // 三、程序初始化完善（整合所有功能）
+    function completeInit() {
+      // 扩展批注功能
+      extendAnnotationStyles();
+      addSinglePageExport();
+      addAnnotationOpacityControl();
+
+      // 强化错误处理
+      initGlobalErrorHandler();
+      initCanvasRecovery();
+      initCdnFallback();
+
+      // 显示初始化完成通知
+      showNotification('所有功能已就绪，支持Win11触屏+快捷键操作');
     }
 
-    // 修复：幻灯片切换时批注残留问题
-    function fixAnnotationPersistence() {
-      // 重写renderCurrentSlideAnnotations，确保清空画布
-      const originalRender = renderCurrentSlideAnnotations;
-      window.renderCurrentSlideAnnotations = function() {
-        // 强制清空画布（解决残留问题）
-        pptData.fabricCanvas.clear();
-        pptData.fabricCanvas.renderAll();
-        // 延迟渲染批注，避免切换时闪烁
-        setTimeout(() => {
-          originalRender.call(this);
-        }, 50);
-      };
-    }
-
-    // 补充：错误处理与容错机制
-    function initErrorHandling() {
-      // 捕获PPT解析错误
-      window.addEventListener('unhandledrejection', (event) => {
-        if (event.reason.message.includes('PPT') || event.reason.message.includes('slide')) {
-          event.preventDefault();
-          showNotification('PPT解析或渲染出错，请尝试重新上传文件', 'error');
-          // 重置UI状态
-          elements.loadingArea.classList.add('hidden');
-          elements.uploadArea.classList.remove('hidden');
-        }
-      });
-
-      // 捕获画布操作错误
-      pptData.fabricCanvas.on('error', (error) => {
-        console.error('画布操作错误:', error);
-        showNotification('批注操作出错，请重试', 'error');
-      });
-
-      // 文件上传大小限制（补充100MB限制）
-      elements.fileInput.addEventListener('change', (e) => {
-        const file = e.target.files[0];
-        if (file && file.size > 1024 * 1024 * 100) { // 100MB
-          showNotification('文件大小超过100MB限制，请上传更小的文件', 'error');
-          elements.fileInput.value = '';
-        }
-      });
-    }
-
-    // 最终整合：更新初始化函数，包含所有修复
-    function init() {
-      // 绑定所有事件监听（移除编辑相关事件）
-      bindAllEvents();
-      // 初始化Fabric画布（优化Windows11触屏）
-      initFabricCanvas();
-      // 优化Windows11触屏绘画（修复线条断裂）
-      optimizeTouchDrawing();
-      // 初始化右键菜单
-      initContextMenu();
-      // 添加幻灯片切换动画
-      addSlideTransition();
-      // 初始化滑动手势
-      initSwipeGesture();
-      // 修复动画层级问题
-      fixAnimationZIndex();
-      // 初始化自动保存
-      initAutoSave();
-      // 修复全屏批注偏移
-      fixFullscreenAnnotationOffset();
-      // 修复动画遮挡问题
-      fixAnimationOverlay();
-      // 适配低性能设备
-      optimizeLowPerformanceDevices();
-      // 修复批注残留问题
-      fixAnnotationPersistence();
-      // 初始化错误处理
-      initErrorHandling();
-      // 默认选中第一个画笔颜色
-      elements.colorButtons[0].classList.add('border-primary', 'scale-110');
-      // 监听窗口滚动，优化导航栏样式
-      window.addEventListener('scroll', () => {
-        if (window.scrollY > 10) {
-          elements.header.classList.add('py-2', 'shadow');
-          elements.header.classList.remove('py-3', 'shadow-sm');
-        } else {
-          elements.header.classList.add('py-3', 'shadow-sm');
-          elements.header.classList.remove('py-2', 'shadow');
-        }
-      });
-
-      // 检测Windows11系统，显示适配提示
-      if (navigator.userAgent.includes('Windows NT 10.0; Win64; x64') || navigator.userAgent.includes('Windows 11')) {
-        setTimeout(() => {
-          showNotification('已适配Windows11触屏，支持手写批注和滑动导航', 'info');
-        }, 1000);
-      }
-    }
-
-    // 补充：手动触发动画重置功能（解决动画重复播放问题）
-    function resetCurrentSlideAnimation() {
-      const slide = pptData.slides[pptData.currentSlideIndex];
-      if (!slide.hasAnimation) return;
-
-      try {
-        // 重置动画元素状态
-        const animationElements = elements.slideContent.querySelectorAll('[data-animation], [style*="animation"]');
-        animationElements.forEach(el => {
-          el.style.animationPlayState = 'paused';
-          el.style.animation = 'none';
-          // 强制重绘
-          void el.offsetWidth;
-          el.style.animation = null;
-          el.style.animationPlayState = 'paused';
-        });
-
-        // 重置pptxjs动画函数状态
-        const resetFunction = window[`slide${pptData.currentSlideIndex}_reset`];
-        if (typeof resetFunction === 'function') {
-          resetFunction();
-        }
-
-        showNotification('动画已重置，可重新播放');
-      } catch (error) {
-        console.error('动画重置失败:', error);
-        showNotification('动画重置失败', 'error');
-      }
-    }
-
-    // 绑定动画重置事件（双击幻灯片空白处重置动画）
-    elements.slideContent.addEventListener('dblclick', (e) => {
-      if (e.target === elements.slideContent || e.target.classList.contains('slide-background')) {
-        resetCurrentSlideAnimation();
-      }
+    // 四、启动完整初始化流程（确保所有依赖加载完成）
+    window.addEventListener('DOMContentLoaded', () => {
+      // 延迟执行完整初始化（等待核心功能就绪）
+      setTimeout(completeInit, 1000);
     });
 
-    // 最终：启动应用（确保DOM完全加载）
-    document.addEventListener('DOMContentLoaded', () => {
-      // 确保所有依赖加载完成后初始化
-      const checkDependencies = setInterval(() => {
-        if (window.PPTX && window.fabric && window.JSZip && window.html2canvas) {
-          clearInterval(checkDependencies);
-          init();
-        }
-      }, 100);
-
-      // 依赖加载超时处理（5秒）
-      setTimeout(() => {
-        if (!window.PPTX || !window.fabric || !window.JSZip || !window.html2canvas) {
-          clearInterval(checkDependencies);
-          showNotification('核心依赖加载超时，请刷新页面重试', 'error');
-        }
-      }, 5000);
+    // 五、程序闭合（确保所有函数声明完成，无语法错误）
+    // 验证核心函数是否存在（避免初始化顺序问题）
+    window.addEventListener('load', () => {
+      const requiredFunctions = [
+        'init', 'handlePPTUpload', 'showSlide', 'toggleDrawingMode',
+        'saveAnnotations', 'initWin11Adaptation', 'completeInit'
+      ];
+      const missingFunctions = requiredFunctions.filter(fn => typeof window[fn] !== 'function');
+      
+      if (missingFunctions.length > 0) {
+        console.error('核心函数缺失:', missingFunctions);
+        showNotification('程序初始化不完整，部分功能可能无法使用', 'error');
+      } else {
+        console.log('PPT批注工具初始化完成（支持Windows11全适配）');
+      }
     });
   </script>
 </body>
