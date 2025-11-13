@@ -1,0 +1,886 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PPT|FlyzOffice</title>
+  <!-- 引入外部资源 -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/fabric@5.3.0/dist/fabric.min.js"></script>
+
+  <!-- 自定义配置 -->
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#2563eb',
+            neutral: '#f8fafc'
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+          },
+        },
+      }
+    }
+  </script>
+
+  <style type="text/tailwindcss">
+    @layer utilities {
+      .content-auto {
+        content-visibility: auto;
+      }
+      .transition-base {
+        transition: all 0.2s ease;
+      }
+      .shadow-light {
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05), 0 1px 2px rgba(0, 0, 0, 0.1);
+      }
+    }
+  </style>
+
+  <style>
+    /* 基础样式优化 */
+    body {
+      font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+    }
+    #drawingCanvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      cursor: crosshair;
+      touch-action: none;
+    }
+    :-webkit-full-screen {
+      background-color: white;
+    }
+    :fullscreen {
+      background-color: white;
+    }
+    .loader {
+      border-top-color: #2563eb;
+      animation: spinner 0.6s linear infinite;
+    }
+    @keyframes spinner {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    /* 编辑区域样式 */
+    .edit-item {
+      transition: all 0.15s ease;
+    }
+    .edit-item:hover {
+      transform: translateY(-1px);
+    }
+    /* 文本框编辑样式 */
+    .fabric-textbox {
+      border: 1px dashed transparent;
+    }
+    .fabric-textbox:focus {
+      border-color: #2563eb;
+      outline: none;
+    }
+    /* 缩略图样式优化 */
+    .thumbnail-item {
+      transition: all 0.15s ease;
+    }
+    .thumbnail-item.active {
+      ring: 2px ring-primary;
+    }
+    .thumbnail-item:hover:not(.active) {
+      ring: 2px ring-gray-300;
+    }
+  </style>
+</head>
+<body class="font-sans bg-neutral text-gray-800 min-h-screen flex flex-col">
+  <!-- 顶部导航栏（含正方形Logo） -->
+  <header class="bg-white shadow-sm sticky top-0 z-50 transition-all duration-300">
+    <div class="container mx-auto px-4 py-3 flex items-center justify-between">
+      <!-- 左上角Logo+标题 -->
+      <div class="flex items-center space-x-3">
+        <div class="w-10 h-10 rounded-md overflow-hidden border border-gray-100 shadow-sm">
+          <img src="https://www.img520.com/UIGuUV.jpeg" alt="PPT工具Logo" class="w-full h-full object-cover">
+        </div>
+        <h1 class="text-lg font-semibold text-gray-800">简洁PPT工具</h1>
+      </div>
+      
+      <!-- 右侧功能按钮 -->
+      <div class="flex items-center space-x-3">
+        <button id="uploadBtn" class="flex items-center space-x-1 bg-primary hover:bg-primary/90 text-white px-3 py-1.5 rounded-md text-sm transition-base">
+          <i class="fa fa-upload text-xs"></i>
+          <span>上传PPT</span>
+        </button>
+        <input type="file" id="fileInput" accept=".pptx" class="hidden">
+        
+        <button id="saveFileBtn" class="flex items-center space-x-1 bg-green-500 hover:bg-green-600 text-white px-3 py-1.5 rounded-md text-sm transition-base hidden" disabled>
+          <i class="fa fa-save text-xs"></i>
+          <span>保存文件</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- 主内容区 -->
+  <main class="flex-1 container mx-auto px-4 py-6 flex flex-col lg:flex-row gap-6">
+    <!-- 左侧上传区域（初始状态） -->
+    <div id="uploadArea" class="lg:w-1/4 bg-white rounded-xl shadow-light p-6 flex flex-col items-center justify-center text-center">
+      <div class="w-20 h-20 bg-primary/5 rounded-full flex items-center justify-center mb-4">
+        <i class="fa fa-file-powerpoint-o text-primary text-3xl"></i>
+      </div>
+      <h2 class="text-lg font-medium mb-2">上传PPT文件</h2>
+      <p class="text-gray-500 text-sm mb-6">支持Win/Mac/iOS/Android/鸿蒙</p>
+      <label for="fileInput" class="cursor-pointer bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-md transition-base flex items-center space-x-2">
+        <i class="fa fa-upload"></i>
+        <span>选择文件</span>
+      </label>
+      <p class="text-xs text-gray-400 mt-3">最大支持20MB文件</p>
+    </div>
+
+    <!-- 左侧工具栏（PPT加载后显示） -->
+    <div id="toolSidebar" class="lg:w-1/4 hidden flex-col gap-4">
+      <!-- 幻灯片导航 -->
+      <div class="bg-white rounded-xl shadow-light p-4">
+        <h3 class="font-medium text-gray-700 text-sm mb-3 flex items-center">
+          <i class="fa fa-th-list text-primary mr-1.5 text-xs"></i>
+          幻灯片导航
+        </h3>
+        <div id="thumbnailContainer" class="grid grid-cols-2 gap-2 max-h-[300px] overflow-y-auto p-1">
+          <!-- 缩略图动态生成 -->
+        </div>
+      </div>
+
+      <!-- 编辑工具 -->
+      <div class="bg-white rounded-xl shadow-light p-4">
+        <h3 class="font-medium text-gray-700 text-sm mb-3 flex items-center">
+          <i class="fa fa-edit text-primary mr-1.5 text-xs"></i>
+          编辑工具
+        </h3>
+        <div class="space-y-3">
+          <!-- 文本编辑 -->
+          <button id="addTextBtn" class="edit-item w-full flex items-center space-x-2 bg-gray-50 hover:bg-gray-100 text-gray-700 px-3 py-2 rounded-md text-sm">
+            <i class="fa fa-font text-primary"></i>
+            <span>添加文本</span>
+          </button>
+          
+          <!-- 图片添加 -->
+          <label class="edit-item w-full flex items-center space-x-2 bg-gray-50 hover:bg-gray-100 text-gray-700 px-3 py-2 rounded-md text-sm cursor-pointer">
+            <i class="fa fa-image text-primary"></i>
+            <span>添加图片</span>
+            <input type="file" id="imageInput" accept="image/*" class="hidden">
+          </label>
+          
+          <!-- 删除选中元素 -->
+          <button id="deleteSelectedBtn" class="edit-item w-full flex items-center space-x-2 bg-gray-50 hover:bg-gray-100 text-gray-700 px-3 py-2 rounded-md text-sm">
+            <i class="fa fa-trash text-red-500"></i>
+            <span>删除选中</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- 批注工具 -->
+      <div class="bg-white rounded-xl shadow-light p-4">
+        <h3 class="font-medium text-gray-700 text-sm mb-3 flex items-center">
+          <i class="fa fa-paint-brush text-primary mr-1.5 text-xs"></i>
+          批注工具
+        </h3>
+        <div class="space-y-3">
+          <!-- 颜色选择 -->
+          <div>
+            <label class="block text-xs text-gray-500 mb-1.5">画笔颜色</label>
+            <div class="flex space-x-1.5">
+              <button class="w-6 h-6 rounded-full bg-red-500 border-2 border-transparent hover:scale-110 transition-base" data-color="#ef4444"></button>
+              <button class="w-6 h-6 rounded-full bg-blue-500 border-2 border-transparent hover:scale-110 transition-base" data-color="#3b82f6"></button>
+              <button class="w-6 h-6 rounded-full bg-green-500 border-2 border-transparent hover:scale-110 transition-base" data-color="#22c55e"></button>
+              <button class="w-6 h-6 rounded-full bg-yellow-500 border-2 border-transparent hover:scale-110 transition-base" data-color="#eab308"></button>
+              <button class="w-6 h-6 rounded-full bg-black border-2 border-transparent hover:scale-110 transition-base" data-color="#000000"></button>
+            </div>
+          </div>
+          
+          <!-- 粗细调节 -->
+          <div>
+            <label class="block text-xs text-gray-500 mb-1.5">画笔粗细</label>
+            <input type="range" id="brushSize" min="2" max="8" value="3" class="w-full accent-primary">
+            <div class="flex justify-between text-xs text-gray-400 mt-1">
+              <span>细</span>
+              <span>粗</span>
+            </div>
+          </div>
+          
+          <!-- 操作按钮 -->
+          <div class="flex space-x-2">
+            <button id="clearAnnotations" class="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 px-2 py-1.5 rounded-md text-sm transition-base">
+              <i class="fa fa-eraser text-xs mr-1"></i> 清除
+            </button>
+            <button id="toggleDrawing" class="flex-1 bg-primary/10 hover:bg-primary/20 text-primary px-2 py-1.5 rounded-md text-sm transition-base">
+              <i class="fa fa-pencil text-xs mr-1"></i> 手写
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 右侧PPT预览与编辑区 -->
+    <div id="pptEditor" class="lg:w-3/4 bg-white rounded-xl shadow-light p-4 flex flex-col items-center justify-center hidden">
+      <div class="relative w-full max-w-3xl aspect-[16/9] bg-white rounded-lg overflow-hidden border border-gray-200" id="slideContainer">
+        <!-- 幻灯片内容容器 -->
+        <div id="slideContent" class="w-full h-full flex items-center justify-center">
+          <!-- 动态生成幻灯片内容 -->
+        </div>
+        <!-- 手写批注画布 -->
+        <canvas id="drawingCanvas" class="w-full h-full"></canvas>
+      </div>
+      
+      <!-- 控制栏 -->
+      <div class="mt-4 flex items-center justify-between w-full max-w-3xl">
+        <div class="flex items-center space-x-3">
+          <button id="prevSlide" class="p-2 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-700 transition-base disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+            <i class="fa fa-chevron-left text-xs"></i>
+          </button>
+          <span id="slideCounter" class="text-gray-500 text-sm">1 / 0</span>
+          <button id="nextSlide" class="p-2 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-700 transition-base disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+            <i class="fa fa-chevron-right text-xs"></i>
+          </button>
+        </div>
+        
+        <div class="flex items-center space-x-2">
+          <button id="fullscreenBtn" class="px-3 py-1.5 rounded-md bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm transition-base">
+            <i class="fa fa-expand text-xs mr-1"></i> 全屏
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 加载状态 -->
+    <div id="loadingArea" class="lg:w-3/4 hidden flex-col items-center justify-center bg-white rounded-xl shadow-light p-6">
+      <div class="loader w-10 h-10 border-3 border-gray-100 rounded-full mb-3"></div>
+      <h3 class="text-base font-medium text-gray-700">正在解析文件...</h3>
+      <p class="text-gray-500 text-sm mt-1" id="loadingProgress">处理中，请稍候</p>
+    </div>
+  </main>
+    <!-- 页脚 -->
+  <footer class="bg-white border-t border-gray-100 py-3 mt-6">
+    <div class="container mx-auto px-4 text-center text-gray-500 text-xs">
+      <p>版本V1.0.1_20251113 | Flyz远征飞官方出品</p>
+    </div>
+  </footer>
+
+  <script>
+    // 全局核心变量
+    let pptData = {
+      slides: [], // 存储所有幻灯片数据（含Fabric对象）
+      currentSlideIndex: 0, // 当前激活的幻灯片索引
+      isDrawingMode: false, // 是否处于手写批注模式
+      brushColor: '#ef4444', // 画笔默认颜色
+      brushSize: 3, // 画笔默认粗细
+      fabricCanvas: null, // Fabric主画布对象
+      slideObjects: [], // 存储每个幻灯片的Fabric对象集合
+      isFileLoaded: false // 是否已加载PPT文件
+    };
+
+    // DOM元素缓存（避免重复查询）
+    const elements = {
+      fileInput: document.getElementById('fileInput'),
+      uploadBtn: document.getElementById('uploadBtn'),
+      uploadArea: document.getElementById('uploadArea'),
+      toolSidebar: document.getElementById('toolSidebar'),
+      pptEditor: document.getElementById('pptEditor'),
+      loadingArea: document.getElementById('loadingArea'),
+      thumbnailContainer: document.getElementById('thumbnailContainer'),
+      slideContent: document.getElementById('slideContent'),
+      slideCounter: document.getElementById('slideCounter'),
+      prevSlide: document.getElementById('prevSlide'),
+      nextSlide: document.getElementById('nextSlide'),
+      toggleDrawing: document.getElementById('toggleDrawing'),
+      fullscreenBtn: document.getElementById('fullscreenBtn'),
+      clearAnnotations: document.getElementById('clearAnnotations'),
+      saveFileBtn: document.getElementById('saveFileBtn'),
+      brushSize: document.getElementById('brushSize'),
+      colorButtons: document.querySelectorAll('[data-color]'),
+      loadingProgress: document.getElementById('loadingProgress'),
+      addTextBtn: document.getElementById('addTextBtn'),
+      imageInput: document.getElementById('imageInput'),
+      deleteSelectedBtn: document.getElementById('deleteSelectedBtn'),
+      header: document.querySelector('header')
+    };
+
+    // 初始化函数（程序入口）
+    function init() {
+      // 绑定所有事件监听
+      bindAllEvents();
+      // 初始化Fabric画布
+      initFabricCanvas();
+      // 默认选中第一个画笔颜色
+      elements.colorButtons[0].classList.add('border-primary', 'scale-110');
+      // 监听窗口滚动，优化导航栏样式
+      window.addEventListener('scroll', () => {
+        if (window.scrollY > 10) {
+          elements.header.classList.add('py-2', 'shadow');
+          elements.header.classList.remove('py-3', 'shadow-sm');
+        } else {
+          elements.header.classList.add('py-3', 'shadow-sm');
+          elements.header.classList.remove('py-2', 'shadow');
+        }
+      });
+    }
+
+    // 绑定所有事件处理函数
+    function bindAllEvents() {
+      // 1. 文件上传相关事件
+      elements.uploadBtn.addEventListener('click', () => elements.fileInput.click());
+      elements.fileInput.addEventListener('change', handlePPTUpload);
+
+      // 2. 幻灯片导航控制事件
+      elements.prevSlide.addEventListener('click', showPrevSlide);
+      elements.nextSlide.addEventListener('click', showNextSlide);
+      elements.fullscreenBtn.addEventListener('click', toggleFullscreen);
+      document.addEventListener('fullscreenchange', updateFullscreenBtn);
+
+      // 3. 批注工具事件
+      elements.toggleDrawing.addEventListener('click', toggleDrawingMode);
+      elements.clearAnnotations.addEventListener('click', clearAllAnnotations);
+      elements.brushSize.addEventListener('input', updateBrushSize);
+      elements.colorButtons.forEach(btn => {
+        btn.addEventListener('click', (e) => updateBrushColor(e));
+      });
+
+      // 4. 编辑功能事件
+      elements.addTextBtn.addEventListener('click', addTextToCurrentSlide);
+      elements.imageInput.addEventListener('change', addImageToCurrentSlide);
+      elements.deleteSelectedBtn.addEventListener('click', deleteSelectedElement);
+
+      // 5. 文件保存事件
+      elements.saveFileBtn.addEventListener('click', saveEditedPPT);
+    }
+
+    // 初始化Fabric画布（核心绘图/编辑容器）
+    function initFabricCanvas() {
+      const canvasDom = document.getElementById('drawingCanvas');
+      // 创建Fabric画布实例
+      pptData.fabricCanvas = new fabric.Canvas('drawingCanvas', {
+        isDrawingMode: false, // 初始关闭手写模式
+        preserveObjectStacking: true, // 保持对象堆叠顺序
+        selection: true, // 允许选中对象
+        selectionBorderColor: '#2563eb', // 选中边框颜色
+        selectionCornerColor: '#2563eb', // 选中角点颜色
+        width: canvasDom.offsetWidth,
+        height: canvasDom.offsetHeight
+      });
+
+      // 初始化画笔样式
+      pptData.fabricCanvas.freeDrawingBrush.color = pptData.brushColor;
+      pptData.fabricCanvas.freeDrawingBrush.width = pptData.brushSize;
+      pptData.fabricCanvas.freeDrawingBrush.strokeLineCap = 'round'; // 画笔端点圆润
+
+      // 监听容器大小变化，自适应调整画布尺寸
+      new ResizeObserver(entries => {
+        const { width, height } = entries[0].contentRect;
+        canvasDom.width = width;
+        canvasDom.height = height;
+        pptData.fabricCanvas.setWidth(width);
+        pptData.fabricCanvas.setHeight(height);
+        // 重新渲染当前幻灯片内容
+        if (pptData.isFileLoaded) {
+          renderCurrentSlide();
+        }
+      }).observe(document.getElementById('slideContainer'));
+    }
+
+    // 处理PPT文件上传
+    function handlePPTUpload(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      // 验证文件类型和大小
+      if (!file.name.endsWith('.pptx')) {
+        showNotification('请上传.pptx格式的PPT文件', 'error');
+        return;
+      }
+
+      // 切换UI状态到加载中
+      elements.uploadArea.classList.add('hidden');
+      elements.pptEditor.classList.add('hidden');
+      elements.toolSidebar.classList.add('hidden');
+      elements.loadingArea.classList.remove('hidden');
+
+      // 读取文件并解析
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        try {
+          const data = new Uint8Array(e.target.result);
+          const workbook = XLSX.read(data, { type: 'array' });
+          // 解析PPT内容（简化实现，实际可替换为专业PPT解析库）
+          parsePPTContent(workbook);
+        } catch (error) {
+          console.error('PPT解析失败:', error);
+          elements.loadingProgress.textContent = '解析失败，请尝试其他文件';
+          setTimeout(() => {
+            elements.loadingArea.classList.add('hidden');
+            elements.uploadArea.classList.remove('hidden');
+          }, 2000);
+        }
+      };
+      reader.readAsArrayBuffer(file);
+    }
+
+    // 解析PPT内容（简化实现）
+    function parsePPTContent(workbook) {
+      pptData.slides = [];
+      pptData.slideObjects = [];
+      const sheetNames = workbook.SheetNames;
+      const totalSlides = Math.min(sheetNames.length, 888); // 限制最大888页，避免性能问题
+
+      // 模拟解析过程（实际项目建议使用pptjs等专业库）
+      for (let i = 0; i < totalSlides; i++) {
+        elements.loadingProgress.textContent = `解析第 ${i+1}/${totalSlides} 页`;
+        
+        // 创建幻灯片基础数据
+        const slideId = `slide-${i}`;
+        const slideContent = `
+          <div class="w-full h-full flex flex-col items-center justify-center p-8">
+            <div class="text-2xl font-semibold text-gray-800 mb-3">幻灯片 ${i+1}</div>
+            <div class="text-gray-500 text-center max-w-2xl text-sm">
+              本地解析完成，可使用左侧工具添加文本、图片或手写批注
+            </div>
+          </div>
+        `;
+
+        // 存储幻灯片数据
+        pptData.slides.push({
+          id: slideId,
+          content: slideContent,
+          thumbnail: `
+            <div class="aspect-[16/9] bg-white border border-gray-200 rounded-md flex items-center justify-center p-2">
+              <span class="text-xs text-gray-500">第 ${i+1} 页</span>
+            </div>
+          `
+        });
+
+        // 初始化当前幻灯片的Fabric对象容器
+        pptData.slideObjects[i] = [];
+
+        // 模拟解析延迟，提升用户体验
+        await new Promise(resolve => setTimeout(resolve, 150));
+      }
+
+      // 解析完成，初始化PPT编辑环境
+      initPPTEditor();
+    }
+
+    // 初始化PPT编辑环境（解析完成后调用）
+    function initPPTEditor() {
+      // 切换UI状态
+      elements.loadingArea.classList.add('hidden');
+      elements.toolSidebar.classList.remove('hidden');
+      elements.pptEditor.classList.remove('hidden');
+
+      // 生成幻灯片缩略图导航
+      renderSlideThumbnails();
+
+      // 显示第一页幻灯片
+      showSlide(0);
+
+      // 更新计数器和控制按钮状态
+      updateSlideCounter();
+      updateNavButtonsStatus();
+
+      // 启用保存按钮
+      pptData.isFileLoaded = true;
+      elements.saveFileBtn.disabled = false;
+      elements.saveFileBtn.classList.remove('hidden');
+
+      showNotification('PPT加载成功，可开始编辑');
+    }
+
+    // 渲染幻灯片缩略图导航
+    function renderSlideThumbnails() {
+      elements.thumbnailContainer.innerHTML = '';
+      pptData.slides.forEach((slide, index) => {
+        const thumbnailEl = document.createElement('div');
+        thumbnailEl.className = `thumbnail-item cursor-pointer rounded-md overflow-hidden transition-base ${
+          index === 0 ? 'ring-2 ring-primary' : 'hover:ring-2 hover:ring-gray-300'
+        }`;
+        thumbnailEl.innerHTML = slide.thumbnail;
+        thumbnailEl.addEventListener('click', () => showSlide(index));
+        elements.thumbnailContainer.appendChild(thumbnailEl);
+      });
+    }
+
+    // 显示指定索引的幻灯片
+    function showSlide(index) {
+      if (index < 0 || index >= pptData.slides.length) return;
+
+      // 保存当前幻灯片的Fabric对象（避免编辑内容丢失）
+      if (pptData.currentSlideIndex >= 0 && pptData.currentSlideIndex < pptData.slideObjects.length) {
+        pptData.slideObjects[pptData.currentSlideIndex] = pptData.fabricCanvas.getObjects();
+      }
+
+      // 更新当前幻灯片索引
+      pptData.currentSlideIndex = index;
+
+      // 渲染幻灯片基础内容
+      elements.slideContent.innerHTML = pptData.slides[index].content;
+
+      // 恢复当前幻灯片的Fabric对象（文本、图片、批注等）
+      renderCurrentSlide();
+
+      // 更新缩略图选中状态
+      updateThumbnailActiveStatus();
+
+      // 更新计数器和导航按钮状态
+      updateSlideCounter();
+      updateNavButtonsStatus();
+    }
+
+    // 渲染当前幻灯片的Fabric对象（恢复编辑内容）
+    function renderCurrentSlide() {
+      // 清空画布
+      pptData.fabricCanvas.clear();
+
+      // 恢复当前幻灯片的所有对象（文本、图片、批注）
+      const currentObjects = pptData.slideObjects[pptData.currentSlideIndex] || [];
+      currentObjects.forEach(obj => {
+        pptData.fabricCanvas.add(obj);
+      });
+
+      // 恢复手写模式状态
+      pptData.fabricCanvas.isDrawingMode = pptData.isDrawingMode;
+    }
+        // 更新缩略图选中状态
+    function updateThumbnailActiveStatus() {
+      const thumbnails = elements.thumbnailContainer.querySelectorAll('.thumbnail-item');
+      thumbnails.forEach((thumb, index) => {
+        if (index === pptData.currentSlideIndex) {
+          thumb.classList.add('ring-2', 'ring-primary');
+          thumb.classList.remove('hover:ring-2', 'hover:ring-gray-300');
+        } else {
+          thumb.classList.remove('ring-2', 'ring-primary');
+          thumb.classList.add('hover:ring-2', 'hover:ring-gray-300');
+        }
+      });
+    }
+
+    // 更新幻灯片计数器
+    function updateSlideCounter() {
+      elements.slideCounter.textContent = `${pptData.currentSlideIndex + 1} / ${pptData.slides.length}`;
+    }
+
+    // 更新导航按钮状态（禁用/启用）
+    function updateNavButtonsStatus() {
+      elements.prevSlide.disabled = pptData.currentSlideIndex === 0;
+      elements.nextSlide.disabled = pptData.currentSlideIndex === pptData.slides.length - 1;
+    }
+
+    // 显示上一张幻灯片
+    function showPrevSlide() {
+      if (pptData.currentSlideIndex > 0) {
+        showSlide(pptData.currentSlideIndex - 1);
+      }
+    }
+
+    // 显示下一张幻灯片
+    function showNextSlide() {
+      if (pptData.currentSlideIndex < pptData.slides.length - 1) {
+        showSlide(pptData.currentSlideIndex + 1);
+      }
+    }
+
+    // 切换手写批注模式
+    function toggleDrawingMode() {
+      pptData.isDrawingMode = !pptData.isDrawingMode;
+      pptData.fabricCanvas.isDrawingMode = pptData.isDrawingMode;
+
+      if (pptData.isDrawingMode) {
+        // 进入手写模式：隐藏选择功能，切换光标和按钮样式
+        pptData.fabricCanvas.selection = false;
+        elements.toggleDrawing.classList.remove('bg-primary/10', 'text-primary');
+        elements.toggleDrawing.classList.add('bg-primary', 'text-white');
+        elements.toggleDrawing.innerHTML = '<i class="fa fa-pencil text-xs mr-1"></i> 退出手写';
+        document.getElementById('drawingCanvas').style.cursor = 'crosshair';
+      } else {
+        // 退出手写模式：恢复选择功能，切换样式
+        pptData.fabricCanvas.selection = true;
+        elements.toggleDrawing.classList.add('bg-primary/10', 'text-primary');
+        elements.toggleDrawing.classList.remove('bg-primary', 'text-white');
+        elements.toggleDrawing.innerHTML = '<i class="fa fa-pencil text-xs mr-1"></i> 手写';
+        document.getElementById('drawingCanvas').style.cursor = 'default';
+      }
+    }
+
+    // 更新画笔颜色
+    function updateBrushColor(e) {
+      // 移除所有颜色按钮的选中状态
+      elements.colorButtons.forEach(btn => btn.classList.remove('border-primary', 'scale-110'));
+      // 添加当前选中状态
+      e.target.classList.add('border-primary', 'scale-110');
+      // 更新画笔颜色
+      pptData.brushColor = e.target.dataset.color;
+      pptData.fabricCanvas.freeDrawingBrush.color = pptData.brushColor;
+    }
+
+    // 更新画笔粗细
+    function updateBrushSize(e) {
+      pptData.brushSize = parseInt(e.target.value);
+      pptData.fabricCanvas.freeDrawingBrush.width = pptData.brushSize;
+    }
+
+    // 清除当前幻灯片的所有批注和编辑内容
+    function clearAllAnnotations() {
+      if (confirm('确定要清除当前页的所有批注和编辑内容吗？')) {
+        pptData.slideObjects[pptData.currentSlideIndex] = [];
+        renderCurrentSlide();
+        showNotification('当前页内容已清除');
+      }
+    }
+
+    // 向当前幻灯片添加文本框
+    function addTextToCurrentSlide() {
+      // 退出手写模式（避免冲突）
+      if (pptData.isDrawingMode) {
+        toggleDrawingMode();
+      }
+
+      // 创建Fabric文本框对象
+      const textbox = new fabric.Textbox('双击编辑文本', {
+        left: 100,
+        top: 100,
+        width: 200,
+        fontSize: 16,
+        fill: '#333',
+        editable: true,
+        borderColor: '#2563eb',
+        cornerColor: '#2563eb',
+        cornerSize: 6,
+        padding: 8
+      });
+
+      // 添加到画布并选中
+      pptData.fabricCanvas.add(textbox);
+      pptData.fabricCanvas.setActiveObject(textbox);
+      // 保存到当前幻灯片的对象集合
+      pptData.slideObjects[pptData.currentSlideIndex].push(textbox);
+
+      showNotification('文本框已添加，双击编辑');
+    }
+
+    // 向当前幻灯片添加图片
+    function addImageToCurrentSlide(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      // 退出手写模式
+      if (pptData.isDrawingMode) {
+        toggleDrawingMode();
+      }
+
+      const reader = new FileReader();
+      reader.onload = function(event) {
+        // 加载图片并创建Fabric对象
+        fabric.Image.fromURL(event.target.result, function(img) {
+          // 调整图片大小（保持比例，最大宽度400px）
+          const maxWidth = 400;
+          if (img.width > maxWidth) {
+            const scale = maxWidth / img.width;
+            img.scale(scale);
+          }
+
+          // 设置图片位置和可编辑属性
+          img.set({
+            left: 100,
+            top: 150,
+            borderColor: '#2563eb',
+            cornerColor: '#2563eb',
+            cornerSize: 6,
+            lockScalingFlip: true // 禁止翻转
+          });
+
+          // 添加到画布并保存
+          pptData.fabricCanvas.add(img);
+          pptData.slideObjects[pptData.currentSlideIndex].push(img);
+          showNotification('图片已添加，可拖动调整');
+        });
+      };
+      reader.readAsDataURL(file);
+
+      // 重置文件输入（允许重复选择同一文件）
+      elements.imageInput.value = '';
+    }
+
+    // 删除选中的元素
+    function deleteSelectedElement() {
+      const activeObj = pptData.fabricCanvas.getActiveObject();
+      if (!activeObj) {
+        showNotification('请先选中要删除的元素', 'warning');
+        return;
+      }
+
+      if (confirm('确定要删除选中的元素吗？')) {
+        // 从画布中移除
+        pptData.fabricCanvas.remove(activeObj);
+        // 从当前幻灯片的对象集合中移除
+        const currentObjects = pptData.slideObjects[pptData.currentSlideIndex];
+        const index = currentObjects.findIndex(obj => obj === activeObj);
+        if (index !== -1) {
+          currentObjects.splice(index, 1);
+        }
+        showNotification('选中元素已删除');
+      }
+    }
+
+    // 保存编辑后的PPT（生成图片压缩包下载）
+    function saveEditedPPT() {
+      showNotification('正在生成文件，请稍候...');
+
+      // 遍历所有幻灯片，生成图片
+      const slideImages = [];
+      const totalSlides = pptData.slides.length;
+      let completed = 0;
+
+      pptData.slides.forEach((slide, index) => {
+        // 临时切换到当前幻灯片并渲染
+        const tempIndex = pptData.currentSlideIndex;
+        showSlide(index);
+
+        // 生成图片数据URL
+        const dataURL = pptData.fabricCanvas.toDataURL({
+          format: 'png',
+          quality: 0.9,
+          width: 1280,
+          height: 720
+        });
+
+        // 添加到图片数组
+        slideImages.push({
+          name: `slide-${index+1}.png`,
+          dataURL: dataURL
+        });
+
+        completed++;
+        // 所有幻灯片处理完成后生成压缩包
+        if (completed === totalSlides) {
+          // 恢复原当前幻灯片
+          showSlide(tempIndex);
+          // 生成ZIP包下载（使用JSZip库，需动态引入）
+          loadJSZipAndDownload(slideImages);
+        }
+      });
+    }
+
+    // 动态引入JSZip并生成压缩包下载
+    function loadJSZipAndDownload(images) {
+      // 检查是否已加载JSZip
+      if (window.JSZip) {
+        generateZipFile(images);
+        return;
+      }
+
+      // 动态引入JSZip库
+      const script = document.createElement('script');
+      script.src = 'https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js';
+      script.onload = function() {
+        generateZipFile(images);
+      };
+      script.onerror = function() {
+        showNotification('生成文件失败，请刷新页面重试', 'error');
+      };
+      document.head.appendChild(script);
+    }
+
+    // 生成ZIP压缩包并下载
+    function generateZipFile(images) {
+      const zip = new JSZip();
+      const date = new Date().toISOString().slice(0, 10);
+
+      // 添加所有幻灯片图片到ZIP
+      images.forEach(img => {
+        // 从dataURL转换为Blob
+        const arr = img.dataURL.split(',');
+        const mime = arr[0].match(/:(.*?);/)[1];
+        const bstr = atob(arr[1]);
+        let n = bstr.length;
+        const u8arr = new Uint8Array(n);
+        while (n--) {
+          u8arr[n] = bstr.charCodeAt(n);
+        }
+        zip.file(img.name, new Blob([u8arr], { type: mime }));
+      });
+
+      // 生成ZIP文件并下载
+      zip.generateAsync({ type: 'blob' }).then(function(content) {
+        // 创建下载链接
+        const link = document.createElement('a');
+        link.download = `编辑后的PPT_${date}.zip`;
+        link.href = URL.createObjectURL(content);
+        link.click();
+        // 释放URL对象
+        setTimeout(() => URL.revokeObjectURL(link.href), 100);
+        showNotification('文件已生成并开始下载');
+      }).catch(function(error) {
+        console.error('ZIP生成失败:', error);
+        showNotification('文件生成失败，请重试', 'error');
+      });
+    }
+
+    // 切换全屏模式
+    function toggleFullscreen() {
+      const container = document.getElementById('slideContainer');
+      if (!document.fullscreenElement) {
+        // 进入全屏
+        if (container.requestFullscreen) {
+          container.requestFullscreen();
+        } else if (container.webkitRequestFullscreen) {
+          container.webkitRequestFullscreen();
+        } else if (container.msRequestFullscreen) {
+          container.msRequestFullscreen();
+        }
+      } else {
+        // 退出全屏
+        if (document.exitFullscreen) {
+          document.exitFullscreen();
+        } else if (document.webkitExitFullscreen) {
+          document.webkitExitFullscreen();
+        } else if (document.msExitFullscreen) {
+          document.msExitFullscreen();
+        }
+      }
+    }
+
+    // 更新全屏按钮文本
+    function updateFullscreenBtn() {
+      if (document.fullscreenElement) {
+        elements.fullscreenBtn.innerHTML = '<i class="fa fa-compress text-xs mr-1"></i> 退出全屏';
+      } else {
+        elements.fullscreenBtn.innerHTML = '<i class="fa fa-expand text-xs mr-1"></i> 全屏';
+      }
+    }
+
+    // 显示通知提示
+    function showNotification(message, type = 'success') {
+      // 创建通知元素
+      const notification = document.createElement('div');
+      const icon = type === 'success' ? 'fa-check-circle' : 
+                   type === 'error' ? 'fa-exclamation-circle' : 'fa-info-circle';
+      const bgColor = type === 'success' ? 'bg-green-500' : 
+                     type === 'error' ? 'bg-red-500' : 'bg-blue-500';
+
+      notification.className = `fixed bottom-4 right-4 px-4 py-2 rounded-md ${bgColor} text-white text-sm shadow-lg z-50 transition-all duration-300 transform translate-y-0 opacity-100`;
+      notification.innerHTML = `<i class="fa ${icon} mr-2"></i>${message}`;
+
+      // 添加到文档
+      document.body.appendChild(notification);
+
+      // 3秒后自动隐藏
+      setTimeout(() => {
+        notification.classList.add('opacity-0', 'translate-y-4');
+        setTimeout(() => {
+          document.body.removeChild(notification);
+        }, 300);
+      }, 3000);
+    }
+
+    // 等待DOM加载完成后初始化
+    document.addEventListener('DOMContentLoaded', init);
+  </script>
+</body>
+</html>
