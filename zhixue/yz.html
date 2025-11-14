@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>成绩报告|智学网</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Microsoft YaHei", sans-serif;
+        }
+        body {
+            background-color: #f5f7fa;
+            min-height: 100vh;
+            padding-bottom: 30px;
+        }
+        /* 头部样式 */
+        .header {
+            padding: 15px 20px;
+            background-color: #fff;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            border-bottom: 1px solid #f0f2f5;
+        }
+        .logo {
+            height: 36px;
+        }
+        .student-info {
+            color: #409eff;
+            font-size: 13px;
+            background-color: #f0f7ff;
+            padding: 5px 12px;
+            border-radius: 18px;
+            border: 1px solid #e1f0ff;
+            font-weight: 500;
+        }
+        /* 主体内容 */
+        .container {
+            width: 100%;
+            padding: 20px 15px;
+            margin: 0 auto;
+        }
+        /* 总分区域 */
+        .total-score {
+            background-color: #fff;
+            padding: 20px 22px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+            margin-bottom: 22px;
+            border-left: 4px solid #409eff;
+        }
+        .total-title {
+            font-size: 17px;
+            color: #333;
+            font-weight: 600;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+        .total-title::after {
+            content: "";
+            flex: 1;
+            height: 1px;
+            background-color: #f0f2f5;
+            margin-left: 12px;
+        }
+        .total-content {
+            display: flex;
+            gap: 30px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .total-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .total-label {
+            font-size: 14px;
+            color: #666;
+            font-weight: 500;
+        }
+        .total-value {
+            font-size: 24px;
+            color: #409eff;
+            font-weight: 700;
+            min-width: 70px;
+            display: inline-block;
+            letter-spacing: 1px;
+        }
+        /* 科目卡片容器 */
+        .subjects-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        /* 科目横向卡片 */
+        .subject-card {
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            padding: 20px 22px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 1px solid #f5f7fa;
+        }
+        .subject-card:hover {
+            border-color: #e1f0ff;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+        .subject-card:active {
+            background-color: #f8f9fa;
+        }
+        .subject-left {
+            display: flex;
+            flex-direction: column;
+        }
+        .subject-name {
+            font-size: 18px;
+            color: #333;
+            font-weight: 600; /* 科目名称加粗 */
+        }
+        .subject-grade {
+            font-size: 13px;
+            color: #888;
+            margin-top: 4px;
+        }
+        .subject-grade span {
+            color: #ff7d00;
+            font-weight: 600;
+            font-size: 14px;
+            margin-left: 4px;
+        }
+        .subject-score {
+            font-size: 26px;
+            color: #333;
+            font-weight: 700;
+            min-width: 50px;
+            text-align: right;
+        }
+        /* 适配小屏手机 */
+        @media (max-width: 320px) {
+            .total-content {
+                gap: 20px;
+            }
+            .total-value {
+                font-size: 22px;
+                min-width: 60px;
+            }
+            .subject-score {
+                font-size: 24px;
+            }
+            .subject-name {
+                font-size: 17px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 头部：Logo + 考生信息 -->
+    <div class="header">
+        <img src="https://static.zhixue.com/zhixue.png?2025-09-09T01:17:44.276Z" alt="智学网Logo" class="logo">
+        <div class="student-info">考生ID：17137194_18ks2xs123</div>
+    </div>
+
+    <!-- 主体内容 -->
+    <div class="container">
+        <!-- 总分及总评级区域 -->
+        <div class="total-score">
+            <div class="total-title">总成绩概况</div>
+            <div class="total-content">
+                <div class="total-item">
+                    <span class="total-label">总分：577.5/700</span>
+                    <span class="total-value">577.5/</span> <!-- 填写总分 -->
+                </div>
+                <div class="total-item">
+                    <span class="total-label">总评级：B2</span>
+                    <span class="total-value">B2</span> <!-- 填写总评级 -->
+                </div>
+            </div>
+        </div>
+
+        <!-- 单科成绩横向卡片 -->
+        <div class="subjects-container">
+            <!-- 语文 -->
+            <div class="subject-card" onclick="showNoDetailAlert()">
+                <div class="subject-left">
+                    <div class="subject-name">语文</div>
+                    <div class="subject-grade">等级：<span>B3</span></div> <!-- 填写语文等级 -->
+                </div>
+                <div class="subject-score">81/100</div> <!-- 填写语文成绩 -->
+            </div>
+
+            <!-- 数学 -->
+            <div class="subject-card" onclick="showNoDetailAlert()">
+                <div class="subject-left">
+                    <div class="subject-name">数学</div>
+                    <div class="subject-grade">等级：<span>B4</span></div> <!-- 填写数学等级 -->
+                </div>
+                <div class="subject-score">86/100</div> <!-- 填写数学成绩 -->
+            </div>A
+
+            <!-- 英语 -->
+            <div class="subject-card" onclick="showNoDetailAlert()">
+                <div class="subject-left">
+                    <div class="subject-name">英语</div>
+                    <div class="subject-grade">等级：<span>A3</span></div> <!-- 填写英语等级 -->
+                </div>
+                <div class="subject-score">87/100</div> <!-- 填写英语成绩 -->
+            </div>
+
+            <!-- 道德与法治 -->
+            <div class="subject-card" onclick="showNoDetailAlert()">
+                <div class="subject-left">
+                    <div class="subject-name">道德与法治</div>
+                    <div class="subject-grade">等级：<span>B1</span></div> <!-- 填写道德与法治等级 -->
+                </div>
+                <div class="subject-score">84.5/100</div> <!-- 填写道德与法治成绩 -->
+            </div>
+
+            <!-- 历史 -->
+            <div class="subject-card" onclick="showNoDetailAlert()">
+                <div class="subject-left">
+                    <div class="subject-name">历史</div>
+                    <div class="subject-grade">等级：<span>C1</span></div> <!-- 填写历史等级 -->
+                </div>
+                <div class="subject-score">83/100</div> <!-- 填写历史成绩 -->
+            </div>
+
+            <!-- 物理 -->
+            <div class="subject-card" onclick="showNoDetailAlert()">
+                <div class="subject-left">
+                    <div class="subject-name">物理</div>
+                    <div class="subject-grade">等级：<span>A2</span></div> <!-- 填写物理等级 -->
+                </div>
+                <div class="subject-score">76/100</div> <!-- 填写物理成绩 -->
+            </div>
+
+            <!-- 化学 -->
+            <div class="subject-card" onclick="showNoDetailAlert()">
+                <div class="subject-left">
+                    <div class="subject-name">化学</div>
+                    <div class="subject-grade">等级：<span>B2</span></div> <!-- 填写化学等级 -->
+                </div>
+                <div class="subject-score">80/100</div> <!-- 填写化学成绩 -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 点击科目卡片弹出提示
+        function showNoDetailAlert() {
+            alert('学校未上传详细信息 请联系你所在学校');
+        }
+    </script>
+</body>
+</html>
