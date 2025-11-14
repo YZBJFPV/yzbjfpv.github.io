@@ -4,33 +4,39 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>成绩报告|智学网</title>
+    <script src="https://cdn.bootcdn.net/ajax/libs/echarts/5.4.3/echarts.min.js"></script>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: "Microsoft YaHei", sans-serif;
+            font-family: "Microsoft YaHei", sans-serif, "PingFang SC";
         }
         body {
             background-color: #f5f7fa;
             min-height: 100vh;
             padding-bottom: 30px;
+            background-image: linear-gradient(180deg, #f5f7fa 0%, #eaf1f8 100%);
         }
         /* 头部样式 */
         .header {
             padding: 15px 20px;
             background-color: #fff;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            box-shadow: 0 2px 12px rgba(0,0,0,0.06);
             display: flex;
             justify-content: space-between;
             align-items: center;
             position: sticky;
             top: 0;
             z-index: 10;
-            border-bottom: 1px solid #f0f2f5;
+            border-bottom: 1px solid #e8f4ff;
         }
         .logo {
             height: 36px;
+            transition: transform 0.2s ease;
+        }
+        .logo:hover {
+            transform: scale(1.05);
         }
         .student-info {
             color: #409eff;
@@ -40,121 +46,187 @@
             border-radius: 18px;
             border: 1px solid #e1f0ff;
             font-weight: 500;
+            box-shadow: 0 1px 3px rgba(64,158,255,0.1);
         }
         /* 主体内容 */
         .container {
             width: 100%;
-            padding: 20px 15px;
+            padding: 25px 15px;
             margin: 0 auto;
+            max-width: 600px; /* 限制最大宽度，优化大屏体验 */
         }
         /* 总分区域 */
         .total-score {
             background-color: #fff;
-            padding: 20px 22px;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.06);
-            margin-bottom: 22px;
+            padding: 22px 24px;
+            border-radius: 12px;
+            box-shadow: 0 3px 15px rgba(0,0,0,0.07);
+            margin-bottom: 25px;
             border-left: 4px solid #409eff;
+            position: relative;
+            overflow: hidden;
+        }
+        .total-score::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 120px;
+            height: 120px;
+            background-color: #f0f7ff;
+            border-radius: 50%;
+            transform: translate(50%, -50%);
+            opacity: 0.5;
         }
         .total-title {
-            font-size: 17px;
+            font-size: 18px;
             color: #333;
             font-weight: 600;
-            margin-bottom: 15px;
+            margin-bottom: 18px;
             display: flex;
             align-items: center;
+            position: relative;
+            z-index: 1;
         }
         .total-title::after {
             content: "";
             flex: 1;
             height: 1px;
             background-color: #f0f2f5;
-            margin-left: 12px;
+            margin-left: 15px;
         }
         .total-content {
             display: flex;
-            gap: 30px;
+            gap: 35px;
             align-items: center;
             flex-wrap: wrap;
+            position: relative;
+            z-index: 1;
         }
         .total-item {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
         }
         .total-label {
-            font-size: 14px;
+            font-size: 15px;
             color: #666;
             font-weight: 500;
         }
         .total-value {
-            font-size: 24px;
+            font-size: 28px;
             color: #409eff;
             font-weight: 700;
-            min-width: 70px;
+            min-width: 80px;
             display: inline-block;
             letter-spacing: 1px;
+            text-shadow: 0 1px 2px rgba(64,158,255,0.15);
         }
         /* 科目卡片容器 */
         .subjects-container {
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 12px;
         }
         /* 科目横向卡片 */
         .subject-card {
             background-color: #fff;
-            border-radius: 10px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-            padding: 20px 22px;
+            border-radius: 12px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+            padding: 20px 24px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             cursor: pointer;
-            transition: all 0.2s ease;
+            transition: all 0.3s ease;
             border: 1px solid #f5f7fa;
+            position: relative;
+            overflow: hidden;
+        }
+        .subject-card::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 4px;
+            background-color: #409eff;
+            transform: scaleY(0);
+            transition: transform 0.3s ease;
         }
         .subject-card:hover {
             border-color: #e1f0ff;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            box-shadow: 0 6px 16px rgba(0,0,0,0.09);
+            transform: translateY(-2px);
+        }
+        .subject-card:hover::before {
+            transform: scaleY(1);
         }
         .subject-card:active {
             background-color: #f8f9fa;
+            transform: translateY(0);
         }
         .subject-left {
             display: flex;
             flex-direction: column;
         }
         .subject-name {
-            font-size: 18px;
+            font-size: 19px;
             color: #333;
             font-weight: 600; /* 科目名称加粗 */
+            display: flex;
+            align-items: center;
+        }
+        .subject-name::after {
+            content: "";
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: #409eff;
+            margin-left: 8px;
         }
         .subject-grade {
-            font-size: 13px;
+            font-size: 14px;
             color: #888;
-            margin-top: 4px;
+            margin-top: 5px;
         }
         .subject-grade span {
             color: #ff7d00;
             font-weight: 600;
-            font-size: 14px;
+            font-size: 15px;
             margin-left: 4px;
+            text-shadow: 0 1px 1px rgba(255,125,0,0.1);
+        }
+        .subject-right {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .score-chart {
+            width: 60px;
+            height: 60px;
         }
         .subject-score {
-            font-size: 26px;
+            font-size: 28px;
             color: #333;
             font-weight: 700;
-            min-width: 50px;
+            min-width: 70px;
             text-align: right;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.05);
         }
+        /* 等级颜色区分 */
+        .grade-A { color: #42c979 !important; }
+        .grade-B { color: #409eff !important; }
+        .grade-C { color: #ff7d00 !important; }
+        .grade-D { color: #f56c6c !important; }
         /* 适配小屏手机 */
         @media (max-width: 320px) {
             .total-content {
                 gap: 20px;
             }
             .total-value {
-                font-size: 22px;
+                font-size: 24px;
                 min-width: 60px;
             }
             .subject-score {
@@ -163,6 +235,53 @@
             .subject-name {
                 font-size: 17px;
             }
+            .score-chart {
+                width: 50px;
+                height: 50px;
+            }
+        }
+        /* 弹窗美化 */
+        .custom-alert {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #fff;
+            padding: 25px 30px;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+            z-index: 999;
+            display: none;
+            text-align: center;
+            min-width: 280px;
+        }
+        .alert-content {
+            font-size: 16px;
+            color: #333;
+            margin-bottom: 20px;
+        }
+        .alert-btn {
+            padding: 8px 25px;
+            background-color: #409eff;
+            color: #fff;
+            border: none;
+            border-radius: 20px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .alert-btn:hover {
+            background-color: #3086d6;
+        }
+        .alert-mask {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.3);
+            z-index: 998;
+            display: none;
         }
     </style>
 </head>
@@ -180,12 +299,13 @@
             <div class="total-title">总成绩概况</div>
             <div class="total-content">
                 <div class="total-item">
-                    <span class="total-label">总分：577.5/700</span>
-                    <span class="total-value">577.5/</span> <!-- 填写总分 -->
+                    <span class="total-label">总分：</span>
+                    <span class="total-value">577.5</span>
+                    <span class="total-label" style="font-size: 14px; color: #999;">/700</span>
                 </div>
                 <div class="total-item">
-                    <span class="total-label">总评级：B2</span>
-                    <span class="total-value">B2</span> <!-- 填写总评级 -->
+                    <span class="total-label">总评级：</span>
+                    <span class="total-value">B2</span>
                 </div>
             </div>
         </div>
@@ -196,72 +316,170 @@
             <div class="subject-card" onclick="showNoDetailAlert()">
                 <div class="subject-left">
                     <div class="subject-name">语文</div>
-                    <div class="subject-grade">等级：<span>B3</span></div> <!-- 填写语文等级 -->
+                    <div class="subject-grade">等级：<span class="grade-B">B3</span></div>
                 </div>
-                <div class="subject-score">81/100</div> <!-- 填写语文成绩 -->
+                <div class="subject-right">
+                    <div class="score-chart" id="chart-chinese"></div>
+                    <div class="subject-score">81</div>
+                </div>
             </div>
 
             <!-- 数学 -->
             <div class="subject-card" onclick="showNoDetailAlert()">
                 <div class="subject-left">
                     <div class="subject-name">数学</div>
-                    <div class="subject-grade">等级：<span>B4</span></div> <!-- 填写数学等级 -->
+                    <div class="subject-grade">等级：<span class="grade-B">B4</span></div>
                 </div>
-                <div class="subject-score">86/100</div> <!-- 填写数学成绩 -->
-            </div>A
+                <div class="subject-right">
+                    <div class="score-chart" id="chart-math"></div>
+                    <div class="subject-score">86</div>
+                </div>
+            </div>
 
             <!-- 英语 -->
             <div class="subject-card" onclick="showNoDetailAlert()">
                 <div class="subject-left">
                     <div class="subject-name">英语</div>
-                    <div class="subject-grade">等级：<span>A3</span></div> <!-- 填写英语等级 -->
+                    <div class="subject-grade">等级：<span class="grade-A">A3</span></div>
                 </div>
-                <div class="subject-score">87/100</div> <!-- 填写英语成绩 -->
+                <div class="subject-right">
+                    <div class="score-chart" id="chart-english"></div>
+                    <div class="subject-score">87</div>
+                </div>
             </div>
 
             <!-- 道德与法治 -->
             <div class="subject-card" onclick="showNoDetailAlert()">
                 <div class="subject-left">
                     <div class="subject-name">道德与法治</div>
-                    <div class="subject-grade">等级：<span>B1</span></div> <!-- 填写道德与法治等级 -->
+                    <div class="subject-grade">等级：<span class="grade-B">B1</span></div>
                 </div>
-                <div class="subject-score">84.5/100</div> <!-- 填写道德与法治成绩 -->
+                <div class="subject-right">
+                    <div class="score-chart" id="chart-politics"></div>
+                    <div class="subject-score">84.5</div>
+                </div>
             </div>
 
             <!-- 历史 -->
             <div class="subject-card" onclick="showNoDetailAlert()">
                 <div class="subject-left">
                     <div class="subject-name">历史</div>
-                    <div class="subject-grade">等级：<span>C1</span></div> <!-- 填写历史等级 -->
+                    <div class="subject-grade">等级：<span class="grade-C">C1</span></div>
                 </div>
-                <div class="subject-score">83/100</div> <!-- 填写历史成绩 -->
+                <div class="subject-right">
+                    <div class="score-chart" id="chart-history"></div>
+                    <div class="subject-score">83</div>
+                </div>
             </div>
 
             <!-- 物理 -->
             <div class="subject-card" onclick="showNoDetailAlert()">
                 <div class="subject-left">
                     <div class="subject-name">物理</div>
-                    <div class="subject-grade">等级：<span>A2</span></div> <!-- 填写物理等级 -->
+                    <div class="subject-grade">等级：<span class="grade-A">A2</span></div>
                 </div>
-                <div class="subject-score">76/100</div> <!-- 填写物理成绩 -->
+                <div class="subject-right">
+                    <div class="score-chart" id="chart-physics"></div>
+                    <div class="subject-score">76</div>
+                </div>
             </div>
 
             <!-- 化学 -->
             <div class="subject-card" onclick="showNoDetailAlert()">
                 <div class="subject-left">
                     <div class="subject-name">化学</div>
-                    <div class="subject-grade">等级：<span>B2</span></div> <!-- 填写化学等级 -->
+                    <div class="subject-grade">等级：<span class="grade-B">B2</span></div>
                 </div>
-                <div class="subject-score">80/100</div> <!-- 填写化学成绩 -->
+                <div class="subject-right">
+                    <div class="score-chart" id="chart-chemistry"></div>
+                    <div class="subject-score">80</div>
+                </div>
             </div>
         </div>
     </div>
 
+    <!-- 自定义弹窗 -->
+    <div class="alert-mask" id="alertMask"></div>
+    <div class="custom-alert" id="customAlert">
+        <div class="alert-content">学校未上传详细信息<br>请联系你所在学校</div>
+        <button class="alert-btn" onclick="closeAlert()">确定</button>
+    </div>
+
     <script>
-        // 点击科目卡片弹出提示
-        function showNoDetailAlert() {
-            alert('学校未上传详细信息 请联系你所在学校');
+        // 初始化环形图
+        function initScoreChart(domId, score) {
+            const chartDom = document.getElementById(domId);
+            const myChart = echarts.init(chartDom);
+            const option = {
+                series: [
+                    {
+                        type: 'pie',
+                        radius: ['70%', '85%'],
+                        center: ['50%', '50%'],
+                        label: { show: false },
+                        labelLine: { show: false },
+                        data: [
+                            { 
+                                value: score, 
+                                itemStyle: { 
+                                    color: getGradeColor(score),
+                                    borderRadius: 5
+                                } 
+                            },
+                            { 
+                                value: 100 - score, 
+                                itemStyle: { 
+                                    color: '#f5f7fa',
+                                    borderRadius: 5
+                                } 
+                            }
+                        ],
+                        animationDuration: 1500,
+                        animationEasingUpdate: 'quinticInOut'
+                    }
+                ]
+            };
+            myChart.setOption(option);
+            // 窗口 resize 适配
+            window.addEventListener('resize', function() {
+                myChart.resize();
+            });
+            return myChart;
         }
+
+        // 根据分数获取等级颜色
+        function getGradeColor(score) {
+            if (score >= 85) return '#42c979'; // A级-绿色
+            if (score >= 75) return '#409eff'; // B级-蓝色
+            if (score >= 60) return '#ff7d00'; // C级-橙色
+            return '#f56c6c'; // D级-红色
+        }
+
+        // 初始化所有图表
+        window.onload = function() {
+            initScoreChart('chart-chinese', 81);
+            initScoreChart('chart-math', 86);
+            initScoreChart('chart-english', 87);
+            initScoreChart('chart-politics', 84.5);
+            initScoreChart('chart-history', 83);
+            initScoreChart('chart-physics', 76);
+            initScoreChart('chart-chemistry', 80);
+        };
+
+        // 显示自定义弹窗
+        function showNoDetailAlert() {
+            document.getElementById('alertMask').style.display = 'block';
+            document.getElementById('customAlert').style.display = 'block';
+        }
+
+        // 关闭弹窗
+        function closeAlert() {
+            document.getElementById('alertMask').style.display = 'none';
+            document.getElementById('customAlert').style.display = 'none';
+        }
+
+        // 点击遮罩层关闭弹窗
+        document.getElementById('alertMask').addEventListener('click', closeAlert);
     </script>
 </body>
 </html>
