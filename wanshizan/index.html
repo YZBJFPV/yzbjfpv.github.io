@@ -1,0 +1,933 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>首页|万食赞®授权备用网站</title>
+    <meta name="description" content="万食赞® - 北京康易安科技有限公司旗下品牌，致力于提供高品质产品与服务">
+    <!-- 引入Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- 引入Font Awesome -->
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <!-- 引入Animate.css第三方动画库 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    
+    <!-- 配置Tailwind自定义主题 -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#1a365d',
+                        secondary: '#4a5568',
+                        accent: '#3182ce',
+                        light: '#f7fafc',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .content-auto {
+                content-visibility: auto;
+            }
+            .text-balance {
+                text-wrap: balance;
+            }
+            .product-card {
+                @apply bg-white rounded-xl overflow-hidden shadow-md transition-all duration-300 hover:shadow-xl hover:-translate-y-1 hover:shadow-accent/10;
+            }
+            .nav-link {
+                @apply relative text-secondary font-medium hover:text-accent transition-colors after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-accent after:transition-all after:duration-300 hover:after:w-full;
+            }
+            .nav-link.active {
+                @apply text-primary after:w-full;
+            }
+            .legal-modal {
+                @apply fixed inset-0 bg-black/50 z-50 flex items-center justify-center opacity-0 pointer-events-none transition-opacity duration-300;
+            }
+            .legal-modal.active {
+                @apply opacity-100 pointer-events-auto;
+            }
+            .legal-content {
+                @apply bg-white rounded-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto p-6 md:p-8 transform scale-95 transition-transform duration-300;
+            }
+            .legal-modal.active .legal-content {
+                @apply scale-100;
+            }
+            .legal-section {
+                @apply mb-8;
+            }
+            .legal-heading {
+                @apply text-xl font-bold text-primary mb-4;
+            }
+            .legal-subheading {
+                @apply text-lg font-semibold text-primary mb-3 mt-6;
+            }
+            .legal-text {
+                @apply mb-4 text-secondary leading-relaxed;
+            }
+            /* 新增的强制同意弹窗样式 */
+            .consent-modal {
+                @apply fixed inset-0 bg-black/70 z-50 flex items-center justify-center;
+            }
+            .consent-content {
+                @apply bg-white rounded-xl max-w-3xl w-full max-h-[90vh] overflow-y-auto p-6 md:p-8 mx-4;
+            }
+            .cookie-banner {
+                @apply fixed bottom-0 left-0 right-0 bg-primary text-white p-4 z-40 transform translate-y-full transition-transform duration-300;
+            }
+            .cookie-banner.active {
+                @apply translate-y-0;
+            }
+        }
+    </style>
+</head>
+
+<body class="bg-light text-secondary font-sans overflow-x-hidden">
+    <!-- 强制同意声明弹窗 -->
+    <div id="consentModal" class="consent-modal">
+        <div class="consent-content animate__animated animate__fadeIn">
+            <div class="mb-6">
+                <h2 class="text-2xl font-bold text-primary mb-4">重要声明与条款</h2>
+                <p class="text-secondary mb-6">为了保障您的权益，请在使用本网站前阅读以下条款。您需要同意这些条款才能继续使用我们的服务。</p>
+                
+                <!-- 声明列表 -->
+                <div class="space-y-4 mb-8">
+                    <div class="border border-gray-200 rounded-lg p-4 hover:border-accent transition-colors cursor-pointer consent-item" data-target="privacy-policy">
+                        <div class="flex justify-between items-center">
+                            <h3 class="font-semibold text-primary">隐私政策</h3>
+                            <i class="fa fa-chevron-down text-secondary transition-transform duration-300"></i>
+                        </div>
+                        <p class="text-sm text-secondary/80 mt-2 line-clamp-2">我们如何收集、使用和保护您的个人信息，以及您享有的相关权利...</p>
+                    </div>
+                    
+                    <div class="border border-gray-200 rounded-lg p-4 hover:border-accent transition-colors cursor-pointer consent-item" data-target="terms-of-use">
+                        <div class="flex justify-between items-center">
+                            <h3 class="font-semibold text-primary">使用条款</h3>
+                            <i class="fa fa-chevron-down text-secondary transition-transform duration-300"></i>
+                        </div>
+                        <p class="text-sm text-secondary/80 mt-2 line-clamp-2">使用本网站服务的条件和限制，以及我们双方的权利与义务...</p>
+                    </div>
+                    
+                    <div class="border border-gray-200 rounded-lg p-4 hover:border-accent transition-colors cursor-pointer consent-item" data-target="legal-disclaimer">
+                        <div class="flex justify-between items-center">
+                            <h3 class="font-semibold text-primary">法律声明</h3>
+                            <i class="fa fa-chevron-down text-secondary transition-transform duration-300"></i>
+                        </div>
+                        <p class="text-sm text-secondary/80 mt-2 line-clamp-2">关于本网站内容的法律声明，包括免责条款和知识产权声明...</p>
+                    </div>
+                </div>
+                
+                <!-- 详细内容区域 -->
+                <div id="consentDetails" class="border-t pt-6 hidden">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 id="consentDetailsTitle" class="text-xl font-bold text-primary"></h3>
+                        <button id="closeDetails" class="text-secondary hover:text-primary transition-colors">
+                            <i class="fa fa-times"></i>
+                        </button>
+                    </div>
+                    <div id="consentDetailsContent" class="max-h-[300px] overflow-y-auto pr-2 text-secondary leading-relaxed"></div>
+                </div>
+            </div>
+            
+            <div class="border-t pt-6 mt-auto">
+                <p class="text-sm text-secondary/70 mb-4">点击"我已阅读并同意"，即表示您已阅读、理解并同意上述所有条款和声明。</p>
+                <button id="agreeBtn" class="w-full bg-primary hover:bg-primary/90 text-white font-medium px-6 py-3 rounded-md transition-all duration-300 shadow-md hover:shadow-lg">
+                    我已阅读并同意
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cookie提示横幅 -->
+    <div id="cookieBanner" class="cookie-banner">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div>
+                    <h3 class="font-semibold text-lg">Cookie政策</h3>
+                    <p class="text-sm text-white/80 mt-1">本网站使用Cookie来提升您的浏览体验。通过继续浏览本网站，您同意我们使用Cookie。</p>
+                </div>
+                <div class="flex gap-3">
+                    <a href="#" class="text-sm text-white/90 hover:text-white transition-colors legal-link" data-target="privacy-policy">了解更多</a>
+                    <button id="acceptCookies" class="bg-white text-primary hover:bg-white/90 font-medium px-4 py-2 rounded-md transition-all duration-300 text-sm">
+                        同意
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 导航栏 -->
+    <header class="fixed w-full bg-white/80 backdrop-blur-sm shadow-sm z-50 transition-all duration-500" id="header">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16 md:h-20">
+                <!-- Logo -->
+                <a href="/" class="flex items-center space-x-2 group">
+                    <img src="https://free.picui.cn/free/2025/10/12/68eb4886799e0.jpg" alt="万食赞®Logo" class="w-10 h-10 object-contain transition-transform duration-500 group-hover:rotate-3">
+                    <span class="text-primary text-2xl font-bold">万食赞®</span>
+                </a>
+                
+                <!-- 桌面端导航 -->
+                <nav class="hidden md:flex space-x-8">
+                    <a href="#" class="nav-link active">首页</a>
+                    <a href="#products" class="nav-link">产品中心</a>
+                    <a href="https://www.wanshizan.com.cn/contact.html" target="_blank" class="nav-link">联系我们</a>
+                </nav>
+                
+                <!-- 移动端菜单按钮 -->
+                <button id="menuBtn" class="md:hidden text-secondary hover:text-primary transition-colors focus:outline-none">
+                    <i class="fa fa-bars text-xl transition-transform duration-300" id="menuIcon"></i>
+                </button>
+            </div>
+        </div>
+        
+        <!-- 移动端菜单 -->
+        <div id="mobileMenu" class="md:hidden hidden bg-white border-t animate__animated">
+            <div class="container mx-auto px-4 py-3 space-y-3" id="mobileMenuContent">
+                <a href="#" class="block text-primary font-medium py-2">首页</a>
+                <a href="#products" class="block text-secondary hover:text-accent transition-colors py-2">产品中心</a>
+                <a href="https://www.wanshizan.com.cn/contact.html" target="_blank" class="block text-secondary hover:text-accent transition-colors py-2">联系我们</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- 英雄区域 -->
+    <section class="pt-32 pb-20 md:pt-40 md:pb-32 bg-gradient-to-br from-primary/5 to-primary/10">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="max-w-3xl mx-auto text-center">
+                <h1 class="text-[clamp(2rem,5vw,3.5rem)] font-bold text-primary leading-tight mb-6 animate__animated animate__fadeInUp" style="animation-delay: 0.1s">
+                    万食赞®
+                </h1>
+                <p class="text-[clamp(1.1rem,2vw,1.3rem)] text-secondary/80 mb-8 text-balance animate__animated animate__fadeInUp" style="animation-delay: 0.3s">
+                    北京康易安科技有限公司旗下品牌，致力于提供高品质产品与服务
+                </p>
+                <a href="#products" class="inline-block bg-primary hover:bg-primary/90 text-white font-medium px-8 py-3 rounded-md transition-all duration-300 shadow-md hover:shadow-lg hover:scale-105 animate__animated animate__fadeInUp" style="animation-delay: 0.5s">
+                    探索产品
+                    <i class="fa fa-arrow-right ml-2 transition-transform duration-300 group-hover:translate-x-1"></i>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- 产品展示 -->
+    <section id="products" class="py-20 bg-gray-50">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 class="text-[clamp(1.5rem,3vw,2.5rem)] font-bold text-primary mb-4 text-center opacity-0" data-animate="fadeInUp">产品中心</h2>
+            <p class="text-secondary/70 text-center max-w-2xl mx-auto mb-12 opacity-0" data-animate="fadeInUp" data-delay="100">精选优质产品，满足您的需求</p>
+            
+            <!-- 产品网格 -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
+                <!-- 产品1 -->
+                <a href="/6shanzha.html" class="block group opacity-0" data-animate="fadeInUp" data-delay="200">
+                    <div class="product-card h-full">
+                        <div class="aspect-[3/4] overflow-hidden">
+                            <img src="https://free.picui.cn/free/2025/10/12/68eb3954232ee.jpg" alt="六物山楂条展示图" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                        </div>
+                        <div class="p-5">
+                            <h3 class="text-lg font-semibold text-primary mb-2 transition-colors group-hover:text-accent">六物山楂条</h3>
+                            <p class="text-secondary/70 text-sm transition-colors group-hover:text-secondary/90">每日几根，酸甜解馋</p>
+                        </div>
+                    </div>
+                </a>
+                
+                <!-- 产品2 -->
+                <a href="/18girltea.html" class="block group opacity-0" data-animate="fadeInUp" data-delay="300">
+                    <div class="product-card h-full">
+                        <div class="aspect-[3/4] overflow-hidden">
+                            <img src="https://free.picui.cn/free/2025/10/12/68eb3aad8f46d.jpg" alt="十八味女神茶展示图" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                        </div>
+                        <div class="p-5">
+                            <h3 class="text-lg font-semibold text-primary mb-2 transition-colors group-hover:text-accent">十八味女神茶</h3>
+                            <p class="text-secondary/70 text-sm transition-colors group-hover:text-secondary/90">清香宜人，茶汤透透</p>
+                        </div>
+                    </div>
+                </a>
+                
+                <!-- 产品3 -->
+                <a href="/blueberrylt.html" class="block group opacity-0" data-animate="fadeInUp" data-delay="400">
+                    <div class="product-card h-full">
+                        <div class="aspect-[3/4] overflow-hidden">
+                            <img src="https://free.picui.cn/free/2025/10/12/68eb4f1addb24.png" alt="产品3展示图" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                        </div>
+                        <div class="p-5">
+                            <h3 class="text-lg font-semibold text-primary mb-2 transition-colors group-hover:text-accent">蓝莓叶黄素</h3>
+                            <p class="text-secondary/70 text-sm transition-colors group-hover:text-secondary/90">五大方面，呵护眼睛</p>
+                        </div>
+                    </div>
+                </a>
+                
+                <!-- 产品4 -->
+                <a href="/nut8cake.html" class="block group opacity-0" data-animate="fadeInUp" data-delay="500">
+                    <div class="product-card h-full">
+                        <div class="aspect-[3/4] overflow-hidden">
+                            <img src="https://free.picui.cn/free/2025/10/12/68eb587f069c9.png" alt="产品4展示图" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                        </div>
+                        <div class="p-5">
+                            <h3 class="text-lg font-semibold text-primary mb-2 transition-colors group-hover:text-accent">坚果茯苓八珍糕</h3>
+                            <p class="text-secondary/70 text-sm transition-colors group-hover:text-secondary/90">八珍醇香，午后茶点</p>
+                        </div>
+                    </div>
+                </a>
+                
+                <!-- 产品5 -->
+                <a href="/product-detail-5.html" class="block group opacity-0" data-animate="fadeInUp" data-delay="600">
+                    <div class="product-card h-full">
+                        <div class="aspect-[3/4] overflow-hidden bg-gray-100">
+                            <img src="https://picsum.photos/seed/product5/600/800" alt="产品5展示图" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                        </div>
+                        <div class="p-5">
+                            <h3 class="text-lg font-semibold text-primary mb-2 transition-colors group-hover:text-accent">产品名称5</h3>
+                            <p class="text-secondary/70 text-sm transition-colors group-hover:text-secondary/90">待填写产品描述，突出核心优势</p>
+                        </div>
+                    </div>
+                </a>
+                
+                <!-- 产品6 -->
+                <a href="/product-detail-6.html" class="block group opacity-0" data-animate="fadeInUp" data-delay="700">
+                    <div class="product-card h-full">
+                        <div class="aspect-[3/4] overflow-hidden bg-gray-100">
+                            <img src="https://picsum.photos/seed/product6/600/800" alt="产品6展示图" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                        </div>
+                        <div class="p-5">
+                            <h3 class="text-lg font-semibold text-primary mb-2 transition-colors group-hover:text-accent">产品名称6</h3>
+                            <p class="text-secondary/70 text-sm transition-colors group-hover:text-secondary/90">待填写产品描述，突出核心优势</p>
+                        </div>
+                    </div>
+                </a>
+                
+                <!-- 产品7 -->
+                <a href="/product-detail-7.html" class="block group opacity-0" data-animate="fadeInUp" data-delay="800">
+                    <div class="product-card h-full">
+                        <div class="aspect-[3/4] overflow-hidden bg-gray-100">
+                            <img src="https://picsum.photos/seed/product7/600/800" alt="产品7展示图" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                        </div>
+                        <div class="p-5">
+                            <h3 class="text-lg font-semibold text-primary mb-2 transition-colors group-hover:text-accent">产品名称7</h3>
+                            <p class="text-secondary/70 text-sm transition-colors group-hover:text-secondary/90">待填写产品描述，突出核心优势</p>
+                        </div>
+                    </div>
+                </a>
+                
+                <!-- 产品8 -->
+                <a href="/product-detail-8.html" class="block group opacity-0" data-animate="fadeInUp" data-delay="900">
+                    <div class="product-card h-full">
+                        <div class="aspect-[3/4] overflow-hidden bg-gray-100">
+                            <img src="https://picsum.photos/seed/product8/600/800" alt="产品8展示图" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                        </div>
+                        <div class="p-5">
+                            <h3 class="text-lg font-semibold text-primary mb-2 transition-colors group-hover:text-accent">产品名称8</h3>
+                            <p class="text-secondary/70 text-sm transition-colors group-hover:text-secondary/90">待填写产品描述，突出核心优势</p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            
+            <!-- 查看更多按钮 -->
+            <div class="text-center mt-12 opacity-0" data-animate="fadeInUp" data-delay="1000">
+                <a href="/products.html" class="inline-flex items-center text-accent font-medium hover:text-primary transition-colors hover:scale-105 duration-300">
+                    查看全部产品
+                    <i class="fa fa-arrow-right ml-2 transition-transform duration-300 hover:translate-x-1"></i>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- 页脚 -->
+    <footer class="bg-primary text-white py-12">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+                <div>
+                    <h3 class="text-xl font-bold mb-4">万食赞®</h3>
+                    <p class="text-white/70 text-sm">北京康易安科技有限公司旗下品牌，致力于提供高品质产品与服务</p>
+                </div>
+                
+                <div>
+                    <h4 class="font-semibold mb-4">快速链接</h4>
+                    <ul class="space-y-2 text-sm text-white/70">
+                        <li><a href="#" class="hover:text-white transition-colors">首页</a></li>
+                        <li><a href="#products" class="hover:text-white transition-colors">产品中心</a></li>
+                        <li><a href="https://www.wanshizan.com.cn/contact.html" target="_blank" class="hover:text-white transition-colors">联系我们</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="font-semibold mb-4">法律信息</h4>
+                    <ul class="space-y-2 text-sm text-white/70">
+                        <li><a href="#" class="hover:text-white transition-colors legal-link" data-target="privacy-policy">隐私政策</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors legal-link" data-target="terms-of-use">使用条款</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors legal-link" data-target="legal-disclaimer">法律声明</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="font-semibold mb-4">关注我们</h4>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-white/70 hover:text-white transition-all duration-300 hover:scale-125">
+                            <i class="fa fa-weixin text-xl"></i>
+                        </a>
+                        <a href="#" class="text-white/70 hover:text-white transition-all duration-300 hover:scale-125">
+                            <i class="fa fa-weibo text-xl"></i>
+                        </a>
+                        <a href="#" class="text-white/70 hover:text-white transition-all duration-300 hover:scale-125">
+                            <i class="fa fa-instagram text-xl"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="border-t border-white/20 pt-8 text-center text-white/60 text-sm">
+                <p>© 2025北京康易安科技有限公司 版权所有|Flyz远征飞提供技术支持 *图片仅供参考</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- 法律声明模态框 -->
+    <div id="legalModal" class="legal-modal">
+        <div class="legal-content">
+            <div class="flex justify-between items-center mb-6">
+                <h2 id="legalModalTitle" class="text-2xl font-bold text-primary">法律声明</h2>
+                <button id="closeLegalModal" class="text-secondary hover:text-primary transition-colors">
+                    <i class="fa fa-times text-xl"></i>
+                </button>
+            </div>
+            
+            <!-- 隐私政策内容 -->
+            <div id="privacy-policy" class="legal-content-section hidden">
+                <div class="legal-section">
+                    <h3 class="legal-heading">隐私政策</h3>
+                    <p class="legal-text">北京康易安科技有限公司（以下简称"公司"或"我们"）尊重并保护所有使用万食赞®官方网站（以下简称"本网站"）用户的个人隐私权。为了给您提供更准确、更有个性化的服务，本网站会按照本隐私权政策的规定使用和披露您的个人信息。但本网站将以高度的勤勉、审慎义务对待这些信息。除本隐私权政策另有规定外，在未征得您事先许可的情况下，本网站不会将这些信息对外披露或向第三方提供。本网站会不时更新本隐私权政策。您在同意本网站服务使用协议之时，即视为您已经同意本隐私权政策全部内容。本隐私权政策属于本网站服务使用协议不可分割的一部分。</p>
+                </div>
+                
+                <div class="legal-section">
+                    <h4 class="legal-subheading">一、适用范围</h4>
+                    <p class="legal-text">1. 在您注册本网站账号时，您根据本网站要求提供的个人注册信息；</p>
+                    <p class="legal-text">2. 在您使用本网站服务，或访问本网站网页时，本网站自动接收并记录的您的浏览器和计算机上的信息，包括但不限于您的IP地址、浏览器的类型、使用的语言、访问日期和时间、软硬件特征信息及您需求的网页记录等数据；</p>
+                    <p class="legal-text">3. 本网站通过合法途径从商业伙伴处取得的用户个人数据。</p>
+                    <p class="legal-text">请注意，本隐私权政策不适用于任何第三方提供的服务或第三方网站，您通过本网站的服务而链接至第三方的网站的隐私保护政策，由第三方自行负责。</p>
+                </div>
+                
+                <div class="legal-section">
+                    <h4 class="legal-subheading">二、信息使用</h4>
+                    <p class="legal-text">1. 北京康易安科技有限公司承诺对您的个人信息进行保密。我们将根据本隐私政策的规定并为实现本网站的服务目的对所收集的个人信息进行使用。</p>
+                    <p class="legal-text">2. 本网站不会向任何无关第三方提供、出售、出租、分享或交易您的个人信息，除非事先得到您的许可，或该第三方和北京康易安科技有限公司（含本网站）单独或共同为您提供服务，且在该服务结束后，其将被禁止访问包括其以前能够访问的所有这些资料。</p>
+                    <p class="legal-text">3. 本网站亦不允许任何第三方以任何手段收集、编辑、出售或者无偿传播您的个人信息。任何本网站平台用户如从事上述活动，一经发现，本网站有权立即终止与该用户的服务协议。</p>
+                    <p class="legal-text">4. 为服务用户的目的，北京康易安科技有限公司可能通过使用您的个人信息，向您提供您感兴趣的信息，包括但不限于向您发出产品和服务信息，或者与本网站合作伙伴共享信息以便他们向您发送有关其产品和服务的信息（后者需要您的事先同意）。</p>
+                </div>
+                
+                <div class="legal-section">
+                    <h4 class="legal-subheading">三、信息披露</h4>
+                    <p class="legal-text">在如下情况下，北京康易安科技有限公司将依据您的个人意愿或法律的规定全部或部分的披露您的个人信息：</p>
+                    <p class="legal-text">1. 经您事先同意，向第三方披露；</p>
+                    <p class="legal-text">2. 为提供您所要求的产品和服务，而必须和第三方分享您的个人信息；</p>
+                    <p class="legal-text">3. 根据法律的有关规定，或者行政或司法机构的要求，向第三方或者行政、司法机构披露；</p>
+                    <p class="legal-text">4. 如您出现违反中国有关法律、法规或者本网站服务协议或相关规则的情况，需要向第三方披露；</p>
+                    <p class="legal-text">5. 如您是适格的知识产权投诉人并已提起投诉，应被投诉人要求，向被投诉人披露，以便双方处理可能的权利纠纷；</p>
+                    <p class="legal-text">6. 在本网站平台上创建的某一交易中，如交易任何一方履行或部分履行了交易义务并提出信息披露请求的，北京康易安科技有限公司有权决定向该用户提供其交易对方的联络方式等必要信息，以促成交易的完成或纠纷的解决。</p>
+                    <p class="legal-text">7. 其它北京康易安科技有限公司根据法律、法规或者网站政策认为合适的披露。</p>
+                </div>
+                
+                <div class="legal-section">
+                    <h4 class="legal-subheading">四、信息存储和交换</h4>
+                    <p class="legal-text">您的个人信息将存储于北京康易安科技有限公司的服务器上。这些信息和数据可能传送至您所在国家、地区或北京康易安科技有限公司收集信息和数据所在地的境外并在境外被访问、存储和展示。</p>
+                </div>
+                
+                <div class="legal-section">
+                    <h4 class="legal-subheading">五、Cookie的使用</h4>
+                    <p class="legal-text">1. 在您未拒绝接受cookies的情况下，本网站会在您的计算机上设定或取用cookies，以便您能登录或使用依赖于cookies的本网站平台服务或功能。本网站使用cookies可为您提供更加周到的个性化服务，包括推广服务。</p>
+                    <p class="legal-text">2. 您有权选择接受或拒绝接受cookies。您可以通过修改浏览器设置的方式拒绝接受cookies。但如果您选择拒绝接受cookies，则可能会影响您使用本网站的服务或功能。</p>
+                    <p class="legal-text">3. 通过本网站所设cookies所取得的有关信息，将适用本政策。</p>
+                </div>
+                
+                <div class="legal-section">
+                    <h4 class="legal-subheading">六、信息安全</h4>
+                    <p class="legal-text">1. 北京康易安科技有限公司账号均有安全保护功能，请妥善保管您的用户名及密码信息。本网站将通过对用户密码进行加密等安全措施确保您的信息不丢失，不被滥用和变造。尽管有前述安全措施，但同时也请您注意在信息网络上不存在"绝对的安全措施"。</p>
+                    <p class="legal-text">2. 请您妥善保护自己的个人信息，仅在必要的情形下向他人提供。如您发现自己的个人信息泄密，尤其是本网站用户名及密码发生泄露，请您立即联络本网站客服，以便北京康易安科技有限公司采取相应措施。</p>
+                </div>
+                
+                <div class="legal-section">
+                    <h4 class="legal-subheading">七、未成年人保护</h4>
+                    <p class="legal-text">1. 北京康易安科技有限公司重视未成年人的个人信息保护，如您为未成年人，建议您请您的父母或监护人阅读本隐私政策，并在您的父母或监护人指导下使用我们的服务。</p>
+                    <p class="legal-text">2. 对于经父母或监护人同意而收集未成年人个人信息的情况，我们只会在受到法律允许、父母或监护人明确同意或者保护未成年人所必要的情况下使用或披露此信息。</p>
+                </div>
+                
+                <div class="legal-section">
+                    <h4 class="legal-subheading">八、隐私政策的变更</h4>
+                    <p class="legal-text">1. 北京康易安科技有限公司可能会不时更新本隐私政策。我们会在本页面上发布对本政策所做的任何变更。</p>
+                    <p class="legal-text">2. 对于重大变更，我们还会提供更为显著的通知（包括对于某些服务，我们会通过电子邮件发送通知，说明隐私政策的具体变更内容）。</p>
+                    <p class="legal-text">3. 我们建议您定期查阅本页面，了解更新后的隐私政策。您继续使用我们的服务，即表示您同意受更新后的隐私政策的约束。</p>
+                </div>
+                
+                <div class="legal-section">
+                    <h4 class="legal-subheading">九、联系我们</h4>
+                    <p class="legal-text">如您对本隐私政策或个人信息保护有任何疑问、意见或建议，您可通过本网站公布的联系方式与北京康易安科技有限公司联系。我们将在收到您的请求后的合理时间内予以回复。</p>
+                </div>
+            </div>
+            
+            <!-- 使用条款内容 -->
+            <div id="terms-of-use" class="legal-content-section hidden">
+                <div class="legal-section">
+                    <h3 class="legal-heading">使用条款</h3>
+                    <p class="legal-text">欢迎使用由北京康易安科技有限公司（以下简称"公司"或"我们"）运营的万食赞®官方网站（以下简称"本网站"）。本使用条款（以下简称"本条款"）构成您与北京康易安科技有限公司之间就使用本网站所达成的具有法律约束力的协议。请您在使用本网站前仔细阅读本条款。您对本网站的使用（包括但不限于访问、浏览、注册、购买等）将被视为您已阅读、理解并同意本条款的全部内容。如果您不同意本条款的任何内容，请立即停止使用本网站。</p>
+                </div>
+                
+                <div class="legal-section">
+                    <h4 class="legal-subheading">一、定义</h4>
+                    <p class="legal-text">1. "本网站"：指由北京康易安科技有限公司运营的万食赞®官方网站，包括但不限于网站、移动应用程序等。</p>
+                    <p class="legal-text">2. "用户"或"您"：指访问、浏览、使用或购买本网站产品或服务的个人或实体。</p>
+                    <p class="legal-text">3. "服务"：指北京康易安科技有限公司通过本网站向用户提供的各项产品和服务，包括但不限于产品展示、在线购买、信息咨询等。</p>
+                    <p class="legal-text">4. "内容"：指本网站上的所有信息、数据、文本、软件、音乐、声音、照片、图像、视频、录像、图表、颜色、版面设计、电子文档等，以及通过本网站提供的所有产品和服务。</p>
+                </div>
+                
+                <div class="legal-section">
+                    <h4 class="legal-subheading">二、使用许可</h4>
+                    <p class="legal-text">1. 北京康易安科技有限公司授予您一项非独占、不可转让的许可，允许您仅为个人及非商业目的访问和使用本网站。</p>
+                    <p class="legal-text">2. 未经北京康易安科技有限公司书面许可，您不得对本网站的任何部分或内容进行复制、复印、出售、转售或用于任何其他商业目的。</p>
+                    <p class="legal-text">3. 您不得对本网站的任何软件、代码、内容进行反向工程、反向编译、反汇编或其他类似行为。</p>
+                    <p class="legal-text">4. 您不得使用任何机器人、蜘蛛或其他自动设备、程序或方法监视、复制、索引或其他方式干扰本网站的正常运行或收集、获取本网站的内容。</p>
+                </div>
+                
+                <div class="legal-section">
+                    <h4 class="legal-subheading">三、用户账号</h4>
+                    <p class="legal-text">1. 为使用本网站的部分服务，您可能需要注册一个账号。您承诺在注册时提供真实、准确、完整的信息，并在信息发生变更时及时更新。</p>
+                    <p class="legal-text">2. 您应对您的账号和密码的安全性负责，并且对通过您的账号进行的所有活动和操作承担全部责任。</p>
+                    <p class="legal-text">3. 如您发现任何未经授权使用您账号的情况，应立即通知北京康易安科技有限公司，并采取必要措施保护您的账号安全。</p>
+                    <p class="legal-text">4. 北京康易安科技有限公司有权在发现您提供虚假信息或违反本条款规定的情况下，暂停或终止您的账号，并保留追究您法律责任的权利。</p>
+                </div>
+                
+                <div class="legal-section">
+                    <h4 class="legal-subheading">四、产品与服务</h4>
+                    <p class="legal-text">1. 本网站上展示的产品图片、描述、价格等信息仅供参考，北京康易安科技有限公司保留对产品信息进行修改的权利。</p>
+                    <p class="legal-text">2. 产品的实际颜色、尺寸、性能等可能与网站展示存在细微差异，以实际收到的产品为准。</p>
+                    <p class="legal-text">3. 本网站上的产品价格可能随时调整，所有价格均以您下单时显示的价格为准。</p>
+                    <p class="legal-text">4. 北京康易安科技有限公司将尽力确保产品的供应，但不保证所有产品均有库存。如遇产品缺货，我们将及时通知您并为您办理退款或提供替代方案。</p>
+                    <p class="legal-text">5. 您在本网站购买产品即表示您同意遵守本网站的购物流程、支付方式、配送政策和退换货政策。</p>
+                </div>
+                
+                <div class="legal-section">
+                    <h4 class="legal-subheading">五、知识产权</h4>
+                    <p class="legal-text">1. 本网站上的所有内容，包括但不限于文字、图像、图片、音频、视频、图表、色彩、版面设计、电子文档等，均受中华人民共和国著作权法、商标法、专利法及其他相关法律法规的保护。</p>
+                    <p class="legal-text">2. 本网站的整体内容的知识产权归北京康易安科技有限公司所有。"万食赞®"及相关图形商标均为北京康易安科技有限公司的注册商标，受法律保护。</p>
+                    <p class="legal-text">3. 未经北京康易安科技有限公司书面许可，任何人不得擅自使用（包括但不限于通过任何机器人、蜘蛛等程序或设备监视、复制、传播、展示、镜像、上载、下载本网站中的内容）。</p>
+                    <p class="legal-text">4. 任何用户在本网站上传或发布的内容，视为该用户已授予北京康易安科技有限公司免费、永久、不可撤销的使用权，包括但不限于修改、复制、发行、展示、传播该内容的权利。</p>
+                </div>
+                
+                <div class="legal-section">
+                    <h4 class="legal-subheading">六、用户行为规范</h4>
+                    <p class="legal-text">1. 您在使用本网站时，应遵守中华人民共和国的相关法律法规，以及国际惯例。</p>
+                    <p class="legal-text">2. 您不得利用本网站从事任何违法违规活动，包括但不限于：</p>
+                    <p class="legal-text">（1）发布、传播任何违反国家法律法规的内容；</p>
+                    <p class="legal-text">（2）发布、传播含有暴力、色情、恐怖、诽谤、侮辱等内容；</p>
+                    <p class="legal-text">（3）侵犯他人知识产权、肖像权、隐私权等合法权益；</p>
+                    <p class="legal-text">（4）传播病毒、木马等恶意程序；</p>
+                    <p class="legal-text">（5）从事任何可能干扰本网站正常运行的行为；</p>
+                    <p class="legal-text">（6）其他北京康易安科技有限公司认为不适当的行为。</p>
+                    <p class="legal-text">3. 如您违反上述规定，北京康易安科技有限公司有权采取删除内容、暂停或终止您的账号等措施，并保留追究您法律责任的权利。</p>
+                </div>
+                
+                <div class="legal-section">
+                    <h4 class="legal-subheading">七、免责声明</h4>
+                    <p class="legal-text">1. 本网站提供的信息仅供参考，北京康易安科技有限公司不对信息的准确性、完整性、及时性作出任何明示或暗示的保证。</p>
+                    <p class="legal-text">2. 您使用本网站的服务所产生的任何风险由您自行承担。北京康易安科技有限公司不对因使用本网站服务而导致的任何直接或间接损失承担责任。</p>
+                    <p class="legal-text">3. 本网站可能包含链接至第三方网站的链接，这些链接仅为方便用户而提供。北京康易安科技有限公司不对这些第三方网站的内容、隐私政策或服务条款负责。</p>
+                    <p class="legal-text">4. 北京康易安科技有限公司将尽力确保本网站的正常运行，但不对本网站的不间断运行、无错误运行作出保证。对于因系统维护、升级、不可抗力等原因导致的服务中断或暂停，北京康易安科技有限公司不承担责任。</p>
+                </div>
+                
+                <div class="legal-section">
+                    <h4 class="legal-subheading">八、有限责任</h4>
+                    <p class="legal-text">1. 在北京康易安科技有限公司的过错导致您遭受损失的情况下，北京康易安科技有限公司的赔偿责任仅限于您因使用本网站服务而实际遭受的直接损失，且最高赔偿金额不超过您在本网站实际消费金额的总额。</p>
+                    <p class="legal-text">2. 对于任何间接损失、附带损失、特殊损失、后果性损失，北京康易安科技有限公司不承担责任，无论这些损失是否可预见。</p>
+                </div>
+                
+                <div class="legal-section">
+                    <h4 class="legal-subheading">九、条款的修改</h4>
+                    <p class="legal-text">1. 北京康易安科技有限公司有权根据业务发展和法律法规的变化，随时修改本条款。</p>
+                    <p class="legal-text">2. 修改后的条款将在本网站上公布，并自公布之日起生效。</p>
+                    <p class="legal-text">3. 您继续使用本网站的服务，即视为您已接受修改后的条款。如您不同意修改后的条款，请立即停止使用本网站。</p>
+                </div>
+                
+                <div class="legal-section">
+                    <h4 class="legal-subheading">十、适用法律与争议解决</h4>
+                    <p class="legal-text">1. 本条款的订立、效力、解释、履行及争议的解决均适用中华人民共和国法律。</p>
+                    <p class="legal-text">2. 因本条款引起的或与本条款有关的任何争议，双方应首先通过友好协商解决；协商不成的，任何一方均有权向北京康易安科技有限公司所在地有管辖权的人民法院提起诉讼。</p>
+                </div>
+                
+                <div class="legal-section">
+                    <h4 class="legal-subheading">十一、其他</h4>
+                    <p class="legal-text">1. 本条款构成您与北京康易安科技有限公司之间就使用本网站所达成的完整协议，取代先前的所有口头或书面协议。</p>
+                    <p class="legal-text">2. 如本条款的任何规定被认定为无效或不可执行，该规定将被删除，其余条款仍然有效。</p>
+                    <p class="legal-text">3. 北京康易安科技有限公司未行使或执行本条款的任何权利或规定，不应视为对该权利或规定的放弃。</p>
+                    <p class="legal-text">4. 本条款的标题仅为方便阅读而设，不影响本条款的解释。</p>
+                </div>
+            </div>
+            
+            <!-- 法律声明内容 -->
+            <div id="legal-disclaimer" class="legal-content-section hidden">
+                <div class="legal-section">
+                    <h3 class="legal-heading">法律声明</h3>
+                    <p class="legal-text">欢迎访问万食赞®官方网站（以下简称"本网站"）。本网站由北京康易安科技有限公司（以下简称"公司"或"我们"）运营。在使用本网站前，请您仔细阅读以下法律声明。您对本网站的使用将被视为您已接受本法律声明的全部内容。</p>
+                </div>
+                
+                <div class="legal-section">
+                    <h4 class="legal-subheading">一、网站所有权</h4>
+                    <p class="legal-text">1. 本网站的所有权利，包括但不限于所有权、经营权、知识产权等，均归北京康易安科技有限公司所有。</p>
+                    <p class="legal-text">2. "万食赞®"是北京康易安科技有限公司的注册商标，受法律保护。未经北京康易安科技有限公司书面许可，任何单位或个人不得擅自使用。</p>
+                    <p class="legal-text">3. 本网站上的所有内容，包括但不限于文字、图片、音频、视频、软件、程序、设计等，均受中华人民共和国知识产权法律的保护。</p>
+                </div>
+                
+                <div class="legal-section">
+                    <h4 class="legal-subheading">二、信息内容声明</h4>
+                    <p class="legal-text">1. 本网站上发布的所有信息，包括但不限于产品介绍、规格、价格、功效等，仅供参考，不构成任何形式的承诺或保证。</p>
+                    <p class="legal-text">2. 本网站上的产品信息可能会不时更新，北京康易安科技有限公司保留对产品信息进行修改的权利，恕不另行通知。</p>
+                    <p class="legal-text">3. 本网站上发布的健康相关信息仅供参考，不构成医疗建议。如您有健康问题，请咨询专业医疗机构或医生的意见。</p>
+                    <p class="legal-text">4. 北京康易安科技有限公司尽力确保本网站信息的准确性和完整性，但不对信息的绝对准确性和完整性作出任何明示或暗示的保证。</p>
+                    <p class="legal-text">5. 任何单位或个人认为本网站的内容可能侵犯其合法权益，请及时向北京康易安科技有限公司提出书面权利通知，并提供身份证明、权属证明、具体链接（URL）及详细侵权情况证明。北京康易安科技有限公司在收到上述法律文件后，将会依法尽快处理。</p>
+                </div>
+                
+                <div class="legal-section">
+                    <h4 class="legal-subheading">三、产品责任声明</h4>
+                    <p class="legal-text">1. 本网站销售的所有产品均由北京康易安科技有限公司或其授权供应商提供，产品质量符合相关国家标准。</p>
+                    <p class="legal-text">2. 产品的实际效果可能因个人体质、使用方法等因素而有所不同，北京康易安科技有限公司不对产品的效果作出任何明示或暗示的保证。</p>
+                    <p class="legal-text">3. 请您在使用产品前仔细阅读产品说明书，如您对产品有任何疑问，请咨询我们的客服人员。</p>
+                    <p class="legal-text">4. 如您在使用产品过程中出现任何不适，请立即停止使用并咨询专业人士的意见。</p>
+                    <p class="legal-text">5. 对于因不当使用产品或产品本身质量问题导致的任何损害，北京康易安科技有限公司将根据相关法律法规承担相应责任，但不包括任何间接损失或预期利益损失。</p>
+                </div>
+                
+                <div class="legal-section">
+                    <h4 class="legal-subheading">四、链接声明</h4>
+                    <p class="legal-text">1. 本网站可能包含指向第三方网站的链接，这些链接仅为方便用户而提供。</p>
+                    <p class="legal-text">2. 北京康易安科技有限公司不对这些第三方网站的内容、隐私政策、服务条款或其他方面负责。</p>
+                    <p class="legal-text">3. 您访问这些第三方网站将被视为您已接受这些网站的使用条款和隐私政策。</p>
+                    <p class="legal-text">4. 北京康易安科技有限公司提供这些链接并不意味着我们认可或推荐这些第三方网站的内容或服务。</p>
+                </div>
+                
+                <div class="legal-section">
+                    <h4 class="legal-subheading">五、免责声明</h4>
+                    <p class="legal-text">1. 北京康易安科技有限公司将尽力确保本网站的正常运行，但不对本网站的不间断运行、无错误运行作出任何保证。</p>
+                    <p class="legal-text">2. 对于因不可抗力、黑客攻击、计算机病毒、网络故障等原因导致的本网站无法正常访问或使用，北京康易安科技有限公司不承担责任。</p>
+                    <p class="legal-text">3. 对于因使用或无法使用本网站提供的信息、服务或产品而直接或间接造成的任何损害，包括但不限于利润损失、数据丢失、业务中断等，北京康易安科技有限公司不承担责任，除非这些损害是由于我们的故意或重大过失造成的。</p>
+                    <p class="legal-text">4. 北京康易安科技有限公司对通过本网站传输的任何信息的真实性、完整性或安全性不作任何保证。</p>
+                    <p class="legal-text">5. 您使用本网站的风险由您自行承担。</p>
+                </div>
+                
+                <div class="legal-section">
+                    <h4 class="legal-subheading">六、适用法律</h4>
+                    <p class="legal-text">1. 本法律声明的订立、效力、解释、履行及争议的解决均适用中华人民共和国法律。</p>
+                    <p class="legal-text">2. 如因本法律声明或使用本网站发生任何争议，双方应首先通过友好协商解决；协商不成的，任何一方均有权向北京康易安科技有限公司所在地有管辖权的人民法院提起诉讼。</p>
+                </div>
+                
+                <div class="legal-section">
+                    <h4 class="legal-subheading">七、修改与解释</h4>
+                    <p class="legal-text">1. 北京康易安科技有限公司有权根据业务发展和法律法规的变化，随时修改本法律声明。</p>
+                    <p class="legal-text">2. 修改后的法律声明将在本网站上公布，并自公布之日起生效。</p>
+                    <p class="legal-text">3. 您继续使用本网站，即视为您已接受修改后的法律声明。</p>
+                    <p class="legal-text">4. 本法律声明的解释权归北京康易安科技有限公司所有。</p>
+                </div>
+                
+                <div class="legal-section">
+                    <h4 class="legal-subheading">八、联系方式</h4>
+                    <p class="legal-text">如您对本法律声明有任何疑问，请通过以下方式与北京康易安科技有限公司联系：</p>
+                    <p class="legal-text">电话：15701032318 或 15701032319</p>
+                    <p class="legal-text">法务部门：15712900697（周六早10点至晚8点）</p>
+                </div>
+                
+                <div class="legal-section">
+                    <h4 class="legal-subheading">九、其他</h4>
+                    <p class="legal-text">本法律声明自发布之日起生效。北京康易安科技有限公司保留对本法律声明的最终解释权和修改权。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+        // 页面加载完成后显示强制同意弹窗
+        document.addEventListener('DOMContentLoaded', function() {
+            // 检查是否已经同意过条款（实际应用中可以使用localStorage持久化）
+            if (!localStorage.getItem('termsAccepted')) {
+                document.getElementById('consentModal').style.display = 'flex';
+                document.body.style.overflow = 'hidden'; // 防止背景滚动
+            } else {
+                // 如果已经同意过，直接显示Cookie提示
+                setTimeout(() => {
+                    showCookieBanner();
+                }, 1000);
+            }
+            
+            // 初始化动画
+            animateOnScroll();
+        });
+
+        // 强制同意弹窗功能
+        const consentItems = document.querySelectorAll('.consent-item');
+        const consentDetails = document.getElementById('consentDetails');
+        const consentDetailsTitle = document.getElementById('consentDetailsTitle');
+        const consentDetailsContent = document.getElementById('consentDetailsContent');
+        const closeDetailsBtn = document.getElementById('closeDetails');
+        const agreeBtn = document.getElementById('agreeBtn');
+        const consentModal = document.getElementById('consentModal');
+        const cookieBanner = document.getElementById('cookieBanner');
+
+        // 点击声明项显示详情
+        consentItems.forEach(item => {
+            item.addEventListener('click', function() {
+                const targetId = this.getAttribute('data-target');
+                const contentElement = document.getElementById(targetId);
+                
+                // 更新标题
+                if (targetId === 'privacy-policy') {
+                    consentDetailsTitle.textContent = '隐私政策';
+                } else if (targetId === 'terms-of-use') {
+                    consentDetailsTitle.textContent = '使用条款';
+                } else if (targetId === 'legal-disclaimer') {
+                    consentDetailsTitle.textContent = '法律声明';
+                }
+                
+                // 复制内容到详情区域
+                consentDetailsContent.innerHTML = '';
+                const clonedContent = contentElement.cloneNode(true);
+                // 移除隐藏类
+                clonedContent.classList.remove('hidden');
+                // 移除原有的样式类
+                clonedContent.classList.remove('legal-content-section');
+                consentDetailsContent.appendChild(clonedContent);
+                
+                // 显示详情区域并滚动到顶部
+                consentDetails.classList.remove('hidden');
+                consentDetails.scrollTop = 0;
+                
+                // 滚动到详情区域
+                setTimeout(() => {
+                    consentDetails.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }, 100);
+            });
+        });
+
+        // 关闭详情
+        closeDetailsBtn.addEventListener('click', function() {
+            consentDetails.classList.add('hidden');
+            // 滚动回列表顶部
+            setTimeout(() => {
+                document.querySelector('.consent-content').scrollTop = 0;
+            }, 300);
+        });
+
+        // 同意按钮
+        agreeBtn.addEventListener('click', function() {
+            // 隐藏强制同意弹窗
+            consentModal.classList.add('animate__fadeOut');
+            setTimeout(() => {
+                consentModal.style.display = 'none';
+                document.body.style.overflow = ''; // 恢复背景滚动
+                
+                // 存储同意状态（实际应用中可以使用localStorage持久化）
+                localStorage.setItem('termsAccepted', 'true');
+                
+                // 显示Cookie提示
+                showCookieBanner();
+            }, 500);
+        });
+
+        // 显示Cookie提示
+        function showCookieBanner() {
+            // 检查是否已经同意过Cookie政策
+            if (!localStorage.getItem('cookiesAccepted')) {
+                setTimeout(() => {
+                    cookieBanner.classList.add('active');
+                }, 500);
+            }
+        }
+
+        // 接受Cookie
+        document.getElementById('acceptCookies').addEventListener('click', function() {
+            cookieBanner.classList.remove('active');
+            // 存储Cookie同意状态
+            localStorage.setItem('cookiesAccepted', 'true');
+            
+            // 实际应用中可以在这里设置Cookie
+            setCookie('cookieConsent', 'accepted', 365);
+            
+            // 显示浏览器Cookie信息（仅作演示，实际应用中谨慎使用）
+            showCookieInfo();
+        });
+
+        // 设置Cookie函数
+        function setCookie(name, value, days) {
+            const date = new Date();
+            date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+            const expires = "expires=" + date.toUTCString();
+            document.cookie = name + "=" + value + ";" + expires + ";path=/";
+        }
+
+        // 获取Cookie函数
+        function getCookie(name) {
+            const nameEQ = name + "=";
+            const ca = document.cookie.split(';');
+            for (let i = 0; i < ca.length; i++) {
+                let c = ca[i];
+                while (c.charAt(0) === ' ') c = c.substring(1, c.length);
+                if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length);
+            }
+            return null;
+        }
+
+        // 显示Cookie信息（仅作演示）
+        function showCookieInfo() {
+            if (confirm('Cookie已启用。\n\n您的浏览器支持Cookie功能，这有助于我们为您提供更好的服务体验。\n\n是否查看当前网站Cookie详情？')) {
+                let cookieInfo = "当前网站Cookie信息：\n\n";
+                if (document.cookie) {
+                    cookieInfo += document.cookie.replace(/;/g, "\n");
+                } else {
+                    cookieInfo += "暂无Cookie";
+                }
+                alert(cookieInfo);
+            }
+        }
+
+        // 导航栏滚动效果
+        const header = document.getElementById('header');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                header.classList.add('bg-white/95', 'shadow-md');
+                header.classList.remove('bg-white/80', 'shadow-sm');
+            } else {
+                header.classList.remove('bg-white/95', 'shadow-md');
+                header.classList.add('bg-white/80', 'shadow-sm');
+            }
+        });
+
+        // 移动端菜单
+        const menuBtn = document.getElementById('menuBtn');
+        const menuIcon = document.getElementById('menuIcon');
+        const mobileMenu = document.getElementById('mobileMenu');
+        let menuOpen = false;
+
+        menuBtn.addEventListener('click', () => {
+            if (!menuOpen) {
+                menuIcon.classList.add('rotate-90');
+                mobileMenu.classList.remove('hidden');
+                mobileMenu.classList.add('animate__slideInDown');
+            } else {
+                menuIcon.classList.remove('rotate-90');
+                mobileMenu.classList.add('animate__slideOutUp');
+                setTimeout(() => {
+                    mobileMenu.classList.add('hidden');
+                    mobileMenu.classList.remove('animate__slideOutUp');
+                }, 500);
+            }
+            menuOpen = !menuOpen;
+        });
+
+        // 滚动动画
+        const animateOnScroll = () => {
+            const elements = document.querySelectorAll('[data-animate]');
+            
+            elements.forEach(el => {
+                const elementTop = el.getBoundingClientRect().top;
+                const elementVisible = 150;
+                const animation = el.getAttribute('data-animate');
+                const delay = el.getAttribute('data-delay') || 0;
+                
+                if (elementTop < window.innerHeight - elementVisible) {
+                    setTimeout(() => {
+                        el.classList.add(`animate__animated`, `animate__${animation}`);
+                        el.style.opacity = 1;
+                    }, delay);
+                }
+            });
+        };
+
+        window.addEventListener('scroll', animateOnScroll);
+
+        // 平滑滚动
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href');
+                if (targetId === '#') return;
+
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    // 关闭移动菜单
+                    if (menuOpen) {
+                        menuIcon.classList.remove('rotate-90');
+                        mobileMenu.classList.add('animate__slideOutUp');
+                        setTimeout(() => {
+                            mobileMenu.classList.add('hidden');
+                            mobileMenu.classList.remove('animate__slideOutUp');
+                        }, 500);
+                        menuOpen = false;
+                    }
+
+                    // 平滑滚动
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 80,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+
+        // 法律声明模态框功能
+        const legalModal = document.getElementById('legalModal');
+        const legalModalTitle = document.getElementById('legalModalTitle');
+        const closeLegalModal = document.getElementById('closeLegalModal');
+        const legalLinks = document.querySelectorAll('.legal-link');
+        const legalSections = document.querySelectorAll('.legal-content-section');
+
+        // 打开模态框
+        legalLinks.forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('data-target');
+                
+                // 更新标题
+                if (targetId === 'privacy-policy') {
+                    legalModalTitle.textContent = '隐私政策';
+                } else if (targetId === 'terms-of-use') {
+                    legalModalTitle.textContent = '使用条款';
+                } else if (targetId === 'legal-disclaimer') {
+                    legalModalTitle.textContent = '法律声明';
+                }
+                
+                // 显示对应内容
+                legalSections.forEach(section => {
+                    section.classList.add('hidden');
+                });
+                document.getElementById(targetId).classList.remove('hidden');
+                
+                // 显示模态框
+                legalModal.classList.add('active');
+                document.body.style.overflow = 'hidden'; // 防止背景滚动
+            });
+        });
+
+        // 关闭模态框
+        closeLegalModal.addEventListener('click', () => {
+            legalModal.classList.remove('active');
+            document.body.style.overflow = ''; // 恢复背景滚动
+        });
+
+        // 点击模态框外部关闭
+        legalModal.addEventListener('click', (e) => {
+            if (e.target === legalModal) {
+                legalModal.classList.remove('active');
+                document.body.style.overflow = ''; // 恢复背景滚动
+            }
+        });
+
+        // 按ESC键关闭模态框
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && legalModal.classList.contains('active')) {
+                legalModal.classList.remove('active');
+                document.body.style.overflow = ''; // 恢复背景滚动
+            }
+        });
+    </script>
+</body>
+</html>
