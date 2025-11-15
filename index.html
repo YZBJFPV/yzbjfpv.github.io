@@ -55,6 +55,78 @@
       .loading-overlay {
         transition: opacity 0.5s ease-out;
       }
+      /* 设备图片旋转动画 */
+      .device-img {
+        width: 120px;
+        height: 120px;
+        object-fit: contain;
+        border-radius: 10px;
+        animation: rotate 10s linear infinite;
+        box-shadow: 0 0 20px rgba(22, 93, 255, 0.5);
+      }
+      @keyframes rotate {
+        0% {
+          transform: rotate(0deg) scale(1);
+          opacity: 0.8;
+        }
+        50% {
+          transform: rotate(180deg) scale(1.1);
+          opacity: 1;
+        }
+        100% {
+          transform: rotate(360deg) scale(1);
+          opacity: 0.8;
+        }
+      }
+      /* 设备弹窗样式 */
+      .device-modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 100;
+        background: rgba(10, 15, 31, 0.95);
+        backdrop-filter: blur(10px);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.5s ease;
+      }
+      .device-modal.active {
+        opacity: 1;
+        visibility: visible;
+      }
+      .modal-content {
+        text-align: center;
+        max-width: 300px;
+        padding: 20px;
+      }
+      .modal-title {
+        font-size: 1.5rem;
+        font-weight: bold;
+        margin: 20px 0 10px;
+        color: #4080FF;
+      }
+      .modal-desc {
+        color: rgba(255, 255, 255, 0.7);
+        margin-bottom: 20px;
+      }
+      .close-modal {
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        color: white;
+        padding: 8px 20px;
+        border-radius: 30px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+      .close-modal:hover {
+        background: rgba(255, 255, 255, 0.2);
+      }
     }
   </style>
 </head>
@@ -79,6 +151,18 @@
     <div id="loadingText" class="mt-4 text-white/70 text-lg flex items-center">
       <i class="fa fa-circle-o-notch fa-spin mr-2"></i>
       <span>Flyz远征飞高速服务器正在飞快加载中...</span>
+    </div>
+  </div>
+
+  <!-- 设备弹窗 -->
+  <div id="deviceModal" class="device-modal">
+    <div class="modal-content">
+      <img id="deviceImage" class="device-img mx-auto" src="" alt="设备标识">
+      <h3 id="modalTitle" class="modal-title">设备欢迎</h3>
+      <p id="modalDesc" class="modal-desc">感谢使用Flyz远征飞服务</p>
+      <button id="closeModal" class="close-modal">
+        <i class="fa fa-check mr-1"></i>继续访问
+      </button>
     </div>
   </div>
 
@@ -156,6 +240,22 @@
     const targetUrl = "https://yzbjfpv.top/flyz/202510";
     const videoDuration = 3000; // 视频时长3秒（3000毫秒）
     
+    // 设备相关配置
+    const deviceConfigs = {
+      apple: {
+        image: "https://www.apple.com.cn/leadership/images/default/apple-logo-og.jpg",
+        audio: "https://yzbjfpv.top/flyz/user/Appleuser.mp3",
+        title: "欢迎苹果用户",
+        desc: "感谢使用Apple设备访问Flyz远征飞"
+      },
+      android: {
+        image: "https://www.img520.com/OpQQOv.jpg",
+        audio: "https://yzbjfpv.top/flyz/user/Androiduser.mp3",
+        title: "欢迎安卓用户",
+        desc: "感谢使用Android设备访问Flyz远征飞"
+      }
+    };
+    
     // DOM元素
     const loadingOverlay = document.getElementById('loadingOverlay');
     const loaderVideo = document.getElementById('loaderVideo');
@@ -165,6 +265,11 @@
     const redirectBtn = document.getElementById('redirectBtn');
     const updateDate = document.getElementById('updateDate');
     const redirectNote = document.getElementById('redirectNote');
+    const deviceModal = document.getElementById('deviceModal');
+    const deviceImage = document.getElementById('deviceImage');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalDesc = document.getElementById('modalDesc');
+    const closeModal = document.getElementById('closeModal');
     
     // 设置当前日期
     document.addEventListener('DOMContentLoaded', () => {
@@ -186,14 +291,92 @@
       setTimeout(hideLoadingOverlay, 3000);
     });
     
-    // 视频播放完成或超时后隐藏加载层
+    // 隐藏加载层并检测设备
     function hideLoadingOverlay() {
       loadingOverlay.style.opacity = 0;
       setTimeout(() => {
         loadingOverlay.style.display = 'none';
-        mainContent.style.opacity = 1;
-        startCountdown(); // 开始倒计时
+        detectDevice(); // 检测设备类型
       }, 500);
+    }
+    
+    // 设备检测函数
+    function detectDevice() {
+      const userAgent = navigator.userAgent.toLowerCase();
+      let deviceType = null;
+      
+      // 检测苹果设备（iPhone/iPad/Mac）
+      if (userAgent.includes('iphone') || userAgent.includes('ipad') || userAgent.includes('macintosh')) {
+        deviceType = 'apple';
+      }
+      // 检测安卓设备
+      else if (userAgent.includes('android')) {
+        deviceType = 'android';
+      }
+      
+      // 如果是目标设备，显示弹窗和媒体
+      if (deviceType && deviceConfigs[deviceType]) {
+        showDeviceModal(deviceType);
+      } else {
+        // 其他设备直接显示主内容并开始倒计时
+        mainContent.style.opacity = 1;
+        startCountdown();
+      }
+    }
+    
+    // 显示设备弹窗和媒体
+    function showDeviceModal(deviceType) {
+      const config = deviceConfigs[deviceType];
+      
+      // 设置弹窗内容
+      deviceImage.src = config.image;
+      modalTitle.textContent = config.title;
+      modalDesc.textContent = config.desc;
+      
+      // 创建音频元素
+      const audio = new Audio(config.audio);
+      audio.volume = 0.7; // 设置音量（0-1）
+      
+      // 显示弹窗
+      deviceModal.classList.add('active');
+      
+      // 音频从第11秒开始播放（需要先加载音频）
+      audio.addEventListener('loadedmetadata', () => {
+        audio.currentTime = 11; // 设置起始播放位置
+        audio.play().catch(err => {
+          console.log('音频自动播放失败，可能需要用户交互:', err);
+          // 若自动播放失败，点击弹窗时播放
+          deviceModal.addEventListener('click', () => {
+            audio.currentTime = 11;
+            audio.play().catch(() => {});
+          }, { once: true });
+        });
+      });
+      
+      // 加载音频
+      audio.load();
+      
+      // 关闭弹窗
+      closeModal.addEventListener('click', () => {
+        deviceModal.classList.remove('active');
+        audio.pause(); // 暂停音频
+        setTimeout(() => {
+          mainContent.style.opacity = 1;
+          startCountdown();
+        }, 500);
+      });
+      
+      // 弹窗自动关闭（10秒后）
+      setTimeout(() => {
+        if (deviceModal.classList.contains('active')) {
+          deviceModal.classList.remove('active');
+          audio.pause();
+          setTimeout(() => {
+            mainContent.style.opacity = 1;
+            startCountdown();
+          }, 500);
+        }
+      }, 10000);
     }
     
     // 监听视频播放结束
