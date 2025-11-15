@@ -48,19 +48,48 @@
       .countdown-animation {
         transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
       }
+      .loader-video {
+        object-fit: cover;
+        background: #0A0F1F;
+      }
+      .loading-overlay {
+        transition: opacity 0.5s ease-out;
+      }
     }
   </style>
 </head>
 
-<body class="font-sans bg-dark text-white min-h-screen flex items-center justify-center p-4">
+<body class="font-sans bg-dark text-white min-h-screen flex items-center justify-center p-4 overflow-hidden">
+  <!-- 视频加载层（开场动画） -->
+  <div id="loadingOverlay" class="loading-overlay fixed inset-0 z-50 flex flex-col items-center justify-center bg-dark">
+    <!-- 视频元素 -->
+    <video 
+      id="loaderVideo" 
+      class="loader-video w-full h-full max-w-2xl max-h-2xl rounded-lg"
+      autoplay 
+      muted 
+      playsinline
+      preload="auto"
+    >
+      <source src="https://yzbjfpv.top/flyz/video/startvideo.mp4" type="video/mp4">
+      您的设备过于老旧，请升级浏览器
+    </video>
+    
+    <!-- 加载提示（视频加载慢时显示） -->
+    <div id="loadingText" class="mt-4 text-white/70 text-lg flex items-center">
+      <i class="fa fa-circle-o-notch fa-spin mr-2"></i>
+      <span>Flyz远征飞高速服务器正在飞快加载中...</span>
+    </div>
+  </div>
+
   <!-- 背景装饰 -->
   <div class="fixed inset-0 z-0">
     <div class="absolute top-0 left-1/4 w-96 h-96 bg-primary/10 rounded-full blur-3xl"></div>
     <div class="absolute bottom-0 right-1/4 w-96 h-96 bg-secondary/10 rounded-full blur-3xl"></div>
   </div>
 
-  <!-- 主内容卡片 -->
-  <div class="relative z-10 w-full max-w-md bg-glass rounded-2xl p-8 md:p-10 border border-white/10 shadow-xl">
+  <!-- 主内容卡片（初始隐藏） -->
+  <div id="mainContent" class="relative z-10 w-full max-w-md bg-glass rounded-2xl p-8 md:p-10 border border-white/10 shadow-xl opacity-0 transition-opacity 0.5s ease-in">
     <!-- 品牌标识 -->
     <div class="flex justify-center mb-6">
       <div class="w-20 h-20 rounded-full bg-gradient-to-r from-primary to-secondary flex items-center justify-center">
@@ -122,31 +151,71 @@
 
   <script>
     // ==========================
-    // 配置参数 - 只需修改这里的网址
+    // 配置参数
     // ==========================
-    const targetUrl = "https://yzbjfpv.top/flyz/202510";  // 在此处修改目标网址
+    const targetUrl = "https://yzbjfpv.top/flyz/202510";
+    const videoDuration = 3000; // 视频时长3秒（3000毫秒）
+    
+    // DOM元素
+    const loadingOverlay = document.getElementById('loadingOverlay');
+    const loaderVideo = document.getElementById('loaderVideo');
+    const loadingText = document.getElementById('loadingText');
+    const mainContent = document.getElementById('mainContent');
+    const secondsElement = document.getElementById('seconds');
+    const redirectBtn = document.getElementById('redirectBtn');
+    const updateDate = document.getElementById('updateDate');
+    const redirectNote = document.getElementById('redirectNote');
     
     // 设置当前日期
     document.addEventListener('DOMContentLoaded', () => {
       const now = new Date();
       const options = { year: 'numeric', month: 'long', day: 'numeric' };
       const formattedDate = now.toLocaleDateString('zh-CN', options);
-      document.getElementById('updateDate').textContent = `更新日期: ${formattedDate}`;
-      
-      // 同步更新底部跳转提示
-      document.getElementById('redirectNote').innerHTML = `即将跳转至: ${targetUrl}`;
+      updateDate.textContent = `更新日期: ${formattedDate}`;
+      redirectNote.innerHTML = `即将跳转至: ${targetUrl}`;
     });
-
-    // 倒计时配置
+    
+    // 视频加载处理
+    loaderVideo.addEventListener('loadeddata', () => {
+      loadingText.textContent = "欢迎访问Flyz远征飞官网";
+    });
+    
+    loaderVideo.addEventListener('error', () => {
+      loadingText.innerHTML = '<i class="fa fa-exclamation-triangle mr-2"></i>视频加载失败，即将进入主页';
+      // 加载失败时直接跳过，3秒后显示主内容
+      setTimeout(hideLoadingOverlay, 3000);
+    });
+    
+    // 视频播放完成或超时后隐藏加载层
+    function hideLoadingOverlay() {
+      loadingOverlay.style.opacity = 0;
+      setTimeout(() => {
+        loadingOverlay.style.display = 'none';
+        mainContent.style.opacity = 1;
+        startCountdown(); // 开始倒计时
+      }, 500);
+    }
+    
+    // 监听视频播放结束
+    loaderVideo.addEventListener('ended', hideLoadingOverlay);
+    
+    // 超时处理（防止视频加载过慢）
+    setTimeout(() => {
+      if (loadingOverlay.style.display !== 'none') {
+        hideLoadingOverlay();
+      }
+    }, videoDuration + 2000); // 视频时长+2秒超时
+    
+    // 倒计时功能
     let countdownSeconds = 10;
+    let countdownInterval;
     
-    // DOM元素
-    const secondsElement = document.getElementById('seconds');
-    const redirectBtn = document.getElementById('redirectBtn');
+    function startCountdown() {
+      updateCountdownDisplay();
+      countdownInterval = setInterval(updateCountdownDisplay, 1000);
+    }
     
-    // 倒计时更新（带数字动画）
-    function updateCountdown() {
-      // 添加数字变化动画效果
+    function updateCountdownDisplay() {
       secondsElement.classList.add('scale-125', 'opacity-70', 'text-secondary');
       
       setTimeout(() => {
@@ -155,16 +224,13 @@
       }, 150);
       
       if (countdownSeconds <= 0) {
+        clearInterval(countdownInterval);
         window.location.href = targetUrl;
         return;
       }
       
       countdownSeconds--;
     }
-    
-    // 初始化倒计时
-    updateCountdown();
-    const countdownInterval = setInterval(updateCountdown, 1000);
     
     // 立即跳转按钮
     redirectBtn.addEventListener('click', () => {
