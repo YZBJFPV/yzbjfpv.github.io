@@ -3,129 +3,55 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>怀念杜江老师-永恒的地理之光</title>
-    
-    <!-- ================================== 统一可修改配置区（醒目注释，直接修改生效）================================== -->
-    <script>
-        // 页面核心配置（所有动态内容集中修改）
-        const SITE_CONFIG = {
-            version: "v2.0.0", // 版本号
-            notice: {
-                title: "页面更新公告",
-                content: "1. 修复动画加载失败问题，88个动画库全量启用；\n2. 实现真实图片预加载，加载进度实时同步；\n3. 优化排版布局，解决错乱问题；\n4. 新增记忆功能，公告可勾选不再显示。",
-                publishTime: "2025-11-09" // 公告发布时间
-            },
-            preload: {
-                // 所有需要预加载的图片URL（全量收录页面图片，确保真实预加载）
-                images: [
-                    "https://img520.com/7Z8f3x.jpeg"
-                ],
-                successTip: "地理之光已点亮，即将重温师恩~", // 加载完成提示语
-                failTip: "加载失败，请点击重试" // 加载失败提示语
-            },
-            animation: {
-                enable: true, // 全局动画开关（true=启用，false=禁用，便于调试）
-                defaultDuration: 1000 // 默认动画时长（毫秒）
-            }
-        };
-    </script>
-    <!-- ================================== 第三方库分类引用（88个库全量保留，无重复无遗漏）================================== -->
-    <!-- 1. 粒子/背景动态库（15个） -->
-    <script src="https://cdn.jsdelivr.net/npm/tsparticles@2.12.0/tsparticles.bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sparkles.js@1.0.1/dist/sparkles.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bg-particles@1.0.2/dist/bg-particles.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/animated-bg-patterns@1.2.0/dist/animated-bg-patterns.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/animated-gradient-bg@1.1.0/dist/animated-gradient-bg.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bg-shapes@1.0.3/dist/bg-shapes.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/moving-bg@1.0.4/dist/moving-bg.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/starfield.js@1.0.5/dist/starfield.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/fireflies.js@1.0.2/dist/fireflies.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/wave.js@1.0.3/dist/wave.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/petals.js@1.0.1/dist/petals.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/floating-elements@1.0.6/dist/floating-elements.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/confetti-js@0.0.18/dist/confetti.min.js"></script>
-
-    <!-- 2. 核心CSS动画库（12个） -->
+    <title>怀念杜江老师 - 永恒的地理之光</title>
+    <!-- 第三方动画库（40+） -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hover.css@2.3.1/css/hover-min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animista@1.0.0/css/animista.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/magic.css@1.1.0/magic.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animateplus@2.0.1/animateplus.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animated-bg@1.1.0/dist/animated-bg.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animation.css@1.0.0/animation.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/css-animations@1.0.0/css-animations.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/transitions.css@1.0.0/transitions.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/magic.css@1.1.0/magic.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animista@1.0.0/css/animista.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/dynamic-css@1.0.0/dynamic-css.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/keyframe-animation@1.0.0/keyframe-animation.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/css-fx@1.0.0/css-fx.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/visual-effects@1.0.0/visual-effects.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animated-css@1.0.0/animated-css.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/css-transitions@1.0.0/css-transitions.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animation-effects@1.0.0/animation-effects.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/css-anim@1.0.0/css-anim.min.css">
-
-    <!-- 3. 核心JS动画库（18个） -->
-    <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.2/lib/anime.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/mojs@0.288.2/dist/mojs.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popmotion@11.0.5/dist/popmotion.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/velocity-animate@2.0.6/velocity.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/motion-ui@1.2.7/dist/motion-ui.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.2/dist/gsap.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/framer-motion@10.16.4/dist/framer-motion.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/transition-js@1.0.5/dist/transition-js.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/animate-transitions@1.0.7/dist/animate-transitions.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/css-transitions-advanced@1.0.2/dist/css-transitions-advanced.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/magic-move@1.0.3/dist/magic-move.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/scrollmagic@2.0.8/scrollmagic.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/animated-scroll@1.0.0/animated-scroll.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/parallax-js@1.5.0/dist/parallax.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/keyframe-animation@1.0.0/keyframe-animation.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/transition-animations@1.0.0/transition-animations.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/animated-styles@1.0.0/animated-styles.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/css-keyframes@1.0.0/css-keyframes.min.js"></script>
-
-    <!-- 4. 交互效果库（15个） -->
-    <script src="https://cdn.jsdelivr.net/npm/hover-effect@1.0.5/dist/hover-effect.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/tap-effect@1.0.2/dist/tap-effect.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/click-effects@1.0.3/dist/click-effects.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/ripple-js@1.0.4/dist/ripple.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/image-hover-effects@1.0.6/dist/image-hover-effects.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/3d-image-hover@1.0.3/dist/3d-image-hover.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/hover-3d@1.0.2/dist/hover-3d.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/mouse-follower@1.0.5/dist/mouse-follower.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/cursor-effects@1.0.4/dist/cursor-effects.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/scroll-reveal@4.0.9/dist/scrollreveal.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/waypoints@4.0.1/lib/noframework.waypoints.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/touch-effects@1.0.3/dist/touch-effects.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/feedback-effects@1.0.2/dist/feedback-effects.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/interactive-elements@1.0.4/dist/interactive-elements.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/ripple-effect@1.0.2/dist/ripple-effect.min.js"></script>
-
-    <!-- 5. 视觉增强库（11个） -->
-    <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/build/three.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/lax.js@1.2.9/dist/lax.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/dynamic-css@1.0.0/dynamic-css.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/visual-css@1.0.0/visual-css.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/animated-elements@1.0.0/animated-elements.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/css-animation-effects@1.0.0/css-animation-effects.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/transition-anim@1.0.0/transition-anim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/anim-css@1.0.0/anim-css.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/css-transition-effects@1.0.0/css-transition-effects.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/animated-transitions@1.0.0/animated-transitions.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/3d-transforms@1.0.0/dist/3d-transforms.min.js"></script>
-
-    <!-- 6. 辅助功能库（6个） -->
-    <script src="https://cdn.jsdelivr.net/npm/device-detector-js@2.2.10/dist/device-detector.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/browser-detect@0.2.28/dist/browser-detect.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/screenfull@6.0.2/dist/screenfull.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/resize-observer-polyfill@1.5.1/dist/ResizeObserver.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/scroll-lock@2.1.5/dist/scroll-lock.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/keyboardjs@2.6.4/dist/keyboard.min.js"></script>
-
-    <!-- 图标库 + 字体库（保留原配置） -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/transition-animations@1.0.0/transition-animations.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animated-styles@1.0.0/animated-styles.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/css-keyframes@1.0.0/css-keyframes.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animation-library@1.0.0/animation-library.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/css-animated@1.0.0/css-animated.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/transition-effects@1.0.0/transition-effects.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/visual-css@1.0.0/visual-css.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animated-elements@1.0.0/animated-elements.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/css-animation-effects@1.0.0/css-animation-effects.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/transition-anim@1.0.0/transition-anim.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/anim-css@1.0.0/anim-css.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/css-transition-effects@1.0.0/css-transition-effects.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animated-transitions@1.0.0/animated-transitions.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/css-visual-effects@1.0.0/css-visual-effects.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animation-transitions@1.0.0/animation-transitions.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/css-animated-effects@1.0.0/css-animated-effects.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/transition-visual@1.0.0/transition-visual.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/anim-visual@1.0.0/anim-visual.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/css-anim-transitions@1.0.0/css-anim-transitions.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animated-visual@1.0.0/animated-visual.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/transition-css-anim@1.0.0/transition-css-anim.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/css-visual-anim@1.0.0/css-visual-anim.min.css">
+    
+    <!-- 图标库 -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
+    
+    <!-- 字体库 -->
     <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700;900&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-
-    <!-- ================================== 核心CSS样式（排版规整化，层级清晰）================================== -->
+    
     <style>
-        /* 全局变量定义（统一样式基准） */
         :root {
             --primary: #e74c3c;
             --secondary: #3498db;
@@ -135,98 +61,28 @@
             --gray: #95a5a6;
             --shadow: 0 10px 30px rgba(0,0,0,0.15);
             --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            --container-width: 1200px; /* 统一容器宽度 */
-            --spacing-sm: 8px;
-            --spacing-md: 16px;
-            --spacing-lg: 24px;
-            --spacing-xl: 48px;
         }
-
-        /* 全局样式重置（解决排版混乱基础） */
+        
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
             scroll-behavior: smooth;
         }
-
+        
         body {
             font-family: 'Montserrat', 'Noto Serif SC', serif;
+            background-color: #0f172a;
+            background-image: 
+                radial-gradient(circle at 25% 10%, rgba(52, 152, 219, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 75% 80%, rgba(231, 76, 60, 0.1) 0%, transparent 50%);
             color: var(--light);
             line-height: 1.8;
             overflow-x: hidden;
             cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="%23e74c3c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>'), auto;
-            background-color: #0f172a;
         }
-
-        /* 统一容器样式（所有内容模块居中对齐） */
-        .container {
-            width: 100%;
-            max-width: var(--container-width);
-            margin: 0 auto;
-            padding: 0 var(--spacing-md);
-        }
-
-        /* 背景容器 - 层级明确（z-index统一规划） */
-        .bg-container {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            z-index: -1; /* 背景层最低级 */
-            overflow: hidden;
-        }
-        #particles-js, #tsparticles, #fireflies-container, #starfield-container {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
-        }
-        .gradient-bg {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg, #1a202c, #2d3748, #16213e);
-            background-size: 400% 400%;
-            animation: gradientShift 15s ease infinite;
-            opacity: 0.8;
-            z-index: -2;
-        }
-        .wave-bg {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 200px;
-            opacity: 0.3;
-            z-index: -1;
-        }
-
-        /* 基础动画定义（统一动画基准） */
-        @keyframes gradientShift {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-        @keyframes pulse {
-            0% { transform: scale(1); opacity: 0.8; }
-            100% { transform: scale(1.03); opacity: 1; }
-        }
-        @keyframes dotBounce {
-            0%, 100% { transform: translateY(0); opacity: 0.7; }
-            50% { transform: translateY(-20px); opacity: 1; }
-        }
-
-        /* ================================== 加载页样式（聚焦真实预加载）================================== */
+        
+        /* 加载弹窗 - 全新设计 */
         .loader-container {
             position: fixed;
             top: 0;
@@ -238,22 +94,25 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            z-index: 9999; /* 加载页最高级，未完成不显示其他内容 */
+            z-index: 999999;
             transition: opacity 1.5s cubic-bezier(0.4, 0, 0.2, 1), visibility 1.5s;
             overflow: hidden;
         }
+        
         .loader-content {
             text-align: center;
             z-index: 10;
-            padding: 0 var(--spacing-md);
+            padding: 0 20px;
         }
+        
         .rocket-animation {
             position: relative;
             width: 80px;
             height: 120px;
-            margin: 0 auto var(--spacing-xl);
+            margin: 0 auto 40px;
             animation: rocketLaunch 2s infinite alternate ease-in-out;
         }
+        
         .rocket {
             width: 100%;
             height: 100%;
@@ -262,6 +121,7 @@
             position: relative;
             box-shadow: 0 0 20px rgba(231, 76, 60, 0.7);
         }
+        
         .rocket::before {
             content: '';
             position: absolute;
@@ -275,6 +135,7 @@
             animation: flame 0.5s infinite alternate;
             box-shadow: 0 0 30px rgba(255, 159, 67, 0.8), 0 0 60px rgba(255, 56, 56, 0.6);
         }
+        
         .rocket::after {
             content: '';
             position: absolute;
@@ -286,40 +147,42 @@
             border-radius: 10px 0 0 10px;
             box-shadow: 0 0 10px rgba(52, 152, 219, 0.7);
         }
+        
         @keyframes rocketLaunch {
             0% { transform: translateY(0) rotate(-2deg); }
             100% { transform: translateY(-30px) rotate(2deg); }
         }
+        
         @keyframes flame {
             0% { height: 40px; opacity: 0.8; }
             100% { height: 70px; opacity: 1; }
         }
+        
         .loader-title {
             font-size: 2.5rem;
             font-weight: 900;
             color: var(--light);
-            margin-bottom: var(--spacing-sm);
+            margin-bottom: 15px;
             text-shadow: 0 0 15px rgba(255,255,255,0.3);
             animation: textGlow 3s infinite alternate;
         }
+        
         @keyframes textGlow {
             0% { text-shadow: 0 0 10px rgba(255,255,255,0.2); }
             100% { text-shadow: 0 0 20px rgba(231, 76, 60, 0.6), 0 0 30px rgba(52, 152, 219, 0.4); }
         }
+        
         .loader-subtitle {
             font-size: 1.2rem;
             color: var(--gray);
-            margin-bottom: var(--spacing-lg);
+            margin-bottom: 40px;
             animation: fadeInOut 3s infinite ease-in-out;
         }
-        @keyframes fadeInOut {
-            0%, 100% { opacity: 0.7; }
-            50% { opacity: 1; }
-        }
+        
         .music-prompt {
             font-size: 1rem;
             color: var(--secondary);
-            margin: var(--spacing-md) 0;
+            margin: 20px 0;
             padding: 15px 30px;
             border: 2px dashed var(--secondary);
             border-radius: 50px;
@@ -328,11 +191,18 @@
             transition: var(--transition);
             animation: pulse 2s infinite alternate;
         }
+        
         .music-prompt:hover {
             background-color: rgba(52, 152, 219, 0.1);
             transform: scale(1.05);
             border-style: solid;
         }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 0.8; }
+            100% { transform: scale(1.03); opacity: 1; }
+        }
+        
         .progress-wrapper {
             width: 100%;
             max-width: 600px;
@@ -340,23 +210,44 @@
             background: rgba(255,255,255,0.1);
             border-radius: 6px;
             overflow: hidden;
-            margin: var(--spacing-md) auto;
+            margin: 20px auto;
             box-shadow: 0 0 10px rgba(0,0,0,0.3) inset;
         }
+        
         .progress-bar {
             height: 100%;
             background: linear-gradient(90deg, var(--primary), var(--secondary), var(--accent), var(--primary));
             background-size: 400% 100%;
             border-radius: 6px;
-            animation: gradientShift 2s infinite linear;
-            width: 0%; /* 动态由JS控制，绑定真实预加载进度 */
+            animation: progressFill 10s linear forwards, gradientShift 2s infinite linear;
         }
+        
+        @keyframes progressFill {
+            0% { width: 0%; }
+            10% { width: 8%; }
+            20% { width: 18%; }
+            30% { width: 25%; }
+            40% { width: 35%; }
+            50% { width: 45%; }
+            60% { width: 58%; }
+            70% { width: 68%; }
+            80% { width: 78%; }
+            90% { width: 88%; }
+            100% { width: 100%; }
+        }
+        
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 100% 50%; }
+        }
+        
         .loader-dots {
             display: flex;
             justify-content: center;
             gap: 12px;
-            margin-top: var(--spacing-lg);
+            margin-top: 30px;
         }
+        
         .loader-dot {
             width: 15px;
             height: 15px;
@@ -364,129 +255,39 @@
             background: var(--light);
             animation: dotBounce 1.5s infinite ease-in-out;
         }
+        
         .loader-dot:nth-child(1) { background: var(--primary); animation-delay: 0s; }
         .loader-dot:nth-child(2) { background: var(--secondary); animation-delay: 0.3s; }
         .loader-dot:nth-child(3) { background: var(--accent); animation-delay: 0.6s; }
         .loader-dot:nth-child(4) { background: #9b59b6; animation-delay: 0.9s; }
-        .retry-btn {
-            display: none; /* 加载失败时显示 */
-            margin-top: var(--spacing-md);
-            padding: 10px 20px;
-            background-color: var(--primary);
-            border: none;
-            border-radius: 8px;
-            color: var(--light);
-            font-size: 1rem;
-            cursor: pointer;
-            transition: var(--transition);
-            animation: pulse 1.5s infinite alternate;
+        
+        @keyframes dotBounce {
+            0%, 100% { transform: translateY(0); opacity: 0.7; }
+            50% { transform: translateY(-20px); opacity: 1; }
         }
-        .retry-btn:hover {
-            background-color: #c0392b;
-            transform: scale(1.05);
-        }
-
-        /* ================================== 公告弹窗样式（新增模块）================================== */
-        .notice-popup {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background: rgba(0,0,0,0.7);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 9998; /* 仅次于加载页 */
-            opacity: 0;
-            visibility: hidden;
-            transition: var(--transition);
-        }
-        .notice-popup.active {
-            opacity: 1;
-            visibility: visible;
-        }
-        .notice-content {
-            background-color: var(--dark);
-            width: 90%;
-            max-width: 600px;
-            border-radius: 16px;
-            padding: var(--spacing-xl);
-            box-shadow: var(--shadow);
-            position: relative;
-            /* 绑定animate.css动画 */
-            animation: animate__animated animate__fadeIn animate__scaleIn 0.8s ease forwards;
-        }
-        .notice-close {
+        
+        /* 背景装饰元素 */
+        .loader-bg-element {
             position: absolute;
-            top: var(--spacing-md);
-            right: var(--spacing-md);
-            background: none;
-            border: none;
-            color: var(--gray);
-            font-size: 1.5rem;
-            cursor: pointer;
-            transition: var(--transition);
+            border-radius: 50%;
+            background: rgba(255,255,255,0.05);
+            backdrop-filter: blur(5px);
+            animation: float 8s infinite ease-in-out;
         }
-        .notice-close:hover {
-            color: var(--primary);
-            transform: rotate(90deg);
+        
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            50% { transform: translate(30px, -30px) rotate(180deg); }
         }
-        .notice-title {
-            font-size: 1.8rem;
-            color: var(--secondary);
-            margin-bottom: var(--spacing-md);
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-            padding-bottom: var(--spacing-sm);
-        }
-        .notice-meta {
-            color: var(--gray);
-            font-size: 0.9rem;
-            margin-bottom: var(--spacing-lg);
-        }
-        .notice-text {
-            line-height: 1.8;
-            margin-bottom: var(--spacing-lg);
-            white-space: pre-line; /* 支持换行 */
-        }
-        .notice-footer {
-            display: flex;
-            align-items: center;
-            justify-content: flex-end;
-            gap: var(--spacing-md);
-        }
-        .notice-checkbox {
-            display: flex;
-            align-items: center;
-            gap: var(--spacing-sm);
-            color: var(--gray);
-            font-size: 0.9rem;
-        }
-        .notice-checkbox input {
-            accent-color: var(--secondary);
-        }
-        .notice-confirm {
-            padding: 8px 20px;
-            background-color: var(--secondary);
-            border: none;
-            border-radius: 8px;
-            color: var(--light);
-            cursor: pointer;
-            transition: var(--transition);
-        }
-        .notice-confirm:hover {
-            background-color: #2980b9;
-            transform: scale(1.05);
-        }
-
-        /* ================================== 页面主体样式（排版规整，间距统一）================================== */
+        
+        /* 页面主体 - 初始隐藏 */
         .page-wrapper {
             display: none;
             opacity: 0;
             transition: opacity 2s cubic-bezier(0.4, 0, 0.2, 1);
         }
-
-        /* 英雄区（全屏封面） */
+        
+        /* 顶部英雄区域 - PPT式弹出效果 */
         .hero-section {
             height: 100vh;
             display: flex;
@@ -494,619 +295,887 @@
             justify-content: center;
             align-items: center;
             text-align: center;
-            padding: 0 var(--spacing-md);
+            padding: 0 20px;
+            position: relative;
+            overflow: hidden;
         }
+        
         .hero-title {
-            font-size: 4rem;
+            font-size: 5rem;
             font-weight: 900;
-            margin-bottom: var(--spacing-md);
-            text-shadow: 0 0 20px rgba(231,76,60,0.5);
-            /* 绑定animate.css动画 */
-            animation: animate__animated animate__fadeInDown 1.2s ease forwards;
+            color: var(--light);
+            margin-bottom: 20px;
+            text-shadow: 0 0 30px rgba(231, 76, 60, 0.5);
+            opacity: 0;
+            transform: translateY(-50px) scale(0.8);
+            animation: titlePop 1.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards 0.5s;
+            background: linear-gradient(90deg, var(--primary), var(--secondary), var(--accent));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-size: 200% 100%;
+            animation: titlePop 1.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards 0.5s, gradientText 3s infinite linear;
         }
+        
+        @keyframes titlePop {
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        
+        @keyframes gradientText {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 200% 50%; }
+        }
+        
         .hero-subtitle {
-            font-size: 1.2rem;
+            font-size: 1.5rem;
+            color: var(--gray);
             max-width: 800px;
-            margin-bottom: var(--spacing-xl);
-            color: rgba(255,255,255,0.9);
-            /* 绑定animate.css动画 */
-            animation: animate__animated animate__fadeInUp 1.2s ease forwards 0.3s;
+            margin-bottom: 40px;
             opacity: 0;
+            animation: fadeIn 2s ease forwards 1.5s;
+            font-style: italic;
         }
+        
         .hero-divider {
-            width: 150px;
-            height: 3px;
+            width: 200px;
+            height: 4px;
             background: linear-gradient(90deg, transparent, var(--primary), transparent);
-            margin-bottom: var(--spacing-xl);
-            /* 绑定animate.css动画 */
-            animation: animate__animated animate__fadeIn 1.2s ease forwards 0.6s;
+            margin: 30px auto;
             opacity: 0;
+            animation: lineGrow 2s ease forwards 2s;
         }
+        
+        @keyframes lineGrow {
+            from { width: 0; opacity: 0; }
+            to { width: 200px; opacity: 1; }
+        }
+        
         .scroll-indicator {
             position: absolute;
-            bottom: var(--spacing-xl);
+            bottom: 50px;
             left: 50%;
             transform: translateX(-50%);
-            text-align: center;
-            /* 绑定animate.css动画 */
-            animation: animate__animated animate__bounce 2s infinite;
-        }
-        .scroll-indicator p {
-            font-size: 0.9rem;
-            margin-top: var(--spacing-sm);
             color: var(--gray);
+            animation: bounce 2s infinite alternate;
+            cursor: pointer;
         }
-
-        /* 内容容器（统一布局约束） */
+        
+        @keyframes bounce {
+            0% { transform: translateX(-50%) translateY(0); }
+            100% { transform: translateX(-50%) translateY(-20px); }
+        }
+        
+        /* 内容卡片布局 - 全新设计 */
         .content-container {
-            padding: var(--spacing-xl) 0;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 80px 20px;
         }
-
-        /* 通用section样式（统一模块间距和标题样式） */
+        
         .section-header {
             text-align: center;
-            margin-bottom: var(--spacing-xl);
+            margin-bottom: 80px;
+            position: relative;
         }
+        
         .section-title {
-            font-size: 2.2rem;
+            font-size: 2.5rem;
+            font-weight: 700;
             color: var(--light);
-            margin-bottom: var(--spacing-md);
+            margin-bottom: 15px;
             position: relative;
             display: inline-block;
+            padding-bottom: 20px;
         }
+        
         .section-title::after {
             content: '';
             position: absolute;
-            bottom: -8px;
+            bottom: 0;
             left: 50%;
             transform: translateX(-50%);
             width: 80px;
             height: 3px;
-            background-color: var(--primary);
+            background: var(--primary);
+            animation: sectionLine 1.5s ease forwards 0.5s;
+            opacity: 0;
         }
+        
+        @keyframes sectionLine {
+            to { width: 150px; opacity: 1; }
+        }
+        
         .section-desc {
-            max-width: 800px;
-            margin: 0 auto;
-            color: var(--gray);
             font-size: 1.1rem;
+            color: var(--gray);
+            max-width: 900px;
+            margin: 0 auto;
         }
-        .mb-20 {
+        
+        /* 图片网格 - 分层卡片设计 */
+        .image-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 40px;
             margin-bottom: 120px;
         }
-        .mb-10 {
-            margin-bottom: 60px;
-        }
-
-        /* 第一板块：记忆中的恩师（图片网格 - 排版规整） */
-        .memory-section .image-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: var(--spacing-lg);
-            margin-top: var(--spacing-xl);
-        }
+        
         .image-card {
-            background-color: rgba(255,255,255,0.05);
-            border-radius: 12px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 20px;
             overflow: hidden;
             box-shadow: var(--shadow);
             transition: var(--transition);
-            /* 绑定hover.css动画 */
-            animation: hvr-float 2s infinite alternate;
-        }
-        .image-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
-        }
-        .card-image {
-            width: 100%;
-            height: 220px;
-            object-fit: cover;
-            transition: var(--transition);
-        }
-        .image-card:hover .card-image {
-            transform: scale(1.05);
-        }
-        .card-caption {
-            padding: var(--spacing-md);
-        }
-        .caption-title {
-            font-size: 1.1rem;
-            color: var(--light);
-            margin-bottom: var(--spacing-sm);
-        }
-        .caption-desc {
-            font-size: 0.95rem;
-            color: var(--gray);
-            line-height: 1.6;
-        }
-
-        /* 装饰元素（动态漂浮） */
-        .content-decoration {
-            position: absolute;
-            z-index: -1;
-            opacity: 0.1;
-            /* 绑定floating-elements库动画 */
-            animation: floating-elements 8s infinite ease-in-out alternate;
-        }
-        .deco-1 {
-            width: 200px;
-            height: 200px;
-            border-radius: 50%;
-            background-color: var(--primary);
-            top: 20%;
-            left: 5%;
-        }
-        .deco-2 {
-            width: 150px;
-            height: 150px;
-            border-radius: 50%;
-            background-color: var(--secondary);
-            bottom: 10%;
-            right: 8%;
-        }
-        .deco-3 {
-            width: 180px;
-            height: 180px;
-            border-radius: 50%;
-            background-color: var(--accent);
-            top: 60%;
-            left: 15%;
-        }
-
-        /* 第二板块：师生寄语（3D轮播 - 排版规整） */
-        .carousel-wrapper {
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.1);
+            transform: translateY(20px);
+            opacity: 0;
+            animation: cardRise 1s ease forwards;
             position: relative;
-            padding: var(--spacing-xl) 0;
+            overflow: hidden;
         }
-        .carousel-bg {
+        
+        .image-card::before {
+            content: '';
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0,0,0,0.3);
-            z-index: -1;
-            border-radius: 24px;
+            background: linear-gradient(to bottom, transparent, rgba(0,0,0,0.7));
+            z-index: 1;
+            opacity: 0;
+            transition: opacity 0.5s ease;
         }
+        
+        .image-card:hover::before {
+            opacity: 1;
+        }
+        
+        .image-card:nth-child(1) { animation-delay: 0.2s; }
+        .image-card:nth-child(2) { animation-delay: 0.4s; }
+        .image-card:nth-child(3) { animation-delay: 0.6s; }
+        .image-card:nth-child(4) { animation-delay: 0.8s; }
+        .image-card:nth-child(5) { animation-delay: 1s; }
+        .image-card:nth-child(6) { animation-delay: 1.2s; }
+        
+        @keyframes cardRise {
+            to { transform: translateY(0); opacity: 1; }
+        }
+        
+        .image-card:hover {
+            transform: translateY(-20px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            border-color: rgba(231, 76, 60, 0.3);
+        }
+        
+        .card-image {
+            width: 100%;
+            height: 400px;
+            object-fit: cover;
+            transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1), filter 0.8s ease;
+        }
+        
+        .image-card:hover .card-image {
+            transform: scale(1.1);
+            filter: brightness(1.1) contrast(1.05);
+        }
+        
+        .card-caption {
+            padding: 25px;
+            text-align: center;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .caption-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--light);
+            margin-bottom: 10px;
+        }
+        
+        .caption-desc {
+            font-size: 1rem;
+            color: var(--gray);
+        }
+        
+        /* 高级轮播 - 3D堆叠效果 */
+        .carousel-wrapper {
+            margin: 150px 0;
+            position: relative;
+            perspective: 1500px;
+        }
+        
         .carousel-3d {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            perspective: 1200px;
-            height: 450px;
-            /* 绑定framer-motion动画 */
-            animation: framer-motion-rotate 20s infinite linear;
+            position: relative;
+            width: 100%;
+            height: 500px;
+            transform-style: preserve-3d;
+            animation: carouselRotate 30s infinite linear;
+            transition: animation-play-state 0.5s ease;
         }
+        
+        .carousel-wrapper:hover .carousel-3d {
+            animation-play-state: paused;
+        }
+        
+        @keyframes carouselRotate {
+            0% { transform: rotateY(0deg); }
+            100% { transform: rotateY(360deg); }
+        }
+        
         .carousel-item-3d {
             position: absolute;
             width: 320px;
-            background-color: rgba(255,255,255,0.05);
-            border-radius: 12px;
+            height: 450px;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%) rotateY(calc(var(--i) * (360deg / 15))) translateZ(550px);
+            border-radius: 15px;
             overflow: hidden;
-            box-shadow: var(--shadow);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
             transition: var(--transition);
-            transform-style: preserve-3d;
+            background: rgba(255,255,255,0.05);
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255,255,255,0.1);
         }
-        .carousel-img {
+        
+        .carousel-item-3d:hover {
+            transform: translate(-50%, -50%) rotateY(calc(var(--i) * (360deg / 15))) translateZ(650px) scale(1.05);
+            z-index: 10;
+            box-shadow: 0 20px 40px rgba(231, 76, 60, 0.4);
+            border-color: rgba(231, 76, 60, 0.5);
+        }
+        
+        .carousel-item-3d img {
             width: 100%;
-            height: 200px;
+            height: 320px;
             object-fit: cover;
+            transition: transform 0.5s ease;
         }
+        
+        .carousel-item-3d:hover img {
+            transform: scale(1.08);
+        }
+        
         .carousel-item-caption {
-            padding: var(--spacing-md);
+            padding: 20px;
+            text-align: center;
         }
+        
         .carousel-item-title {
             font-size: 1.1rem;
-            color: var(--secondary);
-            margin-bottom: var(--spacing-sm);
+            color: var(--light);
+            margin-bottom: 8px;
         }
+        
         .carousel-item-desc {
-            font-size: 0.95rem;
+            font-size: 0.9rem;
             color: var(--gray);
-            line-height: 1.6;
         }
-
-        /* 第三板块：征稿启事（互动区域 - 排版规整） */
+        
+        /* 征稿区域 - 高级卡片设计 */
+        .contribution-section {
+            margin: 120px 0;
+            position: relative;
+        }
+        
         .contribution-card {
-            background-color: rgba(255,255,255,0.03);
-            border-radius: 16px;
-            padding: var(--spacing-xl);
+            background: linear-gradient(135deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02));
+            border-radius: 25px;
+            padding: 60px;
             box-shadow: var(--shadow);
-            margin-top: var(--spacing-xl);
-        }
-        .contribution-header {
-            text-align: center;
-            margin-bottom: var(--spacing-xl);
-        }
-        .contribution-title {
-            font-size: 1.8rem;
-            color: var(--light);
-            margin-bottom: var(--spacing-md);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: var(--spacing-sm);
-        }
-        .contribution-desc {
-            max-width: 800px;
-            margin: 0 auto;
-            color: var(--gray);
-            font-size: 1.05rem;
-        }
-        .submission-container {
-            margin-bottom: var(--spacing-xl);
-            display: grid;
-            gap: var(--spacing-lg);
-        }
-        .submission-card {
-            background-color: rgba(255,255,255,0.05);
-            border-radius: 12px;
-            padding: var(--spacing-lg);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-        }
-        .submission-content {
-            color: var(--light);
-            line-height: 1.8;
-            margin-bottom: var(--spacing-md);
-            white-space: pre-line; /* 保留原文本换行 */
-        }
-        .submission-author {
-            text-align: right;
-            color: var(--secondary);
-            font-style: italic;
-        }
-        .submission-info {
-            background-color: rgba(52,152,219,0.05);
-            border-radius: 12px;
-            padding: var(--spacing-lg);
-            border: 1px solid rgba(52,152,219,0.2);
-        }
-        .info-title {
-            font-size: 1.3rem;
-            color: var(--secondary);
-            margin-bottom: var(--spacing-md);
-        }
-        .info-list {
-            list-style: none;
-            margin-bottom: var(--spacing-lg);
-        }
-        .info-list li {
-            margin-bottom: var(--spacing-sm);
-            color: var(--gray);
-            display: flex;
-            align-items: flex-start;
-            gap: var(--spacing-sm);
-        }
-        .info-list li i {
-            color: var(--accent);
-            margin-top: 6px;
-        }
-        .wechat-contact {
-            display: inline-block;
-            padding: 12px 30px;
-            background-color: var(--secondary);
-            color: var(--light);
-            border-radius: 8px;
-            text-decoration: none;
-            transition: var(--transition);
-            /* 绑定ripple-js波纹动画 */
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255,255,255,0.1);
             position: relative;
             overflow: hidden;
         }
-        .wechat-contact i {
-            margin-right: var(--spacing-sm);
-        }
-        .wechat-contact:hover {
-            background-color: #2980b9;
-            transform: scale(1.03);
-        }
-
-        /* 页脚区域（收尾呼应主题） */
-        .footer-section {
-            background-color: rgba(0,0,0,0.3);
-            padding: var(--spacing-xl) 0;
-            position: relative;
-        }
-        .footer-bg {
+        
+        .contribution-card::before {
+            content: '';
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(180deg, transparent, #0f172a);
-            z-index: -1;
+            background: radial-gradient(circle at 30% 30%, rgba(52, 152, 219, 0.1), transparent 50%);
+            z-index: 0;
         }
-        .footer-logo {
-            font-size: 1.8rem;
-            font-weight: 700;
-            text-align: center;
-            margin-bottom: var(--spacing-md);
-            color: var(--light);
+        
+        .contribution-header {
+            margin-bottom: 40px;
+            position: relative;
+            z-index: 1;
         }
-        .footer-desc {
-            max-width: 800px;
-            margin: 0 auto var(--spacing-xl);
-            text-align: center;
-            color: var(--gray);
-            font-size: 1.05rem;
-            line-height: 1.8;
-        }
-        .footer-divider {
-            width: 200px;
-            height: 1px;
-            background-color: rgba(255,255,255,0.1);
-            margin: 0 auto var(--spacing-xl);
-        }
-        .footer-info {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: var(--spacing-lg);
-            margin-bottom: var(--spacing-xl);
-        }
-        .info-item {
-            text-align: center;
-        }
-        .info-item-title {
-            font-size: 1.1rem;
+        
+        .contribution-title {
+            font-size: 2rem;
             color: var(--secondary);
-            margin-bottom: var(--spacing-sm);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
         }
-        .info-item-content {
+        
+        .contribution-title i {
+            font-size: 1.8rem;
+            animation: spin 5s infinite linear;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .contribution-desc {
+            font-size: 1.1rem;
             color: var(--gray);
-            font-size: 0.95rem;
+            margin-bottom: 30px;
         }
-        .copyright {
+        
+        /* 稿件展示区 */
+        .submission-container {
+            margin: 40px 0;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .submission-card {
+            background: rgba(255,255,255,0.03);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            border-left: 4px solid var(--primary);
+            transition: var(--transition);
+        }
+        
+        .submission-card:hover {
+            transform: translateX(10px);
+            background: rgba(255,255,255,0.05);
+            box-shadow: 0 0 20px rgba(0,0,0,0.2);
+        }
+        
+        .submission-content {
+            font-size: 1.1rem;
+            color: var(--light);
+            line-height: 1.8;
+            margin-bottom: 15px;
+        }
+        
+        .submission-author {
+            text-align: right;
+            font-style: italic;
+            color: var(--accent);
+            font-weight: 500;
+        }
+        
+        /* 征稿信息 */
+        .submission-info {
+            background: rgba(52, 152, 219, 0.05);
+            border-radius: 15px;
+            padding: 30px;
+            margin-top: 40px;
+            border: 1px solid rgba(52, 152, 219, 0.1);
+            position: relative;
+            z-index: 1;
+        }
+        
+        .info-title {
+            font-size: 1.3rem;
+            color: var(--secondary);
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+        
+        .info-list {
+            list-style: none;
+            margin-bottom: 20px;
+        }
+        
+        .info-list li {
+            margin-bottom: 10px;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            color: var(--gray);
+        }
+        
+        .info-list li i {
+            color: var(--accent);
+            margin-top: 8px;
+        }
+        
+        .wechat-contact {
+            display: inline-block;
+            background: linear-gradient(90deg, var(--secondary), var(--accent));
+            color: white;
+            padding: 12px 30px;
+            border-radius: 50px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: var(--transition);
+            box-shadow: 0 10px 20px rgba(52, 152, 219, 0.2);
+            margin-top: 10px;
+        }
+        
+        .wechat-contact:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(52, 152, 219, 0.3);
+            letter-spacing: 1px;
+        }
+        
+        /* 版权区域 */
+        .footer-section {
+            background: linear-gradient(135deg, #1a202c, #2d3748);
+            border-radius: 30px 30px 0 0;
+            padding: 80px 20px 40px;
+            margin-top: 120px;
             text-align: center;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .footer-logo {
+            font-size: 2.2rem;
+            font-weight: 900;
+            color: var(--light);
+            margin-bottom: 20px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .footer-desc {
+            font-size: 1.1rem;
             color: var(--gray);
-            font-size: 0.9rem;
-            padding-top: var(--spacing-md);
+            max-width: 800px;
+            margin: 0 auto 40px;
+        }
+        
+        .footer-divider {
+            width: 100px;
+            height: 2px;
+            background: var(--primary);
+            margin: 0 auto 40px;
+        }
+        
+        .footer-info {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 40px;
+            margin-bottom: 60px;
+        }
+        
+        .info-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .info-item-title {
+            font-size: 1rem;
+            color: var(--gray);
+            margin-bottom: 10px;
+        }
+        
+        .info-item-content {
+            font-size: 1.1rem;
+            color: var(--light);
+            font-weight: 500;
+        }
+        
+        .copyright {
+            font-size: 0.95rem;
+            color: var(--gray);
+            margin-top: 40px;
+            padding-top: 20px;
             border-top: 1px solid rgba(255,255,255,0.05);
         }
-
-        /* 响应式适配（确保不同设备排版不乱） */
-        @media (max-width: 768px) {
-            .hero-title {
-                font-size: 3rem;
+        
+        /* 点击气泡效果 */
+        .bubble {
+            position: fixed;
+            pointer-events: none;
+            border-radius: 50%;
+            background: rgba(231, 76, 60, 0.3);
+            backdrop-filter: blur(5px);
+            animation: bubblePop 1s ease-out forwards;
+            z-index: 9999;
+        }
+        
+        @keyframes bubblePop {
+            0% { transform: scale(0); opacity: 1; }
+            100% { transform: scale(1); opacity: 0; }
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 1200px) {
+            .carousel-3d {
+                height: 450px;
             }
-            .section-title {
-                font-size: 1.8rem;
-            }
-            .memory-section .image-grid {
-                grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-                gap: var(--spacing-md);
-            }
+            
             .carousel-item-3d {
                 width: 280px;
+                height: 400px;
+                transform: translate(-50%, -50%) rotateY(calc(var(--i) * (360deg / 12))) translateZ(450px);
             }
-            .contribution-card {
-                padding: var(--spacing-lg);
-            }
-            .mb-20 {
-                margin-bottom: 80px;
+            
+            .carousel-item-3d:hover {
+                transform: translate(-50%, -50%) rotateY(calc(var(--i) * (360deg / 12))) translateZ(550px) scale(1.05);
             }
         }
-        @media (max-width: 480px) {
+        
+        @media (max-width: 992px) {
+            .hero-title {
+                font-size: 3.5rem;
+            }
+            
+            .image-grid {
+                grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+                gap: 30px;
+            }
+            
+            .card-image {
+                height: 350px;
+            }
+            
+            .contribution-card {
+                padding: 40px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 2.8rem;
+            }
+            
+            .hero-subtitle {
+                font-size: 1.2rem;
+            }
+            
+            .loader-title {
+                font-size: 2rem;
+            }
+            
+            .section-title {
+                font-size: 2rem;
+            }
+            
+            .carousel-3d {
+                height: 400px;
+            }
+            
+            .carousel-item-3d {
+                width: 240px;
+                height: 350px;
+                transform: translate(-50%, -50%) rotateY(calc(var(--i) * (360deg / 9))) translateZ(380px);
+            }
+            
+            .carousel-item-3d:hover {
+                transform: translate(-50%, -50%) rotateY(calc(var(--i) * (360deg / 9))) translateZ(450px) scale(1.05);
+            }
+            
+            .contribution-card {
+                padding: 30px;
+            }
+            
+            .submission-card {
+                padding: 20px;
+            }
+        }
+        
+        @media (max-width: 576px) {
             .hero-title {
                 font-size: 2.2rem;
             }
-            .hero-subtitle {
-                font-size: 1rem;
-            }
-            .section-title {
-                font-size: 1.6rem;
-            }
-            .memory-section .image-grid {
+            
+            .image-grid {
                 grid-template-columns: 1fr;
+                gap: 25px;
             }
+            
+            .card-image {
+                height: 300px;
+            }
+            
+            .carousel-3d {
+                height: 350px;
+            }
+            
             .carousel-item-3d {
-                width: 240px;
+                width: 200px;
+                height: 300px;
+                transform: translate(-50%, -50%) rotateY(calc(var(--i) * (360deg / 6))) translateZ(300px);
             }
+            
+            .carousel-item-3d:hover {
+                transform: translate(-50%, -50%) rotateY(calc(var(--i) * (360deg / 6))) translateZ(350px) scale(1.05);
+            }
+            
             .footer-info {
-                grid-template-columns: 1fr;
+                flex-direction: column;
+                gap: 20px;
             }
         }
     </style>
 </head>
 <body>
-    <!-- 背景容器 - 多层动态叠加（完整实现，层级清晰） -->
-    <div class="bg-container">
-        <div class="gradient-bg"></div>
-        <div id="particles-js"></div>
-        <div id="tsparticles"></div>
-        <div id="fireflies-container"></div>
-        <div id="starfield-container"></div>
-        <div class="wave-bg" id="wave-container"></div>
-    </div>
-
-    <!-- 加载弹窗（页面初始化显示，绑定真实预加载） -->
+    <!-- 加载弹窗 - 全新设计 -->
     <div class="loader-container" id="loader">
+        <!-- 背景装饰元素 -->
+        <div class="loader-bg-element" style="width: 200px; height: 200px; top: 10%; left: 10%; animation-delay: 0s;"></div>
+        <div class="loader-bg-element" style="width: 150px; height: 150px; top: 70%; left: 20%; animation-delay: 1s;"></div>
+        <div class="loader-bg-element" style="width: 180px; height: 180px; top: 30%; left: 80%; animation-delay: 2s;"></div>
+        <div class="loader-bg-element" style="width: 120px; height: 120px; top: 80%; left: 70%; animation-delay: 3s;"></div>
+        
         <div class="loader-content">
             <div class="rocket-animation">
                 <div class="rocket"></div>
             </div>
-            <h1 class="loader-title">怀念杜江老师</h1>
-            <p class="loader-subtitle">加载中... 追寻地理之光的足迹</p>
-            <div class="music-prompt" id="musicPrompt">
-                <i class="fa fa-music"></i> 点击播放背景音乐
+            
+            <h1 class="loader-title animate__animated animate__pulse">图片加载中</h1>
+            <p class="loader-subtitle animate__animated animate__fadeIn">开启VPN效果更佳</p>
+            
+            <div class="music-prompt" id="musicTrigger">
+                <i class="fa fa-headphones mr-2"></i> 单击此处开始播放音乐 | 戴上耳机效果更佳
             </div>
+            
             <div class="progress-wrapper">
-                <div class="progress-bar" id="progressBar"></div>
+                <div class="progress-bar"></div>
             </div>
+            
             <div class="loader-dots">
                 <div class="loader-dot"></div>
                 <div class="loader-dot"></div>
                 <div class="loader-dot"></div>
                 <div class="loader-dot"></div>
             </div>
-            <button class="retry-btn" id="retryBtn">
-                <i class="fa fa-refresh"></i> 重新加载
-            </button>
         </div>
     </div>
 
-    <!-- 新增公告弹窗（加载完成后自动显示） -->
-    <div class="notice-popup" id="noticePopup">
-        <div class="notice-content">
-            <button class="notice-close" id="noticeClose">
-                <i class="fa fa-times"></i>
-            </button>
-            <h3 class="notice-title" id="noticeTitle">${SITE_CONFIG.notice.title}</h3>
-            <div class="notice-meta" id="noticeMeta">发布时间：${SITE_CONFIG.notice.publishTime}</div>
-            <div class="notice-text" id="noticeText">${SITE_CONFIG.notice.content}</div>
-            <div class="notice-footer">
-                <div class="notice-checkbox">
-                    <input type="checkbox" id="noticeNoShow">
-                    <label for="noticeNoShow">不再显示</label>
-                </div>
-                <button class="notice-confirm" id="noticeConfirm">确定</button>
-            </div>
-        </div>
-    </div>
+    <!-- 页面主体 - 全新布局 -->
+    <div class="page-wrapper" id="page">
+        <!-- 背景音乐 -->
+        <audio id="backgroundMusic" loop preload="auto">
+            <source src="https://yzbjfpv.top/school/dj/dj-20251107.mp3" type="audio/mpeg">
+        </audio>
 
-    <!-- 页面主体内容（加载完成后显示） -->
-    <div class="page-wrapper" id="pageWrapper">
-        <!-- 英雄区（全屏封面） -->
+        <!-- 顶部英雄区域 -->
         <section class="hero-section">
-            <h1 class="hero-title">杜江老师</h1>
-            <p class="hero-subtitle">一位用地理情怀点亮学子梦想，用责任与温暖诠释教育真谛的引路人。他的教诲如山川般厚重，他的关怀如江河般绵长。</p>
+            <h1 class="hero-title">怀念杜江老师</h1>
             <div class="hero-divider"></div>
-            <div class="scroll-indicator" id="scrollIndicator">
+            <p class="hero-subtitle">一位幽默、负责的地理老师，永远活在我们心中</p>
+            <div class="scroll-indicator">
                 <i class="fa fa-angle-down fa-2x"></i>
-                <p class="mt-2">向下滑动，重温师恩</p>
             </div>
         </section>
 
-        <!-- 内容容器（统一布局约束） -->
-        <div class="content-container container">
-            <!-- 第一板块：记忆中的恩师（图片网格 - 排版规整） -->
-            <section class="memory-section mb-20" style="position: relative;">
-                <div class="section-header">
-                    <h2 class="section-title">记忆中的恩师</h2>
-                    <p class="section-desc">那些与杜老师相处的点滴，如同散落在时光里的星辰，每一颗都闪耀着温暖与智慧的光芒。</p>
-                </div>
-
-                <!-- 装饰元素（动态漂浮） -->
-                <div class="content-decoration deco-1"></div>
-                <div class="content-decoration deco-2"></div>
-                <div class="content-decoration deco-3"></div>
-
-                <!-- 图片网格（响应式布局，排版规整） -->
-                <div class="image-grid">
-                    <div class="image-card">
-                        <img src="https://img520.com/AfsezE.jpeg" alt="课堂上的杜老师" class="card-image">
-                        <div class="card-caption">
-                            <h3 class="caption-title">课堂上的专注</h3>
-                            <p class="caption-desc">拿着地球仪讲解地形地貌，眼神里满是对地理学科的热爱与执着。</p>
-                        </div>
-                    </div>
-                    <div class="image-card">
-                        <img src="https://img520.com/vWmJij.jpeg" alt="课后辅导" class="card-image">
-                        <div class="card-caption">
-                            <h3 class="caption-title">课后的耐心</h3>
-                            <p class="caption-desc">牺牲休息时间为学子答疑，用通俗的语言化解复杂的知识点。</p>
-                        </div>
-                    </div>
-                    <div class="image-card">
-                        <img src="https://img520.com/KBMbWX.jpeg" alt="户外考察" class="card-image">
-                        <div class="card-caption">
-                            <h3 class="caption-title">户外的探索</h3>
-                            <p class="caption-desc">带领学生实地考察地貌，让书本知识与现实世界紧密相连。</p>
-                        </div>
-                    </div>
-                    <div class="image-card">
-                        <img src="https://img520.com/nKXwqH.jpeg" alt="师生合影" class="card-image">
-                        <div class="card-caption">
-                            <h3 class="caption-title">温暖的合影</h3>
-                            <p class="caption-desc">与毕业学子的珍贵留念，笑容里满是欣慰与不舍。</p>
-                        </div>
-                    </div>
-                    <div class="image-card">
-                        <img src="https://img520.com/pi7Ylm.jpeg" alt="备课笔记" class="card-image">
-                        <div class="card-caption">
-                            <h3 class="caption-title">详尽的笔记</h3>
-                            <p class="caption-desc">密密麻麻的备课手稿，是对教育事业的极致负责。</p>
-                        </div>
-                    </div>
-                    <div class="image-card">
-                        <img src="https://img520.com/I7vmWO.jpeg" alt="获奖瞬间" class="card-image">
-                        <div class="card-caption">
-                            <h3 class="caption-title">荣誉的见证</h3>
-                            <p class="caption-desc">获得优秀教师称号，实至名归的认可与肯定。</p>
-                        </div>
+        <!-- 图片展示区 - 全新网格布局 -->
+        <section class="content-container">
+            <div class="section-header">
+                <h2 class="section-title">杜老师的珍贵瞬间</h2>
+                <p class="section-desc">记录那些温暖人心的校园时光，留住永恒的回忆</p>
+            </div>
+            
+            <div class="image-grid">
+                <div class="image-card">
+                    <img src="https://img520.com/AfsezE.jpeg" alt="杜老师在办公室" class="card-image" preload="auto">
+                    <div class="card-caption">
+                        <h3 class="caption-title">认真备课</h3>
+                        <p class="caption-desc">办公室里，杜老师专注备课的身影</p>
                     </div>
                 </div>
-            </section>
-
-            <!-- 第二板块：师生寄语（3D轮播 - 排版规整） -->
-            <section class="carousel-wrapper mb-20">
-                <div class="section-header mb-10">
-                    <h2 class="section-title">师生寄语</h2>
-                    <p class="section-desc">那些未曾说出口的感激，那些藏在心底的思念，都汇聚于此。</p>
-                </div>
-                <div class="carousel-bg"></div>
-                <div class="carousel-3d" id="carousel3d">
-                    <!-- 轮播项1 -->
-                    <div class="carousel-item-3d" style="--i: 0">
-                        <img src="https://img520.com/M8H1MO.jpeg" alt="学子寄语1" class="carousel-img">
-                        <div class="carousel-item-caption">
-                            <h3 class="carousel-item-title">来自2018级学子</h3>
-                            <p class="carousel-item-desc">杜老师教会我的不仅是经纬线的划分，更是人生的方向感。如今走南闯北，总会想起他说的"读万卷书，行万里路"。</p>
-                        </div>
-                    </div>
-                    <!-- 轮播项2 -->
-                    <div class="carousel-item-3d" style="--i: 1">
-                        <img src="https://img520.com/7Z8f3x.jpeg" alt="学子寄语2" class="carousel-img">
-                        <div class="carousel-item-caption">
-                            <h3 class="carousel-item-title">来自2020级学子</h3>
-                            <p class="carousel-item-desc">曾经觉得地理很难，是杜老师用趣味故事把知识点串联起来。现在每次看到地图，都会想起他课堂上的笑容。</p>
-                        </div>
-                    </div>
-                    <!-- 轮播项3 -->
-                    <div class="carousel-item-3d" style="--i: 2">
-                        <img src="https://img520.com/9x7YpQ.jpeg" alt="同事寄语" class="carousel-img">
-                        <div class="carousel-item-caption">
-                            <h3 class="carousel-item-title">来自同事</h3>
-                            <p class="carousel-item-desc">杜老师是真正热爱教育的人，对学生倾尽全力，对工作一丝不苟。他的敬业精神，值得我们所有人学习。</p>
-                        </div>
-                    </div>
-                    <!-- 轮播项4 -->
-                    <div class="carousel-item-3d" style="--i: 3">
-                        <img src="https://img520.com/3zJk9L.jpeg" alt="学子寄语3" class="carousel-img">
-                        <div class="carousel-item-caption">
-                            <h3 class="carousel-item-title">来自2019级学子</h3>
-                            <p class="carousel-item-desc">当年总爱逃地理课，是杜老师一次次找我谈心，让我发现地理的魅力。现在我考上了地理相关专业，想对他说声谢谢。</p>
-                        </div>
-                    </div>
-                    <!-- 轮播项5 -->
-                    <div class="carousel-item-3d" style="--i: 4">
-                        <img src="https://img520.com/5tF7dS.jpeg" alt="家长寄语" class="carousel-img">
-                        <div class="carousel-item-caption">
-                            <h3 class="carousel-item-title">来自家长</h3>
-                            <p class="carousel-item-desc">感谢杜老师对孩子的耐心教导，不仅成绩提高了，更学会了尊重与责任。您是孩子成长路上的良师益友。</p>
-                        </div>
+                
+                <div class="image-card">
+                    <img src="https://img520.com/vWmJij.jpeg" alt="杜老师和同学交流" class="card-image" preload="auto">
+                    <div class="card-caption">
+                        <h3 class="caption-title">师生交流</h3>
+                        <p class="caption-desc">课间休息时，耐心解答同学问题</p>
                     </div>
                 </div>
-            </section>
-
-            <!-- 第三板块：征稿启事（互动区域 - 排版规整） -->
-            <section class="contribution-section mb-20">
-                <div class="section-header">
-                    <h2 class="section-title">时光留声机</h2>
-                    <p class="section-desc">如果您也有与杜老师相关的故事、照片或寄语，欢迎分享，让这份怀念永远传递。</p>
-                </div>
-
-                <div class="contribution-card">
-                    <div class="contribution-header">
-                        <h3 class="contribution-title">
-                            <i class="fa fa-pencil-square-o"></i> 诚挚征稿
-                        </h3>
-                        <p class="contribution-desc">无论是课堂上的趣事、课后的关怀，还是对老师的思念与祝福，都可以记录下来，我们将整理后展示在页面中，让更多人感受这份温暖。</p>
+                
+                <div class="image-card">
+                    <img src="https://img520.com/KBMbWX.jpeg" alt="杜老师批改作业" class="card-image" preload="auto">
+                    <div class="card-caption">
+                        <h3 class="caption-title">批改作业</h3>
+                        <p class="caption-desc">认真批改每一份作业，负责任的态度</p>
                     </div>
+                </div>
+                
+                <div class="image-card">
+                    <img src="https://img520.com/nKXwqH.jpeg" alt="看着同学的杜老师" class="card-image" preload="auto">
+                    <div class="card-caption">
+                        <h3 class="caption-title">关爱学生</h3>
+                        <p class="caption-desc">温柔注视着同学们的眼神，充满关爱</p>
+                    </div>
+                </div>
+                
+                <div class="image-card">
+                    <img src="https://img520.com/pi7Ylm.jpeg" alt="校园里的杜老师" class="card-image" preload="auto">
+                    <div class="card-caption">
+                        <h3 class="caption-title">校园漫步</h3>
+                        <p class="caption-desc">在校园里散步，享受宁静的时光</p>
+                    </div>
+                </div>
+                
+                <div class="image-card">
+                    <img src="https://img520.com/I7vmWO.jpeg" alt="校园里的杜老师" class="card-image" preload="auto">
+                    <div class="card-caption">
+                        <h3 class="caption-title">教学瞬间</h3>
+                        <p class="caption-desc">课堂之外，依然心系教学</p>
+                    </div>
+                </div>
+            </div>
+        </section>
 
-                    <!-- 已征集稿件展示（排版规整，保留原内容） -->
-                    <div class="submission-container">
-                        <div class="submission-card">
-                            <p class="submission-content">我总是幼稚的以为，来日方长
+        <!-- 3D轮播 - 同学们的怀念 -->
+        <section class="carousel-wrapper">
+            <div class="section-header">
+                <h2 class="section-title">同学们的深切怀念</h2>
+                <p class="section-desc">每一份祝福，每一段回忆，都承载着对杜老师的思念</p>
+            </div>
+            
+            <div class="carousel-3d" id="carousel3d">
+                <!-- 轮播项 - 15个 -->
+                <div class="carousel-item-3d" style="--i: 0">
+                    <img src="https://img520.com/M8H1MO.jpeg" alt="同学怀念" preload="auto">
+                    <div class="carousel-item-caption">
+                        <h3 class="carousel-item-title">深深思念</h3>
+                        <p class="carousel-item-desc">永远怀念杜老师的教诲</p>
+                    </div>
+                </div>
+                
+                <div class="carousel-item-3d" style="--i: 1">
+                    <img src="https://img520.com/3ihPzQ.jpeg" alt="同学怀念" preload="auto">
+                    <div class="carousel-item-caption">
+                        <h3 class="carousel-item-title">温暖回忆</h3>
+                        <p class="carousel-item-desc">地理课上的欢声笑语</p>
+                    </div>
+                </div>
+                
+                <div class="carousel-item-3d" style="--i: 2">
+                    <img src="https://img520.com/5xFdX4.jpeg" alt="同学怀念" preload="auto">
+                    <div class="carousel-item-caption">
+                        <h3 class="carousel-item-title">师恩难忘</h3>
+                        <p class="carousel-item-desc">您的教导铭记于心</p>
+                    </div>
+                </div>
+                
+                <div class="carousel-item-3d" style="--i: 3">
+                    <img src="https://img520.com/U7Ve5o.jpeg" alt="同学怀念" preload="auto">
+                    <div class="carousel-item-caption">
+                        <h3 class="carousel-item-title">永恒思念</h3>
+                        <p class="carousel-item-desc">愿您在天堂一切安好</p>
+                    </div>
+                </div>
+                
+                <div class="carousel-item-3d" style="--i: 4">
+                    <img src="https://img520.com/hzRsUy.jpeg" alt="同学怀念" preload="auto">
+                    <div class="carousel-item-caption">
+                        <h3 class="carousel-item-title">教诲长存</h3>
+                        <p class="carousel-item-desc">受益终身的地理知识</p>
+                    </div>
+                </div>
+                
+                <div class="carousel-item-3d" style="--i: 5">
+                    <img src="https://img520.com/HwY1yg.jpeg" alt="同学怀念" preload="auto">
+                    <div class="carousel-item-caption">
+                        <h3 class="carousel-item-title">美好回忆</h3>
+                        <p class="carousel-item-desc">校园时光的温暖印记</p>
+                    </div>
+                </div>
+                
+                <div class="carousel-item-3d" style="--i: 6">
+                    <img src="https://img520.com/JLvnbR.jpeg" alt="同学怀念" preload="auto">
+                    <div class="carousel-item-caption">
+                        <h3 class="carousel-item-title">深切缅怀</h3>
+                        <p class="carousel-item-desc">永远怀念您的笑容</p>
+                    </div>
+                </div>
+                
+                <div class="carousel-item-3d" style="--i: 7">
+                    <img src="https://img520.com/htuYPD.jpeg" alt="同学怀念" preload="auto">
+                    <div class="carousel-item-caption">
+                        <h3 class="carousel-item-title">师恩似海</h3>
+                        <p class="carousel-item-desc">感恩遇见，终身难忘</p>
+                    </div>
+                </div>
+                
+                <div class="carousel-item-3d" style="--i: 8">
+                    <img src="https://img520.com/pUXWNM.jpeg" alt="同学怀念" preload="auto">
+                    <div class="carousel-item-caption">
+                        <h3 class="carousel-item-title">思念永存</h3>
+                        <p class="carousel-item-desc">您的精神永远激励我们</p>
+                    </div>
+                </div>
+                
+                <div class="carousel-item-3d" style="--i: 9">
+                    <img src="https://img520.com/sr3UUc.jpeg" alt="同学怀念" preload="auto">
+                    <div class="carousel-item-caption">
+                        <h3 class="carousel-item-title">温暖如初</h3>
+                        <p class="carousel-item-desc">回忆里的温暖瞬间</p>
+                    </div>
+                </div>
+                
+                <div class="carousel-item-3d" style="--i: 10">
+                    <img src="https://img520.com/FEZKoH.jpeg" alt="同学怀念" preload="auto">
+                    <div class="carousel-item-caption">
+                        <h3 class="carousel-item-title">教诲铭心</h3>
+                        <p class="carousel-item-desc">地理课上的宝贵知识</p>
+                    </div>
+                </div>
+                
+                <div class="carousel-item-3d" style="--i: 11">
+                    <img src="https://img520.com/a9znBV.jpeg" alt="同学怀念" preload="auto">
+                    <div class="carousel-item-caption">
+                        <h3 class="carousel-item-title">永远怀念</h3>
+                        <p class="carousel-item-desc">杜老师，我们想您了</p>
+                    </div>
+                </div>
+                
+                <div class="carousel-item-3d" style="--i: 12">
+                    <img src="https://img520.com/qhsLOT.jpeg" alt="同学怀念" preload="auto">
+                    <div class="carousel-item-caption">
+                        <h3 class="carousel-item-title">师恩难忘</h3>
+                        <p class="carousel-item-desc">感恩您的悉心教导</p>
+                    </div>
+                </div>
+                
+                <div class="carousel-item-3d" style="--i: 13">
+                    <img src="https://img520.com/nN4rmr.jpeg" alt="同学怀念" preload="auto">
+                    <div class="carousel-item-caption">
+                        <h3 class="carousel-item-title">思念无期</h3>
+                        <p class="carousel-item-desc">愿天堂没有病痛</p>
+                    </div>
+                </div>
+                
+                <div class="carousel-item-3d" style="--i: 14">
+                    <img src="https://img520.com/YhKY9s.jpeg" alt="同学怀念" preload="auto">
+                    <div class="carousel-item-caption">
+                        <h3 class="carousel-item-title">温暖回忆</h3>
+                        <p class="carousel-item-desc">校园里的美好时光</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 征稿区域 - 全新设计 -->
+        <section class="content-container contribution-section">
+            <div class="contribution-card">
+                <div class="contribution-header">
+                    <h2 class="contribution-title">
+                        <i class="fa fa-pencil-square-o"></i> 我们的地理课时光 - 征稿活动
+                    </h2>
+                    <p class="contribution-desc">分享你与杜老师的故事，记录那些难忘的课堂瞬间，让回忆永远流传</p>
+                </div>
+                
+                <!-- 稿件展示区 -->
+                <div class="submission-container">
+                    <div class="submission-card">
+                        <div class="submission-content">
+                            我总是幼稚的以为，来日方长
 好像在每个夏天，我都无可挽回的失去很重要的人
 似乎从来没有经历过身边人的生离死别，这个消息的第一反应就是，假的吧。上个星期的周五还在调侃同学的您，怎么会这么突然，明明说过要再忍我们三个月，明明在上课时还在点醒昏昏欲睡的我。以至于到现在我也无法接受您离开的事实
 太突然了，太难以接受了，那么鲜活的一个人，好像您应就在办公室中笑着对我们说哈哈被我骗了吧
@@ -1126,1046 +1195,304 @@
 那么
 祝您在另外一个世界永远幸福健康，平安快乐
 记忆会冲淡
-但我恐怕还要哭很久</p>
-                            <p class="submission-author">—— Komorebi</p>
+但我恐怕还要哭很久
                         </div>
-
-                        <div class="submission-card">
-                            <p class="submission-content">挺突然的.... 虽然不是杜老师的学生，但每天去办公室也足已建立一些感情……4 年级上过杜老师的天文社团，那时他大概还不认识我，只记的曾加过杜老师微信报名社团。9 号施老师说杜老师没来，听说被调走了，马上学考谁会无缘无故调走一个地理老师呢？东西也没收拾，再说了，哪有什么 "冒平区八中" 啊.... 周三晚自习课去给郭老师送统分的表格时有人跟我说 "你知道杜老师逝了吗？" 我以为是在开完笑，这不是能乱说的啊…… 周四中午 5 班的朋友说 "杜老师.." 我说知道啊调走了 "她说" 什么调走了啊杜老师去世了 " 在那一瞬间不知道该说点什么.... 他就这么无征兆的走了，没有任何心里防备，第一次面对如此近的人走了，上周五还在跟杜老师开完笑.... 想着上课听到 5 班地理课杜老师熟悉的喊声，每次见到他大喊一声杜老师好，去办公室他也常常一副笑莹莹的样子，还有他给我们的零食，不敢相信他走了，就好像他还坐在办公室，像往常一样骂我朋友说巴西是亚洲的.. 周四下午去给杜老师送了点吃的，晚上就看见他的东西被搬走了，跟几个朋友被拦在办公室外面看着里面收拾着他的办公桌，东西出来的那一刻我们即刻上楼，没有人愿意总看他的东西，可我们已经无法挽回了，只能以学考一个 A 最后报答一下他了...
-突然觉的死亡离我好近，节哀节哀🕯️, 永远会记住在亚太最沉痛的一天 2025 年 6 月 6 日，杜老师一路走好🕯️🕯️🕯️</p>
-                            <p class="submission-author">——CXY </p>
-                        </div>
+                        <div class="submission-author">—— 投稿人：Komorebi</div>
                     </div>
-
-                    <!-- 征稿信息（排版规整） -->
-                    <div class="submission-info">
-                        <h4 class="info-title">征稿要求</h4>
-                        <ul class="info-list">
-                            <li><i class="fa fa-check-circle"></i> 内容真实感人，与杜江老师相关即可（故事、寄语、照片均可）</li>
-                            <li><i class="fa fa-check-circle"></i> 文字内容控制在500字以内，照片请提供清晰原图</li>
-                            <li><i class="fa fa-check-circle"></i> 请注明您的年级/身份（如"xx班级xx学子"等），可匿名</li>
-                            <li><i class="fa fa-check-circle"></i> 征稿永久有效，我们会定期更新展示内容</li>
-                        </ul>
-                        <a href="javascript:;" class="wechat-contact" id="contactWechat">
-                            <i class="fa fa-weixin"></i> 联系微信提交稿件
-                        </a>
+                    
+                    <div class="submission-card">
+                        <div class="submission-content">
+                            挺突然的.... 虽然不是杜老师的学生，但每天去办公室也足已建立一些感情……4 年级上过杜老师的天文社团，那时他大概还不认识我，只记的曾加过杜老师微信报名社团。9 号施老师说杜老师没来，听说被调走了，马上学考谁会无缘无故调走一个地理老师呢？东西也没收拾，再说了，哪有什么 "冒平区八中" 啊.... 周三晚自习课去给郭老师送统分的表格时有人跟我说 "你知道杜老师逝了吗？" 我以为是在开完笑，这不是能乱说的啊…… 周四中午 5 班的朋友说 "杜老师.." 我说知道啊调走了 "她说" 什么调走了啊杜老师去世了 " 在那一瞬间不知道该说点什么.... 他就这么无征兆的走了，没有任何心里防备，第一次面对如此近的人走了，上周五还在跟杜老师开完笑.... 想着上课听到 5 班地理课杜老师熟悉的喊声，每次见到他大喊一声杜老师好，去办公室他也常常一副笑莹莹的样子，还有他给我们的零食，不敢相信他走了，就好像他还坐在办公室，像往常一样骂我朋友说巴西是亚洲的.. 周四下午去给杜老师送了点吃的，晚上就看见他的东西被搬走了，跟几个朋友被拦在办公室外面看着里面收拾着他的办公桌，东西出来的那一刻我们即刻上楼，没有人愿意总看他的东西，可我们已经无法挽回了，只能以学考一个 A 最后报答一下他了...
+突然觉的死亡离我好近，节哀节哀🕯️, 永远会记住在亚太最沉痛的一天 2025 年 6 月 6 日，杜老师一路走好🕯️🕯️🕯️
+                        </div>
+                        <div class="submission-author">—— 投稿人：CXY</div>
                     </div>
                 </div>
-            </section>
-        </div>
+                
+                <!-- 征稿信息 -->
+                <div class="submission-info">
+                    <h3 class="info-title">征稿要求</h3>
+                    <ul class="info-list">
+                        <li><i class="fa fa-check-circle"></i> 不允许全篇均使用AI</li>
+                        <li><i class="fa fa-check-circle"></i> 字数最好控制300字以内</li>
+                        <li><i class="fa fa-check-circle"></i> 内容真实感人 与杜江相关即可</li>
+                        <li><i class="fa fa-check-circle"></i> 记得留个昵称~~</li>
+                    </ul>
+                    
+                    <a href="weixin://dl/chat?YGWFK2024" class="wechat-contact">
+                        <i class="fa fa-weixin mr-2"></i> 微信投稿|微信号：YGWFK2024
+                    </a>
+                </div>
+            </div>
+        </section>
 
-        <!-- 页脚区域（收尾呼应主题，排版规整） -->
+        <!-- 页脚区域 -->
         <footer class="footer-section">
-            <div class="footer-bg"></div>
-            <div class="container">
-                <div class="footer-logo">怀念杜江老师</div>
-                <p class="footer-desc">地理之光，永不熄灭。您的教诲如星辰指引方向，您的温暖如春风滋养心灵。愿这份怀念，跨越时空，温暖每一位学子。</p>
-                <div class="footer-divider"></div>
-
-                <div class="footer-info">
-                    <div class="info-item" style="--i: 0">
-                        <p class="info-item-title">主题</p>
-                        <p class="info-item-content">永恒的地理之光</p>
-                    </div>
-                    <div class="info-item" style="--i: 1">
-                        <p class="info-item-title">愿景</p>
-                        <p class="info-item-content">传承师恩，缅怀敬意</p>
-                    </div>
-                    <div class="info-item" style="--i: 2">
-                        <p class="info-item-title">征稿</p>
-                        <p class="info-item-content">长期有效</p>
-                    </div>
-                    <div class="info-item" style="--i: 3">
-                        <p class="info-item-title">制作</p>
-                        <p class="info-item-content">杜老师学子们</p>
-                    </div>
+            <div class="footer-logo">怀念杜江老师</div>
+            <p class="footer-desc">愿47岁的地理杜江老师在另一个世界一切安好，您的教诲永远铭记于心</p>
+            <div class="footer-divider"></div>
+            
+            <div class="footer-info">
+                <div class="info-item">
+                    <div class="info-item-title">网站制作</div>
+                    <div class="info-item-content">YZ</div>
                 </div>
-
-                <div class="copyright">
-                    © 2025怀念杜江老师-永恒的地理之光 | 版本号：${SITE_CONFIG.version} | 所有内容均为原创缅怀，请勿商用
+                
+                <div class="info-item">
+                    <div class="info-item-title">技术支持</div>
+                    <div class="info-item-content">Flyz远征飞高速服务器</div>
                 </div>
+                
+                <div class="info-item">
+                    <div class="info-item-title">投稿联系</div>
+                    <div class="info-item-content">YGWFK2024（微信）</div>
+                </div>
+                
+                <div class="info-item">
+                    <div class="info-item-title">版本信息</div>
+                    <div class="info-item-content">2025.9.6-Version4.0</div>
+                </div>
+            </div>
+            
+            <div class="copyright">
+                © 2025 怀念杜江老师 www.YZBJFPV.top 版权所有 | 永恒怀念，温暖前行
             </div>
         </footer>
     </div>
 
-    <!-- ================================== 核心JS脚本（第一部分：基础初始化+配置绑定）================================== -->
+    <!-- 核心脚本 -->
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.2/dist/gsap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/framer-motion@10.16.4/dist/framer-motion.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/velocity-animate@2.0.6/velocity.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/animated-scroll@1.0.0/animated-scroll.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/scrollmagic@2.0.8/scrollmagic.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/build/three.min.js"></script>
+    
     <script>
-        // 1. 配置变量绑定（从统一配置区读取，避免硬编码）
-        const { version, notice, preload, animation } = SITE_CONFIG;
-        
-        // 绑定公告弹窗内容（从配置区自动同步）
-        document.getElementById('noticeTitle').textContent = notice.title;
-        document.getElementById('noticeMeta').textContent = `发布时间：${notice.publishTime}`;
-        document.getElementById('noticeText').textContent = notice.content;
-        // 绑定页脚版本号
-        document.querySelector('.copyright').innerHTML = `© 2025怀念杜江老师-永恒的地理之光 | 版本号：${version} | 所有内容均为原创缅怀，请勿商用`;
-
-        // 2. 页面元素获取
-        const loader = document.getElementById('loader');
-        const progressBar = document.getElementById('progressBar');
-        const pageWrapper = document.getElementById('pageWrapper');
-        const noticePopup = document.getElementById('noticePopup');
-        const noticeClose = document.getElementById('noticeClose');
-        const noticeConfirm = document.getElementById('noticeConfirm');
-        const noticeNoShow = document.getElementById('noticeNoShow');
-        const retryBtn = document.getElementById('retryBtn');
-        const musicPrompt = document.getElementById('musicPrompt');
-
-        // 3. 背景音乐控制（基础初始化）
-        let audio = null;
-        let isMusicPlaying = false;
-
-        musicPrompt.addEventListener('click', function() {
-            if (!animation.enable) return; // 动画关闭时禁用音乐
-
-            if (!audio) {
-                // 初始化音频（使用公开可访问的纯音乐资源）
-                audio = new Audio('https://cdn.jsdelivr.net/npm/relaxing-music@1.0.0/peaceful-piano.mp3');
-                audio.loop = true;
-                audio.volume = 0.3;
-            }
-
-            if (isMusicPlaying) {
-                audio.pause();
-                musicPrompt.innerHTML = '<i class="fa fa-music"></i> 点击播放背景音乐';
-            } else {
-                audio.play().catch(err => {
-                    alert('音频播放失败，请检查浏览器权限');
-                });
-                musicPrompt.innerHTML = '<i class="fa fa-pause"></i> 点击暂停背景音乐';
-            }
-            isMusicPlaying = !isMusicPlaying;
-        });
-
-        // 4. 公告弹窗控制（基础逻辑）
-        // 检查本地存储，是否勾选"不再显示"
-        const noShowNotice = localStorage.getItem('noShowNotice');
-        if (noShowNotice === 'true') {
-            noticePopup.style.display = 'none';
-        }
-
-        // 关闭公告弹窗
-        function closeNotice() {
-            if (noticeNoShow.checked) {
-                localStorage.setItem('noShowNotice', 'true');
-            }
-            noticePopup.classList.remove('active');
-            setTimeout(() => {
-                noticePopup.style.display = 'none';
-            }, animation.defaultDuration);
-        }
-
-        noticeClose.addEventListener('click', closeNotice);
-        noticeConfirm.addEventListener('click', closeNotice);
-
-        // 5. 加载失败重试功能
-        retryBtn.addEventListener('click', function() {
-            retryBtn.style.display = 'none';
-            startPreload(); // 重新启动预加载
-        });
-
-        // 6. 真实图片预加载核心函数（第一部分：初始化预加载逻辑）
-        function startPreload() {
-            const imagesToLoad = preload.images;
-            const totalImages = imagesToLoad.length;
-            let loadedImages = 0;
-            let loadFailed = false;
-
-            // 重置进度条
-            progressBar.style.width = '0%';
-
-            // 遍历所有图片进行预加载
-            imagesToLoad.forEach(imgUrl => {
+        document.addEventListener('DOMContentLoaded', function() {
+            // 图片预加载功能 - 真正的预加载
+            const preloadImages = [
+                'https://img520.com/AfsezE.jpeg',
+                'https://img520.com/vWmJij.jpeg',
+                'https://img520.com/KBMbWX.jpeg',
+                'https://img520.com/nKXwqH.jpeg',
+                'https://img520.com/pi7Ylm.jpeg',
+                'https://img520.com/I7vmWO.jpeg',
+                'https://img520.com/M8H1MO.jpeg',
+                'https://img520.com/3ihPzQ.jpeg',
+                'https://img520.com/5xFdX4.jpeg',
+                'https://img520.com/U7Ve5o.jpeg',
+                'https://img520.com/hzRsUy.jpeg',
+                'https://img520.com/HwY1yg.jpeg',
+                'https://img520.com/JLvnbR.jpeg',
+                'https://img520.com/htuYPD.jpeg',
+                'https://img520.com/pUXWNM.jpeg',
+                'https://img520.com/sr3UUc.jpeg',
+                'https://img520.com/FEZKoH.jpeg',
+                'https://img520.com/a9znBV.jpeg',
+                'https://img520.com/qhsLOT.jpeg',
+                'https://img520.com/nN4rmr.jpeg',
+                'https://img520.com/YhKY9s.jpeg'
+            ];
+            
+            // 预加载图片
+            preloadImages.forEach(src => {
                 const img = new Image();
-                img.src = imgUrl;
-
-                // 图片加载成功
-                img.onload = function() {
-                    if (loadFailed) return;
-                    loadedImages++;
-                    updateProgress();
-                };
-
-                // 图片加载失败
-                img.onerror = function() {
-                    console.error(`图片加载失败：${imgUrl}`);
-                    loadFailed = true;
-                    loader.querySelector('.loader-subtitle').textContent = preload.failTip;
-                    retryBtn.style.display = 'block';
-                };
+                img.src = src;
+                img.preload = 'auto';
             });
-
-            // 更新加载进度
-function updateProgress() {
-    const progress = Math.round((loadedImages / totalImages) * 100);
-    progressBar.style.width = `${progress}%`;
-    // 所有图片加载完成
-    if (loadedImages === totalImages && !loadFailed) {
-        loader.querySelector('.loader-subtitle').textContent = preload.successTip;
-        // 延迟隐藏加载页，让用户看到完成提示
-        setTimeout(() => {
-            loader.style.opacity = '0';
-            loader.style.visibility = 'hidden';
-            // 显示页面主体并添加渐入动画
-            pageWrapper.style.display = 'block';
-            setTimeout(() => {
-                pageWrapper.style.opacity = '1';
-            }, 300);
-            // 显示公告弹窗（如果未勾选不再显示）
-            if (noShowNotice !== 'true') {
-                setTimeout(() => {
-                    noticePopup.classList.add('active');
-                }, 1000);
-            }
-            // 初始化页面动态效果（动画开关控制）
-            if (animation.enable) {
-                initBackgroundEffects();
-                initCarousel3D();
-                initScrollReveal();
-                initInteractiveEffects();
-            }
-        }, 1500);
-    }
-}
-}
-// ================================== 核心JS脚本（第二部分：动态效果初始化）==================================
-// 7. 背景动态效果初始化（整合88个库中的粒子/背景类库）
-function initBackgroundEffects() {
-    // 1. particles.js 基础粒子背景
-    if (window.particlesJS) {
-        particlesJS('particles-js', {
-            particles: {
-                number: { value: 80, density: { enable: true, value_area: 800 } },
-                color: { value: '#e74c3c' },
-                shape: { type: 'circle' },
-                opacity: { value: 0.5, random: true },
-                size: { value: 3, random: true },
-                line_linked: { enable: true, distance: 150, color: '#3498db', opacity: 0.3, width: 1 },
-                move: { enable: true, speed: 1, direction: 'none', random: true, straight: false, out_mode: 'out', bounce: false }
-            },
-            interactivity: {
-                detect_on: 'canvas',
-                events: {
-                    onhover: { enable: true, mode: 'grab' },
-                    onclick: { enable: true, mode: 'push' },
-                    resize: true
-                },
-                modes: {
-                    grab: { distance: 140, line_linked: { opacity: 0.6 } },
-                    push: { particles_nb: 4 }
+            
+            // 加载弹窗控制
+            const loader = document.getElementById('loader');
+            const page = document.getElementById('page');
+            const music = document.getElementById('backgroundMusic');
+            const musicTrigger = document.getElementById('musicTrigger');
+            let isMusicPlaying = false;
+            
+            // 音乐播放控制
+            musicTrigger.addEventListener('click', function() {
+                if (!isMusicPlaying) {
+                    music.play().then(() => {
+                        isMusicPlaying = true;
+                        musicTrigger.innerHTML = '<i class="fa fa-music mr-2"></i> 音乐播放中... | 感谢聆听';
+                        musicTrigger.style.background = 'rgba(46, 204, 113, 0.1)';
+                        musicTrigger.style.borderColor = 'var(--accent)';
+                    }).catch(error => {
+                        console.log('音乐播放失败:', error);
+                        musicTrigger.innerHTML = '<i class="fa fa-exclamation-circle mr-2"></i> 播放失败，请点击页面重试';
+                    });
                 }
-            },
-            retina_detect: true
-        });
-    }
-    // 2. tsparticles 增强粒子背景（与particles.js分层叠加）
-    if (window.tsParticles) {
-        tsParticles.load('tsparticles', {
-            particles: {
-                number: { value: 60, density: { enable: true, value_area: 700 } },
-                color: { value: '#3498db' },
-                shape: { type: 'star' },
-                opacity: { value: 0.4, random: true },
-                size: { value: 4, random: true },
-                line_linked: { enable: true, distance: 120, color: '#2ecc71', opacity: 0.2, width: 1 },
-                move: { enable: true, speed: 0.8, direction: 'bottom', random: true }
-            },
-            interactivity: {
-                events: {
-                    onhover: { enable: true, mode: 'bubble' },
-                    onclick: { enable: true, mode: 'repulse' }
-                },
-                modes: {
-                    bubble: { distance: 200, size: 6, duration: 2, opacity: 0.3 },
-                    repulse: { distance: 200, duration: 0.4 }
+            });
+            
+            // 点击页面任意位置播放音乐
+            document.addEventListener('click', function(e) {
+                if (!isMusicPlaying && e.target !== musicTrigger) {
+                    music.play().then(() => {
+                        isMusicPlaying = true;
+                        musicTrigger.innerHTML = '<i class="fa fa-music mr-2"></i> 音乐播放中... | 感谢聆听';
+                        musicTrigger.style.background = 'rgba(46, 204, 113, 0.1)';
+                        musicTrigger.style.borderColor = 'var(--accent)';
+                    }).catch(() => {});
                 }
-            }
-        });
-    }
-    // 3. fireflies.js 萤火虫效果
-    if (window.Fireflies) {
-        new Fireflies({
-            container: document.getElementById('fireflies-container'),
-            count: 30,
-            color: '#f1c40f',
-            size: 2,
-            speed: 1,
-            opacity: 0.7
-        });
-    }
-    // 4. starfield.js 星空背景
-    if (window.Starfield) {
-        const starfield = new Starfield(document.getElementById('starfield-container'));
-        starfield.start();
-    }
-    // 5. wave.js 波浪底部装饰
-    if (window.Wave) {
-        const waveContainer = document.getElementById('wave-container');
-        const wave = new Wave({
-            container: waveContainer,
-            color: '#3498db',
-            count: 3,
-            amplitude: 15,
-            speed: 0.5,
-            wavelength: 100
-        });
-        wave.start();
-    }
-}
-// 8. 3D轮播效果初始化（基于framer-motion/parallax-js等库）
-function initCarousel3D() {
-    const carousel = document.getElementById('carousel3d');
-    const items = carousel.querySelectorAll('.carousel-item-3d');
-    const itemCount = items.length;
-    const radius = 300; // 轮播半径
-    const angleStep = (2 * Math.PI) / itemCount; // 每个item的角度间隔
-    // 初始化3D布局
-    items.forEach((item, index) => {
-        const angle = index * angleStep;
-        const x = radius * Math.sin(angle);
-        const z = radius * Math.cos(angle) - radius; // z轴偏移实现3D层次感
-        const opacity = 0.3 + Math.cos(angle) * 0.7; // 正面item更亮
-        const scale = 0.7 + Math.cos(angle) * 0.3; // 正面item更大
-        item.style.transform = `translateX(${x}px) translateZ(${z}px) scale(${scale})`;
-        item.style.opacity = opacity;
-        item.style.transition = `all ${animation.defaultDuration}ms cubic-bezier(0.4, 0, 0.2, 1)`;
-    });
-    // 自动旋转动画
-    let currentAngle = 0;
-    setInterval(() => {
-        currentAngle += 0.02; // 旋转速度
-        items.forEach((item, index) => {
-            const angle = index * angleStep + currentAngle;
-            const x = radius * Math.sin(angle);
-            const z = radius * Math.cos(angle) - radius;
-            const opacity = 0.3 + Math.cos(angle) * 0.7;
-            const scale = 0.7 + Math.cos(angle) * 0.3;
-            item.style.transform = `translateX(${x}px) translateZ(${z}px) scale(${scale})`;
-            item.style.opacity = opacity;
-        });
-    }, 30);
-    // 鼠标悬停暂停旋转（增强交互）
-    carousel.addEventListener('mouseenter', () => {
-        carousel.style.animationPlayState = 'paused';
-    });
-    carousel.addEventListener('mouseleave', () => {
-        carousel.style.animationPlayState = 'running';
-    });
-}
-// 9. 滚动触发动画初始化（基于scrollreveal库）
-function initScrollReveal() {
-    if (window.ScrollReveal) {
-        ScrollReveal({
-            reset: false,
-            duration: animation.defaultDuration,
-            distance: '50px',
-            easing: 'ease-out'
-        });
-        // 第一板块图片卡片
-        ScrollReveal().reveal('.image-card', {
-            delay: 100,
-            interval: 200,
-            origin: 'bottom'
-        });
-        // 第二板块轮播
-        ScrollReveal().reveal('.carousel-3d', {
-            delay: 300,
-            origin: 'top'
-        });
-        // 第三板块征稿区域
-        ScrollReveal().reveal('.contribution-card', {
-            delay: 200,
-            origin: 'bottom'
-        });
-        // 页脚信息项
-        ScrollReveal().reveal('.info-item', {
-            delay: 100,
-            interval: 150,
-            origin: 'top'
-        });
-    }
-}
-// 10. 交互效果初始化（波纹、hover、鼠标跟随等）
-function initInteractiveEffects() {
-    // 1. 波纹效果（基于ripple-js）
-    const rippleElements = document.querySelectorAll('.wechat-contact, .notice-confirm, .retry-btn, .music-prompt');
-    rippleElements.forEach(el => {
-        el.addEventListener('click', function(e) {
-            const ripple = document.createElement('span');
-            const rect = this.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
-            ripple.style.position = 'absolute';
-            ripple.style.width = ripple.style.height = Math.max(rect.width, rect.height) + 'px';
-            ripple.style.left = x - Math.max(rect.width, rect.height) / 2 + 'px';
-            ripple.style.top = y - Math.max(rect.width, rect.height) / 2 + 'px';
-            ripple.style.backgroundColor = 'rgba(255,255,255,0.3)';
-            ripple.style.borderRadius = '50%';
-            ripple.style.transform = 'scale(0)';
-            ripple.style.transition = 'transform 0.6s ease-out';
-            ripple.style.pointerEvents = 'none';
-            this.appendChild(ripple);
+            });
+            
+            // 10秒后隐藏加载弹窗，显示页面
             setTimeout(() => {
-                ripple.style.transform = 'scale(1)';
-                setTimeout(() => {
-                    ripple.style.opacity = '0';
-                    setTimeout(() => {
-                        this.removeChild(ripple);
-                    }, 600);
-                }, 300);
-            }, 10);
-        });
-    });
-    // 2. 图片hover 3D效果（基于hover-3d库）
-    const imageCards = document.querySelectorAll('.image-card');
-    imageCards.forEach(card => {
-        card.addEventListener('mousemove', function(e) {
-            const rect = this.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
-            const xRotate = (y - rect.height / 2) / 10;
-            const yRotate = -(x - rect.width / 2) / 10;
-            this.style.transform = `perspective(1000px) rotateX(${xRotate}deg) rotateY(${yRotate}deg) translateY(-10px)`;
-            this.querySelector('.card-image').style.transform = 'scale(1.05)';
-        });
-        card.addEventListener('mouseleave', function() {
-            this.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) translateY(0)';
-            this.querySelector('.card-image').style.transform = 'scale(1)';
-        });
-    });
-    // 3. 鼠标跟随效果（简化版，基于cursor-effects库思路）
-    const cursorFollower = document.createElement('div');
-    cursorFollower.style.position = 'fixed';
-    cursorFollower.style.width = '8px';
-    cursorFollower.style.height = '8px';
-    cursorFollower.style.backgroundColor = '#e74c3c';
-    cursorFollower.style.borderRadius = '50%';
-    cursorFollower.style.zIndex = '9999';
-    cursorFollower.style.pointerEvents = 'none';
-    cursorFollower.style.transition = 'transform 0.1s ease-out';
-    document.body.appendChild(cursorFollower);
-    document.addEventListener('mousemove', function(e) {
-        cursorFollower.style.transform = `translate(${e.clientX - 4}px, ${e.clientY - 4}px)`;
-    });
-}
-// 11. 功能按钮交互（征稿联系、滚动提示等）
-function initInteractiveEffects() {
-    // 联系微信提交稿件
-    document.getElementById('contactWechat').addEventListener('click', function() {
-        alert('感谢您的支持！\n请添加微信：dujiang-teacher（示例账号），发送您的稿件和相关信息，我们会及时整理展示~');
-    });
-    // 滚动提示点击跳转
-    document.getElementById('scrollIndicator').addEventListener('click', function() {
-        const firstSection = document.querySelector('.memory-section');
-        firstSection.scrollIntoView({ behavior: 'smooth' });
-    });
-    // 页面滚动时隐藏滚动提示
-    window.addEventListener('scroll', function() {
-        if (window.scrollY > 100) {
-            document.getElementById('scrollIndicator').style.opacity = '0';
-        } else {
-            document.getElementById('scrollIndicator').style.opacity = '1';
-        }
-    });
-}
-// ================================== 页面入口：启动预加载（核心触发点）==================================
-// 页面加载完成后启动预加载
-window.addEventListener('DOMContentLoaded', function() {
-    startPreload();
-});
-// ================================== 异常处理与兼容性优化==================================
-// 1. 动画库加载失败降级处理
-window.addEventListener('error', function(e) {
-    if (e.target.tagName === 'SCRIPT' && e.target.src.includes('cdn.jsdelivr.net')) {
-        console.warn(`动画库加载失败：${e.target.src}，已自动降级`);
-        // 关闭全局动画，避免影响核心功能
-        SITE_CONFIG.animation.enable = false;
-    }
-});
-// 2. 移动端兼容性处理
-if (/Mobile|Android|iOS|iPhone|iPad|iPod|Windows Phone/i.test(navigator.userAgent)) {
-    // 移动端禁用部分复杂3D效果，提升性能
-    document.querySelector('.carousel-3d').style.perspective = '800px';
-    document.querySelectorAll('.image-card').forEach(card => {
-        card.removeEventListener('mousemove', () => {});
-        card.removeEventListener('mouseleave', () => {});
-    });
-}
-        // 3. 浏览器不支持音频播放处理
-        if (!window.AudioContext && !window.webkitAudioContext) {
-            musicPrompt.style.display = 'none';
-        }
-        // 可复用SITE_CONFIG/全局变量，无需重复基础逻辑
-        // 后续JS代码直接在此处扩展，样式可加新<style>标签
-    </script>
-</head>
-<body>
-<!-- ================================== 第二部分：核心内容（生平简介 + 珍贵回忆）================================== -->
-<!-- 生平简介模块 -->
-<section id="bio" class="section">
-    <div class="container">
-        <h2 class="animate-on-scroll">生平简介【请发送稿件 下列简介均为AI生成 征稿ID:D-1】</h2>
-        <div class="animate-on-scroll">
-            <p>杜江老师，一位深耕地理教育数十载的园丁，一生致力于地理学科的教学与研究。他出生于地理教育世家，自幼便对山川湖海、星空大地有着浓厚的热爱，这份热爱贯穿了他的整个教育生涯。</p>
-            <p>在数十年的教学生涯中，杜老师始终秉持"知行合一"的教学理念，不仅在课堂上深入浅出地讲解地理知识，更带领学生走进自然，实地考察地形地貌、气候水文，让书本上的文字变成触手可及的体验。他的课堂总是充满欢声笑语，复杂的地理原理经他讲解变得通俗易懂，枯燥的地理数据在他口中变成生动的故事。</p>
-            <p>杜老师治学严谨，育人不倦，对待每一位学生都耐心细致，因材施教。他不仅传授知识，更注重培养学生的探索精神和人文情怀，鼓励学生用地理的眼光看待世界，用包容的心态理解差异。数十年来，他培养了无数优秀学子，遍布各行各业，许多学生因他的影响选择投身地理相关领域，延续着他的教育理想。</p>
-            <p>除了教学工作，杜老师还积极参与地理教材编写、教学方法创新等工作，发表多篇教学论文，为地理教育事业的发展作出了重要贡献。他淡泊名利，默默奉献，将一生都献给了他所热爱的教育事业和学生们。</p>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mt-12 animate-on-scroll">
-            <div class="img-container">
-                <img src="https://img520.com/vWmJij.jpeg" alt="杜江老师教学场景" loading="lazy">
-                <div class="img-caption">杜老师在课堂上讲解地理知识</div>
-            </div>
-            <div class="img-container">
-                <img src="https://img520.com/KBMbWX.jpeg" alt="杜江老师带领学生考察" loading="lazy">
-                <div class="img-caption">带领学生实地考察地理地貌</div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- 珍贵回忆模块 -->
-<section id="memories" class="section">
-    <div class="container">
-        <h2 class="animate-on-scroll">珍贵回忆</h2>
-        <div class="animate-on-scroll">
-            <p>岁月流转，时光荏苒，杜老师的音容笑貌依然清晰如昨。那些与他相处的点点滴滴，成为了学生们心中最珍贵的回忆，温暖着每一个人的心灵。</p>
-        </div>
-
-        <!-- 回忆卡片1 -->
-        <div class="bg-white/5 backdrop-blur-md rounded-12 p-8 mb-12 animate-on-scroll">
-            <div class="flex flex-col md:flex-row gap-8 items-center">
-                <div class="img-container md:w-1/3">
-                    <img src="https://www.img520.com/BZ9jkl.jpg" alt="本文章于20250611由微信ID commonmyroseb612 www.yzbjfpv.top经原作者授权展示" loading="lazy">
-                </div>
-                <div class="md:w-2/3">
-                    <h3>我总是幼稚的以为，来日方长</h3>
-                    <p>好像在每个夏天，我都无可挽回的失去很重要的人似乎从来没有经历过身边人的生离死别，这个消息的第一反应就是，假的吧。上个星期的周五还在调侃同学的您，怎么会这么突然，明明说过要再忍我们三个月，明明在上课时还在点醒昏昏欲睡的我。以至于到现在我也无法接受您离开的事实太突然了，太难以接受了，那么鲜活的一个人，好像您应就在办公室中笑着对我们说哈哈被我骗了吧直到校园中再无您的身影，叫了快两年的杜总变成了敬称，我才对死亡有了实感麻木的微信里残留的聊天记录，作业里未订正的错题，过去您的表情包好像悲伤才姗姗来迟那个会逗我们开心，包容我们，理解我们的老师，留在了回忆里比离别更可怕的是措手不及的离别，从没想过比期末先到来的是您的离开，我们居然是您最后的一届学生了吗，太难以置信，太无法接受了，好像匆匆忙忙就像一场梦，难以言表的，浑浑噩噩的，想要捉住什么但是在死亡面前又是如此无力可能是回忆太多了，真要写又无从下笔，但又想写点什么。让我有种尽力抓住这段时光的感受关于您的遗憾，感恩词语匮乏。到头来也只有一句，走好。不会忘记多少个晚自习不想上英语偷偷跑去补课蹭空调，白嫖到零食后的欣喜曾经习以为常的日子，离别后才发现是何等珍贵记忆终止在周五那么祝您在另外一个世界永远幸福健康，平安快乐记忆会冲淡但我恐怕还要哭很久</p>
-                    <p class="text-gray italic mt-4">—— 学生 Komorebi</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- 回忆卡片2 -->
-        <div class="bg-white/5 backdrop-blur-md rounded-12 p-8 mb-12 animate-on-scroll">
-            <div class="flex flex-col md:flex-row-reverse gap-8 items-center">
-                <div class="img-container md:w-1/3">
-                    <img src="https://www.img520.com/BZ9jkl.jpg" alt="本文章于20250613由微信ID wxid_o4aem32ug5yu22 www.yzbjfpv.top经原作者授权展示" loading="lazy">
-                </div>
-                <div class="md:w-2/3">
-                    <h3>一些感言</h3>
-                    <p>挺突然的....虽然不是杜老师的学生,但每天去办公室也足已建立一些感情……4年级上过杜老师的天文社团，那时他大概还不认识我,只记的曾加过杜老师微信报名社团。9号施老师说杜老师没来,听说被调走了,马上学考谁会无缘无故调走一个地理老师呢?东西也没收拾,再说了,哪有什么"冒平区八中"啊....周三晚自习课去给郭老师送统分的表格时有人跟我说"你知道杜老师逝了吗?"我以为是在开完笑,这不是能乱说的啊……周四中午5班的朋友说"杜老师.."我说知道啊调走了"她说"什么调走了啊杜老师去世了"在那一瞬间不知道该说点什么....他就这么无征兆的走了,没有任何心里防备,第一次面对如此近的人走了,上周五还在跟杜老师开完笑....想着上课听到5班地理课杜老师熟悉的喊声,每次见到他大喊一声杜老师好,去办公室他也常常一副笑莹莹的样子,还有他给我们的零食,不敢相信他走了,就好像他还坐在办公室,像往常一样骂我朋友说巴西是亚洲的..周四下午去给杜老师送了点吃的,晚上就看见他的东西被搬走了,跟几个朋友被拦在办公室外面看着里面收拾着他的办公桌,东西出来的那一刻我们即刻上楼,没有人愿意总看他的东西,可我们已经无法挽回了,只能以学考一个A最后报答一下他了... 突然觉的死亡离我好近,节哀节哀🕯️,永远会记住在亚太最沉痛的一天2025年6月6日,杜老师一路走好🕯️🕯️🕯️ </p>
-                    <p class="text-gray italic mt-4">—— 学生 CXY </p>
-                </div>
-            </div>
-        </div>
-
-        <!-- 回忆卡片3 -->
-        <div class="bg-white/5 backdrop-blur-md rounded-12 p-8 animate-on-scroll">
-            <div class="flex flex-col md:flex-row gap-8 items-center">
-                <div class="img-container md:w-1/3">
-                    <img src="https://www.img520.com/BZ9jkl.jpg" alt="本文章于20250613由微信ID xx www.yzbjfpv.top经原作者授权展示" loading="lazy">
-                </div>
-                <div class="md:w-2/3">
-                    <h3>还没人发我</h3>
-                    <p>等待稿件中…… 【征稿ID:A01-3】</p>
-                    <p class="text-gray italic mt-4">—— 学生 XX</p>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-<!-- ================================== 第三部分：教育理念 + 精神传承 + 思念寄语================================== -->
-<!-- 教育理念模块 -->
-<section id="philosophy" class="section">
-    <div class="container">
-        <h2 class="animate-on-scroll">教育理念</h2>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-            <div class="animate-on-scroll">
-                <p>杜江老师的教育理念，如明灯照亮学子前行之路，既蕴含着对地理学科的深刻理解，也饱含着对教育本质的执着追求。他用一生践行着"以地理育人，以人文润心"的教育信仰。</p>
-                <div class="space-y-6 mt-8">
-                    <div class="flex gap-4">
-                        <div class="bg-primary/20 p-3 rounded-full">
-                            <i class="fa fa-map-marker text-primary text-xl"></i>
-                        </div>
-                        <div>
-                            <h3 class="text-left">知行合一，实地求真</h3>
-                            <p>拒绝纸上谈兵，主张"走出课堂，走进自然"。杜老师认为地理知识源于生活、源于实践，只有亲身感受山川湖海的壮阔、风土人情的多样，才能真正理解地理的魅力。</p>
-                        </div>
-                    </div>
-                    <div class="flex gap-4">
-                        <div class="bg-secondary/20 p-3 rounded-full">
-                            <i class="fa fa-lightbulb-o text-secondary text-xl"></i>
-                        </div>
-                        <div>
-                            <h3 class="text-left">因材施教，点亮个性</h3>
-                            <p>尊重每个学生的差异，不搞"一刀切"教学。对成绩优异的学生，鼓励深入研究；对基础薄弱的学生，耐心引导启发，总能找到适合每个学生的学习方法，让每个人都能在地理学习中找到自信。</p>
-                        </div>
-                    </div>
-                    <div class="flex gap-4">
-                        <div class="bg-accent/20 p-3 rounded-full">
-                            <i class="fa fa-globe text-accent text-xl"></i>
-                        </div>
-                        <div>
-                            <h3 class="text-left">胸怀天下，人文底色</h3>
-                            <p>地理不仅是地形、气候、水文的知识集合，更是理解世界、包容差异的思维方式。杜老师在教学中始终融入人文关怀，引导学生用地理眼光看待全球问题，培养胸怀天下的格局。</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="img-container animate-on-scroll">
-                <img src="https://img520.com/M8H1MO.jpeg" alt="杜江老师教育理念示意图" loading="lazy">
-                <div class="img-caption">杜老师的教学笔记与地理教具</div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- 精神传承模块 -->
-<section id="inheritance" class="section">
-    <div class="container">
-        <h2 class="animate-on-scroll">【请发送稿件 下列文字均为FlyzAI生成 征稿ID:A02-1】精神传承</h2>
-        <p class="animate-on-scroll text-center max-w-3xl mx-auto">杜江老师的精神，如同播撒的种子，在无数学生心中生根发芽，影响着他们的人生选择与价值追求。如今，他的学生们正以各种方式，延续着他的理想与热爱。</p>
-
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mt-12">
-            <!-- 传承案例1 -->
-            <div class="bg-white/5 backdrop-blur-md rounded-12 p-6 animate-on-scroll hover:transform hover:translate-y-[-5px] transition-all duration-300">
-                <div class="w-16 h-16 bg-primary/20 rounded-full flex items-center justify-center mb-6 mx-auto">
-                    <i class="fa fa-graduation-cap text-primary text-2xl"></i>
-                </div>
-                <h3>教育事业的延续</h3>
-                <p>数十名学生追随杜老师的脚步，成为了中小学地理教师、高校地理专业讲师。他们带着杜老师的教学理念，在三尺讲台上教书育人，将地理知识与人文情怀传递给新一代学子。</p>
-            </div>
-
-            <!-- 传承案例2 -->
-            <div class="bg-white/5 backdrop-blur-md rounded-12 p-6 animate-on-scroll hover:transform hover:translate-y-[-5px] transition-all duration-300">
-                <div class="w-16 h-16 bg-secondary/20 rounded-full flex items-center justify-center mb-6 mx-auto">
-                    <i class="fa fa-flask text-secondary text-2xl"></i>
-                </div>
-                <h3>地理科研的探索</h3>
-                <p>多名学生投身地理科研领域，在气象观测、环境保护、地质勘探等方向深耕细作。他们带着杜老师"实地求真"的精神，足迹遍布山河，为地理科学发展与生态保护贡献力量。</p>
-            </div>
-
-            <!-- 传承案例3 -->
-            <div class="bg-white/5 backdrop-blur-md rounded-12 p-6 animate-on-scroll hover:transform hover:translate-y-[-5px] transition-all duration-300">
-                <div class="w-16 h-16 bg-accent/20 rounded-full flex items-center justify-center mb-6 mx-auto">
-                    <i class="fa fa-paper-plane text-accent text-2xl"></i>
-                </div>
-                <h3>公益与实践</h3>
-                <p>许多学生发起或参与地理公益项目，走进偏远地区开展地理科普、助力乡村旅游规划、参与生态保护志愿活动。他们用行动践行杜老师"胸怀天下"的教诲，让地理知识服务社会。</p>
-            </div>
-        </div>
-
-        <div class="img-container mt-16 animate-on-scroll">
-            <img src="https://img520.com/7Z8f3x.jpeg" alt="杜江老师学生们的传承实践" loading="lazy">
-            <div class="img-caption">杜老师的学生们在各地开展地理相关工作与公益活动</div>
-        </div>
-    </div>
-</section>
-
-<!-- 思念寄语模块 -->
-<section id="messages" class="section">
-    <div class="container">
-        <h2 class="animate-on-scroll">思念寄语|征稿中</h2>
-        <p class="animate-on-scroll text-center max-w-3xl mx-auto">【请发送稿件 下列寄语均为FlyzAI生成 征稿ID:A02-2】纸短情长，道不尽对恩师的思念；言浅意深，诉不完对教诲的感恩。以下是来自亚太学子的深情寄语。</p>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mt-12">
-            <!-- 寄语1 -->
-            <div class="bg-white/5 backdrop-blur-md rounded-12 p-6 animate-on-scroll border-l-4 border-primary">
-                <p class="italic">"杜老师，您曾说'地理教会我们敬畏自然、理解世界'。如今我带着您的教诲，成为了一名环保工作者，行走在保护生态的一线。每当看到绿水青山，就会想起您课堂上的笑容。您虽远行，但精神永存，我们会继续带着您的期望，守护这片大地。"</p>
-                <p class="text-right mt-4 font-semibold">—— 学生 陈雨 | 环保工程师</p>
-            </div>
-
-            <!-- 寄语2 -->
-            <div class="bg-white/5 backdrop-blur-md rounded-12 p-6 animate-on-scroll border-l-4 border-secondary">
-                <p class="italic">"共事三十载，杜老师是同事，更是良师益友。他对教育的热爱、对学生的关爱，始终感染着身边的每一个人。他常说'教育是良心活，要对得起每一个孩子'，这句话成为了我一生的职业准则。如今办公室还留着他的地理图集，每次翻开，仿佛他从未离开。"</p>
-                <p class="text-right mt-4 font-semibold">—— 同事 王建国 | 中学地理教师</p>
-            </div>
-
-            <!-- 寄语3 -->
-            <div class="bg-white/5 backdrop-blur-md rounded-12 p-6 animate-on-scroll border-l-4 border-accent">
-                <p class="italic">"杜老师，还记得您带我们看的第一场流星雨，您说'每颗星星都有自己的轨道，每个人都有自己的人生'。如今我成为了一名天文爱好者，每当仰望星空，就会想起您的教诲。感谢您为我打开了探索世界的大门，这份恩情，永生难忘。"</p>
-                <p class="text-right mt-4 font-semibold">—— 学生 林浩 | 天文科普博主</p>
-            </div>
-
-            <!-- 寄语4 -->
-            <div class="bg-white/5 backdrop-blur-md rounded-12 p-6 animate-on-scroll border-l-4 border-gray">
-                <p class="italic">"作为您的第一届学生，如今我已年过五十。您课堂上的生动讲解、野外考察时的悉心照料，依然历历在目。您不仅教会了我地理知识，更教会了我如何做人、如何做事。您的淡泊名利、默默奉献，是我们一生的榜样。愿恩师在天堂安好，我们永远怀念您。"</p>
-                <p class="text-right mt-4 font-semibold">—— 学生 赵伟 | 退休干部</p>
-            </div>
-        </div>
-
-        <!-- 寄语提交框 -->
-        <div class="mt-16 bg-white/5 backdrop-blur-md rounded-12 p-8 animate-on-scroll">
-            <h3 class="text-center">留下你的思念</h3>
-            <form class="mt-6 space-y-4">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                        <label for="name" class="block mb-2 text-sm font-medium">姓名</label>
-                        <input type="text" id="name" class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg focus:outline-none focus:border-primary text-light" placeholder="请输入您的姓名">
-                    </div>
-                    <div>
-                        <label for="identity" class="block mb-2 text-sm font-medium">身份（学生/同事/友人）</label>
-                        <input type="text" id="identity" class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg focus:outline-none focus:border-primary text-light" placeholder="请输入您的身份">
-                    </div>
-                </div>
-                <div>
-                    <label for="message" class="block mb-2 text-sm font-medium">寄语内容</label>
-                    <textarea id="message" rows="4" class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg focus:outline-none focus:border-primary text-light" placeholder="请写下对杜老师的思念与祝福..."></textarea>
-                </div>
-                <div class="text-center">
-                    <button type="submit" class="btn">
-                        <i class="fa fa-paper-plane mr-2"></i> 提交寄语
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
-</section>
-
-<!-- 结尾升华模块 -->
-<section id="finale" class="section" style="background: linear-gradient(rgba(15,23,42,0.9), rgba(26,37,48,0.9));">
-    <div class="container text-center">
-        <h2 class="animate-on-scroll">征稿中|地理之光，师恩永存</h2>
-        <div class="animate-on-scroll max-w-3xl mx-auto mt-8">
-            <p style="font-size: 1.2rem; line-height: 1.8;">
-                一支粉笔，绘尽山河壮阔；<br>
-                两袖清风，育出桃李芬芳；<br>
-                三尺讲台，点亮求知眼眸；<br>
-                一生坚守，诠释教育初心。<br><br>
-                杜江老师，您是地理的使者，是心灵的灯塔。<br>
-                您的教诲如春雨，滋润心田；<br>
-                您的精神如星辰，照亮前路。<br>
-                虽阴阳相隔，但思念不止；<br>
-                虽岁月流转，但师恩永存。<br><br>
-                愿天堂有山川湖海，有星辰大海，<br>
-                愿您在另一个世界，继续追寻热爱的地理之光。<br>
-                我们永远怀念您！【AI生成等待稿件】
-            </p>
-        </div>
-        <div class="mt-12 animate-on-scroll">
-            <img src="https://img520.com/9x7YpQ.jpeg" alt="纪念杜江老师" class="w-64 h-64 mx-auto rounded-full object-cover border-4 border-primary/50" loading="lazy">
-        </div>
-    </div>
-</section>
-<!-- ================================== 第四部分：地理知识传承 + 纪念相册 + 互动彩蛋================================== -->
-<!-- 地理知识传承模块（呼应杜老师教学理念） -->
-<section id="geo-legacy" class="section">
-    <div class="container">
-        <h2 class="animate-on-scroll">地理知识传承</h2>
-        <p class="animate-on-scroll text-center max-w-3xl mx-auto">为延续杜老师的教学初心，整理了他生前重点讲解的地理知识点与趣味常识，供学子们学习参考，让地理之光永不熄灭。</p>
-
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12">
-            <!-- 知识点卡片1 -->
-            <div class="bg-white/5 backdrop-blur-md rounded-12 p-6 animate-on-scroll hover:bg-white/8 transition-all duration-300">
-                <h3 class="text-primary">地形地貌科普</h3>
-                <ul class="list-disc list-inside space-y-3 mt-4 text-gray-200">
-                    <li>喀斯特地貌：流水溶蚀作用形成，代表景观：桂林山水、云南石林</li>
-                    <li>丹霞地貌：红色砂岩风化侵蚀形成，代表景观：丹霞山、张掖丹霞</li>
-                    <li>冰川地貌：冰川侵蚀/堆积形成，代表景观：挪威峡湾、天山天池</li>
-                    <li>雅丹地貌：风力侵蚀形成，代表景观：敦煌魔鬼城、克拉玛依油田</li>
-                </ul>
-                <div class="mt-6 text-center">
-                    <a href="#" class="text-secondary hover:text-primary transition-colors">查看更多 <i class="fa fa-arrow-right ml-1"></i></a>
-                </div>
-            </div>
-
-            <!-- 知识点卡片2 -->
-            <div class="bg-white/5 backdrop-blur-md rounded-12 p-6 animate-on-scroll hover:bg-white/8 transition-all duration-300">
-                <h3 class="text-secondary">气候与洋流</h3>
-                <ul class="list-disc list-inside space-y-3 mt-4 text-gray-200">
-                    <li>全球气候类型分布：热带雨林、热带草原、温带海洋性等11种核心类型</li>
-                    <li>季风环流：东亚夏季东南风、冬季西北风的形成原理</li>
-                    <li>洋流对地理环境的影响：调节气温、影响渔业、塑造海岸地貌</li>
-                    <li>厄尔尼诺现象：对全球降水、农业的连锁影响</li>
-                </ul>
-                <div class="mt-6 text-center">
-                    <a href="#" class="text-secondary hover:text-primary transition-colors">查看更多 <i class="fa fa-arrow-right ml-1"></i></a>
-                </div>
-            </div>
-
-            <!-- 知识点卡片3 -->
-            <div class="bg-white/5 backdrop-blur-md rounded-12 p-6 animate-on-scroll hover:bg-white/8 transition-all duration-300">
-                <h3 class="text-accent">人文地理常识</h3>
-                <ul class="list-disc list-inside space-y-3 mt-4 text-gray-200">
-                    <li>人口迁移：推拉理论与当代人口流动趋势</li>
-                    <li>城市地域结构：同心圆模式、扇形模式、多核心模式</li>
-                    <li>农业地域类型：季风水田农业、商品谷物农业、乳畜业</li>
-                    <li>文化地理：语言、宗教的分布与传播规律</li>
-                </ul>
-                <div class="mt-6 text-center">
-                    <a href="#" class="text-secondary hover:text-primary transition-colors">查看更多 <i class="fa fa-arrow-right ml-1"></i></a>
-                </div>
-            </div>
-        </div>
-
-        <!-- 杜老师生前教案展示 -->
-        <div class="mt-16 animate-on-scroll">
-            <h3>征稿中|杜老师生前教学资料精选</h3>
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-6">
-                <div class="bg-white/3 backdrop-blur-md rounded-lg p-4 hover:shadow-lg transition-shadow">
-                    <i class="fa fa-file-text-o text-primary text-2xl mb-3"></i>
-                    <h4 class="text-lg">《锋面系统与天气》教案</h4>
-                    <p class="text-sm text-gray mt-2">包含实验设计、课堂互动、习题解析</p>
-                    <a href="#" class="inline-block mt-3 text-sm text-secondary">下载查看 <i class="fa fa-download ml-1"></i></a>
-                </div>
-                <div class="bg-white/3 backdrop-blur-md rounded-lg p-4 hover:shadow-lg transition-shadow">
-                    <i class="fa fa-file-text-o text-secondary text-2xl mb-3"></i>
-                    <h4 class="text-lg">《地质作用与地貌形成》教案</h4>
-                    <p class="text-sm text-gray mt-2">实地考察路线设计+知识点梳理</p>
-                    <a href="#" class="inline-block mt-3 text-sm text-secondary">下载查看 <i class="fa fa-download ml-1"></i></a>
-                </div>
-                <div class="bg-white/3 backdrop-blur-md rounded-lg p-4 hover:shadow-lg transition-shadow">
-                    <i class="fa fa-file-text-o text-accent text-2xl mb-3"></i>
-                    <h4 class="text-lg">《全球气候变化》教案</h4>
-                    <p class="text-sm text-gray mt-2">结合时政热点+环保理念渗透</p>
-                    <a href="#" class="inline-block mt-3 text-sm text-secondary">下载查看 <i class="fa fa-download ml-1"></i></a>
-                </div>
-                <div class="bg-white/3 backdrop-blur-md rounded-lg p-4 hover:shadow-lg transition-shadow">
-                    <i class="fa fa-file-text-o text-gray text-2xl mb-3"></i>
-                    <h4 class="text-lg">《地理高考复习策略》教案</h4>
-                    <p class="text-sm text-gray mt-2">考点总结+答题技巧+错题解析</p>
-                    <a href="#" class="inline-block mt-3 text-sm text-secondary">下载查看 <i class="fa fa-download ml-1"></i></a>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- 纪念相册模块（集中展示珍贵影像） -->
-<section id="memorial-album" class="section">
-    <div class="container">
-        <h2 class="animate-on-scroll">纪念相册</h2>
-        <p class="animate-on-scroll text-center max-w-3xl mx-auto">一张张老照片，定格了杜老师教书育人的瞬间，也承载着师生间最珍贵的回忆。</p>
-
-        <!-- 相册网格 -->
-        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 mt-12 animate-on-scroll">
-            <div class="album-item rounded-lg overflow-hidden hover:scale-105 transition-transform duration-300">
-                <img src="https://img520.com/3zJk9L.jpeg" alt="杜老师与学生合影" class="w-full h-48 object-cover" loading="lazy">
-                <div class="bg-black/60 p-2 text-center text-sm">征稿中|文字ID:C01 </div>
-            </div>
-            <div class="album-item rounded-lg overflow-hidden hover:scale-105 transition-transform duration-300">
-                <img src="https://img520.com/5tF7dS.jpeg" alt="杜老师备课场景" class="w-full h-48 object-cover" loading="lazy">
-                <div class="bg-black/60 p-2 text-center text-sm">征稿中|文字ID:C02 </div>
-            </div>
-            <div class="album-item rounded-lg overflow-hidden hover:scale-105 transition-transform duration-300">
-                <img src="https://img520.com/vWmJij.jpeg" alt="杜老师课堂瞬间" class="w-full h-48 object-cover" loading="lazy">
-                <div class="bg-black/60 p-2 text-center text-sm">征稿中|文字ID:C02</div>
-            </div>
-            <div class="album-item rounded-lg overflow-hidden hover:scale-105 transition-transform duration-300">
-                <img src="https://img520.com/KBMbWX.jpeg" alt="野外考察合影" class="w-full h-48 object-cover" loading="lazy">
-                <div class="bg-black/60 p-2 text-center text-sm">征稿中|文字ID:C03</div>
-            </div>
-            <div class="album-item rounded-lg overflow-hidden hover:scale-105 transition-transform duration-300">
-                <img src="https://img520.com/nKXwqH.jpeg" alt="杜老师获奖瞬间" class="w-full h-48 object-cover" loading="lazy">
-                <div class="bg-black/60 p-2 text-center text-sm">征稿中|文字ID:C04</div>
-            </div>
-            <div class="album-item rounded-lg overflow-hidden hover:scale-105 transition-transform duration-300">
-                <img src="https://img520.com/pi7Ylm.jpeg" alt="退休欢送会" class="w-full h-48 object-cover" loading="lazy">
-                <div class="bg-black/60 p-2 text-center text-sm">征稿中|文字ID:C05</div>
-            </div>
-            <div class="album-item rounded-lg overflow-hidden hover:scale-105 transition-transform duration-300">
-                <img src="https://img520.com/I7vmWO.jpeg" alt="杜老师与老学生重逢" class="w-full h-48 object-cover" loading="lazy">
-                <div class="bg-black/60 p-2 text-center text-sm">征稿中|文字ID:C06</div>
-            </div>
-            <div class="album-item rounded-lg overflow-hidden hover:scale-105 transition-transform duration-300">
-                <img src="https://img520.com/M8H1MO.jpeg" alt="杜老师的地理教具" class="w-full h-48 object-cover" loading="lazy">
-                <div class="bg-black/60 p-2 text-center text-sm">征稿中|文字ID:C07</div>
-            </div>
-        </div>
-
-        <!-- 相册查看按钮 -->
-        <div class="text-center mt-10 animate-on-scroll">
-            <button class="btn" id="open-album">
-                <i class="fa fa-photo mr-2"></i> 查看完整相册
-            </button>
-        </div>
-    </div>
-</section>
-
-<!-- 互动彩蛋模块（增加页面趣味性与情感共鸣） -->
-<section id="interactive-easter" class="section" style="background: linear-gradient(rgba(26,37,48,0.8), rgba(15,23,42,0.8));">
-    <div class="container">
-        <h2 class="animate-on-scroll">地理之光 · 互动寄语</h2>
-        <p class="animate-on-scroll text-center max-w-3xl mx-auto">点击下方地图上的标记，查看各地学子的思念；也可以留下你的位置与祝福，让这份思念跨越山海。</p>
-
-        <!-- 简易互动地图 -->
-        <div class="mt-12 animate-on-scroll bg-white/5 backdrop-blur-md rounded-12 p-6">
-            <div class="relative w-full h-[400px] border border-white/20 rounded-lg overflow-hidden" id="interactive-map">
-                <!-- 地图背景 -->
-                <img src="https://www.img520.com/BZ9jkl.jpg" alt="中国地图背景" class="w-full h-full object-cover opacity-60">
+                gsap.to(loader, {
+                    opacity: 0,
+                    duration: 1.5,
+                    ease: 'power3.inOut',
+                    onComplete: () => {
+                        loader.style.visibility = 'hidden';
+                        page.style.display = 'block';
+                        setTimeout(() => {
+                            page.style.opacity = 1;
+                        }, 100);
+                    }
+                });
+            }, 10000);
+            
+            // 点击气泡效果
+            document.addEventListener('click', function(e) {
+                const bubble = document.createElement('div');
+                bubble.classList.add('bubble');
                 
-                <!-- 互动标记点（可点击） -->
-                <div class="absolute top-1/4 left-1/3 map-marker" data-message="【功能开发中 开发ID:B01-1 文字为FlyzAI生成】北京学子：杜老师，您的教诲让我爱上了地理，如今我在北大攻读地理专业！">
-                    <div class="w-6 h-6 bg-primary rounded-full flex items-center justify-center cursor-pointer hover:scale-125 transition-transform">
-                        <i class="fa fa-map-marker text-white text-xs"></i>
-                    </div>
-                </div>
-                <div class="absolute top-1/2 left-2/3 map-marker" data-message="【功能开发中 开发ID:B01-2 文字为FlyzAI生成】上海学子：每次路过外滩，都会想起您讲的城市地理，感谢您为我打开世界的窗口！">
-                    <div class="w-6 h-6 bg-secondary rounded-full flex items-center justify-center cursor-pointer hover:scale-125 transition-transform">
-                        <i class="fa fa-map-marker text-white text-xs"></i>
-                    </div>
-                </div>
-                <div class="absolute top-2/3 left-1/2 map-marker" data-message="【功能开发中 开发ID:B01-3 文字为FlyzAI生成】成都学子：带着您的理念，我成为了一名乡村地理教师，让大山里的孩子也能看见世界！">
-                    <div class="w-6 h-6 bg-accent rounded-full flex items-center justify-center cursor-pointer hover:scale-125 transition-transform">
-                        <i class="fa fa-map-marker text-white text-xs"></i>
-                    </div>
-                </div>
-                <div class="absolute top-1/3 left-1/4 map-marker" data-message="【功能开发中 开发ID:B01-4 文字为FlyzAI生成】广州学子：您带我们观察的珠江三角洲地貌，如今成为我工作的研究方向，感恩遇见！">
-                    <div class="w-6 h-6 bg-gray rounded-full flex items-center justify-center cursor-pointer hover:scale-125 transition-transform">
-                        <i class="fa fa-map-marker text-white text-xs"></i>
-                    </div>
-                </div>
-
-                <!-- 寄语弹窗（默认隐藏） -->
-                <div class="absolute w-64 bg-white/90 backdrop-blur-md rounded-lg p-4 shadow-xl hidden" id="marker-popup">
-                    <p class="text-dark" id="popup-message"></p>
-                    <button class="absolute top-2 right-2 text-gray hover:text-accent" onclick="closePopup()">
-                        <i class="fa fa-times"></i>
-                    </button>
-                </div>
-            </div>
-
-            <!-- 留下你的位置按钮 -->
-            <div class="text-center mt-8">
-                <button class="btn" id="add-marker">
-                    <i class="fa fa-plus mr-2"></i> 留下我的思念标记
-                </button>
-            </div>
-        </div>
-
-        <!-- 隐藏的音乐彩蛋 -->
-        <div class="mt-16 text-center animate-on-scroll">
-            <p class="text-gray mb-4">【功能开发中 开发ID:B02】点击下方图标，聆听杜老师最爱的轻音乐</p>
-            <div class="inline-block bg-white/10 p-4 rounded-full cursor-pointer hover:bg-white/20 transition-colors" id="play-music">
-                <i class="fa fa-music text-2xl text-primary"></i>
-            </div>
-            <!-- 音乐播放器（默认隐藏） -->
-            <audio id="memorial-music" src="https://cdn.jsdelivr.net/npm/relaxing-music@1.0.0/peaceful-piano.mp3" preload="none">
-                您的浏览器不支持音频播放
-            </audio>
-        </div>
-    </div>
-</section>
-
-<!-- 页脚收尾 -->
-<footer class="bg-darker py-12">
-    <div class="container">
-        <div class="text-center">
-            <h3 class="text-primary mb-6">地理之光 · 师恩永存</h3>
-            <p class="text-gray max-w-2xl mx-auto mb-8">
-                本页面为纪念杜江老师而制作，旨在传承其教育理念、珍藏师生回忆。<br>
-                愿每一位学子都能带着恩师的教诲，勇敢探索世界、温暖回馈社会。
-            </p>
-            <div class="flex justify-center gap-6 mb-8">
-                <a href="#bio" class="text-gray hover:text-primary transition-colors">生平简介</a>
-                <a href="#memories" class="text-gray hover:text-primary transition-colors">珍贵回忆</a>
-                <a href="#philosophy" class="text-gray hover:text-primary transition-colors">教育理念</a>
-                <a href="#geo-legacy" class="text-gray hover:text-primary transition-colors">知识传承</a>
-                <a href="#memorial-album" class="text-gray hover:text-primary transition-colors">纪念相册</a>
-            </div>
-            <p class="text-gray-500 text-sm">
-                © 2025 地理之光纪念网www.yzbjfpv.top/school/dj | 所有照片与文字均来自师生真实分享及FlyzAI-GPT5生成 本网页版权所有
-            </p>
-        </div>
-    </div>
-</footer>
-
-<!-- 相册弹窗（默认隐藏） -->
-<div class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 hidden flex items-center justify-center" id="album-modal">
-    <div class="bg-darker rounded-12 w-full max-w-4xl max-h-[90vh] overflow-hidden">
-        <div class="flex justify-between items-center p-6 border-b border-white/10">
-            <h3 class="text-xl text-primary">【功能开发中 开发ID:B03】杜江老师纪念相册</h3>
-            <button class="text-gray hover:text-accent text-xl" onclick="closeAlbumModal()">
-                <i class="fa fa-times"></i>
-            </button>
-        </div>
-        <div class="p-6 overflow-y-auto max-h-[calc(90vh-100px)]">
-            <div class="grid grid-cols-2 sm:grid-cols-3 gap-4">
-                <!-- 完整相册图片（重复使用现有链接，实际可替换为更多照片） -->
-                <img src="https://img520.com/3zJk9L.jpeg" alt="纪念照片" class="w-full h-40 object-cover rounded-lg hover:scale-105 transition-transform cursor-pointer">
-                <img src="https://img520.com/5tF7dS.jpeg" alt="纪念照片" class="w-full h-40 object-cover rounded-lg hover:scale-105 transition-transform cursor-pointer">
-                <img src="https://img520.com/vWmJij.jpeg" alt="纪念照片" class="w-full h-40 object-cover rounded-lg hover:scale-105 transition-transform cursor-pointer">
-                <img src="https://img520.com/KBMbWX.jpeg" alt="纪念照片" class="w-full h-40 object-cover rounded-lg hover:scale-105 transition-transform cursor-pointer">
-                <img src="https://img520.com/nKXwqH.jpeg" alt="纪念照片" class="w-full h-40 object-cover rounded-lg hover:scale-105 transition-transform cursor-pointer">
-                <img src="https://img520.com/pi7Ylm.jpeg" alt="纪念照片" class="w-full h-40 object-cover rounded-lg hover:scale-105 transition-transform cursor-pointer">
-                <img src="https://img520.com/I7vmWO.jpeg" alt="纪念照片" class="w-full h-40 object-cover rounded-lg hover:scale-105 transition-transform cursor-pointer">
-                <img src="https://img520.com/M8H1MO.jpeg" alt="纪念照片" class="w-full h-40 object-cover rounded-lg hover:scale-105 transition-transform cursor-pointer">
-                <img src="https://img520.com/7Z8f3x.jpeg" alt="纪念照片" class="w-full h-40 object-cover rounded-lg hover:scale-105 transition-transform cursor-pointer">
-                <img src="https://img520.com/9x7YpQ.jpeg" alt="纪念照片" class="w-full h-40 object-cover rounded-lg hover:scale-105 transition-transform cursor-pointer">
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- 互动脚本（简单实现彩蛋功能） -->
-<script>
-    // 地图标记弹窗
-    const mapMarkers = document.querySelectorAll('.map-marker');
-    const popup = document.getElementById('marker-popup');
-    const popupMessage = document.getElementById('popup-message');
-
-    mapMarkers.forEach(marker => {
-        marker.addEventListener('click', (e) => {
-            const message = marker.getAttribute('data-message');
-            popupMessage.textContent = message;
-            popup.style.display = 'block';
-            popup.style.top = `${e.clientY - 100}px`;
-            popup.style.left = `${e.clientX - 120}px`;
+                // 随机气泡大小和位置
+                const size = Math.random() * 40 + 20;
+                bubble.style.width = `${size}px`;
+                bubble.style.height = `${size}px`;
+                bubble.style.left = `${e.clientX - size/2}px`;
+                bubble.style.top = `${e.clientY - size/2}px`;
+                
+                // 随机背景色
+                const colors = [
+                    'rgba(231, 76, 60, 0.3)',
+                    'rgba(52, 152, 219, 0.3)',
+                    'rgba(46, 204, 113, 0.3)',
+                    'rgba(155, 89, 182, 0.3)',
+                    'rgba(255, 159, 67, 0.3)'
+                ];
+                bubble.style.background = colors[Math.floor(Math.random() * colors.length)];
+                
+                document.body.appendChild(bubble);
+                
+                // 移除气泡元素
+                setTimeout(() => {
+                    bubble.remove();
+                }, 1000);
+            });
+            
+            // 滚动动画
+            const scrollElements = document.querySelectorAll('.image-card, .submission-card, .contribution-card');
+            
+            const elementInView = (el, scrollOffset = 100) => {
+                const elementTop = el.getBoundingClientRect().top;
+                return (
+                    elementTop <= 
+                    ((window.innerHeight || document.documentElement.clientHeight) - scrollOffset)
+                );
+            };
+            
+            const displayScrollElement = (element) => {
+                element.classList.add('animate__animated', 'animate__fadeInUp');
+            };
+            
+            const handleScrollAnimation = () => {
+                scrollElements.forEach((el) => {
+                    if (elementInView(el, 100)) {
+                        displayScrollElement(el);
+                    }
+                });
+            };
+            
+            window.addEventListener('scroll', () => {
+                handleScrollAnimation();
+            });
+            
+            // 初始检查
+            setTimeout(() => {
+                handleScrollAnimation();
+            }, 2000);
+            
+            // 3D轮播控制
+            const carousel3d = document.getElementById('carousel3d');
+            let isRotating = true;
+            let rotationSpeed = 0.01;
+            
+            // 鼠标控制轮播
+            carousel3d.addEventListener('mousedown', function(e) {
+                isRotating = false;
+                let startX = e.clientX;
+                let currentRotation = 0;
+                
+                const handleMouseMove = (e) => {
+                    if (!isRotating) {
+                        const deltaX = e.clientX - startX;
+                        currentRotation = deltaX * 0.5;
+                        carousel3d.style.transform = `rotateY(${currentRotation}deg)`;
+                    }
+                };
+                
+                const handleMouseUp = () => {
+                    isRotating = true;
+                    document.removeEventListener('mousemove', handleMouseMove);
+                    document.removeEventListener('mouseup', handleMouseUp);
+                    
+                    // 惯性旋转
+                    let deceleration = currentRotation * 0.01;
+                    const inertialRotate = () => {
+                        if (Math.abs(deceleration) > 0.1) {
+                            deceleration *= 0.95;
+                            currentRotation += deceleration;
+                            carousel3d.style.transform = `rotateY(${currentRotation}deg)`;
+                            requestAnimationFrame(inertialRotate);
+                        }
+                    };
+                    
+                    inertialRotate();
+                };
+                
+                document.addEventListener('mousemove', handleMouseMove);
+                document.addEventListener('mouseup', handleMouseUp);
+            });
+            
+            // 触摸控制轮播（移动端）
+            carousel3d.addEventListener('touchstart', function(e) {
+                isRotating = false;
+                let startX = e.touches[0].clientX;
+                let currentRotation = 0;
+                
+                const handleTouchMove = (e) => {
+                    if (!isRotating) {
+                        const deltaX = e.touches[0].clientX - startX;
+                        currentRotation = deltaX * 0.5;
+                        carousel3d.style.transform = `rotateY(${currentRotation}deg)`;
+                    }
+                };
+                
+                const handleTouchEnd = () => {
+                    isRotating = true;
+                    document.removeEventListener('touchmove', handleTouchMove);
+                    document.removeEventListener('touchend', handleTouchEnd);
+                    
+                    // 惯性旋转
+                    let deceleration = currentRotation * 0.01;
+                    const inertialRotate = () => {
+                        if (Math.abs(deceleration) > 0.1) {
+                            deceleration *= 0.95;
+                            currentRotation += deceleration;
+                            carousel3d.style.transform = `rotateY(${currentRotation}deg)`;
+                            requestAnimationFrame(inertialRotate);
+                        }
+                    };
+                    
+                    inertialRotate();
+                };
+                
+                document.addEventListener('touchmove', handleTouchMove);
+                document.addEventListener('touchend', handleTouchEnd);
+            });
         });
-    });
-
-    function closePopup() {
-        popup.style.display = 'none';
-    }
-
-    // 相册弹窗
-    const openAlbumBtn = document.getElementById('open-album');
-    const albumModal = document.getElementById('album-modal');
-
-    openAlbumBtn.addEventListener('click', () => {
-        albumModal.style.display = 'flex';
-        document.body.style.overflow = 'hidden';
-    });
-
-    function closeAlbumModal() {
-        albumModal.style.display = 'none';
-        document.body.style.overflow = 'auto';
-    }
-
-    // 音乐彩蛋
-    const playMusicBtn = document.getElementById('play-music');
-    const memorialMusic = document.getElementById('memorial-music');
-    let isPlaying = false;
-
-    playMusicBtn.addEventListener('click', () => {
-        if (isPlaying) {
-            memorialMusic.pause();
-            playMusicBtn.innerHTML = '<i class="fa fa-music text-2xl text-primary"></i>';
-        } else {
-            memorialMusic.play();
-            playMusicBtn.innerHTML = '<i class="fa fa-pause text-2xl text-primary"></i>';
-        }
-        isPlaying = !isPlaying;
-    });
-
-    // 滚动动画激活
-    const animateElements = document.querySelectorAll('.animate-on-scroll');
-    window.addEventListener('scroll', () => {
-        animateElements.forEach(el => {
-            const elementTop = el.getBoundingClientRect().top;
-            const elementVisible = 150;
-            if (elementTop < window.innerHeight - elementVisible) {
-                el.classList.add('active');
-            }
-        });
-    });
-
-    // 初始化触发一次滚动检查
-    window.dispatchEvent(new Event('scroll'));
-</script>
+    </script>
 </body>
 </html>
-
-
