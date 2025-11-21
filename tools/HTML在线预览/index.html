@@ -4,25 +4,32 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Flyz远征飞|HTML在线测试</title>
-  <!-- 引入Tailwind CSS -->
+  <!-- 引入外部资源 -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- 引入Font Awesome -->
   <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
   
-  <!-- 自定义配置 -->
+  <!-- Tailwind配置 -->
   <script>
     tailwind.config = {
       theme: {
         extend: {
           colors: {
             primary: '#165DFF',
-            secondary: '#36CFFB',
-            dark: '#1E293B',
-            light: '#F8FAFC'
           },
-          fontFamily: {
-            inter: ['Inter', 'system-ui', 'sans-serif'],
+          animation: {
+            'fade-in': 'fadeIn 0.8s ease-out forwards',
+            'slide-up': 'slideUp 0.6s ease-out forwards',
           },
+          keyframes: {
+            fadeIn: {
+              '0%': { opacity: '0' },
+              '100%': { opacity: '1' },
+            },
+            slideUp: {
+              '0%': { transform: 'translateY(30px)', opacity: '0' },
+              '100%': { transform: 'translateY(0)', opacity: '1' },
+            }
+          }
         },
       }
     }
@@ -30,82 +37,84 @@
   
   <style type="text/tailwindcss">
     @layer utilities {
-      .content-auto {
-        content-visibility: auto;
-      }
       .code-bg {
         background-color: #0F172A;
       }
-      .transition-all-300 {
-        transition: all 0.3s ease;
-      }
       .shadow-soft {
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
+      }
+      .bg-simple {
+        background-image: url('https://picsum.photos/id/1068/1920/1080');
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed;
       }
     }
   </style>
 </head>
-<body class="font-inter bg-gray-50 text-gray-800 min-h-screen flex flex-col">
-  <!-- 头部 -->
-  <header class="bg-white shadow-sm py-4 px-6 md:px-10 flex justify-between items-center">
-    <div class="flex items-center space-x-2">
-      <i class="fa fa-rocket text-primary text-2xl"></i>
-      <h1 class="text-xl md:text-2xl font-bold text-dark">
-        <span class="text-primary">Flyz远征飞</span>|HTML在线测试
+<!-- 主背景：高级简约白色系背景图 + 半透明遮罩 -->
+<body class="bg-simple min-h-screen flex flex-col">
+  <div class="absolute inset-0 bg-white/85 backdrop-blur-sm z-0"></div>
+  
+  <!-- 头部（带进入动画） -->
+  <header class="relative z-10 bg-white/90 backdrop-blur-md shadow-sm py-3 px-6 flex justify-between items-center animate-fade-in">
+    <!-- Logo + 标题 -->
+    <div class="flex items-center space-x-3">
+      <img src="https://img520.com/UIGuUV.jpeg" alt="Flyz远征飞" class="w-10 h-10 rounded-md object-cover">
+      <h1 class="text-xl font-bold text-gray-800">
+        <span class="text-primary">Flyz远征飞</span> | HTML在线测试
       </h1>
     </div>
     <div class="text-sm text-gray-500">
-      粘贴HTML代码，一键预览效果
+      快速预览 · 简单高效
     </div>
   </header>
 
-  <!-- 主内容区 -->
-  <main class="flex-1 container mx-auto px-4 py-8 md:py-12 max-w-7xl">
+  <!-- 主内容区（带延迟进入动画） -->
+  <main class="relative z-10 flex-1 container mx-auto px-4 py-8 max-w-4xl animate-slide-up opacity-0" style="animation-delay: 0.2s">
     <div class="bg-white rounded-xl shadow-soft p-6 md:p-8">
-      <!-- 说明文字 -->
-      <div class="mb-6 text-gray-600">
-        <p>在下方文本框中粘贴您的HTML代码，点击"全屏预览"按钮即可查看效果。预览时点击右上角"×"可返回编辑模式。</p>
+      <!-- 说明文字（简化） -->
+      <div class="mb-6 text-gray-600 text-sm">
+        <p>粘贴HTML代码，一键查看全屏效果</p>
       </div>
       
       <!-- 代码输入区 -->
       <div class="mb-6">
-        <label for="htmlCode" class="block mb-2 font-medium text-gray-700">
+        <label for="htmlCode" class="block mb-2 font-medium text-gray-700 flex items-center">
           <i class="fa fa-code mr-2 text-primary"></i>HTML代码
         </label>
         <textarea 
           id="htmlCode" 
-          class="w-full h-64 md:h-96 code-bg text-gray-300 p-4 rounded-lg border border-gray-700 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary resize-none font-mono text-sm"
+          class="w-full h-64 md:h-80 code-bg text-gray-300 p-4 rounded-lg border border-gray-700 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary resize-none font-mono text-sm"
           placeholder="粘贴您的HTML代码到这里..."></textarea>
       </div>
       
-      <!-- 操作按钮 -->
+      <!-- 操作按钮（居中简化） -->
       <div class="flex justify-center">
         <button 
           id="previewBtn"
-          class="bg-primary hover:bg-primary/90 text-white font-medium py-3 px-8 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 flex items-center space-x-2 transform hover:-translate-y-0.5 active:translate-y-0"
+          class="bg-primary hover:bg-primary/90 text-white font-medium py-3 px-8 rounded-lg shadow-md hover:shadow-lg transition-all duration-300 flex items-center space-x-2"
         >
-          <i class="fa fa-external-link"></i>
+          <i class="fa fa-eye"></i>
           <span>全屏预览</span>
         </button>
       </div>
     </div>
   </main>
 
-  <!-- 预览模态框 -->
-  <div id="previewModal" class="fixed inset-0 bg-black/95 z-50 flex flex-col hidden opacity-0 transition-all duration-300">
-    <!-- 关闭按钮 -->
-    <button id="closeBtn" class="absolute top-4 right-6 text-white text-3xl hover:text-gray-300 transition-colors z-10">
+  <!-- 预览模态框（优化动画和样式） -->
+  <div id="previewModal" class="fixed inset-0 z-50 flex flex-col hidden bg-black/90 animate-fade-in">
+    <!-- 关闭按钮（优化样式和交互） -->
+    <button id="closeBtn" class="absolute top-4 right-6 text-white bg-black/60 hover:bg-black/80 rounded-full w-10 h-10 flex items-center justify-center text-xl transition-all z-20">
       <i class="fa fa-times"></i>
     </button>
     
-    <!-- 预览容器 -->
-    <div id="previewContainer" class="flex-1 overflow-auto bg-white p-4 md:p-8">
-      <!-- 预览内容将在这里渲染 -->
-    </div>
+    <!-- 预览容器（保持iframe确保兼容性） -->
+    <iframe id="previewIframe" class="flex-1 w-full border-0" sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-modals"></iframe>
   </div>
 
-  <!-- 页脚 -->
-  <footer class="bg-dark text-gray-400 py-6 px-4 text-center text-sm">
+  <!-- 页脚（简化） -->
+  <footer class="relative z-10 bg-white/90 backdrop-blur-md text-gray-500 py-3 px-4 text-center text-xs mt-4 animate-slide-up opacity-0" style="animation-delay: 0.4s">
     <p>© 2025 Flyz远征飞 | HTML在线测试工具</p>
   </footer>
 
@@ -115,76 +124,70 @@
     const previewBtn = document.getElementById('previewBtn');
     const previewModal = document.getElementById('previewModal');
     const closeBtn = document.getElementById('closeBtn');
-    const previewContainer = document.getElementById('previewContainer');
+    const previewIframe = document.getElementById('previewIframe');
     
-    // 预览按钮点击事件
+    // 预览按钮点击事件（保持稳定功能）
     previewBtn.addEventListener('click', () => {
-      // 获取输入的HTML代码
       const code = htmlCode.value.trim();
       
-      // 验证代码是否为空
       if (!code) {
         alert('请粘贴HTML代码后再进行预览');
         return;
       }
       
-      // 渲染预览内容
-      previewContainer.innerHTML = code;
+      // 构建完整HTML文档，确保所有代码正常运行
+      const fullHtml = `
+        <!DOCTYPE html>
+        <html lang="zh-CN">
+        <head>
+          <meta charset="UTF-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <title>预览效果</title>
+          <base target="_blank"> <!-- 确保链接在新窗口打开 -->
+        </head>
+        <body>
+          ${code.includes('<html') ? code : code}
+        </body>
+        </html>
+      `;
+      
+      // 渲染到iframe
+      previewIframe.srcdoc = fullHtml;
       
       // 显示预览模态框
       previewModal.classList.remove('hidden');
-      setTimeout(() => {
-        previewModal.classList.add('opacity-100');
-      }, 10);
-      
-      // 禁止页面滚动
       document.body.style.overflow = 'hidden';
     });
     
-    // 关闭按钮点击事件
+    // 关闭预览
     closeBtn.addEventListener('click', () => {
-      // 隐藏预览模态框
-      previewModal.classList.remove('opacity-100');
-      setTimeout(() => {
-        previewModal.classList.add('hidden');
-        // 清空预览内容
-        previewContainer.innerHTML = '';
-        // 恢复页面滚动
-        document.body.style.overflow = '';
-      }, 300);
+      previewModal.classList.add('hidden');
+      document.body.style.overflow = '';
+      previewIframe.srcdoc = ''; // 清空内容
     });
     
-    // 点击模态框背景关闭（可选功能）
+    // 点击背景关闭
     previewModal.addEventListener('click', (e) => {
       if (e.target === previewModal) {
         closeBtn.click();
       }
     });
     
-    // 键盘ESC关闭预览
+    // ESC键关闭
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape' && !previewModal.classList.contains('hidden')) {
         closeBtn.click();
       }
     });
     
-    // 示例代码（可选）
-    htmlCode.placeholder = `<!-- 示例代码 -->
-<!DOCTYPE html>
-<html>
-<head>
-  <title>示例页面</title>
-  <style>
-    body { font-family: Arial; text-align: center; padding: 50px; }
-    h1 { color: #165DFF; }
-  </style>
-</head>
-<body>
-  <h1>欢迎使用Flyz远征飞HTML在线测试</h1>
-  <p>这是一个预览示例</p>
-  <button style="padding: 10px 20px; background: #165DFF; color: white; border: none; border-radius: 4px;">点击我</button>
-</body>
-</html>`;
+    // 示例代码（简化清晰）
+    htmlCode.placeholder = `<!-- 示例代码（直接粘贴测试） -->
+<h1 style="color: #165DFF; text-align: center; margin: 50px 0;">HTML预览测试</h1>
+<div style="text-align: center; font-size: 16px; color: #333;">
+  <p>这是一个简单的测试页面</p>
+  <button style="margin-top: 20px; padding: 8px 20px; background: #165DFF; color: white; border: none; border-radius: 4px; cursor: pointer;" onclick="alert('交互成功！')">点击测试</button>
+</div>
+`;
   </script>
 </body>
 </html>
