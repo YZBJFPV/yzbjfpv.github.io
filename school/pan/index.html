@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="zh-CN" id="html-lang">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>网盘｜Flyz远征飞官网</title>
+    <!-- 外部资源 -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- Tailwind 配置 -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#165DFF',
+                        secondary: '#FF7D00',
+                        accent: '#36CFC9',
+                        dark: '#1E293B',
+                        light: '#F8FAFC'
+                    },
+                    fontFamily: {
+                        inter: ['Inter', 'system-ui', 'sans-serif'],
+                    },
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'fade-in-up': 'fadeInUp 0.8s ease forwards',
+                        'slide-in': 'slideIn 0.6s ease forwards',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-10px)' },
+                        },
+                        fadeInUp: {
+                            '0%': { opacity: '0', transform: 'translateY(20px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        },
+                        slideIn: {
+                            '0%': { opacity: '0', transform: 'translateX(30px)' },
+                            '100%': { opacity: '1', transform: 'translateX(0)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .content-auto {
+                content-visibility: auto;
+            }
+            .text-shadow {
+                text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            }
+            .card-elevation {
+                box-shadow: 0 10px 30px rgba(22, 93, 255, 0.08);
+            }
+            .hover-rise {
+                transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.4s ease;
+            }
+            .hover-rise:hover {
+                transform: translateY(-6px);
+                box-shadow: 0 15px 35px rgba(22, 93, 255, 0.15);
+            }
+            .click-scale {
+                transition: transform 0.2s ease;
+            }
+            .click-scale:active {
+                transform: scale(0.95);
+            }
+            .gradient-mask {
+                mask-image: linear-gradient(to bottom, black 85%, transparent 100%);
+                -webkit-mask-image: linear-gradient(to bottom, black 85%, transparent 100%);
+            }
+        }
+    </style>
+
+    <style>
+        /* 全局样式 */
+        body {
+            background-color: #F8FAFC;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(22, 93, 255, 0.03) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(255, 125, 0, 0.03) 0%, transparent 20%);
+            background-attachment: fixed;
+        }
+        
+        /* 流动渐变导航栏 */
+        .nav-gradient {
+            background: linear-gradient(90deg, #165DFF, #2563EB, #3B82F6, #60A5FA);
+            background-size: 400% 400%;
+            animation: gradientFlow 15s ease infinite;
+        }
+        
+        @keyframes gradientFlow {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        /* 导航项样式 */
+        .nav-item {
+            position: relative;
+            transition: all 0.3s ease;
+            padding: 4px 0;
+        }
+        
+        .nav-item::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: 0;
+            left: 0;
+            background-color: white;
+            transition: width 0.3s ease;
+        }
+        
+        .nav-item:hover::after {
+            width: 100%;
+        }
+        
+        .nav-item:hover i,
+        .nav-item:hover span {
+            animation: bounce 0.6s ease;
+        }
+        
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+        
+        /* 粒子背景 */
+        #particles-js {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.4;
+        }
+        
+        /* 公告弹窗 */
+        .announcement-modal {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            z-index: 100;
+            max-width: 380px;
+            transform: translateX(120%);
+            transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+            border-left: 4px solid #165DFF;
+        }
+        
+        .announcement-modal.active {
+            transform: translateX(0);
+        }
+        
+        .modal-close {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: none;
+            border: none;
+            color: #94A3B8;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .modal-close:hover {
+            color: #165DFF;
+            transform: rotate(90deg);
+        }
+        
+        /* 下载按钮样式 */
+        .download-btn {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .download-btn::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.6s ease;
+        }
+        
+        .download-btn:hover::after {
+            left: 100%;
+        }
+        
+        /* 开场动画容器 */
+        .splash-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #165DFF;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+        
+        .splash-logo {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 24px;
+            box-shadow: 0 0 30px rgba(255,255,255,0.3);
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); box-shadow: 0 0 30px rgba(255,255,255,0.3); }
+            50% { transform: scale(1.05); box-shadow: 0 0 40px rgba(255,255,255,0.4); }
+            100% { transform: scale(1); box-shadow: 0 0 30px rgba(255,255,255,0.3); }
+        }
+        
+        .splash-text {
+            color: white;
+            font-size: 24px;
+            font-weight: 600;
+            opacity: 0;
+            animation: fadeIn 1s forwards 0.5s;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* 进度条 */
+        .progress-bar {
+            width: 200px;
+            height: 4px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 2px;
+            margin-top: 20px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: white;
+            width: 0%;
+            transition: width 2s ease;
+        }
+    </style>
+</head>
+<body class="font-inter text-dark m-0 p-0 overflow-x-hidden">
+    <!-- 开场动画 -->
+    <div class="splash-screen" id="splash-screen">
+        <div class="splash-logo">
+            <i class="fa fa-cloud-download text-primary text-4xl"></i>
+        </div>
+        <div class="splash-text">Flyz 网盘加载中...</div>
+        <div class="progress-bar">
+            <div class="progress-fill" id="progress-fill"></div>
+        </div>
+    </div>
+
+    <!-- 粒子背景 -->
+    <div id="particles-js"></div>
+
+    <!-- 公告弹窗 -->
+    <div class="announcement-modal" id="announcement-modal">
+        <button class="modal-close click-scale">
+            <i class="fa fa-times"></i>
+        </button>
+        <h3 class="text-lg font-bold text-primary mb-2 flex items-center">
+            <i class="fa fa-bullhorn mr-2 text-secondary"></i>最新公告
+        </h3>
+        <p class="text-gray-600 text-sm leading-relaxed">
+            【重要通知】2025年11月23日网盘服务器升级完成，所有文件已迁移至新节点，稳定性大幅提高
+        </p>
+        <div class="mt-4 pt-3 border-t border-gray-100">
+            <span class="text-xs text-gray-400">发布时间：2025-11-23</span>
+        </div>
+    </div>
+
+    <!-- 导航栏 -->
+    <header id="navbar" class="fixed w-full top-0 z-50 transition-all duration-500 opacity-0 translate-y-[-50px]">
+        <nav class="nav-gradient py-4 px-6 md:px-12 shadow-md">
+            <div class="container mx-auto flex justify-between items-center">
+                <!-- Logo -->
+                <a href="https://yzbjfpv.top/20250709.html" class="flex items-center space-x-3 group click-scale">
+                    <img src="https://img520.com/UIGuUV.jpeg" alt="Flyz远征飞Logo" 
+                         class="h-10 w-auto object-contain rounded-md transition-all duration-500 group-hover:scale-110 rotate-6"
+                         onerror="this.onerror=null;this.src='https://picsum.photos/40/40'">
+                    <span class="text-white font-bold text-xl hidden md:inline transition-all duration-300 group-hover:tracking-wider">Flyz远征飞</span>
+                </a>
+                
+                <!-- 桌面导航 -->
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="https://yzbjfpv.top/20250709.html" class="text-white hover:text-light/80 transition-colors duration-300 nav-item click-scale">
+                        <i class="fa fa-home mr-2"></i><span>首页</span>
+                    </a>
+                    <a href="#" class="text-white hover:text-light/80 transition-colors duration-300 nav-item click-scale relative">
+                        <i class="fa fa-cloud-download mr-2"></i><span>网盘</span>
+                        <span class="absolute -top-2 -right-4 bg-secondary text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                            新
+                        </span>
+                    </a>
+                </div>
+                
+                <!-- 移动端菜单按钮 -->
+                <button id="menu-toggle" class="md:hidden text-white focus:outline-none transition-transform duration-300 hover:scale-110 click-scale">
+                    <i class="fa fa-bars text-2xl"></i>
+                </button>
+            </div>
+        </nav>
+        
+        <!-- 移动端导航菜单 -->
+        <div id="mobile-menu" class="hidden bg-white shadow-lg md:hidden absolute w-full">
+            <div class="container mx-auto py-4 px-6 flex flex-col space-y-4">
+                <a href="https://yzbjfpv.top/20250709.html" class="text-dark hover:text-primary transition-colors duration-300 py-2 border-b border-gray-100 flex items-center click-scale">
+                    <i class="fa fa-home mr-3 w-5 text-center"></i>首页
+                </a>
+                <a href="#" class="text-dark hover:text-primary transition-colors duration-300 py-2 flex items-center click-scale relative">
+                    <i class="fa fa-cloud-download mr-3 w-5 text-center"></i>网盘
+                    <span class="absolute -top-1 -right-3 bg-secondary text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                        新
+                    </span>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- 主内容区 -->
+    <main class="container mx-auto px-4 pt-32 pb-20 opacity-0 translate-y-10 transition-all duration-1000" id="main-content">
+        <!-- 页面标题 -->
+        <div class="text-center mb-16 animate-fade-in-up" style="animation-delay: 0.2s">
+            <h1 class="text-[clamp(2rem,6vw,3rem)] font-bold text-dark mb-4">
+                <span class="text-primary">Flyz</span> Flyz网盘-政治小组定制版
+            </h1>
+            <p class="text-gray-600 max-w-2xl mx-auto text-lg">
+                专属下载通道仅供政治活动小组提供下载服务
+            </p>
+            <div class="mt-8 flex justify-center">
+                <div class="inline-flex items-center bg-primary/10 px-6 py-3 rounded-full">
+                    <i class="fa fa-database text-primary mr-2"></i>
+                    <span class="text-gray-700">总文件数：<span class="text-primary font-semibold">2</span> | 总下载量：<span class="text-primary font-semibold">5</span></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 文件下载区域 -->
+        <div class="max-w-4xl mx-auto">
+            <!-- 文件卡片 -->
+            <div class="bg-white rounded-2xl p-8 card-elevation hover-rise mb-12 animate-fade-in-up" style="animation-delay: 0.4s">
+                <div class="flex flex-col md:flex-row items-start md:items-center mb-6">
+                    <div class="w-16 h-16 bg-primary/10 rounded-xl flex items-center justify-center mr-0 md:mr-6 mb-4 md:mb-0 animate-float">
+                        <i class="fa fa-file-archive-o text-primary text-3xl"></i>
+                    </div>
+                    <div>
+                        <!-- 文件名称（可修改） -->
+                        <h2 class="text-xl md:text-2xl font-bold text-dark mb-2">政治活动小组</h2>
+                        <div class="flex flex-wrap gap-3">
+                            <span class="bg-gray-100 text-gray-600 text-sm px-3 py-1 rounded-full">
+                                <i class="fa fa-calendar-o mr-1"></i>更新日期：2025-11-23
+                            </span>
+                            <span class="bg-gray-100 text-gray-600 text-sm px-3 py-1 rounded-full">
+                                <i class="fa fa-file-o mr-1"></i>文件大小：38MB
+                            </span>
+                            <span class="bg-gray-100 text-gray-600 text-sm px-3 py-1 rounded-full">
+                                <i class="fa fa-download mr-1"></i>Flyz远征飞提供技术支持
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="border-t border-gray-100 pt-6 mb-6">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-3">文件描述</h3>
+                    <p class="text-gray-600 leading-relaxed">
+                        懒得填了
+                    </p>
+                </div>
+
+                <!-- 下载链接区域 -->
+                <div>
+                    <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+                        <i class="fa fa-link text-primary mr-2"></i>下载链接
+                    </h3>
+                    
+                    <!-- 主下载链接（可修改） -->
+                    <div class="bg-gray-50 rounded-xl p-4 mb-4 hover:bg-gray-100 transition-colors duration-300">
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="font-medium text-gray-700">主下载链接</span>
+                            <span class="text-xs text-green-500 flex items-center">
+                                <i class="fa fa-check-circle mr-1"></i>稳定可用
+                            </span>
+                        </div>
+                        <div class="flex flex-col sm:flex-row gap-3">
+                            <input type="text" value="https://yzbjfpv.lanzouu.com/iZ6U83bxarsd" 
+                                   class="flex-1 px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary"
+                                   readonly>
+                            <button class="copy-btn bg-primary/10 hover:bg-primary/20 text-primary px-4 py-2 rounded-lg transition-colors duration-300 click-scale flex items-center justify-center">
+                                <i class="fa fa-copy mr-2"></i>复制链接
+                            </button>
+                        </div>
+                        <p class="mt-2 text-xs text-gray-400">
+                            备注：主链接为高速CDN节点，推荐优先使用 | 提取码：无
+                        </p>
+                    </div>
+                    
+                    <!-- 备用下载链接（可修改） -->
+                    <div class="bg-gray-50 rounded-xl p-4 hover:bg-gray-100 transition-colors duration-300">
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="font-medium text-gray-700">备用下载链接</span>
+                            <span class="text-xs text-green-500 flex items-center">
+                                <i class="fa fa-check-circle mr-1"></i>稳定可用
+                            </span>
+                        </div>
+                        <div class="flex flex-col sm:flex-row gap-3">
+                            <input type="text" value="https://yzbjfpv.top/school/abc.pdf" 
+                                   class="flex-1 px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary"
+                                   readonly>
+                            <button class="copy-btn bg-primary/10 hover:bg-primary/20 text-primary px-4 py-2 rounded-lg transition-colors duration-300 click-scale flex items-center justify-center">
+                                <i class="fa fa-copy mr-2"></i>复制链接
+                            </button>
+                        </div>
+                        <p class="mt-2 text-xs text-gray-400">
+                            备注：备用链接为异地备份节点，主链接无法访问时使用 | 提取码：无
+                        </p>
+                    </div>
+                    
+                    <!-- 下载按钮 -->
+                    <div class="mt-6 flex flex-col sm:flex-row gap-4">
+                        <a href="https://yzbjfpv.lanzouu.com/iZ6U83bxarsd" target="_blank" class="download-btn bg-primary hover:bg-primary/90 text-white font-medium px-8 py-3 rounded-lg transition-all duration-300 click-scale flex items-center justify-center">
+                            <i class="fa fa-download mr-2"></i>立即下载（高速）
+                        </a>
+                        <a href="https://yzbjfpv.top/school/abc.pdf" target="_blank" class="bg-gray-200 hover:bg-gray-300 text-gray-700 font-medium px-8 py-3 rounded-lg transition-all duration-300 click-scale flex items-center justify-center">
+                            <i class="fa fa-download mr-2"></i>备用下载（低速）
+                        </a>
+                    </div>
+                </div>
+            </div>
+        
+        <!-- 下载说明 -->
+        <div class="max-w-4xl mx-auto mt-16 bg-blue-50 rounded-2xl p-6 animate-fade-in-up" style="animation-delay: 0.8s">
+            <h3 class="text-lg font-semibold text-primary mb-4 flex items-center">
+                <i class="fa fa-info-circle mr-2"></i>下载说明
+            </h3>
+            <ul class="text-gray-600 space-y-2">
+                <li class="flex items-start">
+                    <i class="fa fa-angle-right text-primary mt-1 mr-2"></i>
+                    <span>所有文件均经过安全检测，无病毒无捆绑，可放心下载使用</span>
+                </li>
+                <li class="flex items-start">
+                    <i class="fa fa-angle-right text-primary mt-1 mr-2"></i>
+                    <span>推荐使用浏览器自带下载工具或迅雷等专业下载软件，避免下载失败</span>
+                </li>
+                <li class="flex items-start">
+                    <i class="fa fa-angle-right text-primary mt-1 mr-2"></i>
+                    <span>大文件建议使用下载工具断点续传功能，确保网络稳定后再进行下载</span>
+                </li>
+                <li class="flex items-start">
+                    <i class="fa fa-angle-right text-primary mt-1 mr-2"></i>
+                    <span>若链接失效或提取码错误，请通过微信联系客服更新</span>
+                </li>
+                <li class="flex items-start">
+                    <i class="fa fa-angle-right text-primary mt-1 mr-2"></i>
+                    <span>所有资源仅供个人学习使用，请勿用于商业用途，版权归原作者所有</span>
+                </li>
+            </ul>
+        </div>
+    </main>
+
+    <!-- 页脚 -->
+    <footer class="bg-gray-900 text-white py-12 opacity-0 transition-opacity duration-1000" id="footer">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="mb-8 md:mb-0">
+                    <div class="flex items-center space-x-3">
+                        <img src="https://img520.com/UIGuUV.jpeg" alt="Flyz远征飞Logo" 
+                             class="h-10 w-auto object-contain rounded-md"
+                             onerror="this.onerror=null;this.src='https://picsum.photos/40/40'">
+                        <span class="text-white font-bold text-xl">Flyz远征飞</span>
+                    </div>
+                    <p class="mt-2 text-gray-400 text-sm">高速-稳定-免费</p>
+                </div>
+                
+                <div class="flex flex-col items-center md:items-end">
+                    <div class="flex space-x-6 mb-4">
+                        <a href="https://b23.tv/JXuI9QA" target="_blank" class="text-gray-400 hover:text-white transition-colors duration-300 click-scale">
+                            <i class="fa fa-play-circle text-xl"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white transition-colors duration-300 click-scale">
+                            <i class="fa fa-weixin text-xl"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white transition-colors duration-300 click-scale">
+                            <i class="fa fa-qq text-xl"></i>
+                        </a>
+                    </div>
+                    <p class="text-gray-500 text-sm">© 2025 Flyz远征飞官网 版权所有</p>
+                    <p class="text-gray-600 text-xs mt-1">网盘服务条款 | 隐私政策 | 联系我们</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- 粒子脚本 -->
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <script>
+        // 开场动画
+        document.addEventListener('DOMContentLoaded', function() {
+            const splashScreen = document.getElementById('splash-screen');
+            const progressFill = document.getElementById('progress-fill');
+            const navbar = document.getElementById('navbar');
+            const mainContent = document.getElementById('main-content');
+            const footer = document.getElementById('footer');
+            const announcementModal = document.getElementById('announcement-modal');
+            const modalClose = document.querySelector('.modal-close');
+            const menuToggle = document.getElementById('menu-toggle');
+            const mobileMenu = document.getElementById('mobile-menu');
+            const copyBtns = document.querySelectorAll('.copy-btn');
+            
+            // 进度条动画
+            setTimeout(() => {
+                progressFill.style.width = '100%';
+            }, 300);
+            
+            // 关闭开场动画
+            setTimeout(() => {
+                splashScreen.style.opacity = '0';
+                splashScreen.style.transform = 'scale(1.1)';
+                
+                // 显示页面内容
+                setTimeout(() => {
+                    splashScreen.style.display = 'none';
+                    
+                    // 显示导航栏
+                    setTimeout(() => {
+                        navbar.classList.remove('opacity-0', 'translate-y-[-50px]');
+                    }, 200);
+                    
+                    // 显示主内容
+                    setTimeout(() => {
+                        mainContent.classList.remove('opacity-0', 'translate-y-10');
+                    }, 400);
+                    
+                    // 显示页脚
+                    setTimeout(() => {
+                        footer.style.opacity = '1';
+                    }, 800);
+                    
+                    // 显示公告弹窗
+                    setTimeout(() => {
+                        announcementModal.classList.add('active');
+                    }, 1500);
+                }, 800);
+            }, 2000);
+            
+            // 关闭公告弹窗
+            modalClose.addEventListener('click', function() {
+                announcementModal.classList.remove('active');
+            });
+            
+            // 移动端菜单切换
+            menuToggle.addEventListener('click', function() {
+                mobileMenu.classList.toggle('hidden');
+                
+                const icon = this.querySelector('i');
+                if (mobileMenu.classList.contains('hidden')) {
+                    icon.classList.remove('fa-times');
+                    icon.classList.add('fa-bars');
+                } else {
+                    icon.classList.remove('fa-bars');
+                    icon.classList.add('fa-times');
+                }
+            });
+            
+            // 复制链接功能
+            copyBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const input = this.parentElement.querySelector('input');
+                    input.select();
+                    document.execCommand('copy');
+                    
+                    // 复制成功提示
+                    const originalText = this.innerHTML;
+                    this.innerHTML = '<i class="fa fa-check mr-2"></i>已复制';
+                    this.classList.remove('bg-primary/10', 'hover:bg-primary/20', 'text-primary');
+                    this.classList.add('bg-green-100', 'text-green-600');
+                    
+                    setTimeout(() => {
+                        this.innerHTML = originalText;
+                        this.classList.remove('bg-green-100', 'text-green-600');
+                        this.classList.add('bg-primary/10', 'hover:bg-primary/20', 'text-primary');
+                    }, 2000);
+                });
+            });
+            
+            // 粒子效果配置
+            particlesJS('particles-js', {
+                "particles": {
+                    "number": { "value": 60, "density": { "enable": true, "value_area": 800 } },
+                    "color": { "value": ["#165DFF", "#36CFC9"] },
+                    "shape": { "type": "circle", "stroke": { "width": 0, "color": "#fff" } },
+                    "opacity": { 
+                        "value": 0.2, 
+                        "random": true,
+                        "anim": { "enable": true, "speed": 1, "opacity_min": 0.05, "sync": false }
+                    },
+                    "size": { 
+                        "value": 3, 
+                        "random": true,
+                        "anim": { "enable": true, "speed": 2, "size_min": 0.5, "sync": false }
+                    },
+                    "line_linked": {
+                        "enable": true,
+                        "distance": 120,
+                        "color": "#4080FF",
+                        "opacity": 0.1,
+                        "width": 1
+                    },
+                    "move": {
+                        "enable": true,
+                        "speed": 0.8,
+                        "direction": "none",
+                        "random": true,
+                        "straight": false,
+                        "out_mode": "out",
+                        "bounce": false
+                    }
+                },
+                "interactivity": {
+                    "detect_on": "canvas",
+                    "events": {
+                        "onhover": { "enable": true, "mode": "grab" },
+                        "onclick": { "enable": true, "mode": "push" },
+                        "resize": true
+                    },
+                    "modes": {
+                        "grab": { "distance": 140, "line_linked": { "opacity": 0.3 } },
+                        "push": { "particles_nb": 4 }
+                    }
+                },
+                "retina_detect": true
+            });
+            
+            // 导航栏滚动效果
+            window.addEventListener('scroll', function() {
+                if (window.scrollY > 30) {
+                    navbar.classList.add('py-2', 'shadow-lg');
+                    navbar.classList.remove('py-4');
+                } else {
+                    navbar.classList.add('py-4');
+                    navbar.classList.remove('py-2', 'shadow-lg');
+                }
+            });
+        });
+    </script>
+
+    <!-- 统一修改区域说明 -->
+    <script>
+        /*
+        统一修改说明：
+        1. 文件名称修改：找到对应文件卡片中的<h2>标签内容进行修改
+        2. 主下载链接修改：找到对应文件卡片中的第一个<input>标签的value属性
+        3. 备用下载链接修改：找到对应文件卡片中的第二个<input>标签的value属性
+        4. 链接备注修改：找到对应<input>标签下方的<p class="mt-2 text-xs text-gray-400">标签内容
+        5. 公告内容修改：找到#announcement-modal中的<p>标签内容
+        6. 公告发布时间修改：找到#announcement-modal中的发布时间span标签
+        7. 可通过复制文件卡片区域来添加更多文件下载项
+        */
+    </script>
+</body>
+</html>
