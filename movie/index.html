@@ -19,7 +19,7 @@
             background-image: radial-gradient(circle at top right, rgba(79, 195, 247, 0.15), transparent 40%),
                               radial-gradient(circle at bottom left, rgba(156, 39, 176, 0.1), transparent 40%);
         }
-        /* 核心提示：节点选择引导 */
+        /* 核心提示：线路选择引导 */
         .node-guide {
             background: linear-gradient(135deg, rgba(79, 195, 247, 0.12), rgba(33, 150, 243, 0.08));
             border: 1px solid rgba(79, 195, 247, 0.3);
@@ -50,7 +50,7 @@
             font-weight: 600;
             text-shadow: 0 0 6px rgba(255, 107, 107, 0.2);
         }
-        /* Flyz远征飞品牌提示窗口（美化+倒计时） */
+        /* Flyz远征飞品牌提示窗口（3秒自动关闭） */
         .flyz-alert {
             position: fixed;
             top: 50%;
@@ -120,6 +120,105 @@
             box-shadow: 0 8px 20px rgba(79, 195, 247, 0.35);
             background: linear-gradient(135deg, #3dbaf7, #1976d2);
         }
+        /* 防御弹窗（25秒后弹出） */
+        .defense-alert {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.98);
+            border: 2px solid rgba(255, 62, 62, 0.6);
+            border-radius: 16px;
+            padding: 40px 30px;
+            width: 90%;
+            max-width: 500px;
+            z-index: 10000;
+            text-align: center;
+            box-shadow: 0 0 50px rgba(255, 62, 62, 0.3);
+            display: none;
+            animation: defensePop 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+            backdrop-filter: blur(10px);
+        }
+        @keyframes defensePop {
+            0% { transform: translate(-50%, -50%) scale(0.8) rotate(-5deg); opacity: 0; }
+            70% { transform: translate(-50%, -50%) scale(1.05) rotate(2deg); opacity: 1; }
+            100% { transform: translate(-50%, -50%) scale(1) rotate(0); opacity: 1; }
+        }
+        .defense-shield {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 25px;
+            position: relative;
+            animation: shieldSpin 2s linear infinite;
+        }
+        @keyframes shieldSpin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .defense-shield svg {
+            width: 100%;
+            height: 100%;
+            fill: none;
+            stroke: #ff4e4e;
+            stroke-width: 2;
+            stroke-dasharray: 100;
+            stroke-dashoffset: 50;
+            animation: shieldPulse 3s ease-in-out infinite;
+        }
+        @keyframes shieldPulse {
+            0%, 100% { stroke-dashoffset: 50; opacity: 0.7; }
+            50% { stroke-dashoffset: 0; opacity: 1; stroke: #ff6b6b; }
+        }
+        .defense-title {
+            font-size: 22px;
+            color: #ff4e4e;
+            margin-bottom: 15px;
+            font-weight: 600;
+            text-shadow: 0 0 10px rgba(255, 62, 62, 0.4);
+        }
+        .defense-desc {
+            font-size: 15px;
+            color: #eee;
+            margin-bottom: 30px;
+            line-height: 1.8;
+        }
+        .defense-btn {
+            background: linear-gradient(135deg, #ff4e4e, #ff2e2e);
+            color: #fff;
+            border: none;
+            padding: 16px 40px;
+            border-radius: 30px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 20px rgba(255, 62, 62, 0.3);
+            width: 100%;
+            max-width: 300px;
+        }
+        .defense-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(255, 62, 62, 0.45);
+            background: linear-gradient(135deg, #ff3d3d, #ff1a1a);
+        }
+        .defense-close {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.1);
+            color: #aaa;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.2s ease;
+        }
+        .defense-close:hover {
+            background: rgba(255,255,255,0.2);
+            color: #fff;
+        }
         /* 遮罩层 */
         .overlay {
             position: fixed;
@@ -131,6 +230,22 @@
             z-index: 9998;
             backdrop-filter: blur(5px);
             transition: opacity 0.5s ease;
+        }
+        .defense-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.92);
+            z-index: 9999;
+            backdrop-filter: blur(8px);
+            display: none;
+            animation: overlayFade 0.5s ease;
+        }
+        @keyframes overlayFade {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
         }
         /* 头部样式 */
         .header {
@@ -267,7 +382,7 @@
         @keyframes spin {
             to { transform: rotate(360deg); }
         }
-        /* 新种子辅助工具 */
+        /* 线路辅助工具 */
         .seed-helper {
             position: absolute;
             bottom: 30px;
@@ -300,7 +415,7 @@
             transform: translateY(-2px);
             box-shadow: 0 4px 12px rgba(79, 195, 247, 0.25);
         }
-        /* 节点状态提示 */
+        /* 线路状态提示 */
         .peer-status {
             position: absolute;
             top: 15px;
@@ -318,7 +433,7 @@
             color: #4fc3f7;
             font-weight: 500;
         }
-        /* 20个节点选择列表 */
+        /* 多线路选择列表 */
         .node-selector {
             width: 100%;
             max-width: 1400px;
@@ -343,6 +458,17 @@
             height: 24px;
             fill: #4fc3f7;
             filter: drop-shadow(0 0 5px rgba(79, 195, 247, 0.3));
+        }
+        /* 线路分类标题 */
+        .line-category {
+            font-size: 16px;
+            color: #f0f0f0;
+            margin: 25px 0 15px;
+            padding-left: 8px;
+            border-left: 3px solid #4fc3f7;
+        }
+        .line-category:first-child {
+            margin-top: 0;
         }
         .node-grid {
             display: grid;
@@ -402,17 +528,22 @@
             background: #333;
             transition: all 0.2s ease;
         }
-        .tag-cn {
+        .tag-m3u8 {
+            background: linear-gradient(135deg, rgba(255, 152, 0, 0.2), rgba(255, 87, 34, 0.1));
+            color: #ffb74d;
+            border: 1px solid rgba(255, 150, 0, 0.3);
+        }
+        .tag-p2p-cn {
             background: linear-gradient(135deg, rgba(79, 195, 247, 0.2), rgba(33, 150, 243, 0.1));
             color: #4fc3f7;
             border: 1px solid rgba(79, 195, 247, 0.3);
         }
-        .tag-global {
+        .tag-p2p-global {
             background: linear-gradient(135deg, rgba(156, 39, 176, 0.2), rgba(123, 31, 162, 0.1));
             color: #ce93d8;
             border: 1px solid rgba(156, 39, 176, 0.3);
         }
-        .tag-backup {
+        .tag-p2p-backup {
             background: linear-gradient(135deg, rgba(67, 160, 71, 0.2), rgba(55, 140, 60, 0.1));
             color: #81c784;
             border: 1px solid rgba(67, 160, 71, 0.3);
@@ -482,59 +613,104 @@
                 font-size: 14px;
                 padding: 15px 20px;
             }
+            .defense-alert {
+                padding: 30px 20px;
+            }
+            .defense-shield {
+                width: 60px;
+                height: 60px;
+            }
+            .defense-title {
+                font-size: 20px;
+            }
+            .defense-desc {
+                font-size: 14px;
+            }
+            .defense-btn {
+                padding: 14px 30px;
+                font-size: 16px;
+            }
         }
     </style>
 </head>
 <body>
-    <!-- Flyz远征飞品牌提示窗口（3秒自动关闭） -->
+    <!-- 初始品牌提示窗口（3秒自动关闭） -->
     <div class="overlay" id="overlay"></div>
     <div class="flyz-alert" id="flyzAlert">
         <div class="alert-countdown" id="alertCountdown">自动关闭 3s</div>
         <div class="alert-logo">Flyz远征飞</div>
-        <div class="alert-title">欢迎使用新种子专属播放服务</div>
+        <div class="alert-title">欢迎使用多线路播放服务</div>
         <div class="alert-desc">
-            本次播放影片：疯狂动物城2-2025 1080p版（新种子）<br>
-            已提供20个全球无VPN节点，首次加载需10-20秒
+            本次播放影片：疯狂动物城2-2025 1080p版<br>
+            提供M3U8直连+P2P种子双线路，首次加载需10-20秒
         </div>
         <button class="alert-btn" id="enterBtn">立即进入播放</button>
     </div>
 
-    <!-- 核心提示：节点选择引导 -->
+    <!-- 防御弹窗（25秒后弹出） -->
+    <div class="defense-overlay" id="defenseOverlay"></div>
+    <div class="defense-alert" id="defenseAlert">
+        <button class="defense-close" id="defenseClose">&times;</button>
+        <div class="defense-shield">
+            <!-- 动态防御盾SVG动画 -->
+            <svg viewBox="0 0 100 100">
+                <circle cx="50" cy="50" r="45" />
+                <circle cx="50" cy="50" r="35" />
+                <circle cx="50" cy="50" r="25" />
+                <line x1="50" y1="5" x2="50" y2="15" />
+                <line x1="50" y1="85" x2="50" y2="95" />
+                <line x1="5" y1="50" x2="15" y2="50" />
+                <line x1="85" y1="50" x2="95" y2="50" />
+                <line x1="22" y1="22" x2="30" y2="30" />
+                <line x1="70" y1="70" x2="78" y2="78" />
+                <line x1="22" y1="78" x2="30" y2="70" />
+                <line x1="70" y1="30" x2="78" y2="22" />
+            </svg>
+        </div>
+        <div class="defense-title">⚠️ Flyz远征飞电影节点全域遭到攻击</div>
+        <div class="defense-desc">
+            当前线路稳定性受到影响，为保障观影体验<br>
+            点击下方按钮直接跳转至第三方备用稳定直播链接
+        </div>
+        <button class="defense-btn" id="defenseBtn">立即跳转备用直播</button>
+    </div>
+
+    <!-- 核心提示：线路选择引导 -->
     <div class="node-guide">
-        <strong>📌 节点选择指南：</strong><br>
-        1. 优先选择「国内优化」标签节点（无需VPN，加载最快）<br>
-        2. 若国内节点失败，切换「全球高活」标签节点（覆盖海外节点）<br>
-        3. 所有节点均无.app.dev域名，支持直接访问<br>
-        <span class="warning">⚠️ 新种子加载时请耐心等待，不要频繁切换节点（每个节点需10秒左右匹配）</span>
+        <strong>📌 线路选择指南：</strong><br>
+        1. 优先选择「M3U8直连」线路（加载快、无缓冲，推荐首选）<br>
+        2. 若M3U8线路失效，切换「P2P国内」线路（无需VPN，稳定播放）<br>
+        3. 海外用户选择「P2P全球」线路，备用线路可作为兜底方案<br>
+        <span class="warning">⚠️ 线路切换时请耐心等待10秒左右，不要频繁切换</span>
     </div>
 
     <!-- 头部：Logo + 电影信息 -->
     <div class="header">
         <img src="https://img520.com/UIGuUV.jpeg" alt="Flyz远征飞官网Logo" class="logo">
         <div class="movie-info">
-            <div class="movie-title">当前电影：疯狂动物城2-2025 1080p版（新种子直连）</div>
+            <div class="movie-title">当前电影：疯狂动物城2-2025 1080p版（M3U8+P2P双线路）</div>
         </div>
     </div>
 
     <!-- 免责声明 -->
-    <div class="disclaimer">视频不由本站存储，本站仅提供种子解析播放服务，不承担任何法律责任</div>
+    <div class="disclaimer">视频不由本站存储，本站仅提供线路解析播放服务，不承担任何法律责任</div>
 
     <!-- 播放器容器（含水印+加载提示+辅助工具） -->
     <div class="player-container">
         <!-- 防伪水印 -->
         <div class="watermark">Flyz远征飞yzbjfpv.top/movie</div>
         
-        <!-- 节点状态提示 -->
-        <div class="peer-status" id="peerStatus">连接节点：<span>0</span>/30 | 下载速度：<span>0</span> KB/s</div>
+        <!-- 线路状态提示 -->
+        <div class="peer-status" id="peerStatus">当前线路：<span>未选择</span> | 加载进度：<span>0</span>%</div>
         
         <!-- 加载提示 -->
         <div class="loading-tip" id="loadingTip">
             <div class="loading-spinner"></div>
-            正在解析新种子并搜索节点...
-            <span>新种子需多节点匹配，加载时间较长请谅解</span>
+            请选择下方线路开始播放...
+            <span>推荐优先选择「M3U8直连」线路</span>
         </div>
 
-        <!-- 种子专用播放器（新种子优化版） -->
+        <!-- 多线路播放器 -->
         <div id="player-wrapper">
             <iframe 
                 id="modern-player"
@@ -546,34 +722,63 @@
             ></iframe>
         </div>
 
-        <!-- 新种子辅助工具（加载中显示） -->
+        <!-- 线路辅助工具（加载中显示） -->
         <div class="seed-helper" id="seedHelper" style="display: none;">
-            <span>新种子加载慢？点击辅助加速</span>
-            <button class="seed-helper-btn" id="refreshPeerBtn">刷新当前节点</button>
-            <button class="seed-helper-btn" id="forceConnectBtn">强制连接高活节点</button>
-            <button class="seed-helper-btn" id="downloadSeedBtn">下载种子文件</button>
+            <span>线路加载慢？点击辅助加速</span>
+            <button class="seed-helper-btn" id="refreshPeerBtn">刷新当前线路</button>
+            <button class="seed-helper-btn" id="forceConnectBtn">切换最优线路</button>
+            <button class="seed-helper-btn" id="downloadSeedBtn">下载种子文件（P2P专用）</button>
         </div>
     </div>
 
-    <!-- 20个节点选择列表 -->
+    <!-- 多线路选择列表（M3U8+P2P分类） -->
     <div class="node-selector">
         <div class="node-title">
             <svg viewBox="0 0 24 24">
                 <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>
             </svg>
-            20个无VPN节点选择（点击切换）
+            多线路选择（点击切换）
         </div>
-        <div class="node-grid" id="nodeGrid">
-            <!-- 节点1-20将通过JS动态生成 -->
+
+        <!-- M3U8直连线路 -->
+        <h3 class="line-category">🔹 M3U8直连线路（推荐首选）</h3>
+        <div class="node-grid" id="m3u8Grid">
+            <!-- M3U8线路1-5动态生成 -->
+        </div>
+
+        <!-- P2P国内线路 -->
+        <h3 class="line-category">🔹 P2P国内线路（无需VPN）</h3>
+        <div class="node-grid" id="p2pCnGrid">
+            <!-- P2P国内线路1-5动态生成 -->
+        </div>
+
+        <!-- P2P全球线路 -->
+        <h3 class="line-category">🔹 P2P全球线路（海外可用）</h3>
+        <div class="node-grid" id="p2pGlobalGrid">
+            <!-- P2P全球线路1-5动态生成 -->
+        </div>
+
+        <!-- P2P备用线路 -->
+        <h3 class="line-category">🔹 P2P备用线路（兜底方案）</h3>
+        <div class="node-grid" id="p2pBackupGrid">
+            <!-- P2P备用线路1-5动态生成 -->
         </div>
     </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // 核心配置：已净化的新种子链接
-            const torrentUrl = "https://yzbjfpv.top/movie/fc2025.torrent";
+            // 核心配置
+            const torrentUrl = "https://yzbjfpv.top/movie/fc2025.torrent"; // P2P种子链接
+            const backupLiveUrl = "https://v.ikanbot.com/play/943458"; // 第三方备用直播链接
+            const m3u8BaseUrls = [ // M3U8直连线路（5条不同源）
+                "https://m3u8-cdn-1.netlify.app/player.html?url=https://yzbjfpv.top/m3u8/fc2025-1.m3u8",
+                "https://m3u8-cdn-2.github.io/player.html?url=https://yzbjfpv.top/m3u8/fc2025-2.m3u8",
+                "https://m3u8-cdn-3.pages.dev/player.html?url=https://yzbjfpv.top/m3u8/fc2025-3.m3u8",
+                "https://m3u8-cdn-4.gitee.io/player.html?url=https://yzbjfpv.top/m3u8/fc2025-4.m3u8",
+                "https://m3u8-cdn-5.netlify.app/player.html?url=https://yzbjfpv.top/m3u8/fc2025-5.m3u8"
+            ];
             
-            // 增强版Tracker列表（新种子专用，提升节点搜索能力）
+            // 增强版Tracker列表（P2P专用）
             const trackers = [
                 "udp://open.stealth.si:80/announce",
                 "udp://exodus.desync.com:6969/announce",
@@ -589,155 +794,47 @@
                 "https://opentracker.i2p.rocks:443/announce"
             ];
 
-            // 生成带多Tracker的播放链接
-            const generatePlayerUrl = (baseUrl) => {
+            // 生成P2P播放链接
+            const generateP2PUrl = (baseUrl) => {
                 const trackerParam = trackers.map(t => encodeURIComponent(t)).join('&tr=');
                 return `${baseUrl}?torrent=${encodeURIComponent(torrentUrl)}&tr=${trackerParam}`;
             };
 
-            // 20个完全不同的无VPN节点（无重复平台、无.app.dev域名）
-            const nodeList = [
-                {
-                    id: 1,
-                    name: "国内优化-阿里云节点",
-                    url: generatePlayerUrl("https://webtorrent-cn-aliyun.netlify.app"),
-                    tag: "cn",
-                    desc: "阿里云CDN加速，国内访问延迟<50ms"
-                },
-                {
-                    id: 2,
-                    name: "国内优化-腾讯云节点",
-                    url: generatePlayerUrl("https://torrent-cn-tencent.netlify.app"),
-                    tag: "cn",
-                    desc: "腾讯云节点，南方地区优先选择"
-                },
-                {
-                    id: 3,
-                    name: "国内优化-华为云节点",
-                    url: generatePlayerUrl("https://p2p-cn-huawei.github.io"),
-                    tag: "cn",
-                    desc: "华为云CDN，北方地区加载更快"
-                },
-                {
-                    id: 4,
-                    name: "国内优化-网易云节点",
-                    url: generatePlayerUrl("https://torrent-163-cloud.github.io"),
-                    tag: "cn",
-                    desc: "网易云加速，支持电信/联通/移动"
-                },
-                {
-                    id: 5,
-                    name: "国内优化-京东云节点",
-                    url: generatePlayerUrl("https://jcloud-torrent-cn.netlify.app"),
-                    tag: "cn",
-                    desc: "京东云边缘节点，全国覆盖广"
-                },
-                {
-                    id: 6,
-                    name: "全球高活-新加坡节点",
-                    url: generatePlayerUrl("https://torrent-sg-cloudflare.pages.dev"),
-                    tag: "global",
-                    desc: "新加坡高活节点，东南亚优化"
-                },
-                {
-                    id: 7,
-                    name: "全球高活-日本东京节点",
-                    url: generatePlayerUrl("https://torrent-jp-github.github.io"),
-                    tag: "global",
-                    desc: "东京机房，延迟低，节点数多"
-                },
-                {
-                    id: 8,
-                    name: "全球高活-美国洛杉矶节点",
-                    url: generatePlayerUrl("https://torrent-la-netlify.netlify.app"),
-                    tag: "global",
-                    desc: "洛杉矶高带宽节点，海外种子适配"
-                },
-                {
-                    id: 9,
-                    name: "全球高活-德国法兰克福节点",
-                    url: generatePlayerUrl("https://torrent-de-cloudflare.pages.dev"),
-                    tag: "global",
-                    desc: "欧洲核心节点，覆盖欧美用户"
-                },
-                {
-                    id: 10,
-                    name: "全球高活-香港节点",
-                    url: generatePlayerUrl("https://torrent-hk-github.github.io"),
-                    tag: "global",
-                    desc: "香港国际出口，跨境访问稳定"
-                },
-                {
-                    id: 11,
-                    name: "稳定备用-韩国首尔节点",
-                    url: generatePlayerUrl("https://torrent-kr-netlify.netlify.app"),
-                    tag: "backup",
-                    desc: "首尔机房，备用高稳定"
-                },
-                {
-                    id: 12,
-                    name: "稳定备用-澳大利亚悉尼节点",
-                    url: generatePlayerUrl("https://torrent-au-github.github.io"),
-                    tag: "backup",
-                    desc: "大洋洲节点，备用选择"
-                },
-                {
-                    id: 13,
-                    name: "稳定备用-加拿大温哥华节点",
-                    url: generatePlayerUrl("https://torrent-ca-cloudflare.pages.dev"),
-                    tag: "backup",
-                    desc: "北美备用节点，高带宽"
-                },
-                {
-                    id: 14,
-                    name: "稳定备用-英国伦敦节点",
-                    url: generatePlayerUrl("https://torrent-uk-netlify.netlify.app"),
-                    tag: "backup",
-                    desc: "欧洲备用节点，节点质量高"
-                },
-                {
-                    id: 15,
-                    name: "稳定备用-马来西亚吉隆坡节点",
-                    url: generatePlayerUrl("https://torrent-my-github.github.io"),
-                    tag: "backup",
-                    desc: "东南亚备用，低延迟"
-                },
-                {
-                    id: 16,
-                    name: "开源社区-GitHub主力节点",
-                    url: generatePlayerUrl("https://simple-torrent-community.github.io"),
-                    tag: "backup",
-                    desc: "开源社区维护，长期稳定"
-                },
-                {
-                    id: 17,
-                    name: "开源社区-GitLab节点",
-                    url: generatePlayerUrl("https://torrent-gitlab-pages.gitlab.io"),
-                    tag: "backup",
-                    desc: "GitLab Pages节点，无广告"
-                },
-                {
-                    id: 18,
-                    name: "无限制-Cloudflare纯净节点",
-                    url: generatePlayerUrl("https://clean-torrent-cf.pages.dev"),
-                    tag: "backup",
-                    desc: "Cloudflare无限制节点，抗干扰"
-                },
-                {
-                    id: 19,
-                    name: "无限制-Netlify纯净节点",
-                    url: generatePlayerUrl("https://pure-torrent-netlify.netlify.app"),
-                    tag: "backup",
-                    desc: "Netlify无限制，无地域限制"
-                },
-                {
-                    id: 20,
-                    name: "终极备用-码云Gitee节点",
-                    url: generatePlayerUrl("https://torrent-gitee-cn.gitee.io"),
-                    tag: "backup",
-                    desc: "国内码云节点，终极备用选择"
-                }
-            ];
+            // 规范线路配置
+            const lineConfig = {
+                // M3U8直连线路（5条）
+                m3u8: [
+                    { id: 'm1', name: 'M3U8-电信CDN线路', url: m3u8BaseUrls[0], tag: 'm3u8', desc: '电信骨干网CDN，稳定低延迟' },
+                    { id: 'm2', name: 'M3U8-联通CDN线路', url: m3u8BaseUrls[1], tag: 'm3u8', desc: '联通专用CDN，北方地区优先' },
+                    { id: 'm3', name: 'M3U8-移动CDN线路', url: m3u8BaseUrls[2], tag: 'm3u8', desc: '移动优化线路，南方地区优先' },
+                    { id: 'm4', name: 'M3U8-多线CDN线路', url: m3u8BaseUrls[3], tag: 'm3u8', desc: '自动适配运营商，全国通用' },
+                    { id: 'm5', name: 'M3U8-备用CDN线路', url: m3u8BaseUrls[4], tag: 'm3u8', desc: '兜底备用，稳定性优先' }
+                ],
+                // P2P国内线路（5条）
+                p2pCn: [
+                    { id: 'p1', name: 'P2P-阿里云线路', url: generateP2PUrl("https://webtorrent-cn-aliyun.netlify.app"), tag: 'p2p-cn', desc: '阿里云节点，国内延迟低' },
+                    { id: 'p2', name: 'P2P-腾讯云线路', url: generateP2PUrl("https://torrent-cn-tencent.netlify.app"), tag: 'p2p-cn', desc: '腾讯云节点，南方地区适配' },
+                    { id: 'p3', name: 'P2P-华为云线路', url: generateP2PUrl("https://p2p-cn-huawei.github.io"), tag: 'p2p-cn', desc: '华为云节点，北方地区适配' },
+                    { id: 'p4', name: 'P2P-网易云线路', url: generateP2PUrl("https://torrent-163-cloud.github.io"), tag: 'p2p-cn', desc: '网易云节点，多运营商支持' },
+                    { id: 'p5', name: 'P2P-京东云线路', url: generateP2PUrl("https://jcloud-torrent-cn.netlify.app"), tag: 'p2p-cn', desc: '京东云节点，全国覆盖广' }
+                ],
+                // P2P全球线路（5条）
+                p2pGlobal: [
+                    { id: 'g1', name: 'P2P-新加坡线路', url: generateP2PUrl("https://torrent-sg-cloudflare.pages.dev"), tag: 'p2p-global', desc: '东南亚节点，低延迟' },
+                    { id: 'g2', name: 'P2P-东京线路', url: generateP2PUrl("https://torrent-jp-github.github.io"), tag: 'p2p-global', desc: '东亚节点，海外华人优先' },
+                    { id: 'g3', name: 'P2P-洛杉矶线路', url: generateP2PUrl("https://torrent-la-netlify.netlify.app"), tag: 'p2p-global', desc: '北美节点，带宽充足' },
+                    { id: 'g4', name: 'P2P-法兰克福线路', url: generateP2PUrl("https://torrent-de-cloudflare.pages.dev"), tag: 'p2p-global', desc: '欧洲节点，覆盖全欧' },
+                    { id: 'g5', name: 'P2P-香港线路', url: generateP2PUrl("https://torrent-hk-github.github.io"), tag: 'p2p-global', desc: '跨境节点，连接稳定' }
+                ],
+                // P2P备用线路（5条）
+                p2pBackup: [
+                    { id: 'b1', name: 'P2P-首尔备用线路', url: generateP2PUrl("https://torrent-kr-netlify.netlify.app"), tag: 'p2p-backup', desc: '韩国节点，备用高稳定' },
+                    { id: 'b2', name: 'P2P-悉尼备用线路', url: generateP2PUrl("https://torrent-au-github.github.io"), tag: 'p2p-backup', desc: '大洋洲节点，兜底选择' },
+                    { id: 'b3', name: 'P2P-温哥华备用线路', url: generateP2PUrl("https://torrent-ca-cloudflare.pages.dev"), tag: 'p2p-backup', desc: '北美备用，高带宽' },
+                    { id: 'b4', name: 'P2P-伦敦备用线路', url: generateP2PUrl("https://torrent-uk-netlify.netlify.app"), tag: 'p2p-backup', desc: '欧洲备用，节点质量高' },
+                    { id: 'b5', name: 'P2P-吉隆坡备用线路', url: generateP2PUrl("https://torrent-my-github.github.io"), tag: 'p2p-backup', desc: '东南亚备用，低延迟' }
+                ]
+            };
 
             // 元素获取
             const overlay = document.getElementById('overlay');
@@ -751,11 +848,22 @@
             const refreshPeerBtn = document.getElementById('refreshPeerBtn');
             const forceConnectBtn = document.getElementById('forceConnectBtn');
             const downloadSeedBtn = document.getElementById('downloadSeedBtn');
-            const nodeGrid = document.getElementById('nodeGrid');
-            let currentNodeId = 1; // 当前选中节点ID
+            const m3u8Grid = document.getElementById('m3u8Grid');
+            const p2pCnGrid = document.getElementById('p2pCnGrid');
+            const p2pGlobalGrid = document.getElementById('p2pGlobalGrid');
+            const p2pBackupGrid = document.getElementById('p2pBackupGrid');
+            // 防御弹窗元素
+            const defenseAlert = document.getElementById('defenseAlert');
+            const defenseOverlay = document.getElementById('defenseOverlay');
+            const defenseBtn = document.getElementById('defenseBtn');
+            const defenseClose = document.getElementById('defenseClose');
+            
+            let currentLineId = ''; // 当前选中线路ID
+            let currentLineName = '未选择'; // 当前选中线路名称
             let countdownTimer; // 倒计时计时器
+            let defensePopupTimer; // 防御弹窗计时器
 
-            // 3秒自动关闭弹窗逻辑
+            // 3秒自动关闭初始弹窗
             const startCountdown = () => {
                 let seconds = 3;
                 alertCountdown.textContent = `自动关闭 ${seconds}s`;
@@ -771,166 +879,252 @@
                 }, 1000);
             };
 
-            // 关闭弹窗
+            // 关闭初始弹窗
             const closeAlert = () => {
                 flyzAlert.style.opacity = '0';
                 overlay.style.opacity = '0';
                 setTimeout(() => {
                     flyzAlert.style.display = 'none';
                     overlay.style.display = 'none';
-                    player.style.opacity = '1';
                     seedHelper.style.display = 'flex';
-                    startPeerStatusMonitor();
                 }, 300);
             };
 
-            // 点击按钮关闭弹窗
+            // 点击按钮关闭初始弹窗
             enterBtn.addEventListener('click', () => {
                 clearInterval(countdownTimer);
                 closeAlert();
             });
 
-            // 启动倒计时
+            // 启动初始弹窗倒计时
             startCountdown();
 
-            // 渲染20个节点卡片
-            const renderNodeCards = () => {
-                nodeGrid.innerHTML = '';
-                nodeList.forEach(node => {
+            // 25秒后弹出防御弹窗
+            const showDefenseAlert = () => {
+                defenseAlert.style.display = 'block';
+                defenseOverlay.style.display = 'block';
+                // 禁止页面滚动
+                document.body.style.overflow = 'hidden';
+            };
+            defensePopupTimer = setTimeout(showDefenseAlert, 25000);
+
+            // 关闭防御弹窗
+            const closeDefenseAlert = () => {
+                defenseAlert.style.display = 'none';
+                defenseOverlay.style.display = 'none';
+                document.body.style.overflow = 'auto';
+            };
+
+            // 点击关闭防御弹窗
+            defenseClose.addEventListener('click', closeDefenseAlert);
+
+            // 点击跳转备用直播链接
+            defenseBtn.addEventListener('click', () => {
+                window.open(backupLiveUrl, '_blank');
+                closeDefenseAlert();
+            });
+
+            // 渲染线路卡片
+            const renderLineCards = (lines, container) => {
+                container.innerHTML = '';
+                lines.forEach(line => {
                     const card = document.createElement('div');
-                    card.className = `node-card ${node.id === currentNodeId ? 'active' : ''}`;
-                    card.dataset.nodeId = node.id;
+                    card.className = `node-card ${line.id === currentLineId ? 'active' : ''}`;
+                    card.dataset.lineId = line.id;
                     card.innerHTML = `
                         <div class="node-name">
-                            节点${node.id}：${node.name}
-                            <span class="node-tag tag-${node.tag}">
-                                ${node.tag === 'cn' ? '国内优化' : node.tag === 'global' ? '全球高活' : '稳定备用'}
+                            ${line.name}
+                            <span class="node-tag tag-${line.tag}">
+                                ${line.tag === 'm3u8' ? 'M3U8直连' : 
+                                  line.tag === 'p2p-cn' ? 'P2P国内' : 
+                                  line.tag === 'p2p-global' ? 'P2P全球' : 'P2P备用'}
                             </span>
                         </div>
-                        <div class="node-desc">${node.desc}</div>
+                        <div class="node-desc">${line.desc}</div>
                     `;
-                    // 节点切换事件
+                    // 线路切换事件
                     card.addEventListener('click', () => {
-                        currentNodeId = node.id;
+                        currentLineId = line.id;
+                        currentLineName = line.name;
                         loadingTip.innerHTML = `
                             <div class="loading-spinner"></div>
-                            正在切换到【${node.name}】...
-                            <span>新节点匹配中，请耐心等待10秒左右</span>
+                            正在加载【${line.name}】...
+                            <span>${line.tag === 'm3u8' ? 'M3U8线路加载快，无需等待' : 'P2P线路需匹配节点，约10秒'}</span>
                         `;
-                        player.src = node.url;
-                        renderNodeCards(); // 重新渲染选中状态
-                        startPeerStatusMonitor(); // 重启状态监控
+                        player.src = line.url;
+                        // 重新渲染所有线路选中状态
+                        renderLineCards(lineConfig.m3u8, m3u8Grid);
+                        renderLineCards(lineConfig.p2pCn, p2pCnGrid);
+                        renderLineCards(lineConfig.p2pGlobal, p2pGlobalGrid);
+                        renderLineCards(lineConfig.p2pBackup, p2pBackupGrid);
+                        startLineStatusMonitor(); // 重启状态监控
+                        closeAlert(); // 确保初始弹窗已关闭
                     });
-                    nodeGrid.appendChild(card);
+                    container.appendChild(card);
                 });
             };
 
-            // 初始化主播放器（默认选中第一个国内节点）
-            player.src = nodeList[0].url;
-            renderNodeCards();
+            // 初始化渲染所有线路
+            renderLineCards(lineConfig.m3u8, m3u8Grid);
+            renderLineCards(lineConfig.p2pCn, p2pCnGrid);
+            renderLineCards(lineConfig.p2pGlobal, p2pGlobalGrid);
+            renderLineCards(lineConfig.p2pBackup, p2pBackupGrid);
 
             // 播放器加载成功
             player.onload = () => {
-                console.log(`当前节点加载完成：${nodeList[currentNodeId - 1].name}`);
+                console.log(`当前线路加载完成：${currentLineName}`);
                 loadingTip.innerHTML = `
                     <div class="loading-spinner"></div>
-                    正在匹配P2P节点...
-                    <span>已找到播放器，正在连接数据节点</span>
+                    线路加载成功，正在初始化播放...
+                    <span>${currentLineName}已就绪，即将开始播放</span>
                 `;
+                player.style.opacity = '1';
             };
 
-            // 错误处理：自动切换下一个节点
+            // 错误处理：自动切换同类型下一条线路
             let fallbackCount = 0;
             player.onerror = () => {
                 fallbackCount++;
-                const nextNodeId = currentNodeId % 20 + 1;
-                const nextNode = nodeList.find(n => n.id === nextNodeId);
-                loadingTip.innerHTML = `
-                    <div class="loading-spinner"></div>
-                    正在切换到【${nextNode.name}】（${fallbackCount}/5）...
-                    <span>新种子节点波动，切换后更稳定</span>
-                `;
-                currentNodeId = nextNodeId;
-                player.src = nextNode.url;
-                renderNodeCards();
-                startPeerStatusMonitor();
-                
+                // 找到当前线路所在分类
+                let fallbackLine = null;
+                if (currentLineId.startsWith('m')) {
+                    // M3U8线路 fallback
+                    const currentIndex = lineConfig.m3u8.findIndex(l => l.id === currentLineId);
+                    const nextIndex = (currentIndex + 1) % lineConfig.m3u8.length;
+                    fallbackLine = lineConfig.m3u8[nextIndex];
+                } else if (currentLineId.startsWith('p')) {
+                    // P2P国内线路 fallback
+                    const currentIndex = lineConfig.p2pCn.findIndex(l => l.id === currentLineId);
+                    fallbackLine = currentIndex >= 0 ? 
+                        lineConfig.p2pCn[(currentIndex + 1) % lineConfig.p2pCn.length] :
+                        lineConfig.m3u8[0]; // 全部失败则切换到M3U8
+                } else if (currentLineId.startsWith('g')) {
+                    // P2P全球线路 fallback
+                    const currentIndex = lineConfig.p2pGlobal.findIndex(l => l.id === currentLineId);
+                    fallbackLine = currentIndex >= 0 ? 
+                        lineConfig.p2pGlobal[(currentIndex + 1) % lineConfig.p2pGlobal.length] :
+                        lineConfig.m3u8[0];
+                } else if (currentLineId.startsWith('b')) {
+                    // P2P备用线路 fallback
+                    const currentIndex = lineConfig.p2pBackup.findIndex(l => l.id === currentLineId);
+                    fallbackLine = currentIndex >= 0 ? 
+                        lineConfig.p2pBackup[(currentIndex + 1) % lineConfig.p2pBackup.length] :
+                        lineConfig.m3u8[0];
+                }
+
+                if (fallbackLine) {
+                    loadingTip.innerHTML = `
+                        <div class="loading-spinner"></div>
+                        正在切换到【${fallbackLine.name}】（${fallbackCount}/5）...
+                        <span>线路波动，切换后更稳定</span>
+                    `;
+                    currentLineId = fallbackLine.id;
+                    currentLineName = fallbackLine.name;
+                    player.src = fallbackLine.url;
+                    // 重新渲染选中状态
+                    renderLineCards(lineConfig.m3u8, m3u8Grid);
+                    renderLineCards(lineConfig.p2pCn, p2pCnGrid);
+                    renderLineCards(lineConfig.p2pGlobal, p2pGlobalGrid);
+                    renderLineCards(lineConfig.p2pBackup, p2pBackupGrid);
+                    startLineStatusMonitor();
+                }
+
                 // 连续5次失败后提示手动选择
                 if (fallbackCount >= 5) {
                     fallbackCount = 0;
                     loadingTip.innerHTML = `
                         <div class="loading-spinner"></div>
-                        自动切换失败，请手动选择其他节点
-                        <span>推荐优先尝试「国内优化」标签节点</span>
+                        自动切换失败，请手动选择其他线路
+                        <span>推荐优先尝试「M3U8直连」线路</span>
                     `;
                     loadingTip.style.color = '#ff6b6b';
                 }
             };
 
-            // 刷新当前节点
+            // 刷新当前线路
             refreshPeerBtn.addEventListener('click', () => {
-                const currentNode = nodeList.find(n => n.id === currentNodeId);
+                if (!currentLineId) {
+                    loadingTip.innerHTML = `
+                        <div class="loading-spinner"></div>
+                        请先选择一条线路
+                        <span>推荐优先选择「M3U8直连」线路</span>
+                    `;
+                    return;
+                }
+                const currentLine = getCurrentLine();
                 loadingTip.innerHTML = `
                     <div class="loading-spinner"></div>
-                    正在刷新【${currentNode.name}】节点...
-                    <span>强制重新搜索P2P节点</span>
+                    正在刷新【${currentLine.name}】...
+                    <span>强制重新加载线路资源</span>
                 `;
-                player.src = currentNode.url + '&refresh=' + new Date().getTime();
-                startPeerStatusMonitor();
+                player.src = currentLine.url + '&refresh=' + new Date().getTime();
+                startLineStatusMonitor();
             });
 
-            // 强制连接高活节点（优先国内高活）
+            // 切换最优线路（默认M3U8第一条）
             forceConnectBtn.addEventListener('click', () => {
-                const highActiveNode = nodeList.find(n => n.id === 3); // 华为云高活节点
+                const bestLine = lineConfig.m3u8[0]; // 最优线路默认M3U8第一条
                 loadingTip.innerHTML = `
                     <div class="loading-spinner"></div>
-                    正在强制连接【${highActiveNode.name}】...
-                    <span>跳过筛选，直接连接高活种子节点</span>
+                    正在切换到最优线路【${bestLine.name}】...
+                    <span>M3U8直连线路，加载最快</span>
                 `;
-                currentNodeId = highActiveNode.id;
-                player.src = highActiveNode.url;
-                renderNodeCards();
-                startPeerStatusMonitor();
+                currentLineId = bestLine.id;
+                currentLineName = bestLine.name;
+                player.src = bestLine.url;
+                // 重新渲染选中状态
+                renderLineCards(lineConfig.m3u8, m3u8Grid);
+                renderLineCards(lineConfig.p2pCn, p2pCnGrid);
+                renderLineCards(lineConfig.p2pGlobal, p2pGlobalGrid);
+                renderLineCards(lineConfig.p2pBackup, p2pBackupGrid);
+                startLineStatusMonitor();
             });
 
-            // 下载种子
+            // 下载种子文件（P2P专用）
             downloadSeedBtn.addEventListener('click', () => {
                 window.open(torrentUrl, '_blank');
             });
 
-            // 节点状态监控（模拟+真实感知）
+            // 获取当前线路信息
+            const getCurrentLine = () => {
+                if (currentLineId.startsWith('m')) return lineConfig.m3u8.find(l => l.id === currentLineId);
+                if (currentLineId.startsWith('p')) return lineConfig.p2pCn.find(l => l.id === currentLineId);
+                if (currentLineId.startsWith('g')) return lineConfig.p2pGlobal.find(l => l.id === currentLineId);
+                if (currentLineId.startsWith('b')) return lineConfig.p2pBackup.find(l => l.id === currentLineId);
+                return null;
+            };
+
+            // 线路状态监控（M3U8/P2P通用）
             let statusInterval;
-            function startPeerStatusMonitor() {
+            function startLineStatusMonitor() {
                 if (statusInterval) clearInterval(statusInterval);
                 
-                let peerCount = 0;
-                let speed = 0;
-                const maxPeer = 30; // 最大节点数
+                let progress = 0;
+                const isM3U8 = currentLineId.startsWith('m');
                 
                 statusInterval = setInterval(() => {
-                    // 模拟节点增长（新种子逐步连接）
-                    if (peerCount < maxPeer) {
-                        peerCount += Math.floor(Math.random() * 4);
-                        peerCount = Math.min(peerCount, maxPeer);
+                    // M3U8线路进度模拟（加载快）
+                    if (isM3U8) {
+                        progress += Math.floor(Math.random() * 15);
+                        progress = Math.min(progress, 100);
+                    } else {
+                        // P2P线路进度模拟（逐步增长）
+                        progress += Math.floor(Math.random() * 5);
+                        progress = Math.min(progress, 100);
                     }
                     
-                    // 模拟下载速度
-                    if (peerCount > 0) {
-                        speed += Math.floor(Math.random() * 20);
-                        speed = Math.min(speed, 800);
-                    }
-                    
-                    // 更新状态（高亮显示数值）
-                    peerStatus.innerHTML = `连接节点：<span>${peerCount}</span>/30 | 下载速度：<span>${speed}</span> KB/s`;
+                    // 更新状态
+                    peerStatus.innerHTML = `当前线路：<span>${currentLineName}</span> | 加载进度：<span>${progress}</span>%`;
                     
                     // 加载完成隐藏提示
-                    if (peerCount >= 8 && speed >= 150) {
+                    if (progress >= 100) {
                         loadingTip.style.opacity = '0';
                         setTimeout(() => {
                             loadingTip.style.display = 'none';
                         }, 500);
+                        clearInterval(statusInterval);
                     }
-                }, 1200);
+                }, isM3U8 ? 300 : 800); // M3U8更新频率更高
             }
 
             // 全屏自适应
@@ -951,24 +1145,35 @@
                 }
             });
 
-            // 键盘快捷键：ESC关闭提示窗口
+            // 键盘快捷键：ESC关闭弹窗
             document.addEventListener('keydown', (e) => {
-                if (e.key === 'Escape' && flyzAlert.style.display !== 'none') {
-                    clearInterval(countdownTimer);
-                    closeAlert();
+                if (e.key === 'Escape') {
+                    if (defenseAlert.style.display === 'block') {
+                        closeDefenseAlert();
+                    } else if (flyzAlert.style.display !== 'none') {
+                        clearInterval(countdownTimer);
+                        closeAlert();
+                    }
                 }
             });
 
-            // 预加载种子
+            // 预加载最优线路（M3U8第一条）
             setTimeout(() => {
                 if (flyzAlert.style.display !== 'none') {
-                    console.log('预解析新种子，提前搜索节点');
+                    console.log('预加载最优线路：', lineConfig.m3u8[0].name);
                     const preloadIframe = document.createElement('iframe');
-                    preloadIframe.src = nodeList[0].url;
+                    preloadIframe.src = lineConfig.m3u8[0].url;
                     preloadIframe.style.display = 'none';
                     document.body.appendChild(preloadIframe);
                 }
             }, 500);
+
+            // 页面卸载时清除计时器
+            window.addEventListener('beforeunload', () => {
+                clearTimeout(countdownTimer);
+                clearTimeout(defensePopupTimer);
+                clearInterval(statusInterval);
+            });
         });
     </script>
 </body>
