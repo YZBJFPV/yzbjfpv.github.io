@@ -1,0 +1,812 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>电影|Flyz远征飞官网</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            background-color: #000;
+            color: #fff;
+            font-family: "Microsoft YaHei", "PingFang SC", "Helvetica Neue", sans-serif;
+            padding: 20px;
+            position: relative;
+        }
+        /* 核心提示：节点选择引导 */
+        .node-guide {
+            background: rgba(79, 195, 247, 0.1);
+            border: 1px solid #4fc3f7;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            line-height: 1.8;
+        }
+        .node-guide strong {
+            color: #4fc3f7;
+        }
+        .node-guide .warning {
+            color: #ff6b6b;
+            font-weight: 600;
+        }
+        /* Flyz远征飞品牌提示窗口 */
+        .flyz-alert {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.9);
+            border: 1px solid #333;
+            border-radius: 12px;
+            padding: 30px 40px;
+            width: 90%;
+            max-width: 450px;
+            z-index: 9999;
+            text-align: center;
+            box-shadow: 0 0 30px rgba(255, 255, 255, 0.1);
+            animation: popIn 0.5s ease-out;
+        }
+        @keyframes popIn {
+            0% { transform: translate(-50%, -50%) scale(0.8); opacity: 0; }
+            100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+        }
+        .alert-logo {
+            font-size: 36px;
+            font-weight: bold;
+            color: #4fc3f7;
+            margin-bottom: 15px;
+        }
+        .alert-title {
+            font-size: 18px;
+            margin-bottom: 10px;
+            color: #f0f0f0;
+        }
+        .alert-desc {
+            font-size: 14px;
+            color: #888;
+            margin-bottom: 25px;
+            line-height: 1.6;
+        }
+        .alert-btn {
+            background: linear-gradient(135deg, #4fc3f7, #2196f3);
+            color: #fff;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 30px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .alert-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(79, 195, 247, 0.3);
+        }
+        /* 遮罩层 */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 9998;
+            backdrop-filter: blur(3px);
+        }
+        /* 头部样式 */
+        .header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+        .logo {
+            width: 70px;
+            height: auto;
+            border-radius: 4px;
+            object-fit: cover;
+        }
+        .movie-info {
+            margin-left: 15px;
+            flex: 1;
+            min-width: 200px;
+        }
+        .movie-title {
+            font-size: 22px;
+            font-weight: 600;
+            margin-bottom: 3px;
+            color: #f0f0f0;
+        }
+        .disclaimer {
+            font-size: 12px;
+            color: #888;
+            margin-bottom: 15px;
+            line-height: 1.6;
+        }
+        /* 播放器容器 */
+        .player-container {
+            position: relative;
+            width: 100%;
+            max-width: 1400px;
+            margin: 0 auto 25px;
+            background-color: #111;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.7);
+        }
+        /* 防伪水印 */
+        .watermark {
+            position: absolute;
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.1);
+            pointer-events: none;
+            z-index: 10;
+            white-space: nowrap;
+            font-weight: 500;
+            text-shadow: 0 0 8px rgba(255,255,255,0.05);
+            animation: 
+                float 25s ease-in-out infinite alternate,
+                fade 10s ease-in-out infinite alternate,
+                rotate 40s linear infinite alternate,
+                scale 15s ease-in-out infinite alternate;
+        }
+        @keyframes float {
+            0% { top: 12%; left: 5%; }
+            25% { top: 80%; left: 28%; }
+            50% { top: 35%; left: 85%; }
+            75% { top: 70%; left: 60%; }
+            100% { top: 20%; left: 15%; }
+        }
+        @keyframes fade {
+            0%, 15%, 85%, 100% { opacity: 0; }
+            30%, 60% { opacity: 0.2; }
+        }
+        @keyframes rotate {
+            0%, 100% { transform: rotate(-3deg); }
+            50% { transform: rotate(3deg); }
+        }
+        @keyframes scale {
+            0%, 100% { transform: scale(1) rotate(-3deg); }
+            50% { transform: scale(1.05) rotate(3deg); }
+        }
+        /* 播放器自适应 */
+        #player-wrapper {
+            width: 100%;
+            height: 0;
+            padding-bottom: 56.25%; /* 16:9比例 */
+            position: relative;
+        }
+        #modern-player {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+        /* 加载提示 */
+        .loading-tip {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #aaa;
+            font-size: 14px;
+            z-index: 5;
+            text-align: center;
+        }
+        .loading-tip span {
+            display: block;
+            margin-top: 8px;
+            font-size: 12px;
+            color: #666;
+        }
+        /* 新种子辅助工具 */
+        .seed-helper {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 20;
+            background: rgba(0,0,0,0.8);
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            border: 1px solid #333;
+        }
+        .seed-helper-btn {
+            background: #4fc3f7;
+            color: #fff;
+            border: none;
+            padding: 6px 15px;
+            border-radius: 20px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .seed-helper-btn:hover {
+            background: #2196f3;
+        }
+        /* 节点状态提示 */
+        .peer-status {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            z-index: 15;
+            background: rgba(0,0,0,0.6);
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            color: #aaa;
+        }
+        /* 20个节点选择列表 */
+        .node-selector {
+            width: 100%;
+            max-width: 1400px;
+            margin: 0 auto;
+            background: #111;
+            border-radius: 8px;
+            padding: 20px;
+            border: 1px solid #333;
+        }
+        .node-title {
+            font-size: 18px;
+            color: #4fc3f7;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .node-title svg {
+            width: 20px;
+            height: 20px;
+            fill: #4fc3f7;
+        }
+        .node-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 12px;
+        }
+        .node-card {
+            background: #222;
+            border-radius: 6px;
+            padding: 12px 15px;
+            border: 1px solid #444;
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+        .node-card:hover {
+            border-color: #4fc3f7;
+            background: #282828;
+            transform: translateY(-2px);
+        }
+        .node-card.active {
+            border-color: #2196f3;
+            background: rgba(33, 150, 243, 0.1);
+        }
+        .node-name {
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 4px;
+            display: flex;
+            justify-content: space-between;
+        }
+        .node-tag {
+            font-size: 11px;
+            padding: 2px 6px;
+            border-radius: 10px;
+            background: #333;
+        }
+        .tag-cn {
+            background: rgba(79, 195, 247, 0.2);
+            color: #4fc3f7;
+        }
+        .tag-global {
+            background: rgba(156, 39, 176, 0.2);
+            color: #ce93d8;
+        }
+        .tag-backup {
+            background: rgba(67, 160, 71, 0.2);
+            color: #81c784;
+        }
+        .node-desc {
+            font-size: 12px;
+            color: #888;
+        }
+        /* 移动端优化 */
+        @media (max-width: 768px) {
+            body {
+                padding: 12px;
+            }
+            .logo {
+                width: 60px;
+            }
+            .movie-title {
+                font-size: 18px;
+            }
+            .disclaimer {
+                margin-bottom: 15px;
+                font-size: 11px;
+            }
+            .player-container {
+                border-radius: 4px;
+                box-shadow: 0 2px 16px rgba(0,0,0,0.6);
+            }
+            .watermark {
+                font-size: 12px;
+            }
+            .flyz-alert {
+                padding: 20px 25px;
+            }
+            .alert-logo {
+                font-size: 28px;
+            }
+            .alert-title {
+                font-size: 16px;
+            }
+            .alert-desc {
+                font-size: 13px;
+            }
+            .alert-btn {
+                padding: 10px 25px;
+                font-size: 14px;
+            }
+            .seed-helper {
+                flex-wrap: wrap;
+                justify-content: center;
+                padding: 10px;
+                width: 90%;
+            }
+            .node-selector {
+                padding: 15px;
+            }
+            .node-grid {
+                grid-template-columns: 1fr;
+            }
+            .node-guide {
+                font-size: 13px;
+                padding: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Flyz远征飞品牌提示窗口（默认显示） -->
+    <div class="overlay" id="overlay"></div>
+    <div class="flyz-alert" id="flyzAlert">
+        <div class="alert-logo">Flyz远征飞</div>
+        <div class="alert-title">欢迎使用新种子专属播放服务</div>
+        <div class="alert-desc">
+            本次播放影片：疯狂动物城2-2025 1080p版（新种子）<br>
+            已提供20个全球无VPN节点，首次加载需10-20秒
+        </div>
+        <button class="alert-btn" id="enterBtn">进入播放</button>
+    </div>
+
+    <!-- 核心提示：节点选择引导 -->
+    <div class="node-guide">
+        <strong>📌 节点选择指南：</strong><br>
+        1. 优先选择「国内优化」标签节点（无需VPN，加载最快）<br>
+        2. 若国内节点失败，切换「全球高活」标签节点（覆盖海外节点）<br>
+        3. 所有节点均无.app.dev域名，支持直接访问<br>
+        <span class="warning">⚠️ 新种子加载时请耐心等待，不要频繁切换节点（每个节点需10秒左右匹配）</span>
+    </div>
+
+    <!-- 头部：Logo + 电影信息 -->
+    <div class="header">
+        <img src="https://img520.com/UIGuUV.jpeg" alt="Flyz远征飞官网Logo" class="logo">
+        <div class="movie-info">
+            <div class="movie-title">当前电影：疯狂动物城2-2025 1080p版（新种子直连）</div>
+        </div>
+    </div>
+
+    <!-- 免责声明 -->
+    <div class="disclaimer">视频不由本站存储，本站仅提供种子解析播放服务，不承担任何法律责任</div>
+
+    <!-- 播放器容器（含水印+加载提示+辅助工具） -->
+    <div class="player-container">
+        <!-- 防伪水印 -->
+        <div class="watermark">Flyz远征飞yzbjfpv.top/movie</div>
+        
+        <!-- 节点状态提示 -->
+        <div class="peer-status" id="peerStatus">连接节点：0/0 | 下载速度：0 KB/s</div>
+        
+        <!-- 加载提示 -->
+        <div class="loading-tip" id="loadingTip">
+            正在解析新种子并搜索节点...
+            <span>新种子需多节点匹配，加载时间较长请谅解</span>
+        </div>
+
+        <!-- 种子专用播放器（新种子优化版） -->
+        <div id="player-wrapper">
+            <iframe 
+                id="modern-player"
+                src=""
+                allowfullscreen
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                loading="lazy"
+                style="opacity: 0; transition: opacity 0.5s ease;"
+            ></iframe>
+        </div>
+
+        <!-- 新种子辅助工具（加载中显示） -->
+        <div class="seed-helper" id="seedHelper" style="display: none;">
+            <span>新种子加载慢？点击辅助加速</span>
+            <button class="seed-helper-btn" id="refreshPeerBtn">刷新当前节点</button>
+            <button class="seed-helper-btn" id="forceConnectBtn">强制连接高活节点</button>
+            <button class="seed-helper-btn" id="downloadSeedBtn">下载种子文件</button>
+        </div>
+    </div>
+
+    <!-- 20个节点选择列表 -->
+    <div class="node-selector">
+        <div class="node-title">
+            <svg viewBox="0 0 24 24">
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>
+            </svg>
+            20个无VPN节点选择（点击切换）
+        </div>
+        <div class="node-grid" id="nodeGrid">
+            <!-- 节点1-20将通过JS动态生成 -->
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // 核心配置：已净化的新种子链接
+            const torrentUrl = "https://yzbjfpv.top/movie/fc2025.torrent";
+            
+            // 增强版Tracker列表（新种子专用，提升节点搜索能力）
+            const trackers = [
+                "udp://open.stealth.si:80/announce",
+                "udp://exodus.desync.com:6969/announce",
+                "udp://explodie.org:6969/announce",
+                "udp://tracker.dler.org:6969/announce",
+                "udp://tracker.filemail.com:6969/announce",
+                "udp://tracker.tiny-vps.com:6969/announce",
+                "udp://tracker.torrent.eu.org:451/announce",
+                "https://tracker.tamersunion.org:443/announce",
+                "https://tracker.lilithraws.org:443/announce",
+                "udp://tracker.opentrackr.org:1337/announce"
+            ];
+
+            // 生成带多Tracker的播放链接
+            const generatePlayerUrl = (baseUrl) => {
+                const trackerParam = trackers.map(t => encodeURIComponent(t)).join('&tr=');
+                return `${baseUrl}?torrent=${encodeURIComponent(torrentUrl)}&tr=${trackerParam}`;
+            };
+
+            // 20个完全不同的无VPN节点（无重复平台、无.app.dev域名）
+            const nodeList = [
+                {
+                    id: 1,
+                    name: "国内优化-阿里云节点",
+                    url: generatePlayerUrl("https://webtorrent-cn-aliyun.netlify.app"),
+                    tag: "cn",
+                    desc: "阿里云CDN加速，国内访问延迟<50ms"
+                },
+                {
+                    id: 2,
+                    name: "国内优化-腾讯云节点",
+                    url: generatePlayerUrl("https://torrent-cn-tencent.netlify.app"),
+                    tag: "cn",
+                    desc: "腾讯云节点，南方地区优先选择"
+                },
+                {
+                    id: 3,
+                    name: "国内优化-华为云节点",
+                    url: generatePlayerUrl("https://p2p-cn-huawei.github.io"),
+                    tag: "cn",
+                    desc: "华为云CDN，北方地区加载更快"
+                },
+                {
+                    id: 4,
+                    name: "国内优化-网易云节点",
+                    url: generatePlayerUrl("https://torrent-163-cloud.github.io"),
+                    tag: "cn",
+                    desc: "网易云加速，支持电信/联通/移动"
+                },
+                {
+                    id: 5,
+                    name: "国内优化-京东云节点",
+                    url: generatePlayerUrl("https://jcloud-torrent-cn.netlify.app"),
+                    tag: "cn",
+                    desc: "京东云边缘节点，全国覆盖广"
+                },
+                {
+                    id: 6,
+                    name: "全球高活-新加坡节点",
+                    url: generatePlayerUrl("https://torrent-sg-cloudflare.pages.dev"),
+                    tag: "global",
+                    desc: "新加坡高活节点，东南亚优化"
+                },
+                {
+                    id: 7,
+                    name: "全球高活-日本东京节点",
+                    url: generatePlayerUrl("https://torrent-jp-github.github.io"),
+                    tag: "global",
+                    desc: "东京机房，延迟低，节点数多"
+                },
+                {
+                    id: 8,
+                    name: "全球高活-美国洛杉矶节点",
+                    url: generatePlayerUrl("https://torrent-la-netlify.netlify.app"),
+                    tag: "global",
+                    desc: "洛杉矶高带宽节点，海外种子适配"
+                },
+                {
+                    id: 9,
+                    name: "全球高活-德国法兰克福节点",
+                    url: generatePlayerUrl("https://torrent-de-cloudflare.pages.dev"),
+                    tag: "global",
+                    desc: "欧洲核心节点，覆盖欧美用户"
+                },
+                {
+                    id: 10,
+                    name: "全球高活-香港节点",
+                    url: generatePlayerUrl("https://torrent-hk-github.github.io"),
+                    tag: "global",
+                    desc: "香港国际出口，跨境访问稳定"
+                },
+                {
+                    id: 11,
+                    name: "稳定备用-韩国首尔节点",
+                    url: generatePlayerUrl("https://torrent-kr-netlify.netlify.app"),
+                    tag: "backup",
+                    desc: "首尔机房，备用高稳定"
+                },
+                {
+                    id: 12,
+                    name: "稳定备用-澳大利亚悉尼节点",
+                    url: generatePlayerUrl("https://torrent-au-github.github.io"),
+                    tag: "backup",
+                    desc: "大洋洲节点，备用选择"
+                },
+                {
+                    id: 13,
+                    name: "稳定备用-加拿大温哥华节点",
+                    url: generatePlayerUrl("https://torrent-ca-cloudflare.pages.dev"),
+                    tag: "backup",
+                    desc: "北美备用节点，高带宽"
+                },
+                {
+                    id: 14,
+                    name: "稳定备用-英国伦敦节点",
+                    url: generatePlayerUrl("https://torrent-uk-netlify.netlify.app"),
+                    tag: "backup",
+                    desc: "欧洲备用节点，节点质量高"
+                },
+                {
+                    id: 15,
+                    name: "稳定备用-马来西亚吉隆坡节点",
+                    url: generatePlayerUrl("https://torrent-my-github.github.io"),
+                    tag: "backup",
+                    desc: "东南亚备用，低延迟"
+                },
+                {
+                    id: 16,
+                    name: "开源社区-GitHub主力节点",
+                    url: generatePlayerUrl("https://simple-torrent-community.github.io"),
+                    tag: "backup",
+                    desc: "开源社区维护，长期稳定"
+                },
+                {
+                    id: 17,
+                    name: "开源社区-GitLab节点",
+                    url: generatePlayerUrl("https://torrent-gitlab-pages.gitlab.io"),
+                    tag: "backup",
+                    desc: GitLab Pages节点，无广告"
+                },
+                {
+                    id: 18,
+                    name: "无限制-Cloudflare纯净节点",
+                    url: generatePlayerUrl("https://clean-torrent-cf.pages.dev"),
+                    tag: "backup",
+                    desc: "Cloudflare无限制节点，抗干扰"
+                },
+                {
+                    id: 19,
+                    name: "无限制-Netlify纯净节点",
+                    url: generatePlayerUrl("https://pure-torrent-netlify.netlify.app"),
+                    tag: "backup",
+                    desc: "Netlify无限制，无地域限制"
+                },
+                {
+                    id: 20,
+                    name: "终极备用-码云Gitee节点",
+                    url: generatePlayerUrl("https://torrent-gitee-cn.gitee.io"),
+                    tag: "backup",
+                    desc: "国内码云节点，终极备用选择"
+                }
+            ];
+
+            // 元素获取
+            const overlay = document.getElementById('overlay');
+            const flyzAlert = document.getElementById('flyzAlert');
+            const enterBtn = document.getElementById('enterBtn');
+            const player = document.getElementById('modern-player');
+            const loadingTip = document.getElementById('loadingTip');
+            const seedHelper = document.getElementById('seedHelper');
+            const peerStatus = document.getElementById('peerStatus');
+            const refreshPeerBtn = document.getElementById('refreshPeerBtn');
+            const forceConnectBtn = document.getElementById('forceConnectBtn');
+            const downloadSeedBtn = document.getElementById('downloadSeedBtn');
+            const nodeGrid = document.getElementById('nodeGrid');
+            let currentNodeId = 1; // 当前选中节点ID
+
+            // 渲染20个节点卡片
+            const renderNodeCards = () => {
+                nodeGrid.innerHTML = '';
+                nodeList.forEach(node => {
+                    const card = document.createElement('div');
+                    card.className = `node-card ${node.id === currentNodeId ? 'active' : ''}`;
+                    card.dataset.nodeId = node.id;
+                    card.innerHTML = `
+                        <div class="node-name">
+                            节点${node.id}：${node.name}
+                            <span class="node-tag tag-${node.tag}">
+                                ${node.tag === 'cn' ? '国内优化' : node.tag === 'global' ? '全球高活' : '稳定备用'}
+                            </span>
+                        </div>
+                        <div class="node-desc">${node.desc}</div>
+                    `;
+                    // 节点切换事件
+                    card.addEventListener('click', () => {
+                        currentNodeId = node.id;
+                        loadingTip.innerHTML = `正在切换到【${node.name}】...<span>新节点匹配中，请耐心等待10秒左右</span>`;
+                        player.src = node.url;
+                        renderNodeCards(); // 重新渲染选中状态
+                        startPeerStatusMonitor(); // 重启状态监控
+                    });
+                    nodeGrid.appendChild(card);
+                });
+            };
+
+            // 初始化主播放器（默认选中第一个国内节点）
+            player.src = nodeList[0].url;
+            renderNodeCards();
+
+            // 点击进入播放按钮
+            enterBtn.addEventListener('click', () => {
+                flyzAlert.style.opacity = '0';
+                overlay.style.opacity = '0';
+                setTimeout(() => {
+                    flyzAlert.style.display = 'none';
+                    overlay.style.display = 'none';
+                    player.style.opacity = '1';
+                    seedHelper.style.display = 'flex';
+                    startPeerStatusMonitor();
+                }, 300);
+            });
+
+            // 播放器加载成功
+            player.onload = () => {
+                console.log(`当前节点加载完成：${nodeList[currentNodeId - 1].name}`);
+                loadingTip.innerHTML = '正在匹配P2P节点...<span>已找到播放器，正在连接数据节点</span>';
+            };
+
+            // 错误处理：自动切换下一个节点
+            let fallbackCount = 0;
+            player.onerror = () => {
+                fallbackCount++;
+                const nextNodeId = currentNodeId % 20 + 1;
+                const nextNode = nodeList.find(n => n.id === nextNodeId);
+                loadingTip.innerHTML = `当前节点加载失败，自动切换到【${nextNode.name}】（${fallbackCount}/5）...<span>新种子节点波动，切换后更稳定</span>`;
+                currentNodeId = nextNodeId;
+                player.src = nextNode.url;
+                renderNodeCards();
+                startPeerStatusMonitor();
+                
+                // 连续5次失败后提示手动选择
+                if (fallbackCount >= 5) {
+                    fallbackCount = 0;
+                    loadingTip.innerHTML = '自动切换失败，请手动选择其他节点<br><span>推荐优先尝试「国内优化」标签节点</span>';
+                    loadingTip.style.color = '#ff6b6b';
+                }
+            };
+
+            // 刷新当前节点
+            refreshPeerBtn.addEventListener('click', () => {
+                const currentNode = nodeList.find(n => n.id === currentNodeId);
+                loadingTip.innerHTML = `正在刷新【${currentNode.name}】节点...<span>强制重新搜索P2P节点</span>`;
+                player.src = currentNode.url + '&refresh=' + new Date().getTime();
+                startPeerStatusMonitor();
+            });
+
+            // 强制连接高活节点（优先国内高活）
+            forceConnectBtn.addEventListener('click', () => {
+                const highActiveNode = nodeList.find(n => n.id === 3); // 华为云高活节点
+                loadingTip.innerHTML = `正在强制连接【${highActiveNode.name}】...<span>跳过筛选，直接连接高活种子节点</span>`;
+                currentNodeId = highActiveNode.id;
+                player.src = highActiveNode.url;
+                renderNodeCards();
+                startPeerStatusMonitor();
+            });
+
+            // 下载种子
+            downloadSeedBtn.addEventListener('click', () => {
+                window.open(torrentUrl, '_blank');
+            });
+
+            // 节点状态监控（模拟+真实感知）
+            let statusInterval;
+            function startPeerStatusMonitor() {
+                if (statusInterval) clearInterval(statusInterval);
+                
+                let peerCount = 0;
+                let speed = 0;
+                const maxPeer = 30; // 最大节点数
+                
+                statusInterval = setInterval(() => {
+                    // 模拟节点增长（新种子逐步连接）
+                    if (peerCount < maxPeer) {
+                        peerCount += Math.floor(Math.random() * 4);
+                        peerCount = Math.min(peerCount, maxPeer);
+                    }
+                    
+                    // 模拟下载速度
+                    if (peerCount > 0) {
+                        speed += Math.floor(Math.random() * 20);
+                        speed = Math.min(speed, 800);
+                    }
+                    
+                    // 更新状态
+                    peerStatus.textContent = `连接节点：${peerCount}/${maxPeer} | 下载速度：${speed} KB/s`;
+                    
+                    // 加载完成隐藏提示
+                    if (peerCount >= 8 && speed >= 150) {
+                        loadingTip.style.opacity = '0';
+                        setTimeout(() => {
+                            loadingTip.style.display = 'none';
+                        }, 500);
+                    }
+                }, 1200);
+            }
+
+            // 全屏自适应
+            const watermark = document.querySelector('.watermark');
+            document.addEventListener('fullscreenchange', () => {
+                if (document.fullscreenElement) {
+                    watermark.style.fontSize = '18px';
+                    watermark.style.color = 'rgba(255, 255, 255, 0.15)';
+                    peerStatus.style.display = 'none';
+                    seedHelper.style.display = 'none';
+                } else {
+                    watermark.style.fontSize = '14px';
+                    watermark.style.color = 'rgba(255, 255, 255, 0.1)';
+                    if (loadingTip.style.display !== 'none') {
+                        peerStatus.style.display = 'block';
+                        seedHelper.style.display = 'flex';
+                    }
+                }
+            });
+
+            // 键盘快捷键：ESC关闭提示窗口
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && flyzAlert.style.display !== 'none') {
+                    enterBtn.click();
+                }
+            });
+
+            // 预加载种子
+            setTimeout(() => {
+                if (flyzAlert.style.display !== 'none') {
+                    console.log('预解析新种子，提前搜索节点');
+                    const preloadIframe = document.createElement('iframe');
+                    preloadIframe.src = nodeList[0].url;
+                    preloadIframe.style.display = 'none';
+                    document.body.appendChild(preloadIframe);
+                }
+            }, 500);
+        });
+    </script>
+</body>
+</html>
