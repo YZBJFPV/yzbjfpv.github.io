@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>首页｜Flyz远征飞官网</title>
+    <title>首页｜Flyz远征飞官网-202512版</title>
     <!-- 引入20+国内开源动画/UI库（确保国内可访问） -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
@@ -133,12 +133,12 @@
             /* 公告弹窗 */
             .announcement-popup { position: fixed; top: 20px; right: 20px; background: linear-gradient(135deg, #165DFF, #FF7D00); border-radius: 12px; padding: 1rem 1.5rem; box-shadow: 0 4px 30px rgba(0,0,0,0.2); z-index: 9998; transform: translateX(120%); transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1); color: white; }
             .announcement-popup.show { transform: translateX(0); }
-            /* 60个文字行星动画容器 - 修复重叠+确保显示 */
+            /* 60个文字行星动画容器 - 响应式适配 */
             .orbit-container { 
                 position: relative; 
-                width: clamp(300px, 80vw, 800px); 
-                height: clamp(300px, 80vw, 800px); 
-                margin: 4rem auto;
+                width: clamp(200px, 90vw, 900px); /* 增大最小宽度，适配小屏 */
+                height: clamp(200px, 90vw, 900px); 
+                margin: 2rem auto; /* 减小上下间距，适配滚动 */
                 user-select: none;
                 z-index: 10;
                 opacity: 1 !important;
@@ -151,31 +151,33 @@
                 transform: translate(-50%, -50%); 
                 z-index: 2; 
                 animation: float 4s ease-in-out infinite;
+                width: clamp(60px, 15vw, 120px); /* 响应式LOGO大小 */
+                height: auto;
             }
-            /* 单个文字行星样式 - 行星外观+不重叠+高亮 */
+            /* 单个文字行星样式 - 响应式+不重叠 */
             .text-planet {
                 position: absolute;
                 top: 0;
                 left: 50%;
                 transform-origin: center center;
-                font-size: clamp(8px, 1.5vw, 14px);
+                font-size: clamp(6px, 1.2vw, 12px); /* 更小的基础字号，适配小屏 */
                 font-weight: 600;
-                color: #00FFEE !important; /* 霓虹文字色 */
+                color: #00FFEE !important; 
                 white-space: nowrap;
                 animation: rotatePlanet linear infinite;
                 text-shadow: 0 0 8px rgba(0, 255, 238, 0.8);
                 background: rgba(22, 93, 255, 0.3);
-                padding: 4px 8px;
-                border-radius: 8px;
+                padding: 2px 6px; /* 减小内边距 */
+                border-radius: 6px;
                 border: 1px solid rgba(0, 255, 238, 0.5);
                 backdrop-filter: blur(4px);
-                box-shadow: 0 0 15px rgba(0, 255, 238, 0.6);
-                /* 行星形状 */
+                box-shadow: 0 0 10px rgba(0, 255, 238, 0.6);
+                /* 行星形状 - 响应式大小 */
                 display: flex;
                 align-items: center;
                 justify-content: center;
-                min-width: 40px;
-                min-height: 40px;
+                min-width: clamp(25px, 5vw, 40px);
+                min-height: clamp(25px, 5vw, 40px);
                 border-radius: 50%;
                 z-index: 11;
             }
@@ -199,8 +201,8 @@
             .matrix-bg {
                 background: linear-gradient(45deg, #0a0a0a, #121212);
                 position: relative;
-                overflow: hidden;
-                min-height: 200vh; /* 确保页面高度足够 */
+                overflow: auto; /* 确保页面可滚动 */
+                min-height: 100vh; /* 最小高度为视口高度，适配滚动 */
             }
             .matrix-bg::before {
                 content: '';
@@ -234,6 +236,13 @@
             box-sizing: border-box;
         }
         
+        /* 确保页面可滚动 */
+        html, body {
+            height: 100%;
+            overflow-y: auto; /* 强制垂直滚动 */
+            overflow-x: hidden;
+        }
+        
         /* 流动渐变导航栏 - 优化辨识度，降低暗色程度 */
         .nav-gradient {
             background: linear-gradient(90deg, #112240, #165DFF, #36CFC9, #FF7D00);
@@ -253,7 +262,7 @@
         .fade-in { opacity: 0; transform: translateY(20px); animation: fadeInUp 0.8s forwards; }
         @keyframes fadeInUp { to { opacity: 1; transform: translateY(0); } }
         
-        /* 视频容器效果 - 增强科技感 */
+        /* 视频容器效果 - 增强科技感 + 修复交互 */
         .video-wrapper { 
             position: relative; 
             overflow: hidden; 
@@ -262,18 +271,11 @@
             border: 1px solid rgba(0, 255, 238, 0.5);
             margin: 2rem auto;
             max-width: 1200px;
+            z-index: 15; /* 提高层级，确保交互 */
+            pointer-events: auto; /* 确保可点击 */
         }
-        .video-wrapper::before {
-            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(to top, rgba(0,0,0,0.2) 0%, transparent 100%);
-            z-index: 1; transition: opacity 0.3s ease;
-        }
-        .video-wrapper:hover::before { opacity: 0.4; }
-        .video-wrapper::after {
-            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: radial-gradient(circle at center, transparent 70%, rgba(0, 255, 238, 0.1) 100%);
-            z-index: 1;
-            pointer-events: none;
+        .video-wrapper::before, .video-wrapper::after {
+            pointer-events: none; /* 遮罩层不阻挡交互 */
         }
         
         /* 粒子背景 - 增强 */
@@ -287,7 +289,7 @@
         .close-btn { transition: all 0.3s ease; }
         .close-btn:hover { transform: rotate(90deg) scale(1.1); text-shadow: 0 0 10px #00FFEE; }
         
-        /* 60个文字行星旋转动画 - 修复重叠 */
+        /* 60个文字行星旋转动画 - 响应式速度 */
         @keyframes rotatePlanet {
             from { transform: rotate(0deg) translateX(calc(var(--radius) * 1px)) rotate(0deg); }
             to { transform: rotate(360deg) translateX(calc(var(--radius) * 1px)) rotate(-360deg); }
@@ -456,7 +458,7 @@
         </div>
     </header>
 
-    <!-- B站视频模块（导航栏下方）- 恢复显示+配置弹幕/音量 -->
+    <!-- B站视频模块（导航栏下方）- 修复交互+响应式 -->
     <div class="pt-6 px-4 md:px-6 animate__animated animate__fadeInUp delay-300">
         <div class="container mx-auto">
             <div class="video-wrapper hover-rise cyber-border">
@@ -464,9 +466,10 @@
                     src="https://player.bilibili.com/player.html?bvid=BV1MWjgzvEED&autoplay=0&dm=0&volume=0.75&controls=1" 
                     style="width: 100%; aspect-ratio: 16/9; border: none;" 
                     allowfullscreen allow="autoplay; fullscreen; encrypted-media; picture-in-picture"
-                    sandbox="allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox"
+                    sandbox="allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox allow-pointer-lock"
                     class="animate__animated animate__zoomIn delay-500"
                     id="bilibili-player"
+                    title="B站视频播放器"
                 ></iframe>
             </div>
         </div>
@@ -513,11 +516,11 @@
         </div>
     </div>
 
-    <!-- 60个文字小行星环绕LOGO动画区域 - 修复显示+重叠+行星样式 -->
-    <div class="py-16 px-4 animate__animated animate__fadeInUp delay-500" data-aos="fade-up" style="opacity: 1 !important;">
+    <!-- 60个文字小行星环绕LOGO动画区域 - 响应式分散排列 -->
+    <div class="py-10 px-4 animate__animated animate__fadeInUp delay-500" data-aos="fade-up" style="opacity: 1 !important;">
         <div class="orbit-container" id="orbit-container" data-aos="zoom-in">
             <div class="central-logo">
-                <img src="https://img520.com/UIGuUV.jpeg" alt="Flyz远征飞Logo" class="h-24 w-auto rounded-lg cyber-border p-2 animate__animated animate__pulse" onerror="this.onerror=null;this.src='https://picsum.photos/96/96'">
+                <img src="https://img520.com/UIGuUV.jpeg" alt="Flyz远征飞Logo" class="w-full h-auto rounded-lg cyber-border p-2 animate__animated animate__pulse" onerror="this.onerror=null;this.src='https://picsum.photos/96/96'">
             </div>
             <!-- 60个文字行星将通过JS动态生成 -->
         </div>
@@ -746,8 +749,10 @@ FPV,远航,穿越机,PokRC,Flyz,远征飞,嘟嘟电池,康易安,
                 }, 3000);
             }, 800);
 
-            // 6. B站视频播放器配置（确保弹幕关闭+75%音量）
+            // 6. B站视频播放器修复 - 确保交互
             const biliPlayer = document.getElementById('bilibili-player');
+            // 确保iframe可交互
+            biliPlayer.style.pointerEvents = 'auto';
             // 备用方案：通过postMessage控制播放器
             setTimeout(() => {
                 if (biliPlayer.contentWindow) {
@@ -786,9 +791,28 @@ FPV,远航,穿越机,PokRC,Flyz,远征飞,嘟嘟电池,康易安,
                 item.style.transitionDelay = `${index * 0.1}s`;
             });
 
-            // 9. 动态生成60个文字小行星 - 确保显示+修复重叠+行星样式
+            // 9. 动态生成60个文字小行星 - 响应式分散排列
             const orbitContainer = document.getElementById('orbit-container');
             console.log('开始生成小行星，容器元素：', orbitContainer);
+            
+            // 获取设备宽度，动态计算轨道参数
+            const windowWidth = window.innerWidth;
+            let baseRadius, layerCount, planetPerLayer;
+            
+            // 根据屏幕宽度适配轨道参数
+            if (windowWidth < 480) { // 移动端
+                baseRadius = 60;    // 更小的基础轨道半径
+                layerCount = 4;     // 增加轨道层数
+                planetPerLayer = 15; // 每层行星数量减少
+            } else if (windowWidth < 768) { // 平板
+                baseRadius = 80;
+                layerCount = 3;
+                planetPerLayer = 20;
+            } else { // 桌面端
+                baseRadius = 100;
+                layerCount = 3;
+                planetPerLayer = 20;
+            }
             
             // 从文本框读取自定义文字
             const textArea = document.getElementById('planet-text-list');
@@ -811,12 +835,19 @@ FPV,远航,穿越机,PokRC,Flyz,远征飞,嘟嘟电池,康易安,
             const finalTextList = textList.length > 0 ? textList : defaultTextList;
             console.log('行星文字列表：', finalTextList);
             
-            // 生成60个行星（多层轨道避免重叠）
-            const orbitLayers = [
-                { radius: 120, count: 20, speed: 20 }, // 外层
-                { radius: 170, count: 20, speed: 25 }, // 中层
-                { radius: 220, count: 20, speed: 30 }  // 内层
-            ];
+            // 生成行星轨道层（响应式）
+            const orbitLayers = [];
+            for (let i = 0; i < layerCount; i++) {
+                // 每层轨道半径递增，避免重叠
+                const radius = baseRadius + (i * 50); 
+                // 每层速度递增，视觉效果更好
+                const speed = 20 + (i * 5) + (windowWidth < 480 ? 5 : 0); 
+                orbitLayers.push({ 
+                    radius: radius, 
+                    count: planetPerLayer, 
+                    speed: speed 
+                });
+            }
             
             let planetCount = 0;
             orbitLayers.forEach(layer => {
@@ -835,8 +866,9 @@ FPV,远航,穿越机,PokRC,Flyz,远征飞,嘟嘟电池,康易安,
                     const initialAngle = i * angleStep;
                     textPlanet.style.transform = `rotate(${initialAngle}deg) translateX(${layer.radius}px) rotate(-${initialAngle}deg)`;
                     
-                    // 设置动画时长（不同层不同速度）
-                    textPlanet.style.animationDuration = `${layer.speed + Math.random() * 10}s`;
+                    // 设置动画时长（不同层不同速度，移动端稍慢）
+                    const animationDuration = layer.speed + Math.random() * 10;
+                    textPlanet.style.animationDuration = `${animationDuration}s`;
                     
                     // 霓虹配色
                     const hue = 180 + Math.random() * 40;
@@ -849,9 +881,38 @@ FPV,远航,穿越机,PokRC,Flyz,远征飞,嘟嘟电池,康易安,
                 }
             });
             
-            console.log(`生成了 ${planetCount} 个文字行星`);
+            console.log(`生成了 ${planetCount} 个文字行星，适配宽度：${windowWidth}px`);
 
-            // 10. 打字机效果
+            // 10. 窗口大小变化时重新生成行星
+            window.addEventListener('resize', function() {
+                // 清空现有行星
+                while (orbitContainer.children.length > 1) {
+                    orbitContainer.removeChild(orbitContainer.lastChild);
+                }
+                // 重新生成
+                planetCount = 0;
+                orbitLayers.forEach(layer => {
+                    const angleStep = 360 / layer.count;
+                    for (let i = 0; i < layer.count && planetCount < 60; i++) {
+                        const textPlanet = document.createElement('div');
+                        textPlanet.className = 'text-planet';
+                        const randomText = finalTextList[Math.floor(Math.random() * finalTextList.length)];
+                        textPlanet.textContent = randomText;
+                        textPlanet.style.setProperty('--radius', layer.radius);
+                        const initialAngle = i * angleStep;
+                        textPlanet.style.transform = `rotate(${initialAngle}deg) translateX(${layer.radius}px) rotate(-${initialAngle}deg)`;
+                        textPlanet.style.animationDuration = `${layer.speed + Math.random() * 10}s`;
+                        const hue = 180 + Math.random() * 40;
+                        textPlanet.style.color = `hsl(${hue}, 100%, 90%)`;
+                        textPlanet.style.background = `hsla(${hue}, 100%, 50%, 0.3)`;
+                        textPlanet.style.borderColor = `hsla(${hue}, 100%, 70%, 0.7)`;
+                        orbitContainer.appendChild(textPlanet);
+                        planetCount++;
+                    }
+                });
+            });
+
+            // 11. 打字机效果
             if (document.querySelector('.typing-effect')) {
                 const typed = new Typed('.typing-effect', {
                     strings: ['Flyz远征飞', 'FPV远航专家', 'PokRC联名出品'],
@@ -861,13 +922,13 @@ FPV,远航,穿越机,PokRC,Flyz,远征飞,嘟嘟电池,康易安,
                 });
             }
 
-            // 11. 数字计数动画
+            // 12. 数字计数动画
             if (document.getElementById('counter')) {
                 const countUp = new CountUp('counter', 0, 100, 0, 2.5);
                 countUp.start();
             }
 
-            // 12. 滚动触发动画
+            // 13. 滚动触发动画
             gsap.utils.toArray(".animate-on-scroll").forEach(element => {
                 gsap.from(element, {
                     opacity: 0,
@@ -882,7 +943,7 @@ FPV,远航,穿越机,PokRC,Flyz,远征飞,嘟嘟电池,康易安,
                 });
             });
             
-            // 13. 确保所有模块可见
+            // 14. 确保所有模块可见
             document.querySelectorAll('[data-aos]').forEach(el => {
                 el.style.opacity = '1';
                 el.style.visibility = 'visible';
