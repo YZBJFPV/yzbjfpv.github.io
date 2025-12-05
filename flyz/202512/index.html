@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>首页｜Flyz远征飞官网-202512版</title>
+    <title>首页｜Flyz远征飞官网</title>
     <!-- 引入20+国内开源动画/UI库（确保国内可访问） -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
@@ -85,27 +85,64 @@
             .card-elevation { box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
             .hover-rise { transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1); }
             .hover-rise:hover { transform: translateY(-6px); }
-            /* 精灵球与弹窗样式 */
-            .pokeball-btn { transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); }
-            .pokeball-btn:hover { transform: scale(1.1) rotate(15deg); box-shadow: 0 0 20px rgba(22, 93, 255, 0.4); }
+            /* 精灵球与弹窗样式 - 优化辨识度 */
+            .pokeball-btn { 
+                transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+                background: rgba(22, 93, 255, 0.9) !important; /* 高亮背景 */
+                border-color: #00FFEE !important; /* 霓虹边框 */
+                box-shadow: 0 0 15px rgba(0, 255, 238, 0.6) !important; /* 发光效果 */
+            }
+            .pokeball-btn:hover { 
+                transform: scale(1.1) rotate(15deg); 
+                box-shadow: 0 0 25px rgba(0, 255, 238, 0.8) !important; 
+            }
             .nav-modal { transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); transform: scale(0.8); opacity: 0; pointer-events: none; }
             .nav-modal.active { transform: scale(1); opacity: 1; pointer-events: auto; }
             .nav-item-modal { transition: all 0.3s ease; opacity: 0; transform: translateY(10px); }
             .nav-modal.active .nav-item-modal { opacity: 1; transform: translateY(0); }
-            /* 新手教程遮罩 */
-            .tutorial-mask { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; display: flex; align-items: center; justify-content: center; transition: opacity 0.5s ease, visibility 0.5s ease; }
-            .tutorial-mask.hidden { opacity: 0; visibility: hidden; }
-            .tutorial-card { background: linear-gradient(135deg, #165DFF, #36CFC9); border-radius: 20px; padding: 2rem; max-width: 90%; text-align: center; color: white; box-shadow: 0 0 30px rgba(22, 93, 255, 0.5); }
+            /* 新手教程遮罩 - 确保显示 */
+            .tutorial-mask { 
+                position: fixed; 
+                top: 0; 
+                left: 0; 
+                width: 100%; 
+                height: 100%; 
+                background: rgba(0,0,0,0.85); 
+                z-index: 9999; 
+                display: flex; 
+                align-items: center; 
+                justify-content: center; 
+                transition: opacity 0.5s ease, visibility 0.5s ease;
+                opacity: 1;
+                visibility: visible;
+            }
+            .tutorial-mask.hidden { 
+                opacity: 0; 
+                visibility: hidden; 
+            }
+            .tutorial-card { 
+                background: linear-gradient(135deg, #165DFF, #36CFC9); 
+                border-radius: 20px; 
+                padding: 2rem; 
+                max-width: 90%; 
+                text-align: center; 
+                color: white; 
+                box-shadow: 0 0 30px rgba(22, 93, 255, 0.5);
+                z-index: 10000;
+            }
             /* 公告弹窗 */
             .announcement-popup { position: fixed; top: 20px; right: 20px; background: linear-gradient(135deg, #165DFF, #FF7D00); border-radius: 12px; padding: 1rem 1.5rem; box-shadow: 0 4px 30px rgba(0,0,0,0.2); z-index: 9998; transform: translateX(120%); transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1); color: white; }
             .announcement-popup.show { transform: translateX(0); }
-            /* 60个文字行星动画容器 - 修复重叠 */
+            /* 60个文字行星动画容器 - 修复重叠+确保显示 */
             .orbit-container { 
                 position: relative; 
                 width: clamp(300px, 80vw, 800px); 
                 height: clamp(300px, 80vw, 800px); 
-                margin: 2rem auto;
+                margin: 4rem auto;
                 user-select: none;
+                z-index: 10;
+                opacity: 1 !important;
+                visibility: visible !important;
             }
             .central-logo { 
                 position: absolute; 
@@ -115,7 +152,7 @@
                 z-index: 2; 
                 animation: float 4s ease-in-out infinite;
             }
-            /* 单个文字行星样式 - 行星外观+不重叠 */
+            /* 单个文字行星样式 - 行星外观+不重叠+高亮 */
             .text-planet {
                 position: absolute;
                 top: 0;
@@ -123,16 +160,16 @@
                 transform-origin: center center;
                 font-size: clamp(8px, 1.5vw, 14px);
                 font-weight: 600;
-                color: white;
+                color: #00FFEE !important; /* 霓虹文字色 */
                 white-space: nowrap;
                 animation: rotatePlanet linear infinite;
-                text-shadow: 0 0 8px rgba(22, 93, 255, 0.8);
-                background: rgba(22, 93, 255, 0.2);
+                text-shadow: 0 0 8px rgba(0, 255, 238, 0.8);
+                background: rgba(22, 93, 255, 0.3);
                 padding: 4px 8px;
                 border-radius: 8px;
-                border: 1px solid rgba(255,255,255,0.3);
+                border: 1px solid rgba(0, 255, 238, 0.5);
                 backdrop-filter: blur(4px);
-                box-shadow: 0 0 10px rgba(22, 93, 255, 0.5);
+                box-shadow: 0 0 15px rgba(0, 255, 238, 0.6);
                 /* 行星形状 */
                 display: flex;
                 align-items: center;
@@ -140,11 +177,12 @@
                 min-width: 40px;
                 min-height: 40px;
                 border-radius: 50%;
+                z-index: 11;
             }
             /* 科技感样式 */
             .cyber-border {
-                border: 1px solid #165DFF;
-                box-shadow: 0 0 15px rgba(22, 93, 255, 0.5), inset 0 0 10px rgba(22, 93, 255, 0.3);
+                border: 1px solid #00FFEE;
+                box-shadow: 0 0 15px rgba(0, 255, 238, 0.5), inset 0 0 10px rgba(0, 255, 238, 0.3);
             }
             .scanline {
                 position: absolute;
@@ -162,6 +200,7 @@
                 background: linear-gradient(45deg, #0a0a0a, #121212);
                 position: relative;
                 overflow: hidden;
+                min-height: 200vh; /* 确保页面高度足够 */
             }
             .matrix-bg::before {
                 content: '';
@@ -195,19 +234,20 @@
             box-sizing: border-box;
         }
         
-        /* 流动渐变导航栏 - 增强科技感 */
+        /* 流动渐变导航栏 - 优化辨识度，降低暗色程度 */
         .nav-gradient {
-            background: linear-gradient(90deg, #0a192f, #165DFF, #36CFC9, #FF7D00);
+            background: linear-gradient(90deg, #112240, #165DFF, #36CFC9, #FF7D00);
             background-size: 400% 400%;
             animation: gradientFlow 8s ease infinite;
             backdrop-filter: blur(10px);
-            border-bottom: 1px solid rgba(255,255,255,0.1);
+            border-bottom: 1px solid rgba(0, 255, 238, 0.3);
+            opacity: 0.95;
         }
         @keyframes gradientFlow { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
         
         /* 文字动态效果 - 增强 */
         .text-float { display: inline-block; transition: transform 0.3s ease, color 0.3s ease; }
-        .text-float:hover { transform: translateY(-3px) scale(1.05); text-shadow: 0 0 10px #165DFF; }
+        .text-float:hover { transform: translateY(-3px) scale(1.05); text-shadow: 0 0 10px #00FFEE; }
         
         /* 渐入动画 - 增强 */
         .fade-in { opacity: 0; transform: translateY(20px); animation: fadeInUp 0.8s forwards; }
@@ -218,8 +258,10 @@
             position: relative; 
             overflow: hidden; 
             border-radius: 16px;
-            box-shadow: 0 0 30px rgba(22, 93, 255, 0.3);
-            border: 1px solid rgba(22, 93, 255, 0.5);
+            box-shadow: 0 0 30px rgba(0, 255, 238, 0.3);
+            border: 1px solid rgba(0, 255, 238, 0.5);
+            margin: 2rem auto;
+            max-width: 1200px;
         }
         .video-wrapper::before {
             content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
@@ -229,7 +271,7 @@
         .video-wrapper:hover::before { opacity: 0.4; }
         .video-wrapper::after {
             content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: radial-gradient(circle at center, transparent 70%, rgba(22, 93, 255, 0.1) 100%);
+            background: radial-gradient(circle at center, transparent 70%, rgba(0, 255, 238, 0.1) 100%);
             z-index: 1;
             pointer-events: none;
         }
@@ -243,7 +285,7 @@
         
         /* 关闭按钮动画 - 增强 */
         .close-btn { transition: all 0.3s ease; }
-        .close-btn:hover { transform: rotate(90deg) scale(1.1); text-shadow: 0 0 10px white; }
+        .close-btn:hover { transform: rotate(90deg) scale(1.1); text-shadow: 0 0 10px #00FFEE; }
         
         /* 60个文字行星旋转动画 - 修复重叠 */
         @keyframes rotatePlanet {
@@ -259,16 +301,19 @@
             width: 100% !important;
         }
         
-        /* 内测栏目样式 - 增强科技感 */
+        /* 内测栏目样式 - 增强科技感+确保显示 */
         .beta-section {
-            background: linear-gradient(135deg, #0a192f 0%, #165DFF 50%, #36CFC9 100%);
+            background: linear-gradient(135deg, #112240 0%, #165DFF 50%, #36CFC9 100%);
             border-radius: 20px;
             padding: 3rem;
-            margin: 3rem 0;
-            box-shadow: 0 0 40px rgba(22, 93, 255, 0.4);
-            border: 1px solid rgba(255,255,255,0.1);
+            margin: 4rem auto;
+            box-shadow: 0 0 40px rgba(0, 255, 238, 0.4);
+            border: 1px solid rgba(0, 255, 238, 0.3);
             position: relative;
             overflow: hidden;
+            max-width: 1200px;
+            z-index: 10;
+            opacity: 1 !important;
         }
         .beta-section::before {
             content: '';
@@ -287,7 +332,7 @@
             padding: 1.2rem 2.5rem;
             transition: all 0.4s ease;
             font-weight: bold;
-            border: 1px solid rgba(255,255,255,0.2);
+            border: 1px solid rgba(0, 255, 238, 0.4);
             backdrop-filter: blur(10px);
             position: relative;
             overflow: hidden;
@@ -299,22 +344,26 @@
             left: -100%;
             width: 100%;
             height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            background: linear-gradient(90deg, transparent, rgba(0, 255, 238, 0.3), transparent);
             transition: all 0.6s ease;
         }
         .beta-btn:hover {
             background: rgba(255,255,255,0.2);
             transform: scale(1.05) translateY(-5px);
-            box-shadow: 0 10px 30px rgba(22, 93, 255, 0.3);
+            box-shadow: 0 10px 30px rgba(0, 255, 238, 0.3);
         }
         .beta-btn:hover::before {
             left: 100%;
         }
         
-        /* 页脚科技感 */
+        /* 页脚科技感+确保显示 */
         footer {
-            background: linear-gradient(180deg, #0a192f, #112240);
-            border-top: 1px solid rgba(22, 93, 255, 0.3);
+            background: linear-gradient(180deg, #112240, #0a192f);
+            border-top: 1px solid rgba(0, 255, 238, 0.3);
+            padding: 4rem 0;
+            margin-top: 4rem;
+            z-index: 10;
+            position: relative;
         }
         
         /* 自定义滚动条 */
@@ -323,10 +372,10 @@
             height: 8px;
         }
         ::-webkit-scrollbar-track {
-            background: #0a192f;
+            background: #112240;
         }
         ::-webkit-scrollbar-thumb {
-            background: #165DFF;
+            background: #00FFEE;
             border-radius: 4px;
         }
         ::-webkit-scrollbar-thumb:hover {
@@ -344,6 +393,15 @@
         .delay-800 { animation-delay: 0.8s; }
         .delay-900 { animation-delay: 0.9s; }
         .delay-1000 { animation-delay: 1s; }
+        
+        /* 案例区域确保显示 */
+        .case-section {
+            max-width: 1200px;
+            margin: 4rem auto;
+            z-index: 10;
+            position: relative;
+            opacity: 1 !important;
+        }
     </style>
 </head>
 
@@ -354,8 +412,8 @@
     <!-- 粒子背景 -->
     <div id="particles-js"></div>
 
-    <!-- 新手教程遮罩（默认隐藏）- 修改提示内容 -->
-    <div id="tutorial-mask" class="tutorial-mask hidden">
+    <!-- 新手教程遮罩（默认显示，确保能弹出） -->
+    <div id="tutorial-mask" class="tutorial-mask">
         <div class="tutorial-card">
             <h3 class="font-bold text-2xl mb-4 animate__animated animate__pulse">🎮 操作提示</h3>
             <p class="mb-6 text-lg animate__animated animate__fadeIn delay-200">点击右侧悬浮球按钮可以唤出导航菜单</p>
@@ -398,23 +456,24 @@
         </div>
     </header>
 
-    <!-- B站视频模块（导航栏下方）- 恢复显示 -->
+    <!-- B站视频模块（导航栏下方）- 恢复显示+配置弹幕/音量 -->
     <div class="pt-6 px-4 md:px-6 animate__animated animate__fadeInUp delay-300">
         <div class="container mx-auto">
             <div class="video-wrapper hover-rise cyber-border">
                 <iframe 
-                    src="https://player.bilibili.com/player.html?bvid=BV1MWjgzvEED&autoplay=0&dm=0&controls=1" 
+                    src="https://player.bilibili.com/player.html?bvid=BV1MWjgzvEED&autoplay=0&dm=0&volume=0.75&controls=1" 
                     style="width: 100%; aspect-ratio: 16/9; border: none;" 
                     allowfullscreen allow="autoplay; fullscreen; encrypted-media; picture-in-picture"
                     sandbox="allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox"
                     class="animate__animated animate__zoomIn delay-500"
+                    id="bilibili-player"
                 ></iframe>
             </div>
         </div>
     </div>
 
-    <!-- 2. 右侧吸附精灵球按钮 - 增强科技感 -->
-    <button id="pokeball-trigger" class="pokeball-btn fixed right-4 top-1/3 z-50 w-14 h-14 md:w-16 md:h-16 bg-white/10 rounded-full flex items-center justify-center shadow-lg border-2 border-primary animate__animated animate__bounceInRight delay-700" data-tilt>
+    <!-- 2. 右侧吸附精灵球按钮 - 优化辨识度 -->
+    <button id="pokeball-trigger" class="pokeball-btn fixed right-4 top-1/3 z-50 w-14 h-14 md:w-16 md:h-16 rounded-full flex items-center justify-center shadow-lg border-2 animate__animated animate__bounceInRight delay-700" data-tilt>
         <div class="w-10 h-10 md:w-12 md:h-12 bg-primary/80 rounded-full flex items-center justify-center animate-pulse-fast">
             <i class="fa fa-bars text-white text-xl md:text-2xl"></i>
         </div>
@@ -454,8 +513,8 @@
         </div>
     </div>
 
-    <!-- 60个文字小行星环绕LOGO动画区域 - 修复重叠+行星样式+可自定义文字 -->
-    <div class="py-16 px-4 animate__animated animate__fadeInUp delay-500" data-aos="fade-up">
+    <!-- 60个文字小行星环绕LOGO动画区域 - 修复显示+重叠+行星样式 -->
+    <div class="py-16 px-4 animate__animated animate__fadeInUp delay-500" data-aos="fade-up" style="opacity: 1 !important;">
         <div class="orbit-container" id="orbit-container" data-aos="zoom-in">
             <div class="central-logo">
                 <img src="https://img520.com/UIGuUV.jpeg" alt="Flyz远征飞Logo" class="h-24 w-auto rounded-lg cyber-border p-2 animate__animated animate__pulse" onerror="this.onerror=null;this.src='https://picsum.photos/96/96'">
@@ -463,7 +522,7 @@
             <!-- 60个文字行星将通过JS动态生成 -->
         </div>
         <!-- 文字自定义区域（可修改这里的文字列表） -->
-        <div class="hidden">
+        <div style="display: none;">
             <textarea id="planet-text-list" class="hidden">
 FPV,远航,穿越机,PokRC,Flyz,远征飞,嘟嘟电池,康易安,
 21700,长续航,花飞,航拍,图传,天线,定制,智能保护,
@@ -477,8 +536,8 @@ FPV,远航,穿越机,PokRC,Flyz,远征飞,嘟嘟电池,康易安,
         </div>
     </div>
 
-    <!-- 新增内测栏目 - 增强科技感 -->
-    <div class="container mx-auto px-4 md:px-6 my-16 animate__animated animate__fadeInUp delay-700" data-aos="fade-up">
+    <!-- 新增内测栏目 - 增强科技感+确保显示 -->
+    <div class="container mx-auto px-4 md:px-6 my-16 animate__animated animate__fadeInUp delay-700" data-aos="fade-up" style="opacity: 1 !important;">
         <div class="beta-section relative z-10" data-aos="zoom-in">
             <h3 class="text-center mb-10 text-3xl font-bold text-white text-float animate__animated animate__fadeIn">🚀 内测专区</h3>
             <div class="flex flex-col md:flex-row gap-8 justify-center items-center relative z-10">
@@ -492,8 +551,8 @@ FPV,远航,穿越机,PokRC,Flyz,远征飞,嘟嘟电池,康易安,
         </div>
     </div>
 
-    <!-- 网站案例（升级3D旋转动画+增强科技感） -->
-    <div class="container mx-auto px-4 md:px-6 my-16 animate__animated animate__fadeInUp delay-800" data-aos="fade-up">
+    <!-- 网站案例（升级3D旋转动画+增强科技感+确保显示） -->
+    <div class="container mx-auto px-4 md:px-6 my-16 animate__animated animate__fadeInUp delay-800 case-section" data-aos="fade-up">
         <h3 class="text-center mb-12 text-3xl font-bold text-primary text-float animate__animated animate__fadeIn" data-aos="zoom-in">
             <span class="cyber-border px-4 py-2 rounded-lg">网站定制案例</span>
         </h3>
@@ -542,7 +601,7 @@ FPV,远航,穿越机,PokRC,Flyz,远征飞,嘟嘟电池,康易安,
         </div>
     </div>
 
-    <!-- 页脚 - 增强科技感 -->
+    <!-- 页脚 - 增强科技感+确保显示 -->
     <footer class="py-12 mt-20 border-t border-primary/20 animate__animated animate__fadeInUp delay-900" data-aos="fade-up">
         <div class="container mx-auto px-4 text-center">
             <p class="text-white mb-6 text-lg text-float animate__animated animate__fadeIn">© 2025 Flyz远征飞官方网站 首页V3.0.7版</p>
@@ -571,14 +630,15 @@ FPV,远航,穿越机,PokRC,Flyz,远征飞,嘟嘟电池,康易安,
             duration: 1000,
             easing: 'cubic-bezier(0.5, 0, 0, 1)',
             origin: 'bottom',
-            interval: 200
+            interval: 200,
+            reset: false
         });
         
         // 粒子效果配置 - 增强科技感
         particlesJS('particles-js', {
             "particles": {
                 "number": { "value": 120, "density": { "enable": true, "value_area": 800 } },
-                "color": { "value": "#165DFF" },
+                "color": { "value": "#00FFEE" },
                 "shape": { "type": "circle" },
                 "opacity": { "value": 0.5, "random": true },
                 "size": { "value": 2, "random": true },
@@ -635,7 +695,7 @@ FPV,远航,穿越机,PokRC,Flyz,远征飞,嘟嘟电池,康易安,
             max: 20,
             speed: 400,
             glare: true,
-            "max-glare": 0.3
+            "max-glare": 0.5
         });
 
         pokeballTrigger.addEventListener('click', function() {
@@ -655,25 +715,24 @@ FPV,远航,穿越机,PokRC,Flyz,远征飞,嘟嘟电池,康易安,
             }
         });
 
-        // 3. 滚动动画触发
+        // 3. 页面加载完成后执行
         document.addEventListener('DOMContentLoaded', function() {
-            // 4. 新手教程提示（修复3秒自动关闭）
+            console.log('页面加载完成，开始初始化元素');
+            
+            // 4. 新手教程提示（修复弹出+关闭逻辑）
             const tutorialMask = document.getElementById('tutorial-mask');
+            // 强制显示教程（测试用，可根据需要注释）
+            localStorage.removeItem('flyz_tutorial_seen');
             const hasSeenTutorial = localStorage.getItem('flyz_tutorial_seen');
 
-            // 首次访问显示教程
+            // 确保教程弹窗显示
             if (!hasSeenTutorial) {
-                // 1秒后显示提示
+                tutorialMask.classList.remove('hidden');
+                // 3秒后自动关闭
                 setTimeout(() => {
-                    tutorialMask.classList.remove('hidden');
-                    
-                    // 3秒后自动关闭
-                    setTimeout(() => {
-                        tutorialMask.classList.add('hidden');
-                        // 标记为已查看，避免重复显示
-                        localStorage.setItem('flyz_tutorial_seen', 'true');
-                    }, 3000); // 3秒后关闭
-                }, 1000); // 1秒后显示
+                    tutorialMask.classList.add('hidden');
+                    localStorage.setItem('flyz_tutorial_seen', 'true');
+                }, 3000);
             }
 
             // 5. 右上角公告弹窗（3秒自动关闭）
@@ -687,7 +746,23 @@ FPV,远航,穿越机,PokRC,Flyz,远征飞,嘟嘟电池,康易安,
                 }, 3000);
             }, 800);
 
-            // 6. 平滑滚动
+            // 6. B站视频播放器配置（确保弹幕关闭+75%音量）
+            const biliPlayer = document.getElementById('bilibili-player');
+            // 备用方案：通过postMessage控制播放器
+            setTimeout(() => {
+                if (biliPlayer.contentWindow) {
+                    biliPlayer.contentWindow.postMessage({
+                        "cmd": "setVolume",
+                        "args": [0.75]
+                    }, "*");
+                    biliPlayer.contentWindow.postMessage({
+                        "cmd": "hideDanmaku",
+                        "args": []
+                    }, "*");
+                }
+            }, 1000);
+
+            // 7. 平滑滚动
             document.querySelectorAll('a[href^="#"]').forEach(anchor => {
                 anchor.addEventListener('click', function(e) {
                     e.preventDefault();
@@ -705,15 +780,17 @@ FPV,远航,穿越机,PokRC,Flyz,远征飞,嘟嘟电池,康易安,
                 });
             });
 
-            // 7. 为导航菜单项添加渐入延迟动画
+            // 8. 为导航菜单项添加渐入延迟动画
             const navItems = document.querySelectorAll('.nav-item-modal');
             navItems.forEach((item, index) => {
                 item.style.transitionDelay = `${index * 0.1}s`;
             });
 
-            // 8. 动态生成60个文字小行星 - 修复重叠+行星样式+可自定义文字
+            // 9. 动态生成60个文字小行星 - 确保显示+修复重叠+行星样式
             const orbitContainer = document.getElementById('orbit-container');
-            // 从文本框读取自定义文字（可修改这里）
+            console.log('开始生成小行星，容器元素：', orbitContainer);
+            
+            // 从文本框读取自定义文字
             const textArea = document.getElementById('planet-text-list');
             const textListRaw = textArea.value.replace(/\n/g, '').replace(/\s/g, '');
             const textList = textListRaw.split(',').filter(text => text.trim() !== '');
@@ -732,12 +809,13 @@ FPV,远航,穿越机,PokRC,Flyz,远征飞,嘟嘟电池,康易安,
             
             // 合并自定义文字和默认文字
             const finalTextList = textList.length > 0 ? textList : defaultTextList;
+            console.log('行星文字列表：', finalTextList);
             
             // 生成60个行星（多层轨道避免重叠）
             const orbitLayers = [
-                { radius: 150, count: 20, speed: 20 }, // 外层
-                { radius: 200, count: 20, speed: 25 }, // 中层
-                { radius: 250, count: 20, speed: 30 }  // 内层
+                { radius: 120, count: 20, speed: 20 }, // 外层
+                { radius: 170, count: 20, speed: 25 }, // 中层
+                { radius: 220, count: 20, speed: 30 }  // 内层
             ];
             
             let planetCount = 0;
@@ -760,18 +838,20 @@ FPV,远航,穿越机,PokRC,Flyz,远征飞,嘟嘟电池,康易安,
                     // 设置动画时长（不同层不同速度）
                     textPlanet.style.animationDuration = `${layer.speed + Math.random() * 10}s`;
                     
-                    // 随机颜色（蓝色系）
-                    const hue = 200 + Math.random() * 60;
+                    // 霓虹配色
+                    const hue = 180 + Math.random() * 40;
                     textPlanet.style.color = `hsl(${hue}, 100%, 90%)`;
-                    textPlanet.style.background = `hsla(${hue}, 100%, 50%, 0.2)`;
-                    textPlanet.style.borderColor = `hsla(${hue}, 100%, 70%, 0.5)`;
+                    textPlanet.style.background = `hsla(${hue}, 100%, 50%, 0.3)`;
+                    textPlanet.style.borderColor = `hsla(${hue}, 100%, 70%, 0.7)`;
                     
                     orbitContainer.appendChild(textPlanet);
                     planetCount++;
                 }
             });
+            
+            console.log(`生成了 ${planetCount} 个文字行星`);
 
-            // 9. 打字机效果（修复元素不存在的问题）
+            // 10. 打字机效果
             if (document.querySelector('.typing-effect')) {
                 const typed = new Typed('.typing-effect', {
                     strings: ['Flyz远征飞', 'FPV远航专家', 'PokRC联名出品'],
@@ -781,13 +861,13 @@ FPV,远航,穿越机,PokRC,Flyz,远征飞,嘟嘟电池,康易安,
                 });
             }
 
-            // 10. 数字计数动画（修复元素不存在的问题）
+            // 11. 数字计数动画
             if (document.getElementById('counter')) {
                 const countUp = new CountUp('counter', 0, 100, 0, 2.5);
                 countUp.start();
             }
 
-            // 11. 滚动触发动画
+            // 12. 滚动触发动画
             gsap.utils.toArray(".animate-on-scroll").forEach(element => {
                 gsap.from(element, {
                     opacity: 0,
@@ -800,6 +880,12 @@ FPV,远航,穿越机,PokRC,Flyz,远征飞,嘟嘟电池,康易安,
                         toggleActions: "play none none reverse"
                     }
                 });
+            });
+            
+            // 13. 确保所有模块可见
+            document.querySelectorAll('[data-aos]').forEach(el => {
+                el.style.opacity = '1';
+                el.style.visibility = 'visible';
             });
         });
     </script>
