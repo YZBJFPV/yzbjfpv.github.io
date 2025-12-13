@@ -1,0 +1,895 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>数据库说明|管理|Flyz远征飞官网</title>
+    <!-- 外部资源 -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- Tailwind 配置 -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#165DFF',
+                        secondary: '#FF7D00',
+                        accent: '#36CFC9',
+                        light: '#FFFFFF',
+                        dark: '#333647',
+                        success: '#52C41A',
+                        warning: '#FAAD14',
+                        danger: '#FF4D4F',
+                        info: '#1890FF'
+                    },
+                    fontFamily: {
+                        inter: ['Inter', 'system-ui', 'sans-serif'],
+                    },
+                    boxShadow: {
+                        'card': '0 4px 20px rgba(0,0,0,0.08)',
+                        'card-hover': '0 8px 30px rgba(0,0,0,0.12)',
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .content-auto {
+                content-visibility: auto;
+            }
+            .text-shadow {
+                text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            }
+            .code-block {
+                background: #f5f7fa;
+                border-left: 4px solid #165DFF;
+                font-family: 'Consolas', 'Monaco', monospace;
+            }
+            .scroll-smooth {
+                scroll-behavior: smooth;
+            }
+            .animate-fade-in {
+                animation: fadeIn 0.6s ease forwards;
+            }
+            .animate-slide-up {
+                animation: slideUp 0.6s ease forwards;
+            }
+            .animate-slide-in {
+                animation: slideIn 0.6s ease forwards;
+            }
+        }
+    </style>
+
+    <style>
+        /* 顶部导航栏样式 - 沿用原有设计 */
+        .main-nav {
+            height: 60px;
+            background: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 9999;
+        }
+        .logo-text {
+            font-size: 18px;
+            font-weight: bold;
+            color: #165DFF;
+            display: flex;
+            align-items: center;
+        }
+        .logo-text img {
+            height: 40px;
+            margin-right: 10px;
+        }
+        
+        /* 流动渐变导航悬浮球 */
+        .nav-gradient {
+            background: linear-gradient(90deg, #165DFF, #4080FF, #7CB3FF, #FF7D00);
+            background-size: 400% 400%;
+            animation: gradientFlow 10s ease infinite;
+        }
+        
+        @keyframes gradientFlow {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        /* 动画定义 */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes slideUp {
+            from { 
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to { 
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes slideIn {
+            from { 
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to { 
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        /* 滚动条美化 */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+        
+        /* 代码行号样式 */
+        .line-number {
+            color: #64748b;
+            user-select: none;
+            display: inline-block;
+            width: 40px;
+            text-align: right;
+            padding-right: 10px;
+        }
+        
+        /* 标签样式 */
+        .tag {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+            margin-right: 6px;
+            margin-bottom: 6px;
+        }
+        
+        /* 页面布局 */
+        body {
+            padding-top: 80px;
+            font-family: 'Inter', system-ui, sans-serif;
+            background-color: #f8fafc;
+            color: #333647;
+            scroll-behavior: smooth;
+        }
+        
+        /* 目录导航 */
+        .toc-item {
+            transition: all 0.2s ease;
+        }
+        
+        .toc-item:hover {
+            transform: translateX(4px);
+        }
+        
+        .toc-item.active {
+            color: #165DFF;
+            font-weight: 600;
+            border-left: 3px solid #165DFF;
+            padding-left: 12px !important;
+        }
+        
+        /* 卡片悬停效果 */
+        .feature-card {
+            transition: all 0.3s ease;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- 顶部导航栏 - 沿用原有样式 -->
+    <div class="main-nav">
+        <div class="logo-text">
+            <img src="https://img520.com/UIGuUV.jpeg" alt="Logo" onerror="this.onerror=null;this.src='https://picsum.photos/40/40'">
+            <span>Flyz远征飞 - 数据库管理</span>
+        </div>
+    </div>
+
+    <!-- 导航悬浮球 -->
+    <div class="fixed top-20 right-4 md:right-8 z-50">
+        <div class="w-14 h-14 rounded-full nav-gradient text-white flex items-center justify-center shadow-lg cursor-pointer hover:scale-105 transition-transform">
+            <i class="fa fa-database text-xl"></i>
+        </div>
+    </div>
+
+    <!-- 主内容区 -->
+    <div class="container mx-auto px-4 py-8 max-w-7xl">
+        <!-- 页面标题 -->
+        <div class="mb-12 animate-fade-in">
+            <h1 class="text-[clamp(1.8rem,4vw,2.8rem)] font-bold text-primary text-center mb-4">
+                数据库格式说明 & 管理指南
+            </h1>
+            <p class="text-gray-600 text-center max-w-3xl mx-auto">
+                本页面详细说明官网各功能模块的数据库文件格式、可修改内容及对应代码位置，方便您快速管理和更新网站内容
+            </p>
+        </div>
+
+        <!-- 内容布局 -->
+        <div class="flex flex-col lg:flex-row gap-8">
+            <!-- 左侧目录 -->
+            <div class="lg:w-1/4 animate-slide-in">
+                <div class="bg-white rounded-xl shadow-card p-6 sticky top-24">
+                    <h3 class="text-lg font-bold text-dark mb-4 flex items-center">
+                        <i class="fa fa-list-ul text-primary mr-2"></i>
+                        目录导航
+                    </h3>
+                    <nav class="space-y-2">
+                        <a href="#broadcast" class="toc-item block px-4 py-2 text-gray-700 hover:text-primary hover:bg-primary/5 rounded-lg">
+                            导航栏滚动公告
+                        </a>
+                        <a href="#announcement" class="toc-item block px-4 py-2 text-gray-700 hover:text-primary hover:bg-primary/5 rounded-lg">
+                            右上角弹窗公告
+                        </a>
+                        <a href="#carousel" class="toc-item block px-4 py-2 text-gray-700 hover:text-primary hover:bg-primary/5 rounded-lg">
+                            首页大屏轮播
+                        </a>
+                        <a href="#barrage" class="toc-item block px-4 py-2 text-gray-700 hover:text-primary hover:bg-primary/5 rounded-lg">
+                            文字弹幕广告
+                        </a>
+                        <a href="#beta" class="toc-item block px-4 py-2 text-gray-700 hover:text-primary hover:bg-primary/5 rounded-lg">
+                            网站公测模块
+                        </a>
+                        <a href="#common" class="toc-item block px-4 py-2 text-gray-700 hover:text-primary hover:bg-primary/5 rounded-lg">
+                            通用修改指南
+                        </a>
+                        <a href="#tips" class="toc-item block px-4 py-2 text-gray-700 hover:text-primary hover:bg-primary/5 rounded-lg">
+                            实用技巧 & 注意事项
+                        </a>
+                    </nav>
+                </div>
+            </div>
+
+            <!-- 右侧内容 -->
+            <div class="lg:w-3/4 space-y-10">
+                <!-- 1. 导航栏滚动公告 -->
+                <section id="broadcast" class="animate-slide-up feature-card bg-white rounded-xl shadow-card p-6 md:p-8">
+                    <div class="flex items-center mb-6">
+                        <div class="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mr-4">
+                            <i class="fa fa-bullhorn text-primary text-xl"></i>
+                        </div>
+                        <div>
+                            <h2 class="text-xl font-bold text-dark">导航栏滚动公告</h2>
+                            <div class="flex flex-wrap mt-1">
+                                <span class="tag bg-info/10 text-info">代码行：421-450</span>
+                                <span class="tag bg-success/10 text-success">简单格式</span>
+                                <span class="tag bg-warning/10 text-warning">实时生效</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="space-y-4">
+                        <div>
+                            <h3 class="font-semibold text-lg mb-2">📋 文件路径</h3>
+                            <div class="code-block p-4 rounded-lg text-sm">
+                                <span class="line-number"></span>https://yzbjfpv.top/flyz/202512/数据库/首页导航栏滚动公告.txt
+                            </div>
+                        </div>
+
+                        <div>
+                            <h3 class="font-semibold text-lg mb-2">🔧 格式说明</h3>
+                            <p class="text-gray-700 mb-2">每行一条公告，支持三种类型标识：</p>
+                            <div class="code-block p-4 rounded-lg text-sm mb-2">
+                                <span class="line-number">1</span>#重要公告内容<br>
+                                <span class="line-number">2</span>%广告内容<br>
+                                <span class="line-number">3</span>*系统通知内容<br>
+                                <span class="line-number">4</span>无标识的普通文本
+                            </div>
+                            <ul class="list-disc list-inside text-gray-700 space-y-1 pl-2">
+                                <li><strong class="text-danger">#</strong> - 重要公告（蓝色）</li>
+                                <li><strong class="text-warning">%</strong> - 广告内容（橙色）</li>
+                                <li><strong class="text-info">*</strong> - 系统通知（红色）</li>
+                                <li>无标识 - 普通文本（默认样式）</li>
+                            </ul>
+                        </div>
+
+                        <div>
+                            <h3 class="font-semibold text-lg mb-2">✏️ 可修改内容</h3>
+                            <ul class="list-check list-inside text-gray-700 space-y-2 pl-2">
+                                <li>公告文本内容（支持中文、数字、符号）</li>
+                                <li>公告类型（通过前缀标识切换）</li>
+                                <li>公告数量（可添加任意多行）</li>
+                                <li>公告顺序（调整行的顺序即可）</li>
+                            </ul>
+                        </div>
+
+                        <div>
+                            <h3 class="font-semibold text-lg mb-2">💡 修改示例</h3>
+                            <div class="code-block p-4 rounded-lg text-sm">
+                                <span class="line-number">1</span>#网站新版本上线啦！<br>
+                                <span class="line-number">2</span>%全场商品8折优惠<br>
+                                <span class="line-number">3</span>*服务器维护通知：2025-12-20 00:00-02:00<br>
+                                <span class="line-number">4</span>欢迎使用Flyz远征飞官网
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 2. 右上角弹窗公告 -->
+                <section id="announcement" class="animate-slide-up feature-card bg-white rounded-xl shadow-card p-6 md:p-8" style="animation-delay: 0.1s">
+                    <div class="flex items-center mb-6">
+                        <div class="w-12 h-12 rounded-full bg-secondary/10 flex items-center justify-center mr-4">
+                            <i class="fa fa-bell text-secondary text-xl"></i>
+                        </div>
+                        <div>
+                            <h2 class="text-xl font-bold text-dark">右上角弹窗公告</h2>
+                            <div class="flex flex-wrap mt-1">
+                                <span class="tag bg-info/10 text-info">代码行：452-470</span>
+                                <span class="tag bg-success/10 text-success">纯文本</span>
+                                <span class="tag bg-warning/10 text-warning">自动弹窗</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="space-y-4">
+                        <div>
+                            <h3 class="font-semibold text-lg mb-2">📋 文件路径</h3>
+                            <div class="code-block p-4 rounded-lg text-sm">
+                                <span class="line-number"></span>https://yzbjfpv.top/flyz/202512/数据库/首页弹窗公告.txt
+                            </div>
+                        </div>
+
+                        <div>
+                            <h3 class="font-semibold text-lg mb-2">🔧 格式说明</h3>
+                            <p class="text-gray-700 mb-2">纯文本格式，支持多行内容，无特殊标识：</p>
+                            <div class="code-block p-4 rounded-lg text-sm mb-2">
+                                <span class="line-number">1</span>尊敬的用户：<br>
+                                <span class="line-number">2</span>感谢您使用Flyz远征飞官网！<br>
+                                <span class="line-number">3</span>如有任何问题，请联系客服微信：YGWFK2024
+                            </div>
+                            <p class="text-gray-700">⚠️ 注意：整个文件内容会作为弹窗公告显示，支持换行</p>
+                        </div>
+
+                        <div>
+                            <h3 class="font-semibold text-lg mb-2">✏️ 可修改内容</h3>
+                            <ul class="list-check list-inside text-gray-700 space-y-2 pl-2">
+                                <li>公告标题（固定为"重要公告"，如需修改见代码行460）</li>
+                                <li>公告正文内容（任意文本）</li>
+                                <li>联系方式、活动信息等</li>
+                                <li>弹窗显示时机（代码行468，默认延迟1秒）</li>
+                            </ul>
+                        </div>
+
+                        <div>
+                            <h3 class="font-semibold text-lg mb-2">🔍 代码修改点</h3>
+                            <div class="code-block p-4 rounded-lg text-sm">
+                                <span class="line-number">460</span>// 修改弹窗标题<br>
+                                <span class="line-number">461</span>h4.textContent = "自定义标题";<br>
+                                <span class="line-number">468</span>// 修改弹窗延迟显示时间（毫秒）<br>
+                                <span class="line-number">469</span>setTimeout(() => { ... }, 3000); // 3秒后显示
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 3. 首页大屏轮播 -->
+                <section id="carousel" class="animate-slide-up feature-card bg-white rounded-xl shadow-card p-6 md:p-8" style="animation-delay: 0.2s">
+                    <div class="flex items-center mb-6">
+                        <div class="w-12 h-12 rounded-full bg-accent/10 flex items-center justify-center mr-4">
+                            <i class="fa fa-sliders text-accent text-xl"></i>
+                        </div>
+                        <div>
+                            <h2 class="text-xl font-bold text-dark">首页大屏轮播</h2>
+                            <div class="flex flex-wrap mt-1">
+                                <span class="tag bg-info/10 text-info">代码行：472-530</span>
+                                <span class="tag bg-warning/10 text-warning">URL+时长</span>
+                                <span class="tag bg-danger/10 text-danger">忽略首行</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="space-y-4">
+                        <div>
+                            <h3 class="font-semibold text-lg mb-2">📋 文件路径</h3>
+                            <div class="code-block p-4 rounded-lg text-sm">
+                                <span class="line-number"></span>https://yzbjfpv.top/flyz/202512/数据库/首页大屏轮播内容.txt
+                            </div>
+                        </div>
+
+                        <div>
+                            <h3 class="font-semibold text-lg mb-2">🔧 格式说明</h3>
+                            <p class="text-gray-700 mb-2">每行一个轮播项，格式：资源URL-显示时长（秒）</p>
+                            <div class="code-block p-4 rounded-lg text-sm mb-2">
+                                <span class="line-number">1</span>// 格式说明：图片/视频URL-显示时长（秒）<br>
+                                <span class="line-number">2</span>https://example.com/banner1.jpg-0.8<br>
+                                <span class="line-number">3</span>https://example.com/video1.mp4-2<br>
+                                <span class="line-number">4</span>https://player.bilibili.com/xxxx-3
+                            </div>
+                            <div class="bg-warning/10 border border-warning/20 rounded-lg p-3 text-sm text-warning mb-3">
+                                <i class="fa fa-exclamation-triangle mr-1"></i>
+                                第一行是格式说明，会被程序自动忽略，从第二行开始解析实际内容
+                            </div>
+                            <ul class="list-disc list-inside text-gray-700 space-y-1 pl-2">
+                                <li>支持图片（jpg/png/webp等）、视频（mp4/webm/mov）、B站iframe链接</li>
+                                <li>时长单位：秒（默认0.8秒，建议0.5-5秒）</li>
+                                <li>URL必须是完整的网络地址，不能省略http/https</li>
+                            </ul>
+                        </div>
+
+                        <div>
+                            <h3 class="font-semibold text-lg mb-2">✏️ 可修改内容</h3>
+                            <ul class="list-check list-inside text-gray-700 space-y-2 pl-2">
+                                <li>轮播资源地址（更换图片/视频链接）</li>
+                                <li>每个轮播项的显示时长（调整数字即可）</li>
+                                <li>轮播数量（添加/删除行）</li>
+                                <li>轮播顺序（调整行的顺序）</li>
+                                <li>轮播类型（混合图片、视频、iframe）</li>
+                            </ul>
+                        </div>
+
+                        <div>
+                            <h3 class="font-semibold text-lg mb-2">💡 修改示例</h3>
+                            <div class="code-block p-4 rounded-lg text-sm">
+                                <span class="line-number">1</span>格式说明：URL-时长<br>
+                                <span class="line-number">2</span>https://img.example.com/banner1.jpg-1<br>
+                                <span class="line-number">3</span>https://video.example.com/promo.mp4-3<br>
+                                <span class="line-number">4</span>https://player.bilibili.com/player.html?aid=123456-2<br>
+                                <span class="line-number">5</span>https://img.example.com/banner2.png-1.5
+                            </div>
+                        </div>
+
+                        <div>
+                            <h3 class="font-semibold text-lg mb-2">🔍 代码修改点</h3>
+                            <div class="code-block p-4 rounded-lg text-sm">
+                                <span class="line-number">490</span>// 修改默认时长（秒）<br>
+                                <span class="line-number">491</span>let duration = 1.0; // 默认1秒<br>
+                                <span class="line-number">510</span>// 修改轮播容器高度比例<br>
+                                <span class="line-number">511</span>aspect-ratio: 16/9; // 可改为4/3、1/1等
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 4. 文字弹幕广告 -->
+                <section id="barrage" class="animate-slide-up feature-card bg-white rounded-xl shadow-card p-6 md:p-8" style="animation-delay: 0.3s">
+                    <div class="flex items-center mb-6">
+                        <div class="w-12 h-12 rounded-full bg-danger/10 flex items-center justify-center mr-4">
+                            <i class="fa fa-commenting-o text-danger text-xl"></i>
+                        </div>
+                        <div>
+                            <h2 class="text-xl font-bold text-dark">文字弹幕广告</h2>
+                            <div class="flex flex-wrap mt-1">
+                                <span class="tag bg-info/10 text-info">代码行：532-610</span>
+                                <span class="tag bg-danger/10 text-danger">多字段格式</span>
+                                <span class="tag bg-warning/10 text-warning">忽略首行</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="space-y-4">
+                        <div>
+                            <h3 class="font-semibold text-lg mb-2">📋 文件路径</h3>
+                            <div class="code-block p-4 rounded-lg text-sm">
+                                <span class="line-number"></span>https://yzbjfpv.top/flyz/202512/数据库/首页文字弹幕广告.txt
+                            </div>
+                        </div>
+
+                        <div>
+                            <h3 class="font-semibold text-lg mb-2">🔧 格式说明</h3>
+                            <p class="text-gray-700 mb-2">每行一条弹幕，格式：类型-标题-备注-联系方式-链接</p>
+                            <div class="code-block p-4 rounded-lg text-sm mb-2">
+                                <span class="line-number">1</span>格式说明：%表示低等弹幕@表示中等弹幕#表示高等弹幕<br>
+                                <span class="line-number">2</span>%-商品名称-备注:说明-联系方式:微信-链接地址<br>
+                                <span class="line-number">3</span>@-促销活动-备注:限时优惠-联系方式:电话-链接地址<br>
+                                <span class="line-number">4</span>#-重要通知-备注:紧急-联系方式:邮箱-链接地址
+                            </div>
+                            <div class="bg-warning/10 border border-warning/20 rounded-lg p-3 text-sm text-warning mb-3">
+                                <i class="fa fa-exclamation-triangle mr-1"></i>
+                                第一行是格式说明，会被程序自动忽略，字段之间用"-"分隔
+                            </div>
+                            <ul class="list-disc list-inside text-gray-700 space-y-1 pl-2">
+                                <li><strong>%</strong> - 低等弹幕（白色背景）</li>
+                                <li><strong>@</strong> - 中等弹幕（黄色背景）</li>
+                                <li><strong>#</strong> - 高等弹幕（红色背景）</li>
+                                <li>标题：显示在弹幕上的文字</li>
+                                <li>备注：点击弹幕后显示的详细说明</li>
+                                <li>联系方式：点击弹幕后显示的联系信息</li>
+                                <li>链接：点击详情后的跳转地址</li>
+                            </ul>
+                        </div>
+
+                        <div>
+                            <h3 class="font-semibold text-lg mb-2">✏️ 可修改内容</h3>
+                            <ul class="list-check list-inside text-gray-700 space-y-2 pl-2">
+                                <li>弹幕类型（%/@/# 切换颜色样式）</li>
+                                <li>弹幕标题（显示在滚动文字上）</li>
+                                <li>备注信息（详情弹窗显示）</li>
+                                <li>联系方式（详情弹窗显示）</li>
+                                <li>跳转链接（点击详情的URL）</li>
+                                <li>弹幕数量和顺序</li>
+                            </ul>
+                        </div>
+
+                        <div>
+                            <h3 class="font-semibold text-lg mb-2">💡 修改示例</h3>
+                            <div class="code-block p-4 rounded-lg text-sm">
+                                <span class="line-number">1</span>格式说明：%低等 @中等 #高等<br>
+                                <span class="line-number">2</span>%-黑手电池-备注:大容量-联系方式:YGWFK2024-https://shop.example.com/1<br>
+                                <span class="line-number">3</span>@-双12促销-备注:8折优惠-联系方式:13800138000-https://sale.example.com<br>
+                                <span class="line-number">4</span>#-新品上市-备注:限量发售-联系方式:service@example.com-https://new.example.com
+                            </div>
+                        </div>
+
+                        <div>
+                            <h3 class="font-semibold text-lg mb-2">🔍 代码修改点</h3>
+                            <div class="code-block p-4 rounded-lg text-sm">
+                                <span class="line-number">560</span>// 修改弹幕颜色<br>
+                                <span class="line-number">561</span>barrage1: '#FFFFFF', // 低等弹幕背景<br>
+                                <span class="line-number">562</span>barrage2: '#FFE066', // 中等弹幕背景<br>
+                                <span class="line-number">563</span>barrage3: '#FF4D4F', // 高等弹幕背景<br>
+                                <span class="line-number">580</span>// 修改弹幕速度（秒）<br>
+                                <span class="line-number">581</span>const speed = Math.floor(Math.random() * 20) + 30; // 30-50秒
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 5. 网站公测模块 -->
+                <section id="beta" class="animate-slide-up feature-card bg-white rounded-xl shadow-card p-6 md:p-8" style="animation-delay: 0.4s">
+                    <div class="flex items-center mb-6">
+                        <div class="w-12 h-12 rounded-full bg-success/10 flex items-center justify-center mr-4">
+                            <i class="fa fa-rocket text-success text-xl"></i>
+                        </div>
+                        <div>
+                            <h2 class="text-xl font-bold text-dark">网站公测模块</h2>
+                            <div class="flex flex-wrap mt-1">
+                                <span class="tag bg-info/10 text-info">代码行：612-670</span>
+                                <span class="tag bg-warning/10 text-warning">四字段格式</span>
+                                <span class="tag bg-success/10 text-success">按钮样式</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="space-y-4">
+                        <div>
+                            <h3 class="font-semibold text-lg mb-2">📋 文件路径</h3>
+                            <div class="code-block p-4 rounded-lg text-sm">
+                                <span class="line-number"></span>https://yzbjfpv.top/flyz/202512/数据库/首页公测模块.txt
+                            </div>
+                        </div>
+
+                        <div>
+                            <h3 class="font-semibold text-lg mb-2">🔧 格式说明</h3>
+                            <p class="text-gray-700 mb-2">每行一个公测项目，格式：按钮文字-版本号-链接-说明</p>
+                            <div class="code-block p-4 rounded-lg text-sm mb-2">
+                                <span class="line-number">1</span>项目名称1-1.0.0-https://link1.example.com-这是项目1的详细说明<br>
+                                <span class="line-number">2</span>项目名称2-2.1.5-https://link2.example.com-这是项目2的详细说明<br>
+                                <span class="line-number">3</span>测试功能-v0.9-beta-https://test.example.com-测试版本仅供体验
+                            </div>
+                            <ul class="list-disc list-inside text-gray-700 space-y-1 pl-2">
+                                <li>按钮文字：显示在按钮上的标题</li>
+                                <li>版本号：显示在按钮下方的版本信息</li>
+                                <li>链接：点击"立即访问"的跳转地址</li>
+                                <li>说明：弹窗中显示的详细描述</li>
+                            </ul>
+                        </div>
+
+                        <div>
+                            <h3 class="font-semibold text-lg mb-2">✏️ 可修改内容</h3>
+                            <ul class="list-check list-inside text-gray-700 space-y-2 pl-2">
+                                <li>按钮显示文字（第一字段）</li>
+                                <li>版本号信息（第二字段）</li>
+                                <li>跳转链接地址（第三字段）</li>
+                                <li>详细说明文本（第四字段）</li>
+                                <li>按钮数量（添加/删除行）</li>
+                                <li>按钮排列顺序</li>
+                            </ul>
+                        </div>
+
+                        <div>
+                            <h3 class="font-semibold text-lg mb-2">💡 修改示例</h3>
+                            <div class="code-block p-4 rounded-lg text-sm">
+                                <span class="line-number">1</span>远征飞APP-v1.2.3-https://app.example.com-全新版本上线，支持更多功能<br>
+                                <span class="line-number">2</span>维修预约系统-v2.0-https://repair.example.com-在线预约维修服务，方便快捷<br>
+                                <span class="line-number">3</span>商城系统-beta-https://shop.example.com-商城测试版，欢迎体验
+                            </div>
+                        </div>
+
+                        <div>
+                            <h3 class="font-semibold text-lg mb-2">🔍 代码修改点</h3>
+                            <div class="code-block p-4 rounded-lg text-sm">
+                                <span class="line-number">640</span>// 修改按钮样式<br>
+                                <span class="line-number">641</span>.beta-button {<br>
+                                <span class="line-number">642</span>  background: #165DFF; // 按钮背景色<br>
+                                <span class="line-number">643</span>  color: white; // 文字颜色<br>
+                                <span class="line-number">644</span>}<br>
+                                <span class="line-number">650</span>// 修改按钮排列数量<br>
+                                <span class="line-number">651</span>grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 6. 通用修改指南 -->
+                <section id="common" class="animate-slide-up feature-card bg-white rounded-xl shadow-card p-6 md:p-8" style="animation-delay: 0.5s">
+                    <div class="flex items-center mb-6">
+                        <div class="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mr-4">
+                            <i class="fa fa-wrench text-primary text-xl"></i>
+                        </div>
+                        <div>
+                            <h2 class="text-xl font-bold text-dark">通用修改指南</h2>
+                            <div class="flex flex-wrap mt-1">
+                                <span class="tag bg-info/10 text-info">全页面</span>
+                                <span class="tag bg-success/10 text-success">基础设置</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="space-y-6">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <!-- 颜色修改 -->
+                            <div class="bg-gray-50 rounded-lg p-5">
+                                <h3 class="font-semibold text-lg mb-3 flex items-center">
+                                    <i class="fa fa-paint-brush text-primary mr-2"></i>
+                                    颜色修改
+                                </h3>
+                                <div class="code-block p-3 rounded-lg text-sm mb-3">
+                                    <span class="line-number">40</span>// 代码行：40-50 主题颜色配置<br>
+                                    <span class="line-number">41</span>colors: {<br>
+                                    <span class="line-number">42</span>  primary: '#165DFF', // 主色调<br>
+                                    <span class="line-number">43</span>  secondary: '#FF7D00', // 辅助色<br>
+                                    <span class="line-number">44</span>  accent: '#36CFC9', // 强调色<br>
+                                    <span class="line-number">45</span>  // 其他颜色...<br>
+                                    <span class="line-number">46</span>}
+                                </div>
+                                <p class="text-gray-700 text-sm">
+                                    修改十六进制颜色值即可更换网站主题色，建议使用相近色系保持视觉协调
+                                </p>
+                            </div>
+
+                            <!-- 导航栏修改 -->
+                            <div class="bg-gray-50 rounded-lg p-5">
+                                <h3 class="font-semibold text-lg mb-3 flex items-center">
+                                    <i class="fa fa-navicon text-primary mr-2"></i>
+                                    导航栏修改
+                                </h3>
+                                <div class="code-block p-3 rounded-lg text-sm mb-3">
+                                    <span class="line-number">280</span>// 代码行：280-300 导航菜单<br>
+                                    <span class="line-number">281</span><a href="链接" class="导航项样式">首页</a><br>
+                                    <span class="line-number">282</span><a href="链接" class="导航项样式">下载中心</a><br>
+                                    <span class="line-number">283</span>// 添加新导航项：<br>
+                                    <span class="line-number">284</span><a href="新链接" class="导航项样式">新菜单</a>
+                                </div>
+                                <p class="text-gray-700 text-sm">
+                                    可添加/删除导航项，修改链接地址和显示文字，微信联系方式在代码行305
+                                </p>
+                            </div>
+
+                            <!-- 页脚修改 -->
+                            <div class="bg-gray-50 rounded-lg p-5">
+                                <h3 class="font-semibold text-lg mb-3 flex items-center">
+                                    <i class="fa fa-footer text-primary mr-2"></i>
+                                    页脚信息修改
+                                </h3>
+                                <div class="code-block p-3 rounded-lg text-sm mb-3">
+                                    <span class="line-number">780</span>// 代码行：780-800 页脚内容<br>
+                                    <span class="line-number">781</span><p id="footer-copyright">© 2025 Flyz远征飞...</p><br>
+                                    <span class="line-number">782</span><p id="footer-slogan">我们的口号...</p><br>
+                                    <span class="line-number">783</span><a href="B站链接">哔哩哔哩账号</a>
+                                </div>
+                                <p class="text-gray-700 text-sm">
+                                    修改版权信息、口号、社交媒体链接等，支持添加更多联系方式
+                                </p>
+                            </div>
+
+                            <!-- 弹窗样式修改 -->
+                            <div class="bg-gray-50 rounded-lg p-5">
+                                <h3 class="font-semibold text-lg mb-3 flex items-center">
+                                    <i class="fa fa-window-maximize text-primary mr-2"></i>
+                                    弹窗样式修改
+                                </h3>
+                                <div class="code-block p-3 rounded-lg text-sm mb-3">
+                                    <span class="line-number">200</span>// 代码行：200-220 弹窗样式<br>
+                                    <span class="line-number">201</span>.announcement-modal {<br>
+                                    <span class="line-number">202</span>  top: 20px; // 距离顶部<br>
+                                    <span class="line-number">203</span>  right: 20px; // 距离右侧<br>
+                                    <span class="line-number">204</span>  width: 350px; // 宽度<br>
+                                    <span class="line-number">205</span>}
+                                </div>
+                                <p class="text-gray-700 text-sm">
+                                    调整弹窗位置、大小、背景色等样式，修改动画效果时长和方式
+                                </p>
+                            </div>
+                        </div>
+
+                        <div>
+                            <h3 class="font-semibold text-lg mb-3">📝 修改步骤总结</h3>
+                            <ol class="list-decimal list-inside text-gray-700 space-y-2 pl-2">
+                                <li>打开对应的数据库文本文件</li>
+                                <li>按照格式说明修改内容（注意分隔符和标识）</li>
+                                <li>保存文件（确保编码为UTF-8）</li>
+                                <li>刷新官网页面，修改立即生效</li>
+                                <li>如需修改样式，调整对应代码行的CSS/JS</li>
+                            </ol>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 7. 实用技巧 & 注意事项 -->
+                <section id="tips" class="animate-slide-up feature-card bg-white rounded-xl shadow-card p-6 md:p-8" style="animation-delay: 0.6s">
+                    <div class="flex items-center mb-6">
+                        <div class="w-12 h-12 rounded-full bg-warning/10 flex items-center justify-center mr-4">
+                            <i class="fa fa-lightbulb-o text-warning text-xl"></i>
+                        </div>
+                        <div>
+                            <h2 class="text-xl font-bold text-dark">实用技巧 & 注意事项</h2>
+                            <div class="flex flex-wrap mt-1">
+                                <span class="tag bg-warning/10 text-warning">重要</span>
+                                <span class="tag bg-success/10 text-success">技巧</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="space-y-4">
+                        <div class="bg-success/5 border border-success/20 rounded-lg p-4">
+                            <h3 class="font-semibold mb-2 flex items-center">
+                                <i class="fa fa-check-circle text-success mr-2"></i>
+                                实用技巧
+                            </h3>
+                            <ul class="list-disc list-inside text-gray-700 space-y-2 pl-2">
+                                <li>使用记事本++或VS Code编辑文本文件，确保编码为UTF-8</li>
+                                <li>先备份原文件，再进行修改，防止格式错误</li>
+                                <li>测试链接有效性，确保所有URL都能正常访问</li>
+                                <li>弹幕和轮播内容不宜过多，建议控制在10条以内</li>
+                                <li>定期更新公告内容，保持网站活跃度</li>
+                                <li>使用短链接服务简化长URL，提高可读性</li>
+                            </ul>
+                        </div>
+
+                        <div class="bg-danger/5 border border-danger/20 rounded-lg p-4">
+                            <h3 class="font-semibold mb-2 flex items-center">
+                                <i class="fa fa-exclamation-circle text-danger mr-2"></i>
+                                注意事项
+                            </h3>
+                            <ul class="list-disc list-inside text-gray-700 space-y-2 pl-2">
+                                <li>字段分隔符必须使用英文"-"，不能用中文符号</li>
+                                <li>轮播和弹幕的第一行是格式说明，会被自动忽略</li>
+                                <li>URL必须完整，包含http://或https://</li>
+                                <li>避免在文本中使用特殊字符（如|、\、/等）</li>
+                                <li>每行内容不宜过长，建议控制在100字符以内</li>
+                                <li>修改后清除浏览器缓存，确保看到最新效果</li>
+                                <li>测试不同设备（手机/电脑）的显示效果</li>
+                            </ul>
+                        </div>
+
+                        <div class="bg-info/5 border border-info/20 rounded-lg p-4">
+                            <h3 class="font-semibold mb-2 flex items-center">
+                                <i class="fa fa-question-circle text-info mr-2"></i>
+                                常见问题
+                            </h3>
+                            <div class="space-y-3">
+                                <div>
+                                    <p class="font-medium">Q: 修改后页面没有变化？</p>
+                                    <p class="text-gray-700 pl-4">A: 检查文件路径是否正确，清除浏览器缓存，或等待CDN刷新（通常5-10分钟）</p>
+                                </div>
+                                <div>
+                                    <p class="font-medium">Q: 弹幕/轮播显示乱码？</p>
+                                    <p class="text-gray-700 pl-4">A: 检查文件编码是否为UTF-8，确保没有使用特殊字符</p>
+                                </div>
+                                <div>
+                                    <p class="font-medium">Q: 格式正确但内容不显示？</p>
+                                    <p class="text-gray-700 pl-4">A: 检查是否有多余的空行，确保每行格式都正确，没有遗漏分隔符</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-gray-50 rounded-lg p-4 text-center">
+                            <p class="text-gray-700 mb-2">如有其他问题，请联系技术支持：</p>
+                            <p class="text-primary font-medium">微信：YGWFK2024</p>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+
+    <!-- 页脚 -->
+    <footer class="bg-gray-800 text-white py-8 mt-16">
+        <div class="container mx-auto px-4 text-center">
+            <p class="mb-4">© 2025 Flyz远征飞官网 - 数据库管理系统</p>
+            <p class="text-gray-400 text-sm">
+                本页面仅供管理员使用，请勿转发给非授权人员
+            </p>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script>
+        // 目录导航高亮
+        document.addEventListener('DOMContentLoaded', function() {
+            // 平滑滚动
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    
+                    // 移除所有active类
+                    document.querySelectorAll('.toc-item').forEach(item => {
+                        item.classList.remove('active');
+                    });
+                    
+                    // 添加当前active类
+                    this.classList.add('active');
+                    
+                    // 滚动到目标位置
+                    document.querySelector(this.getAttribute('href')).scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                });
+            });
+            
+            // 滚动监听，自动高亮目录
+            const sections = document.querySelectorAll('section');
+            const tocItems = document.querySelectorAll('.toc-item');
+            
+            window.addEventListener('scroll', function() {
+                let current = '';
+                
+                sections.forEach(section => {
+                    const sectionTop = section.offsetTop;
+                    const sectionHeight = section.clientHeight;
+                    
+                    if (pageYOffset >= (sectionTop - 300)) {
+                        current = section.getAttribute('id');
+                    }
+                });
+                
+                tocItems.forEach(item => {
+                    item.classList.remove('active');
+                    if (item.getAttribute('href') === `#${current}`) {
+                        item.classList.add('active');
+                    }
+                });
+            });
+            
+            // 卡片动画
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = 1;
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, { threshold: 0.1 });
+            
+            document.querySelectorAll('.feature-card').forEach(card => {
+                card.style.opacity = 0;
+                card.style.transform = 'translateY(20px)';
+                card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+                observer.observe(card);
+            });
+        });
+    </script>
+</body>
+</html>
