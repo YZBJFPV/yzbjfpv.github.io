@@ -3,33 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>首页｜Flyz远征飞官网-202512版</title>
-    <!-- 引入20+国内开源动画/UI库（确保国内可访问） -->
+    <title>首页｜Flyz远征飞官方网站</title>
+    <!-- 外部资源 -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css"></script>
-    <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
-    <link href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.16/lib/typed.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/vanilla-tilt@1.8.1/dist/vanilla-tilt.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/scrollreveal@4.0.9/dist/scrollreveal.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/wow.js@1.2.2/dist/wow.min.js"></script>
-    <link href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/parallax-js@3.1.0/dist/parallax.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/velocity-animate@2.0.6/velocity.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/velocity-animate@2.0.6/velocity.ui.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/magic.css@1.2.0/dist/magic.min.js"></script>
-    <link href="https://cdn.jsdelivr.net/npm/magic.css@1.2.0/dist/magic.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/ripple-js@2.2.1/dist/ripple.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/textillate@0.4.1/jquery.textillate.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/lettering.js@0.7.0/jquery.lettering.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/tsparticles@3.1.0/tsparticles.bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/countup.js@2.8.0/dist/countUp.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script>
     
     <!-- Tailwind 配置 -->
     <script>
@@ -42,37 +19,36 @@
                         accent: '#36CFC9',
                         light: '#FFFFFF',
                         dark: '#333647',
-                        neon: '#00FFEE',
-                        cyber: '#6C63FF'
+                        barrage1: '#FFFFFF', // 低等弹幕
+                        barrage2: '#FFE066', // 中等弹幕
+                        barrage3: '#FF4D4F'  // 高等弹幕
                     },
                     fontFamily: {
                         inter: ['Inter', 'system-ui', 'sans-serif'],
-                        cyber: ['Orbitron', 'sans-serif']
-                    },
-                    animation: {
-                        'pulse-fast': 'pulse 1s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-                        'float': 'float 3s ease-in-out infinite',
-                        'glow': 'glow 2s ease-in-out infinite alternate',
-                        'scanline': 'scanline 6s linear infinite',
-                        'matrix': 'matrix 15s linear infinite'
                     },
                     keyframes: {
-                        float: {
+                        pulse: {
+                            '0%, 100%': { opacity: 1 },
+                            '50%': { opacity: 0.5 },
+                        },
+                        bounce: {
                             '0%, 100%': { transform: 'translateY(0)' },
                             '50%': { transform: 'translateY(-10px)' },
                         },
-                        glow: {
-                            '0%': { boxShadow: '0 0 5px #165DFF, 0 0 10px #165DFF' },
-                            '100%': { boxShadow: '0 0 10px #165DFF, 0 0 20px #165DFF, 0 0 30px #165DFF' },
+                        rotate: {
+                            '0%': { transform: 'rotate(0deg)' },
+                            '100%': { transform: 'rotate(360deg)' },
                         },
-                        scanline: {
-                            '0%': { transform: 'translateY(0)' },
-                            '100%': { transform: 'translateY(100vh)' },
-                        },
-                        matrix: {
-                            '0%': { transform: 'translateY(0)' },
-                            '100%': { transform: 'translateY(100%)' },
+                        shimmer: {
+                            '0%': { backgroundPosition: '-200% 0' },
+                            '100%': { backgroundPosition: '200% 0' },
                         }
+                    },
+                    animation: {
+                        pulse: 'pulse 2s infinite',
+                        bounce: 'bounce 2s infinite',
+                        rotate: 'rotate 2s linear infinite',
+                        shimmer: 'shimmer 2s linear infinite'
                     }
                 }
             }
@@ -81,693 +57,1389 @@
     
     <style type="text/tailwindcss">
         @layer utilities {
-            .content-auto { content-visibility: auto; }
-            .card-elevation { box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
-            .hover-rise { transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1); }
-            .hover-rise:hover { transform: translateY(-6px); }
-            /* 精灵球与弹窗样式 - 优化辨识度 */
-            .pokeball-btn { 
-                transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-                background: rgba(22, 93, 255, 0.9) !important; /* 高亮背景 */
-                border-color: #00FFEE !important; /* 霓虹边框 */
-                box-shadow: 0 0 15px rgba(0, 255, 238, 0.6) !important; /* 发光效果 */
+            .content-auto {
+                content-visibility: auto;
             }
-            .pokeball-btn:hover { 
-                transform: scale(1.1) rotate(15deg); 
-                box-shadow: 0 0 25px rgba(0, 255, 238, 0.8) !important; 
+            .text-shadow {
+                text-shadow: 0 2px 4px rgba(0,0,0,0.1);
             }
-            .nav-modal { transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); transform: scale(0.8); opacity: 0; pointer-events: none; }
-            .nav-modal.active { transform: scale(1); opacity: 1; pointer-events: auto; }
-            .nav-item-modal { transition: all 0.3s ease; opacity: 0; transform: translateY(10px); }
-            .nav-modal.active .nav-item-modal { opacity: 1; transform: translateY(0); }
-            /* 新手教程遮罩 - 确保显示 */
-            .tutorial-mask { 
-                position: fixed; 
-                top: 0; 
-                left: 0; 
-                width: 100%; 
-                height: 100%; 
-                background: rgba(0,0,0,0.85); 
-                z-index: 9999; 
-                display: flex; 
-                align-items: center; 
-                justify-content: center; 
-                transition: opacity 0.5s ease, visibility 0.5s ease;
-                opacity: 1;
-                visibility: visible;
+            .card-elevation {
+                box-shadow: 0 4px 20px rgba(0,0,0,0.08);
             }
-            .tutorial-mask.hidden { 
-                opacity: 0; 
-                visibility: hidden; 
+            .hover-rise {
+                transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
             }
-            .tutorial-card { 
-                background: linear-gradient(135deg, #165DFF, #36CFC9); 
-                border-radius: 20px; 
-                padding: 2rem; 
-                max-width: 90%; 
-                text-align: center; 
-                color: white; 
-                box-shadow: 0 0 30px rgba(22, 93, 255, 0.5);
-                z-index: 10000;
+            .hover-rise:hover {
+                transform: translateY(-6px);
             }
-            /* 公告弹窗 */
-            .announcement-popup { position: fixed; top: 20px; right: 20px; background: linear-gradient(135deg, #165DFF, #FF7D00); border-radius: 12px; padding: 1rem 1.5rem; box-shadow: 0 4px 30px rgba(0,0,0,0.2); z-index: 9998; transform: translateX(120%); transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1); color: white; }
-            .announcement-popup.show { transform: translateX(0); }
-            /* 60个文字行星动画容器 - 响应式适配 */
-            .orbit-container { 
-                position: relative; 
-                width: clamp(200px, 90vw, 900px); /* 增大最小宽度，适配小屏 */
-                height: clamp(200px, 90vw, 900px); 
-                margin: 2rem auto; /* 减小上下间距，适配滚动 */
-                user-select: none;
-                z-index: 10;
-                opacity: 1 !important;
-                visibility: visible !important;
+            .click-scale {
+                transition: transform 0.2s ease;
             }
-            .central-logo { 
-                position: absolute; 
-                top: 50%; 
-                left: 50%; 
-                transform: translate(-50%, -50%); 
-                z-index: 2; 
-                animation: float 4s ease-in-out infinite;
-                width: clamp(60px, 15vw, 120px); /* 响应式LOGO大小 */
-                height: auto;
+            .click-scale:active {
+                transform: scale(0.95);
             }
-            /* 单个文字行星样式 - 响应式+不重叠 */
-            .text-planet {
-                position: absolute;
+            .fixed-top {
+                position: fixed;
                 top: 0;
-                left: 50%;
-                transform-origin: center center;
-                font-size: clamp(6px, 1.2vw, 12px); /* 更小的基础字号，适配小屏 */
-                font-weight: 600;
-                color: #00FFEE !important; 
+                left: 0;
+                right: 0;
+                z-index: 9999;
+            }
+            .barrage-container {
+                overflow: hidden;
+                position: relative;
+                height: 120px; /* 增加弹幕容器高度 */
+                background: linear-gradient(90deg, #0F172A, #1E293B);
+            }
+            .barrage-item {
+                position: absolute;
                 white-space: nowrap;
-                animation: rotatePlanet linear infinite;
-                text-shadow: 0 0 8px rgba(0, 255, 238, 0.8);
-                background: rgba(22, 93, 255, 0.3);
-                padding: 2px 6px; /* 减小内边距 */
-                border-radius: 6px;
-                border: 1px solid rgba(0, 255, 238, 0.5);
-                backdrop-filter: blur(4px);
-                box-shadow: 0 0 10px rgba(0, 255, 238, 0.6);
-                /* 行星形状 - 响应式大小 */
+                will-change: transform;
+                transition: transform linear;
+                border-radius: 9999px;
+                padding: 6px 16px; /* 增加内边距 */
+                font-size: 15px; /* 增大字体 */
+                font-weight: 500;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            }
+            .nav-float-btn {
+                width: 60px;
+                height: 60px;
+                border-radius: 50%;
                 display: flex;
                 align-items: center;
                 justify-content: center;
-                min-width: clamp(25px, 5vw, 40px);
-                min-height: clamp(25px, 5vw, 40px);
-                border-radius: 50%;
-                z-index: 11;
+                cursor: pointer;
+                z-index: 1000;
+                box-shadow: 0 4px 20px rgba(22, 93, 255, 0.3);
+                top: 80px !important; /* 调整悬浮球位置，避免与导航栏重叠 */
             }
-            /* 科技感样式 */
-            .cyber-border {
-                border: 1px solid #00FFEE;
-                box-shadow: 0 0 15px rgba(0, 255, 238, 0.5), inset 0 0 10px rgba(0, 255, 238, 0.3);
-            }
-            .scanline {
-                position: absolute;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 5px;
-                background: #00FFEE;
-                opacity: 0.6;
-                animation: scanline 6s linear infinite;
-                z-index: 10;
-                pointer-events: none;
-            }
-            .matrix-bg {
-                background: linear-gradient(45deg, #0a0a0a, #121212);
-                position: relative;
-                overflow: auto; /* 确保页面可滚动 */
-                min-height: 100vh; /* 最小高度为视口高度，适配滚动 */
-            }
-            .matrix-bg::before {
-                content: '';
-                position: absolute;
+            .nav-modal {
+                position: fixed;
                 top: 0;
                 left: 0;
                 width: 100%;
                 height: 100%;
-                background: repeating-linear-gradient(
-                    transparent,
-                    transparent 2px,
-                    rgba(0, 255, 238, 0.1) 2px,
-                    rgba(0, 255, 238, 0.1) 4px
-                );
-                z-index: -1;
+                background: rgba(0,0,0,0.5);
+                z-index: 99999; /* 提高导航弹窗层级 */
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                opacity: 0;
+                visibility: hidden;
+                transition: all 0.3s ease;
             }
-            /* 案例卡片高级动画 */
-            .case-card { perspective: 1500px; }
-            .case-card-inner { position: relative; width: 100%; height: 100%; transition: transform 0.8s; transform-style: preserve-3d; }
-            .case-card:hover .case-card-inner { transform: rotateY(180deg); }
-            .case-card-front, .case-card-back { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 16px; padding: 1.5rem; }
-            .case-card-back { transform: rotateY(180deg); background: linear-gradient(135deg, #165DFF, #36CFC9); color: white; display: flex; align-items: center; justify-content: center; }
+            .nav-modal.active {
+                opacity: 1;
+                visibility: visible;
+            }
+            .nav-content {
+                background: white;
+                border-radius: 12px;
+                padding: 30px;
+                width: 80%;
+                max-width: 400px;
+                transform: translateY(-20px) scale(0.95);
+                transition: all 0.3s ease;
+            }
+            .nav-modal.active .nav-content {
+                transform: translateY(0) scale(1);
+            }
+            .carousel-item {
+                display: none;
+                width: 100%;
+                height: auto;
+            }
+            .carousel-item.active {
+                display: block;
+                animation: fadeIn 0.8s ease forwards;
+            }
+            .carousel-container {
+                width: 100%;
+                overflow: hidden;
+                position: relative;
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+            /* 修复弹窗置顶问题 - 提高层级到最高 */
+            .announcement-modal {
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: white;
+                border-radius: 8px;
+                box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+                z-index: 99999 !important; /* 最高层级 */
+                max-width: 350px;
+                width: calc(100% - 40px);
+                opacity: 0;
+                transform: translateX(100%);
+                transition: all 0.5s ease;
+            }
+            .announcement-modal.active {
+                opacity: 1;
+                transform: translateX(0);
+                animation: slideIn 0.5s ease forwards;
+            }
+            .barrage-detail-modal {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0,0,0,0.7);
+                z-index: 99999 !important;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                opacity: 0;
+                visibility: hidden;
+                transition: all 0.3s ease;
+            }
+            .barrage-detail-modal.active {
+                opacity: 1;
+                visibility: visible;
+            }
+            .barrage-detail-content {
+                background: white;
+                border-radius: 12px;
+                padding: 20px;
+                max-width: 90%;
+                width: 400px;
+                transform: scale(0.9);
+                transition: transform 0.3s ease;
+            }
+            .barrage-detail-modal.active .barrage-detail-content {
+                transform: scale(1);
+                animation: popIn 0.3s ease forwards;
+            }
+            /* 网站公测模块样式 */
+            .beta-module {
+                padding: 40px 0;
+                background: linear-gradient(180deg, #f8fafc, #e2e8f0);
+                margin: 20px 0;
+            }
+            .beta-button {
+                transition: all 0.3s ease;
+            }
+            .beta-button:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 8px 20px rgba(22, 93, 255, 0.2);
+            }
+            /* 公测弹窗样式 */
+            .beta-modal {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0,0,0,0.7);
+                z-index: 99999 !important;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                opacity: 0;
+                visibility: hidden;
+                transition: all 0.3s ease;
+            }
+            .beta-modal.active {
+                opacity: 1;
+                visibility: visible;
+            }
+            .beta-modal-content {
+                background: white;
+                border-radius: 12px;
+                padding: 30px;
+                max-width: 90%;
+                width: 450px;
+                transform: scale(0.9);
+                transition: transform 0.3s ease;
+            }
+            .beta-modal.active .beta-modal-content {
+                transform: scale(1);
+                animation: popIn 0.3s ease forwards;
+            }
+            
+            /* 新增动画类 */
+            .shimmer-bg {
+                background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+                background-size: 200% 100%;
+                animation: shimmer 1.5s infinite;
+            }
+            .fade-in-up {
+                animation: fadeInUp 0.8s ease forwards;
+            }
+            .slide-in-right {
+                animation: slideInRight 0.5s ease forwards;
+            }
+            .scale-in {
+                animation: scaleIn 0.5s ease forwards;
+            }
         }
     </style>
 
     <style>
-        /* 基础样式重置 */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+        /* 顶部导航栏样式 */
+        .main-nav {
+            height: 60px;
+            background: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 9999;
+            animation: slideDown 0.5s ease forwards;
+        }
+        .logo-text {
+            font-size: 18px;
+            font-weight: bold;
+            color: #165DFF;
+            display: flex;
+            align-items: center;
+        }
+        .logo-text img {
+            height: 40px;
+            margin-right: 10px;
+            animation: rotateIn 0.8s ease forwards;
         }
         
-        /* 确保页面可滚动 */
-        html, body {
-            height: 100%;
-            overflow-y: auto; /* 强制垂直滚动 */
-            overflow-x: hidden;
-        }
-        
-        /* 流动渐变导航栏 - 优化辨识度，降低暗色程度 */
+        /* 流动渐变导航悬浮球 */
         .nav-gradient {
-            background: linear-gradient(90deg, #112240, #165DFF, #36CFC9, #FF7D00);
+            background: linear-gradient(90deg, #165DFF, #4080FF, #7CB3FF, #FF7D00);
             background-size: 400% 400%;
-            animation: gradientFlow 8s ease infinite;
-            backdrop-filter: blur(10px);
-            border-bottom: 1px solid rgba(0, 255, 238, 0.3);
-            opacity: 0.95;
-        }
-        @keyframes gradientFlow { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
-        
-        /* 文字动态效果 - 增强 */
-        .text-float { display: inline-block; transition: transform 0.3s ease, color 0.3s ease; }
-        .text-float:hover { transform: translateY(-3px) scale(1.05); text-shadow: 0 0 10px #00FFEE; }
-        
-        /* 渐入动画 - 增强 */
-        .fade-in { opacity: 0; transform: translateY(20px); animation: fadeInUp 0.8s forwards; }
-        @keyframes fadeInUp { to { opacity: 1; transform: translateY(0); } }
-        
-        /* 视频容器效果 - 增强科技感 + 修复交互 */
-        .video-wrapper { 
-            position: relative; 
-            overflow: hidden; 
-            border-radius: 16px;
-            box-shadow: 0 0 30px rgba(0, 255, 238, 0.3);
-            border: 1px solid rgba(0, 255, 238, 0.5);
-            margin: 2rem auto;
-            max-width: 1200px;
-            z-index: 15; /* 提高层级，确保交互 */
-            pointer-events: auto; /* 确保可点击 */
-        }
-        .video-wrapper::before, .video-wrapper::after {
-            pointer-events: none; /* 遮罩层不阻挡交互 */
+            animation: gradientFlow 10s ease infinite;
         }
         
-        /* 粒子背景 - 增强 */
-        #particles-js { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; opacity: 0.8; }
-        
-        /* 公告动画 - 增强 */
-        .announcement-text { display: inline-block; animation: scrollText 15s linear infinite; }
-        @keyframes scrollText { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
-        
-        /* 关闭按钮动画 - 增强 */
-        .close-btn { transition: all 0.3s ease; }
-        .close-btn:hover { transform: rotate(90deg) scale(1.1); text-shadow: 0 0 10px #00FFEE; }
-        
-        /* 60个文字行星旋转动画 - 响应式速度 */
-        @keyframes rotatePlanet {
-            from { transform: rotate(0deg) translateX(calc(var(--radius) * 1px)) rotate(0deg); }
-            to { transform: rotate(360deg) translateX(calc(var(--radius) * 1px)) rotate(-360deg); }
+        @keyframes gradientFlow {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
         
-        /* 修复导航栏固定 */
-        #navbar {
-            position: sticky !important;
-            top: 0 !important;
-            z-index: 40 !important;
-            width: 100% !important;
-        }
-        
-        /* 内测栏目样式 - 增强科技感+确保显示 */
-        .beta-section {
-            background: linear-gradient(135deg, #112240 0%, #165DFF 50%, #36CFC9 100%);
-            border-radius: 20px;
-            padding: 3rem;
-            margin: 4rem auto;
-            box-shadow: 0 0 40px rgba(0, 255, 238, 0.4);
-            border: 1px solid rgba(0, 255, 238, 0.3);
-            position: relative;
+        /* 导航栏下方广播栏 */
+        .broadcast-bar {
+            background: linear-gradient(90deg, #FF7D00, #FFB042, #FF7D00);
+            background-size: 200% 100%;
+            animation: broadcastFlow 8s linear infinite;
             overflow: hidden;
-            max-width: 1200px;
-            z-index: 10;
-            opacity: 1 !important;
+            height: 40px;
+            line-height: 40px;
+            top: 60px !important; /* 调整广播栏位置 */
+            animation: slideDown 0.7s ease forwards 0.2s;
+            opacity: 0;
+            transform: translateY(-20px);
         }
-        .beta-section::before {
-            content: '';
+        
+        @keyframes broadcastFlow {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 200% 50%; }
+        }
+        
+        .broadcast-text {
+            display: inline-block;
+            white-space: nowrap;
+            animation: scrollBroadcast 20s linear infinite;
+        }
+        
+        @keyframes scrollBroadcast {
+            0% { transform: translateX(100%); }
+            100% { transform: translateX(-100%); }
+        }
+        
+        /* 不同类型公告样式 */
+        .announcement-type-# {
+            color: #165DFF;
+            font-weight: bold;
+        }
+        .announcement-type-% {
+            color: #FF7D00;
+            font-weight: bold;
+        }
+        .announcement-type-* {
+            color: #FF4D4F;
+            font-weight: bold;
+        }
+        
+        /* 微信弹窗样式 */
+        .wx-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 99999 !important;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .wx-modal.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            text-align: center;
+            transform: translateY(-20px);
+            transition: transform 0.3s ease;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            min-width: 280px;
+        }
+        
+        .wx-modal.active .modal-content {
+            transform: translateY(0);
+            animation: popIn 0.3s ease forwards;
+        }
+        
+        /* 简化的粒子背景 - 移除连线效果 */
+        #particles-js {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: radial-gradient(circle at 30% 30%, rgba(54, 207, 201, 0.2) 0%, transparent 50%);
-            z-index: 0;
+            z-index: -1;
+            opacity: 0.6;
         }
-        .beta-btn {
-            background: rgba(255,255,255,0.1);
-            color: white;
-            border-radius: 12px;
-            padding: 1.2rem 2.5rem;
-            transition: all 0.4s ease;
-            font-weight: bold;
-            border: 1px solid rgba(0, 255, 238, 0.4);
-            backdrop-filter: blur(10px);
+        
+        /* 丰富的动画效果 */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(100%);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes rotateIn {
+            from {
+                opacity: 0;
+                transform: rotate(-30deg) scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: rotate(0) scale(1);
+            }
+        }
+        
+        @keyframes popIn {
+            0% {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+            70% {
+                transform: scale(1.05);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+        
+        @keyframes scaleIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+        
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+        
+        /* 高级轮播加载动画 */
+        .carousel-loading {
+            height: 400px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4eaf5 100%);
+            border-radius: 8px;
+        }
+        
+        .loading-spinner {
+            width: 60px;
+            height: 60px;
+            border: 5px solid #e0e7ff;
+            border-top: 5px solid #165DFF;
+            border-radius: 50%;
+            animation: rotate 1s linear infinite;
+            margin-bottom: 20px;
+        }
+        
+        .loading-text {
+            font-size: 16px;
+            color: #165DFF;
+            position: relative;
+            padding-right: 20px;
+        }
+        
+        .loading-text::after {
+            content: '';
+            position: absolute;
+            right: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 15px;
+            height: 15px;
+            background: #FF7D00;
+            border-radius: 50%;
+            animation: pulse 1.5s infinite;
+        }
+        
+        .loading-dots::after {
+            content: '';
+            animation: dots 1.5s infinite;
+        }
+        
+        @keyframes dots {
+            0% { content: ''; }
+            25% { content: '.'; }
+            50% { content: '..'; }
+            75% { content: '...'; }
+            100% { content: ''; }
+        }
+        
+        /* 轮播内容自适应 */
+        .carousel-container img,
+        .carousel-container video,
+        .carousel-container iframe {
+            width: 100vw !important;
+            max-width: 100vw !important;
+            margin-left: calc(-50vw + 50%) !important;
+            margin-right: calc(-50vw + 50%) !important;
+            height: auto !important;
+        }
+        
+        /* 调整body顶部内边距 */
+        body {
+            padding-top: 100px !important;
+        }
+        
+        /* 元素进入视口动画 */
+        .animate-on-scroll {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.8s ease;
+        }
+        
+        .animate-on-scroll.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        /* 按钮悬停动画增强 */
+        .btn-hover-effect {
             position: relative;
             overflow: hidden;
         }
-        .beta-btn::before {
+        
+        .btn-hover-effect::after {
             content: '';
             position: absolute;
             top: 0;
             left: -100%;
             width: 100%;
             height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(0, 255, 238, 0.3), transparent);
-            transition: all 0.6s ease;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.6s ease;
         }
-        .beta-btn:hover {
-            background: rgba(255,255,255,0.2);
-            transform: scale(1.05) translateY(-5px);
-            box-shadow: 0 10px 30px rgba(0, 255, 238, 0.3);
-        }
-        .beta-btn:hover::before {
+        
+        .btn-hover-effect:hover::after {
             left: 100%;
-        }
-        
-        /* 页脚科技感+确保显示 */
-        footer {
-            background: linear-gradient(180deg, #112240, #0a192f);
-            border-top: 1px solid rgba(0, 255, 238, 0.3);
-            padding: 4rem 0;
-            margin-top: 4rem;
-            z-index: 10;
-            position: relative;
-        }
-        
-        /* 自定义滚动条 */
-        ::-webkit-scrollbar {
-            width: 8px;
-            height: 8px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #112240;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #00FFEE;
-            border-radius: 4px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #36CFC9;
-        }
-        
-        /* 入场动画延迟类 */
-        .delay-100 { animation-delay: 0.1s; }
-        .delay-200 { animation-delay: 0.2s; }
-        .delay-300 { animation-delay: 0.3s; }
-        .delay-400 { animation-delay: 0.4s; }
-        .delay-500 { animation-delay: 0.5s; }
-        .delay-600 { animation-delay: 0.6s; }
-        .delay-700 { animation-delay: 0.7s; }
-        .delay-800 { animation-delay: 0.8s; }
-        .delay-900 { animation-delay: 0.9s; }
-        .delay-1000 { animation-delay: 1s; }
-        
-        /* 案例区域确保显示 */
-        .case-section {
-            max-width: 1200px;
-            margin: 4rem auto;
-            z-index: 10;
-            position: relative;
-            opacity: 1 !important;
         }
     </style>
 </head>
-
-<body class="font-inter bg-dark text-light overflow-x-hidden matrix-bg">
-    <!-- 扫描线效果 -->
-    <div class="scanline"></div>
-    
+<body class="font-inter bg-light text-dark m-0 p-0 overflow-x-hidden">
     <!-- 粒子背景 -->
     <div id="particles-js"></div>
 
-    <!-- 新手教程遮罩（默认显示，确保能弹出） -->
-    <div id="tutorial-mask" class="tutorial-mask">
-        <div class="tutorial-card">
-            <h3 class="font-bold text-2xl mb-4 animate__animated animate__pulse">🎮 操作提示</h3>
-            <p class="mb-6 text-lg animate__animated animate__fadeIn delay-200">点击右侧悬浮球按钮可以唤出导航菜单</p>
-            <div class="w-16 h-16 mx-auto mb-4 rounded-full bg-white/20 flex items-center justify-center animate__animated animate__bounce delay-300">
-                <i class="fa fa-bars text-white text-2xl"></i>
-            </div>
-            <p class="text-sm text-white/80 animate__animated animate__fadeIn delay-400">此提示将在3秒后自动关闭</p>
+    <!-- 顶部导航栏 -->
+    <div class="main-nav">
+        <div class="logo-text">
+            <img src="https://img520.com/UIGuUV.jpeg" alt="Logo" onerror="this.onerror=null;this.src='https://picsum.photos/40/40'">
+            <span>Flyz远征飞</span>
         </div>
     </div>
 
-    <!-- 右上角公告弹窗 -->
-    <div id="announcement-popup" class="announcement-popup animate__animated animate__backInRight">
-        <p class="font-bold"><i class="fa fa-trophy mr-2"></i>恭喜PokRC成为sub250g世界记录保持者</p>
+    <!-- 微信弹窗 -->
+    <div id="wx-modal" class="wx-modal">
+        <div class="modal-content">
+            <i class="fa fa-weixin text-green-500 text-5xl mb-4 animate-bounce"></i>
+            <h3 class="text-xl font-bold mb-2 fade-in-up">微信号</h3>
+            <p class="text-2xl font-mono bg-gray-100 py-2 px-4 rounded mb-4 scale-in">YGWFK2024</p>
+            <button class="modal-close click-scale bg-primary text-white py-2 px-6 rounded-md btn-hover-effect">关闭</button>
+        </div>
     </div>
 
-    <!-- 1. 导航栏：完全固定顶部 -->
-    <header id="navbar" class="sticky top-0 z-40 transition-all duration-500 animate__animated animate__slideInDown">
-        <nav class="nav-gradient py-4 px-4 md:px-6 shadow-lg">
-            <div class="container mx-auto flex justify-between items-center">
-                <a href="https://yzbjfpv.top/20250709.html" class="flex items-center space-x-3 group">
-                    <img src="https://img520.com/UIGuUV.jpeg" alt="Flyz远征飞Logo" 
-                         class="h-10 w-auto rounded-md transition-all duration-500 group-hover:scale-110 rotate-6 animate__animated animate__spin delay-500"
-                         onerror="this.onerror=null;this.src='https://picsum.photos/40/40'">
-                    <span class="text-white font-bold text-xl md:text-2xl transition-all duration-300 group-hover:tracking-wider animate__animated animate__fadeIn delay-300">Flyz远征飞</span>
+    <!-- 导航悬浮球 -->
+    <div class="fixed-top flex justify-end pr-4 md:pr-8 py-2">
+        <div id="nav-float-btn" class="nav-float-btn nav-gradient text-white click-scale animate-pulse" style="animation-delay: 0.5s;">
+            <i class="fa fa-bars text-2xl"></i>
+        </div>
+    </div>
+
+    <!-- 导航弹窗 -->
+    <div id="nav-modal" class="nav-modal">
+        <div class="nav-content">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-xl font-bold text-primary">导航菜单</h3>
+                <button id="close-nav-modal" class="text-gray-500 hover:text-gray-700 click-scale">
+                    <i class="fa fa-times text-xl"></i>
+                </button>
+            </div>
+            <div class="flex flex-col space-y-4">
+                <a href="https://yzbjfpv.top/20250709.html" class="text-dark hover:text-primary transition-colors duration-300 py-2 border-b border-gray-100 flex items-center click-scale animate-on-scroll">
+                    <i class="fa fa-home mr-3 w-5 text-center"></i>首页
+                </a>
+                <a href="http://yzflight.xyz" class="text-dark hover:text-primary transition-colors duration-300 py-2 border-b border-gray-100 flex items-center click-scale animate-on-scroll" style="transition-delay: 0.1s;">
+                    <i class="fa fa-download mr-3 w-5 text-center"></i>下载中心
+                </a>
+                <a href="https://shop500685313.taobao.com/" class="text-dark hover:text-primary transition-colors duration-300 py-2 border-b border-gray-100 flex items-center click-scale animate-on-scroll" style="transition-delay: 0.2s;">
+                    <i class="fa fa-shopping-bag mr-3 w-5 text-center"></i>严选商城
+                </a>
+                <a href="https://yzbjfpv.top/flyz/202510/维修专区.html" class="text-dark hover:text-primary transition-colors duration-300 py-2 border-b border-gray-100 flex items-center click-scale animate-on-scroll" style="transition-delay: 0.3s;">
+                    <i class="fa fa-wrench mr-3 w-5 text-center"></i>维修专区
+                </a>
+                <a id="wx-link" class="text-dark hover:text-primary transition-colors duration-300 py-2 flex items-center click-scale animate-on-scroll" style="transition-delay: 0.4s;">
+                    <i class="fa fa-user-plus mr-3 w-5 text-center"></i>加我WX
                 </a>
             </div>
-        </nav>
+        </div>
+    </div>
+
+    <!-- 导航栏下方广播栏 -->
+    <div class="broadcast-bar fixed-top left-0 right-0 z-9998">
+        <div class="container mx-auto px-4">
+            <div class="broadcast-text" id="broadcast-content">
+                <span class="text-white font-medium flex items-center">
+                    <i class="fa fa-bullhorn mr-3 text-yellow-200 animate-pulse"></i>
+                    加载中<span class="loading-dots"></span>
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <!-- 右上角弹窗公告 - 修复置顶问题 -->
+    <div id="announcement-modal" class="announcement-modal">
+        <div class="p-4">
+            <div class="flex justify-between items-center mb-3">
+                <h4 class="font-bold text-lg text-primary">重要公告</h4>
+                <button id="close-announcement" class="text-gray-400 hover:text-gray-600 click-scale">
+                    <i class="fa fa-times"></i>
+                </button>
+            </div>
+            <div id="announcement-content" class="text-gray-700 text-sm leading-relaxed mb-4">
+                加载中...
+            </div>
+            <button id="close-announcement-btn" class="w-full bg-primary text-white py-2 rounded-md click-scale btn-hover-effect">
+                我知道了
+            </button>
+        </div>
+    </div>
+
+    <!-- 轮播模块 - 优化加载动画 -->
+    <div class="px-0 md:px-0 animate-on-scroll">
+        <div class="carousel-container hover-rise click-scale" id="carousel-container">
+            <!-- 高级加载动画 -->
+            <div class="carousel-loading">
+                <div class="loading-spinner"></div>
+                <p class="loading-text">加载轮播内容中<span class="loading-dots"></span></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 文字弹幕广告模块 -->
+    <div class="barrage-container my-8 mx-0 md:mx-0 rounded-xl overflow-hidden animate-on-scroll">
+        <div id="barrage-container" class="w-full h-full relative">
+            <!-- 弹幕内容将通过JS动态生成 -->
+        </div>
+    </div>
+
+    <!-- 网站公测模块 -->
+    <div class="beta-module animate-on-scroll">
+        <div class="container mx-auto px-4 md:px-6">
+            <h3 class="text-center mb-10 text-2xl md:text-3xl font-bold text-primary">
+                <span class="inline-block transition-all duration-500 hover:text-secondary animate-pulse">网站公测</span>
+            </h3>
+            <div id="beta-buttons-container" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                <!-- 公测按钮加载动画 -->
+                <div class="text-center py-10 text-gray-500 col-span-full">
+                    <div class="loading-spinner" style="width: 40px; height: 40px; margin: 0 auto 15px;"></div>
+                    <p class="loading-text">加载公测内容中<span class="loading-dots"></span></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 网站公测弹窗 -->
+    <div id="beta-modal" class="beta-modal">
+        <div class="beta-modal-content">
+            <button id="close-beta-modal" class="float-right text-gray-400 hover:text-gray-600 click-scale">
+                <i class="fa fa-times"></i>
+            </button>
+            <h3 id="beta-title" class="text-xl font-bold text-primary mb-4 text-center"></h3>
+            <div id="beta-description" class="mb-4 text-gray-700"></div>
+            <div id="beta-version" class="mb-6 text-gray-500 text-sm">版本号：</div>
+            <a id="beta-link" href="#" target="_blank" class="block w-full bg-primary text-white text-center py-2 rounded-md click-scale hover:bg-primary/90 transition-colors btn-hover-effect">
+                立即访问 <i class="fa fa-external-link ml-1"></i>
+            </a>
+        </div>
+    </div>
+
+    <!-- 弹幕详情弹窗 -->
+    <div id="barrage-detail-modal" class="barrage-detail-modal">
+        <div class="barrage-detail-content">
+            <button id="close-barrage-detail" class="float-right text-gray-400 hover:text-gray-600 click-scale">
+                <i class="fa fa-times"></i>
+            </button>
+            <h3 id="barrage-title" class="text-xl font-bold text-primary mb-4 text-center"></h3>
+            <div id="barrage-info" class="mb-6">
+                <p class="mb-2"><span class="font-medium">备注：</span><span id="barrage-remark"></span></p>
+                <p class="mb-2"><span class="font-medium">联系方式：</span><span id="barrage-contact"></span></p>
+            </div>
+            <a id="barrage-link" href="#" target="_blank" class="block w-full bg-primary text-white text-center py-2 rounded-md click-scale hover:bg-primary/90 transition-colors btn-hover-effect">
+                了解更多... <i class="fa fa-external-link ml-1"></i>
+            </a>
+        </div>
+    </div>
+
+    <!-- 网站案例（折叠面板版） -->
+    <div class="container mx-auto px-4 md:px-6 my-20 animate-on-scroll">
+        <h3 class="text-center mb-10 text-2xl md:text-3xl font-bold text-primary opacity-0 transform translate-y-8 transition-all duration-800" id="case-title">
+            <span class="text-float inline-block transition-all duration-500 hover:text-secondary animate-pulse">网站定制案例</span>
+        </h3>
         
-        <!-- 横向轮播公告 -->
-        <div class="bg-dark/80 py-3 shadow-sm border-b border-primary/20 animate__animated animate__fadeIn delay-500">
-            <div class="container mx-auto overflow-hidden">
-                <div class="announcement-text whitespace-nowrap text-center font-medium text-primary">
-                    <a href="https://yzbjfpv.top/flyz/new/tx" class="inline-flex items-center hover:text-accent transition-colors duration-300">
-                        <i class="fa fa-bullhorn mr-2 text-secondary"></i>
-                        新联名专利定向平板天线即将发布，敬请期待！
-                        <i class="fa fa-arrow-right ml-2 text-secondary"></i>
+        <!-- 折叠面板容器 -->
+        <div class="max-w-2xl mx-auto bg-white rounded-xl p-6 md:p-8 card-elevation opacity-0 transform translate-y-8 transition-all duration-700" id="case-container">
+            <div class="collapse-btn w-full justify-center text-lg flex items-center btn-hover-effect" data-target="cases-panel">
+                <span>点击查看我们的定制案例</span>
+                <i class="fa fa-chevron-down ml-2 transition-transform duration-300"></i>
+            </div>
+            
+            <div id="cases-panel" class="collapse-panel mt-6 hidden">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 animate-fadeIn">
+                    <!-- 案例1按钮 -->
+                    <a href="https://www.wanshizan.com.cn/dudurc" target="_blank" class="group relative overflow-hidden bg-primary/5 hover:bg-primary/10 transition-all duration-300 rounded-lg p-6 flex flex-col items-center text-center click-scale animate-on-scroll">
+                        <div class="w-16 h-16 bg-primary text-white rounded-full flex items-center justify-center mb-4 transform transition-transform duration-500 group-hover:rotate-12 group-hover:scale-110">
+                            <i class="fa fa-battery-full text-2xl"></i>
+                        </div>
+                        <h4 class="text-dark font-bold text-lg mb-2">嘟嘟电池官网</h4>
+                        <p class="text-gray-500 text-sm mb-3">专业电池品牌展示平台</p>
+                        <span class="inline-flex items-center text-primary group-hover:text-secondary transition-colors duration-300">
+                            访问官网 <i class="fa fa-arrow-right ml-2 transform transition-transform duration-300 group-hover:translate-x-1"></i>
+                        </span>
+                    </a>
+                    
+                    <!-- 案例2按钮 -->
+                    <a href="https://www.wanshizan.com.cn" target="_blank" class="group relative overflow-hidden bg-secondary/5 hover:bg-secondary/10 transition-all duration-300 rounded-lg p-6 flex flex-col items-center text-center click-scale animate-on-scroll" style="transition-delay: 0.2s;">
+                        <div class="w-16 h-16 bg-secondary text-white rounded-full flex items-center justify-center mb-4 transform transition-transform duration-500 group-hover:rotate-12 group-hover:scale-110">
+                            <i class="fa fa-cogs text-2xl"></i>
+                        </div>
+                        <h4 class="text-dark font-bold text-lg mb-2">康易安科技官网</h4>
+                        <p class="text-gray-500 text-sm mb-3">科技企业综合展示平台</p>
+                        <span class="inline-flex items-center text-primary group-hover:text-secondary transition-colors duration-300">
+                            访问官网 <i class="fa fa-arrow-right ml-2 transform transition-transform duration-300 group-hover:translate-x-1"></i>
+                        </span>
                     </a>
                 </div>
             </div>
         </div>
-    </header>
-
-    <!-- B站视频模块（导航栏下方）- 修复交互+响应式 -->
-    <div class="pt-6 px-4 md:px-6 animate__animated animate__fadeInUp delay-300">
-        <div class="container mx-auto">
-            <div class="video-wrapper hover-rise cyber-border">
-                <iframe 
-                    src="https://player.bilibili.com/player.html?bvid=BV1MWjgzvEED&autoplay=0&dm=0&volume=0.75&controls=1" 
-                    style="width: 100%; aspect-ratio: 16/9; border: none;" 
-                    allowfullscreen allow="autoplay; fullscreen; encrypted-media; picture-in-picture"
-                    sandbox="allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox allow-pointer-lock"
-                    class="animate__animated animate__zoomIn delay-500"
-                    id="bilibili-player"
-                    title="B站视频播放器"
-                ></iframe>
-            </div>
-        </div>
     </div>
 
-    <!-- 2. 右侧吸附精灵球按钮 - 优化辨识度 -->
-    <button id="pokeball-trigger" class="pokeball-btn fixed right-4 top-1/3 z-50 w-14 h-14 md:w-16 md:h-16 rounded-full flex items-center justify-center shadow-lg border-2 animate__animated animate__bounceInRight delay-700" data-tilt>
-        <div class="w-10 h-10 md:w-12 md:h-12 bg-primary/80 rounded-full flex items-center justify-center animate-pulse-fast">
-            <i class="fa fa-bars text-white text-xl md:text-2xl"></i>
-        </div>
-    </button>
-
-    <!-- 3. 居中弹出导航菜单（默认隐藏）- 增强科技感 -->
-    <div id="nav-modal" class="nav-modal fixed inset-0 z-50 flex items-center justify-center bg-dark/90 backdrop-blur-md p-4">
-        <div class="bg-dark/80 rounded-2xl w-full max-w-md p-8 shadow-2xl relative cyber-border animate__animated animate__zoomIn">
-            <button id="close-nav" class="close-btn absolute top-6 right-6 text-gray-300 hover:text-white transition-colors animate__animated animate__rotateIn">
-                <i class="fa fa-times text-2xl"></i>
-            </button>
-            <h3 class="text-center text-primary font-bold text-2xl md:text-3xl mb-8 animate__animated animate__fadeIn">
-                <i class="fa fa-compass mr-2"></i>导航菜单
-            </h3>
-            <div class="flex flex-col space-y-6">
-                <a href="https://yzbjfpv.top/20250709.html" class="nav-item-modal flex items-center p-4 rounded-lg bg-primary/10 hover:bg-primary/20 transition-colors animate__animated animate__fadeInUp delay-100">
-                    <div class="w-12 h-12 bg-primary/20 rounded-full flex items-center justify-center mr-4"><i class="fa fa-home text-primary text-xl"></i></div>
-                    <span class="text-white hover:text-primary transition-colors text-lg">首页</span>
-                </a>
-                <a href="http://yzflight.xyz" class="nav-item-modal flex items-center p-4 rounded-lg bg-primary/10 hover:bg-primary/20 transition-colors animate__animated animate__fadeInUp delay-200">
-                    <div class="w-12 h-12 bg-primary/20 rounded-full flex items-center justify-center mr-4"><i class="fa fa-download text-primary text-xl"></i></div>
-                    <span class="text-white hover:text-primary transition-colors text-lg">下载中心</span>
-                </a>
-                <a href="https://shop500685313.taobao.com/" class="nav-item-modal flex items-center p-4 rounded-lg bg-primary/10 hover:bg-primary/20 transition-colors animate__animated animate__fadeInUp delay-300">
-                    <div class="w-12 h-12 bg-primary/20 rounded-full flex items-center justify-center mr-4"><i class="fa fa-shopping-bag text-primary text-xl"></i></div>
-                    <span class="text-white hover:text-primary transition-colors text-lg">严选商城</span>
-                </a>
-                <a href="https://yzbjfpv.top/fix.html" class="nav-item-modal flex items-center p-4 rounded-lg bg-primary/10 hover:bg-primary/20 transition-colors animate__animated animate__fadeInUp delay-400">
-                    <div class="w-12 h-12 bg-primary/20 rounded-full flex items-center justify-center mr-4"><i class="fa fa-wrench text-primary text-xl"></i></div>
-                    <span class="text-white hover:text-primary transition-colors text-lg">维修专区</span>
-                </a>
-                <a href="https://yzbjfpv.top/wxtalk.html" class="nav-item-modal flex items-center p-4 rounded-lg bg-primary/10 hover:bg-primary/20 transition-colors animate__animated animate__fadeInUp delay-500">
-                    <div class="w-12 h-12 bg-primary/20 rounded-full flex items-center justify-center mr-4"><i class="fa fa-user-plus text-primary text-xl"></i></div>
-                    <span class="text-white hover:text-primary transition-colors text-lg">加我WX</span>
-                </a>
-            </div>
-        </div>
-    </div>
-
-    <!-- 60个文字小行星环绕LOGO动画区域 - 响应式分散排列 -->
-    <div class="py-10 px-4 animate__animated animate__fadeInUp delay-500" data-aos="fade-up" style="opacity: 1 !important;">
-        <div class="orbit-container" id="orbit-container" data-aos="zoom-in">
-            <div class="central-logo">
-                <img src="https://img520.com/UIGuUV.jpeg" alt="Flyz远征飞Logo" class="w-full h-auto rounded-lg cyber-border p-2 animate__animated animate__pulse" onerror="this.onerror=null;this.src='https://picsum.photos/96/96'">
-            </div>
-            <!-- 60个文字行星将通过JS动态生成 -->
-        </div>
-        <!-- 文字自定义区域（可修改这里的文字列表） -->
-        <div style="display: none;">
-            <textarea id="planet-text-list" class="hidden">
-FPV,远航,穿越机,PokRC,Flyz,远征飞,嘟嘟电池,康易安,
-21700,长续航,花飞,航拍,图传,天线,定制,智能保护,
-高容量,低内阻,快充,安全,稳定,耐用,轻量,高效,
-专业,模友,科技,创新,品质,服务,速度,精准,
-操控,体验,极限,挑战,记录,突破,合作,联名,
-专利,研发,生产,销售,售后,维修,竞速,航拍,
-户外,冒险,探索,自由,飞行,科技,未来,智能,
-精准,稳定,高效,可靠,创新,领先,专业,极致
-            </textarea>
-        </div>
-    </div>
-
-    <!-- 新增内测栏目 - 增强科技感+确保显示 -->
-    <div class="container mx-auto px-4 md:px-6 my-16 animate__animated animate__fadeInUp delay-700" data-aos="fade-up" style="opacity: 1 !important;">
-        <div class="beta-section relative z-10" data-aos="zoom-in">
-            <h3 class="text-center mb-10 text-3xl font-bold text-white text-float animate__animated animate__fadeIn">🚀 内测专区</h3>
-            <div class="flex flex-col md:flex-row gap-8 justify-center items-center relative z-10">
-                <a href="#" class="beta-btn text-center animate__animated animate__bounceIn delay-100" data-tilt>
-                    电影|Flyz远征飞-1080p疯狂动物城2完整版
-                </a>
-                <a href="#" class="beta-btn text-center animate__animated animate__bounceIn delay-200" data-tilt>
-                    更多内测内容 敬请期待
-                </a>
-            </div>
-        </div>
-    </div>
-
-    <!-- 网站案例（升级3D旋转动画+增强科技感+确保显示） -->
-    <div class="container mx-auto px-4 md:px-6 my-16 animate__animated animate__fadeInUp delay-800 case-section" data-aos="fade-up">
-        <h3 class="text-center mb-12 text-3xl font-bold text-primary text-float animate__animated animate__fadeIn" data-aos="zoom-in">
-            <span class="cyber-border px-4 py-2 rounded-lg">网站定制案例</span>
-        </h3>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <!-- 案例1：3D旋转卡片 -->
-            <div class="case-card h-56 bg-dark/50 rounded-xl cyber-border hover-rise animate__animated animate__fadeInLeft delay-100" data-aos="flip-left">
-                <div class="case-card-inner">
-                    <div class="case-card-front bg-dark/80 cyber-border">
-                        <h4 class="text-white font-bold text-xl mb-4 text-float animate__animated animate__fadeIn">嘟嘟电池官网</h4>
-                        <a href="https://www.wanshizan.com.cn/dudurc" target="_blank" class="relative text-primary hover:text-accent transition-colors duration-300 text-float text-lg animate__animated animate__fadeIn delay-200">
-                            <i class="fa fa-link mr-2"></i> www.wanshizan.com.cn/dudurc
-                        </a>
-                        <div class="mt-6 flex justify-center">
-                            <i class="fa fa-desktop text-primary/50 text-4xl animate__animated animate__pulse"></i>
-                        </div>
-                    </div>
-                    <div class="case-card-back cyber-border">
-                        <div class="text-center animate__animated animate__zoomIn">
-                            <i class="fa fa-external-link text-3xl mb-4 animate__animated animate__bounce"></i>
-                            <p class="text-xl">点击访问官网</p>
-                        </div>
-                    </div>
-                </div>
+    <!-- 页脚 -->
+    <footer class="bg-gray-50 border-t border-gray-100 py-10 mt-20 animate-on-scroll">
+        <div class="container mx-auto px-4 text-center">
+            <div class="mb-6 opacity-0 transition-opacity duration-1000" id="footer-logo">
+                <img src="https://img520.com/UIGuUV.jpeg" alt="Flyz远征飞Logo" 
+                     class="h-12 w-auto object-contain rounded-md mx-auto transform transition-transform duration-500 hover:scale-110 hover:rotate-6"
+                     onerror="this.onerror=null;this.src='https://picsum.photos/48/48'">
             </div>
             
-            <!-- 案例2：3D旋转卡片 -->
-            <div class="case-card h-56 bg-dark/50 rounded-xl cyber-border hover-rise animate__animated animate__fadeInRight delay-200" data-aos="flip-right">
-                <div class="case-card-inner">
-                    <div class="case-card-front bg-dark/80 cyber-border">
-                        <h4 class="text-white font-bold text-xl mb-4 text-float animate__animated animate__fadeIn">康易安科技官网</h4>
-                        <a href="https://www.wanshizan.com.cn" target="_blank" class="relative text-primary hover:text-accent transition-colors duration-300 text-float text-lg animate__animated animate__fadeIn delay-200">
-                            <i class="fa fa-link mr-2"></i> www.wanshizan.com.cn
-                        </a>
-                        <div class="mt-6 flex justify-center">
-                            <i class="fa fa-code text-primary/50 text-4xl animate__animated animate__pulse"></i>
-                        </div>
-                    </div>
-                    <div class="case-card-back cyber-border">
-                        <div class="text-center animate__animated animate__zoomIn">
-                            <i class="fa fa-external-link text-3xl mb-4 animate__animated animate__bounce"></i>
-                            <p class="text-xl">点击访问官网</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- 页脚 - 增强科技感+确保显示 -->
-    <footer class="py-12 mt-20 border-t border-primary/20 animate__animated animate__fadeInUp delay-900" data-aos="fade-up">
-        <div class="container mx-auto px-4 text-center">
-            <p class="text-white mb-6 text-lg text-float animate__animated animate__fadeIn">© 2025 Flyz远征飞官方网站 首页V3.0.7版</p>
-            <p class="text-gray-400 mb-8 text-float animate__animated animate__fadeIn delay-200">我们的口号是：为方便模友而生</p>
-            <div class="flex flex-wrap justify-center gap-x-8 gap-y-4 text-sm">
-                <a href="https://b23.tv/JXuI9QA" class="text-primary hover:text-accent transition-colors duration-300 text-float animate__animated animate__fadeIn delay-300">哔哩哔哩｜Flyz远征飞官方账号</a>
-                <span class="text-gray-600 animate__animated animate__fadeIn delay-400">|</span>
-                <a href="https://www.wanshizan.com.cn/dudurc" class="text-primary hover:text-accent transition-colors duration-300 text-float animate__animated animate__fadeIn delay-500">嘟嘟电池官网</a>
-                <span class="text-gray-600 animate__animated animate__fadeIn delay-600">|</span>
-                <a href="https://www.wanshizan.com.cn" class="text-primary hover:text-accent transition-colors duration-300 text-float animate__animated animate__fadeIn delay-700">康易安科技官网</a>
+            <p class="text-gray-700 mb-3 text-float opacity-0 transition-opacity duration-800" style="transition-delay: 0.2s" id="footer-copyright">
+                © 2025 Flyz远征飞官方网站 首页202512版
+            </p>
+            
+            <p class="text-gray-500 mb-8 text-float opacity-0 transition-opacity duration-800" style="transition-delay: 0.4s" id="footer-slogan">
+                我们的口号是：为方便模友而生
+            </p>
+            
+            <div class="flex flex-wrap justify-center gap-x-6 gap-y-4 text-sm opacity-0 transition-opacity duration-800" style="transition-delay: 0.6s" id="footer-links">
+                <a href="https://b23.tv/JXuI9QA" class="text-primary hover:text-secondary transition-colors duration-300 text-float flex items-center group animate-on-scroll">
+                    <i class="fa fa-play-circle mr-2 transition-transform duration-300 group-hover:scale-125"></i>
+                    哔哩哔哩｜Flyz远征飞官方账号
+                </a>
+                <a href="https://space.bilibili.com/3546970576652564" class="text-primary hover:text-secondary transition-colors duration-300 text-float flex items-center group animate-on-scroll" style="transition-delay: 0.2s;">
+                    <i class="fa fa-play-circle mr-2 transition-transform duration-300 group-hover:scale-125"></i>
+                    哔哩哔哩｜FlyzAI官方账号
+                </a>
             </div>
         </div>
     </footer>
 
+    <!-- 粒子脚本 -->
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
     <script>
-        // 初始化所有动画库
-        gsap.registerPlugin(ScrollTrigger);
-        new WOW().init();
-        AOS.init({
-            duration: 1000,
-            easing: 'ease-in-out',
-            once: true
-        });
-        ScrollReveal({
-            distance: '50px',
-            duration: 1000,
-            easing: 'cubic-bezier(0.5, 0, 0, 1)',
-            origin: 'bottom',
-            interval: 200,
-            reset: false
-        });
-        
-        // 粒子效果配置 - 增强科技感
+        // 简化的粒子效果配置 - 移除连线
         particlesJS('particles-js', {
             "particles": {
-                "number": { "value": 120, "density": { "enable": true, "value_area": 800 } },
-                "color": { "value": "#00FFEE" },
-                "shape": { "type": "circle" },
-                "opacity": { "value": 0.5, "random": true },
-                "size": { "value": 2, "random": true },
-                "line_linked": {
-                    "enable": true,
-                    "distance": 150,
-                    "color": "#36CFC9",
-                    "opacity": 0.2,
-                    "width": 1
+                "number": { "value": 60, "density": { "enable": true, "value_area": 800 } },
+                "color": { "value": ["#165DFF", "#FF7D00", "#36CFC9"] },
+                "shape": { "type": ["circle", "triangle"], "stroke": { "width": 0, "color": "#fff" } },
+                "opacity": { 
+                    "value": 0.3, 
+                    "random": true,
+                    "anim": { "enable": true, "speed": 1, "opacity_min": 0.1, "sync": false }
                 },
+                "size": { 
+                    "value": 3, 
+                    "random": true,
+                    "anim": { "enable": true, "speed": 2, "size_min": 0.5, "sync": false }
+                },
+                // 移除连线效果
+                "line_linked": { "enable": false },
                 "move": {
                     "enable": true,
-                    "speed": 1.5,
+                    "speed": 1,
                     "direction": "none",
                     "random": true,
                     "straight": false,
                     "out_mode": "out",
-                    "bounce": false
+                    "bounce": false,
+                    "attract": { "enable": false }
                 }
             },
             "interactivity": {
                 "detect_on": "canvas",
                 "events": {
-                    "onhover": { "enable": true, "mode": "grab" },
+                    "onhover": { "enable": false },
                     "onclick": { "enable": true, "mode": "push" },
                     "resize": true
                 },
                 "modes": {
-                    "grab": { "distance": 140, "line_linked": { "opacity": 0.5 } },
-                    "push": { "particles_nb": 5 }
+                    "push": { "particles_nb": 3 }
                 }
-            }
+            },
+            "retina_detect": true
         });
 
-        // 1. 导航栏滚动效果（确保完全固定）
-        window.addEventListener('scroll', function() {
-            const navbar = document.getElementById('navbar');
-            if (window.scrollY > 30) {
-                navbar.classList.add('py-2', 'shadow-xl');
-                navbar.classList.remove('py-4');
+        // 工具函数：获取远程文本内容
+        async function fetchText(url) {
+            try {
+                const response = await fetch(url);
+                if (!response.ok) throw new Error('Network response was not ok');
+                return await response.text();
+            } catch (error) {
+                console.error('获取数据失败:', error);
+                return '';
+            }
+        }
+
+        // 1. 加载滚动公告
+        async function loadBroadcast() {
+            const url = 'https://yzbjfpv.top/flyz/202512/数据库/首页导航栏滚动公告.txt';
+            const content = await fetchText(url);
+            const broadcastContent = document.getElementById('broadcast-content');
+            
+            if (content) {
+                const lines = content.split('\n').filter(line => line.trim());
+                let broadcastHtml = '';
+                
+                lines.forEach(line => {
+                    if (line) {
+                        const typeChar = line.charAt(0);
+                        let typeText = '';
+                        let typeClass = '';
+                        
+                        switch(typeChar) {
+                            case '#':
+                                typeText = '【公告】';
+                                typeClass = 'announcement-type-#';
+                                break;
+                            case '%':
+                                typeText = '【广告】';
+                                typeClass = 'announcement-type-%';
+                                break;
+                            case '*':
+                                typeText = '【通知】';
+                                typeClass = 'announcement-type-*';
+                                break;
+                            default:
+                                typeText = '';
+                        }
+                        
+                        const text = typeChar === '#' || typeChar === '%' || typeChar === '*' 
+                            ? line.substring(1).trim() 
+                            : line.trim();
+                        
+                        broadcastHtml += `${typeText}<span class="${typeClass}">${text}</span> `;
+                    }
+                });
+                
+                broadcastContent.innerHTML = `<span class="text-white font-medium flex items-center"><i class="fa fa-bullhorn mr-3 text-yellow-200 animate-pulse"></i>${broadcastHtml || '暂无公告'}</span>`;
             } else {
-                navbar.classList.add('py-4');
-                navbar.classList.remove('py-2', 'shadow-xl');
+                broadcastContent.innerHTML = '<span class="text-white font-medium flex items-center"><i class="fa fa-bullhorn mr-3 text-yellow-200 animate-pulse"></i>暂无公告</span>';
             }
-        });
+        }
 
-        // 2. 精灵球导航弹窗控制
-        const pokeballTrigger = document.getElementById('pokeball-trigger');
-        const closeNav = document.getElementById('close-nav');
-        const navModal = document.getElementById('nav-modal');
+        // 2. 加载弹窗公告
+        async function loadAnnouncement() {
+            const url = 'https://yzbjfpv.top/flyz/202512/数据库/首页弹窗公告.txt';
+            const content = await fetchText(url);
+            const announcementModal = document.getElementById('announcement-modal');
+            const announcementContent = document.getElementById('announcement-content');
+            
+            if (content) {
+                announcementContent.textContent = content;
+                // 显示弹窗（延迟1秒）
+                setTimeout(() => {
+                    announcementModal.classList.add('active');
+                }, 1000);
+            }
+        }
 
-        // 初始化3D倾斜效果
-        VanillaTilt.init(document.querySelectorAll("[data-tilt]"), {
-            max: 20,
-            speed: 400,
-            glare: true,
-            "max-glare": 0.5
-        });
+        // 3. 加载轮播内容（忽略第一行格式说明）
+        async function loadCarousel() {
+            const url = 'https://yzbjfpv.top/flyz/202512/数据库/首页大屏轮播内容.txt';
+            const content = await fetchText(url);
+            const carouselContainer = document.getElementById('carousel-container');
+            
+            if (!content) {
+                carouselContainer.innerHTML = `
+                    <div class="carousel-loading">
+                        <div class="loading-spinner"></div>
+                        <p class="loading-text">暂无轮播内容</p>
+                    </div>
+                `;
+                return;
+            }
 
-        pokeballTrigger.addEventListener('click', function() {
-            navModal.classList.add('active');
+            // 清空加载提示
+            carouselContainer.innerHTML = '';
+            
+            // 解析轮播内容，忽略第一行
+            let items = content.split('\n').filter(line => line.trim());
+            // 移除第一行（格式说明）
+            if (items.length > 0) {
+                items = items.slice(1);
+            }
+            
+            const carouselItems = [];
+            
+            items.forEach((item, index) => {
+                let [src, durationStr] = item.split('-');
+                src = src.trim();
+                let duration = 0.8; // 默认0.8秒
+                
+                // 解析时长
+                if (durationStr) {
+                    const num = parseFloat(durationStr.trim());
+                    if (!isNaN(num)) duration = num;
+                }
+                
+                // 创建轮播项
+                const carouselItem = document.createElement('div');
+                carouselItem.className = `carousel-item ${index === 0 ? 'active' : ''}`;
+                carouselItem.dataset.duration = duration * 1000; // 转毫秒
+                
+                // 判断是图片还是视频
+                if (src.includes('.mp4') || src.includes('.webm') || src.includes('.mov') || src.includes('bilibili.com')) {
+                    // 视频
+                    if (src.includes('bilibili.com')) {
+                        carouselItem.innerHTML = `<iframe src="${src}" style="width: 100%; aspect-ratio: 16/9; border: none;" allowfullscreen allow="autoplay; fullscreen; encrypted-media"></iframe>`;
+                    } else {
+                        carouselItem.innerHTML = `<video src="${src}" style="width: 100%; aspect-ratio: 16/9;" autoplay muted loop></video>`;
+                    }
+                } else {
+                    // 图片
+                    carouselItem.innerHTML = `<img src="${src}" alt="轮播图${index+1}" style="width: 100%; height: auto; aspect-ratio: 16/9; object-fit: cover;">`;
+                }
+                
+                carouselContainer.appendChild(carouselItem);
+                carouselItems.push(carouselItem);
+            });
+            
+            // 自动轮播
+            if (carouselItems.length > 1) {
+                let currentIndex = 0;
+                
+                function nextSlide() {
+                    // 隐藏当前
+                    carouselItems[currentIndex].classList.remove('active');
+                    
+                    // 下一个
+                    currentIndex = (currentIndex + 1) % carouselItems.length;
+                    
+                    // 显示下一个
+                    carouselItems[currentIndex].classList.add('active');
+                    
+                    // 设置下一次切换
+                    setTimeout(nextSlide, carouselItems[currentIndex].dataset.duration);
+                }
+                
+                // 启动轮播
+                setTimeout(nextSlide, carouselItems[0].dataset.duration);
+            }
+        }
+
+        // 4. 加载弹幕广告（忽略第一行格式说明）
+        async function loadBarrage() {
+            const url = 'https://yzbjfpv.top/flyz/202512/数据库/首页文字弹幕广告.txt';
+            const content = await fetchText(url);
+            const barrageContainer = document.getElementById('barrage-container');
+            
+            if (!content) {
+                barrageContainer.innerHTML = '<div class="flex items-center justify-center h-full text-white text-sm">暂无弹幕广告</div>';
+                return;
+            }
+
+            // 解析弹幕内容，忽略第一行
+            const barrageItems = [];
+            let lines = content.split('\n').filter(line => line.trim());
+            
+            // 移除第一行（格式说明）
+            if (lines.length > 0) {
+                lines = lines.slice(1);
+            }
+            
+            lines.forEach(line => {
+                if (!line) return;
+                
+                // 解析格式：%/-黑手电池-备注:未知-联系方式:未知-链接
+                const type = line.charAt(0);
+                const parts = line.substring(2).split('-');
+                
+                const data = {
+                    type: type,
+                    title: parts[0] || '未知',
+                    remark: parts[1] ? parts[1].replace('备注:', '') : '无',
+                    contact: parts[2] ? parts[2].replace('联系方式:', '') : '无',
+                    link: parts[3] || '#'
+                };
+                
+                barrageItems.push(data);
+            });
+
+            // 创建弹幕
+            function createBarrage() {
+                if (barrageItems.length === 0) return;
+                
+                // 随机选一个
+                const randomIndex = Math.floor(Math.random() * barrageItems.length);
+                const item = barrageItems[randomIndex];
+                
+                // 创建弹幕元素
+                const barrage = document.createElement('div');
+                
+                // 设置样式
+                let bgColor, textColor;
+                switch(item.type) {
+                    case '%': // 低等
+                        bgColor = 'bg-barrage1 text-dark';
+                        break;
+                    case '@': // 中等
+                        bgColor = 'bg-barrage2 text-dark';
+                        break;
+                    case '#': // 高等
+                        bgColor = 'bg-barrage3 text-white';
+                        break;
+                    default:
+                        bgColor = 'bg-white text-dark';
+                }
+                
+                barrage.className = `barrage-item ${bgColor} click-scale`;
+                barrage.textContent = item.title;
+                barrage.dataset.info = JSON.stringify(item);
+                
+                // 随机位置和速度
+                const containerHeight = barrageContainer.clientHeight;
+                const top = Math.floor(Math.random() * (containerHeight - 40)) + 10;
+                const speed = Math.floor(Math.random() * 20) + 30; // 30-50秒走完
+                const width = Math.floor(Math.random() * 100) + 180; // 宽度180-280px
+                
+                // 设置样式
+                barrage.style.top = `${top}px`;
+                barrage.style.right = `-${width}px`;
+                barrage.style.minWidth = `${width}px`;
+                
+                // 添加到容器
+                barrageContainer.appendChild(barrage);
+                
+                // 动画
+                const containerWidth = barrageContainer.clientWidth;
+                barrage.style.transition = `transform ${speed}s linear`;
+                setTimeout(() => {
+                    barrage.style.transform = `translateX(-${containerWidth + width}px)`;
+                }, 100);
+                
+                // 点击事件
+                barrage.addEventListener('click', function() {
+                    const info = JSON.parse(this.dataset.info);
+                    showBarrageDetail(info);
+                });
+                
+                // 移除
+                setTimeout(() => {
+                    barrage.remove();
+                }, speed * 1000);
+            }
+
+            // 定时创建弹幕
+            setInterval(createBarrage, 2000);
+            
+            // 初始创建几个
+            for (let i = 0; i < 6; i++) {
+                setTimeout(createBarrage, i * 1000);
+            }
+        }
+
+        // 5. 加载网站公测模块
+        async function loadBetaModule() {
+            const url = 'https://yzbjfpv.top/flyz/202512/数据库/首页公测模块.txt';
+            const content = await fetchText(url);
+            const betaContainer = document.getElementById('beta-buttons-container');
+            
+            if (!content) {
+                betaContainer.innerHTML = `
+                    <div class="text-center py-10 text-gray-500 col-span-full">
+                        <div class="loading-spinner" style="width: 40px; height: 40px; margin: 0 auto 15px;"></div>
+                        <p class="loading-text">暂无公测内容</p>
+                    </div>
+                `;
+                return;
+            }
+
+            // 清空加载提示
+            betaContainer.innerHTML = '';
+            
+            // 解析公测内容
+            const lines = content.split('\n').filter(line => line.trim());
+            
+            lines.forEach((line, index) => {
+                if (!line) return;
+                
+                // 解析格式：按钮文字-版本号-链接-说明
+                const parts = line.split('-');
+                const btnText = parts[0]?.trim() || `公测项目${index+1}`;
+                const version = parts[1]?.trim() || '未知版本';
+                const link = parts[2]?.trim() || '#';
+                const description = parts[3]?.trim() || '暂无说明';
+                
+                // 创建按钮
+                const betaButton = document.createElement('button');
+                betaButton.className = 'beta-button click-scale bg-white rounded-lg p-6 shadow-md hover:shadow-lg border border-primary/10 animate-on-scroll';
+                betaButton.style.transitionDelay = `${index * 0.1}s`;
+                betaButton.innerHTML = `
+                    <h4 class="text-lg font-bold text-primary mb-2">${btnText}</h4>
+                    <p class="text-sm text-gray-500 mb-3">版本：${version}</p>
+                    <span class="inline-block text-primary text-sm">
+                        <i class="fa fa-info-circle mr-1"></i> 查看详情
+                    </span>
+                `;
+                
+                // 存储数据
+                betaButton.dataset.info = JSON.stringify({
+                    title: btnText,
+                    version: version,
+                    link: link,
+                    description: description
+                });
+                
+                // 点击事件
+                betaButton.addEventListener('click', function() {
+                    const info = JSON.parse(this.dataset.info);
+                    showBetaModal(info);
+                });
+                
+                betaContainer.appendChild(betaButton);
+            });
+        }
+
+        // 显示弹幕详情
+        function showBarrageDetail(info) {
+            const modal = document.getElementById('barrage-detail-modal');
+            const title = document.getElementById('barrage-title');
+            const remark = document.getElementById('barrage-remark');
+            const contact = document.getElementById('barrage-contact');
+            const link = document.getElementById('barrage-link');
+            
+            title.textContent = info.title;
+            remark.textContent = info.remark;
+            contact.textContent = info.contact;
+            link.href = info.link;
+            
+            modal.classList.add('active');
+            
+            // 禁止背景滚动
             document.body.style.overflow = 'hidden';
-        });
+        }
 
-        closeNav.addEventListener('click', function() {
-            navModal.classList.remove('active');
-            document.body.style.overflow = '';
-        });
+        // 显示公测弹窗
+        function showBetaModal(info) {
+            const modal = document.getElementById('beta-modal');
+            const title = document.getElementById('beta-title');
+            const description = document.getElementById('beta-description');
+            const version = document.getElementById('beta-version');
+            const link = document.getElementById('beta-link');
+            
+            title.textContent = info.title;
+            description.textContent = info.description;
+            version.textContent = `版本号：${info.version}`;
+            link.href = info.link;
+            
+            modal.classList.add('active');
+            
+            // 禁止背景滚动
+            document.body.style.overflow = 'hidden';
+        }
 
-        navModal.addEventListener('click', function(e) {
-            if (e.target === navModal) {
+        // 元素进入视口检测
+        function setupScrollAnimations() {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }, { threshold: 0.1 });
+            
+            // 观察所有需要动画的元素
+            document.querySelectorAll('.animate-on-scroll').forEach(el => {
+                observer.observe(el);
+            });
+        }
+
+        // 页面加载完成后执行
+        document.addEventListener('DOMContentLoaded', function() {
+            // 初始化滚动动画
+            setupScrollAnimations();
+            
+            // 加载各类数据
+            loadBroadcast();
+            loadAnnouncement();
+            loadCarousel();
+            loadBarrage();
+            loadBetaModule();
+
+            // 导航悬浮球点击事件
+            const navFloatBtn = document.getElementById('nav-float-btn');
+            const navModal = document.getElementById('nav-modal');
+            const closeNavModal = document.getElementById('close-nav-modal');
+            
+            navFloatBtn.addEventListener('click', function() {
+                navModal.classList.add('active');
+                document.body.style.overflow = 'hidden';
+                
+                // 导航项动画
+                setTimeout(() => {
+                    document.querySelectorAll('.nav-content .animate-on-scroll').forEach(el => {
+                        el.classList.add('visible');
+                    });
+                }, 100);
+            });
+            
+            closeNavModal.addEventListener('click', function() {
                 navModal.classList.remove('active');
                 document.body.style.overflow = '';
-            }
-        });
-
-        // 3. 页面加载完成后执行
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log('页面加载完成，开始初始化元素');
+            });
             
-            // 4. 新手教程提示（修复弹出+关闭逻辑）
-            const tutorialMask = document.getElementById('tutorial-mask');
-            // 强制显示教程（测试用，可根据需要注释）
-            localStorage.removeItem('flyz_tutorial_seen');
-            const hasSeenTutorial = localStorage.getItem('flyz_tutorial_seen');
-
-            // 确保教程弹窗显示
-            if (!hasSeenTutorial) {
-                tutorialMask.classList.remove('hidden');
-                // 3秒后自动关闭
-                setTimeout(() => {
-                    tutorialMask.classList.add('hidden');
-                    localStorage.setItem('flyz_tutorial_seen', 'true');
-                }, 3000);
-            }
-
-            // 5. 右上角公告弹窗（3秒自动关闭）
-            const announcementPopup = document.getElementById('announcement-popup');
-            setTimeout(() => {
-                announcementPopup.classList.add('show');
-                
-                // 3秒后关闭
-                setTimeout(() => {
-                    announcementPopup.classList.remove('show');
-                }, 3000);
-            }, 800);
-
-            // 6. B站视频播放器修复 - 确保交互
-            const biliPlayer = document.getElementById('bilibili-player');
-            // 确保iframe可交互
-            biliPlayer.style.pointerEvents = 'auto';
-            // 备用方案：通过postMessage控制播放器
-            setTimeout(() => {
-                if (biliPlayer.contentWindow) {
-                    biliPlayer.contentWindow.postMessage({
-                        "cmd": "setVolume",
-                        "args": [0.75]
-                    }, "*");
-                    biliPlayer.contentWindow.postMessage({
-                        "cmd": "hideDanmaku",
-                        "args": []
-                    }, "*");
+            // 点击模态框外部关闭
+            navModal.addEventListener('click', function(e) {
+                if (e.target === navModal) {
+                    navModal.classList.remove('active');
+                    document.body.style.overflow = '';
                 }
-            }, 1000);
+            });
 
-            // 7. 平滑滚动
+            // 微信弹窗控制
+            const wxModal = document.getElementById('wx-modal');
+            const wxLink = document.getElementById('wx-link');
+            const modalClose = document.querySelector('.modal-close');
+            
+            wxLink.addEventListener('click', function(e) {
+                e.preventDefault();
+                wxModal.classList.add('active');
+                navModal.classList.remove('active');
+                document.body.style.overflow = 'hidden';
+            });
+            
+            modalClose.addEventListener('click', function() {
+                wxModal.classList.remove('active');
+                document.body.style.overflow = '';
+            });
+            
+            wxModal.addEventListener('click', function(e) {
+                if (e.target === wxModal) {
+                    wxModal.classList.remove('active');
+                    document.body.style.overflow = '';
+                }
+            });
+
+            // 公告弹窗关闭事件
+            const announcementModal = document.getElementById('announcement-modal');
+            const closeAnnouncement = document.getElementById('close-announcement');
+            const closeAnnouncementBtn = document.getElementById('close-announcement-btn');
+            
+            closeAnnouncement.addEventListener('click', function() {
+                announcementModal.classList.remove('active');
+            });
+            
+            closeAnnouncementBtn.addEventListener('click', function() {
+                announcementModal.classList.remove('active');
+            });
+
+            // 弹幕详情弹窗关闭
+            const closeBarrageDetail = document.getElementById('close-barrage-detail');
+            const barrageDetailModal = document.getElementById('barrage-detail-modal');
+            
+            closeBarrageDetail.addEventListener('click', function() {
+                barrageDetailModal.classList.remove('active');
+                document.body.style.overflow = '';
+            });
+            
+            barrageDetailModal.addEventListener('click', function(e) {
+                if (e.target === barrageDetailModal) {
+                    barrageDetailModal.classList.remove('active');
+                    document.body.style.overflow = '';
+                }
+            });
+
+            // 公测弹窗关闭
+            const closeBetaModal = document.getElementById('close-beta-modal');
+            const betaModal = document.getElementById('beta-modal');
+            
+            closeBetaModal.addEventListener('click', function() {
+                betaModal.classList.remove('active');
+                document.body.style.overflow = '';
+            });
+            
+            betaModal.addEventListener('click', function(e) {
+                if (e.target === betaModal) {
+                    betaModal.classList.remove('active');
+                    document.body.style.overflow = '';
+                }
+            });
+
+            // 案例折叠面板交互
+            const caseCollapseBtn = document.querySelector('.collapse-btn');
+            const casesPanel = document.getElementById('cases-panel');
+            
+            caseCollapseBtn.addEventListener('click', function() {
+                casesPanel.classList.toggle('hidden');
+                
+                // 按钮动画
+                const icon = this.querySelector('i');
+                icon.style.transform = casesPanel.classList.contains('hidden') ? 'rotate(0deg)' : 'rotate(180deg)';
+                
+                // 点击反馈
+                this.classList.add('scale-95');
+                setTimeout(() => {
+                    this.classList.remove('scale-95');
+                }, 200);
+                
+                // 显示案例时触发动画
+                if (!casesPanel.classList.contains('hidden')) {
+                    setTimeout(() => {
+                        document.querySelectorAll('#cases-panel .animate-on-scroll').forEach(el => {
+                            el.classList.add('visible');
+                        });
+                    }, 100);
+                }
+            });
+
+            // 案例区域动画触发
+            const caseTitle = document.getElementById('case-title');
+            const caseContainer = document.getElementById('case-container');
+            
+            setTimeout(() => {
+                caseTitle.classList.remove('opacity-0', 'translate-y-8');
+                
+                setTimeout(() => {
+                    caseContainer.classList.remove('opacity-0', 'translate-y-8');
+                }, 300);
+            }, 1500);
+
+            // 页脚动画触发
+            const footerElements = [
+                document.getElementById('footer-logo'),
+                document.getElementById('footer-copyright'),
+                document.getElementById('footer-slogan'),
+                document.getElementById('footer-links')
+            ];
+            
+            const footerObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        footerElements.forEach((el, index) => {
+                            setTimeout(() => {
+                                el.classList.remove('opacity-0');
+                            }, index * 200);
+                        });
+                        footerObserver.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.1 });
+            
+            footerObserver.observe(document.querySelector('footer'));
+
+            // 平滑滚动
             document.querySelectorAll('a[href^="#"]').forEach(anchor => {
                 anchor.addEventListener('click', function(e) {
                     e.preventDefault();
@@ -778,175 +1450,9 @@ FPV,远航,穿越机,PokRC,Flyz,远征飞,嘟嘟电池,康易安,
                             target.scrollIntoView({ behavior: 'smooth' });
                         }
                     }
-                    if (navModal.classList.contains('active')) {
-                        navModal.classList.remove('active');
-                        document.body.style.overflow = '';
-                    }
+                    navModal.classList.remove('active');
+                    document.body.style.overflow = '';
                 });
-            });
-
-            // 8. 为导航菜单项添加渐入延迟动画
-            const navItems = document.querySelectorAll('.nav-item-modal');
-            navItems.forEach((item, index) => {
-                item.style.transitionDelay = `${index * 0.1}s`;
-            });
-
-            // 9. 动态生成60个文字小行星 - 响应式分散排列
-            const orbitContainer = document.getElementById('orbit-container');
-            console.log('开始生成小行星，容器元素：', orbitContainer);
-            
-            // 获取设备宽度，动态计算轨道参数
-            const windowWidth = window.innerWidth;
-            let baseRadius, layerCount, planetPerLayer;
-            
-            // 根据屏幕宽度适配轨道参数
-            if (windowWidth < 480) { // 移动端
-                baseRadius = 60;    // 更小的基础轨道半径
-                layerCount = 4;     // 增加轨道层数
-                planetPerLayer = 15; // 每层行星数量减少
-            } else if (windowWidth < 768) { // 平板
-                baseRadius = 80;
-                layerCount = 3;
-                planetPerLayer = 20;
-            } else { // 桌面端
-                baseRadius = 100;
-                layerCount = 3;
-                planetPerLayer = 20;
-            }
-            
-            // 从文本框读取自定义文字
-            const textArea = document.getElementById('planet-text-list');
-            const textListRaw = textArea.value.replace(/\n/g, '').replace(/\s/g, '');
-            const textList = textListRaw.split(',').filter(text => text.trim() !== '');
-            
-            // 确保有足够的文字
-            const defaultTextList = [
-                "FPV", "远航", "穿越机", "PokRC", "Flyz", "远征飞", "嘟嘟电池", "康易安",
-                "21700", "长续航", "花飞", "航拍", "图传", "天线", "定制", "智能保护",
-                "高容量", "低内阻", "快充", "安全", "稳定", "耐用", "轻量", "高效",
-                "专业", "模友", "科技", "创新", "品质", "服务", "速度", "精准",
-                "操控", "体验", "极限", "挑战", "记录", "突破", "合作", "联名",
-                "专利", "研发", "生产", "销售", "售后", "维修", "竞速", "航拍",
-                "户外", "冒险", "探索", "自由", "飞行", "科技", "未来", "智能",
-                "精准", "稳定", "高效", "可靠", "创新", "领先", "专业", "极致"
-            ];
-            
-            // 合并自定义文字和默认文字
-            const finalTextList = textList.length > 0 ? textList : defaultTextList;
-            console.log('行星文字列表：', finalTextList);
-            
-            // 生成行星轨道层（响应式）
-            const orbitLayers = [];
-            for (let i = 0; i < layerCount; i++) {
-                // 每层轨道半径递增，避免重叠
-                const radius = baseRadius + (i * 50); 
-                // 每层速度递增，视觉效果更好
-                const speed = 20 + (i * 5) + (windowWidth < 480 ? 5 : 0); 
-                orbitLayers.push({ 
-                    radius: radius, 
-                    count: planetPerLayer, 
-                    speed: speed 
-                });
-            }
-            
-            let planetCount = 0;
-            orbitLayers.forEach(layer => {
-                const angleStep = 360 / layer.count;
-                
-                for (let i = 0; i < layer.count && planetCount < 60; i++) {
-                    const textPlanet = document.createElement('div');
-                    textPlanet.className = 'text-planet';
-                    
-                    // 随机选择文字
-                    const randomText = finalTextList[Math.floor(Math.random() * finalTextList.length)];
-                    textPlanet.textContent = randomText;
-                    
-                    // 设置轨道半径和初始角度
-                    textPlanet.style.setProperty('--radius', layer.radius);
-                    const initialAngle = i * angleStep;
-                    textPlanet.style.transform = `rotate(${initialAngle}deg) translateX(${layer.radius}px) rotate(-${initialAngle}deg)`;
-                    
-                    // 设置动画时长（不同层不同速度，移动端稍慢）
-                    const animationDuration = layer.speed + Math.random() * 10;
-                    textPlanet.style.animationDuration = `${animationDuration}s`;
-                    
-                    // 霓虹配色
-                    const hue = 180 + Math.random() * 40;
-                    textPlanet.style.color = `hsl(${hue}, 100%, 90%)`;
-                    textPlanet.style.background = `hsla(${hue}, 100%, 50%, 0.3)`;
-                    textPlanet.style.borderColor = `hsla(${hue}, 100%, 70%, 0.7)`;
-                    
-                    orbitContainer.appendChild(textPlanet);
-                    planetCount++;
-                }
-            });
-            
-            console.log(`生成了 ${planetCount} 个文字行星，适配宽度：${windowWidth}px`);
-
-            // 10. 窗口大小变化时重新生成行星
-            window.addEventListener('resize', function() {
-                // 清空现有行星
-                while (orbitContainer.children.length > 1) {
-                    orbitContainer.removeChild(orbitContainer.lastChild);
-                }
-                // 重新生成
-                planetCount = 0;
-                orbitLayers.forEach(layer => {
-                    const angleStep = 360 / layer.count;
-                    for (let i = 0; i < layer.count && planetCount < 60; i++) {
-                        const textPlanet = document.createElement('div');
-                        textPlanet.className = 'text-planet';
-                        const randomText = finalTextList[Math.floor(Math.random() * finalTextList.length)];
-                        textPlanet.textContent = randomText;
-                        textPlanet.style.setProperty('--radius', layer.radius);
-                        const initialAngle = i * angleStep;
-                        textPlanet.style.transform = `rotate(${initialAngle}deg) translateX(${layer.radius}px) rotate(-${initialAngle}deg)`;
-                        textPlanet.style.animationDuration = `${layer.speed + Math.random() * 10}s`;
-                        const hue = 180 + Math.random() * 40;
-                        textPlanet.style.color = `hsl(${hue}, 100%, 90%)`;
-                        textPlanet.style.background = `hsla(${hue}, 100%, 50%, 0.3)`;
-                        textPlanet.style.borderColor = `hsla(${hue}, 100%, 70%, 0.7)`;
-                        orbitContainer.appendChild(textPlanet);
-                        planetCount++;
-                    }
-                });
-            });
-
-            // 11. 打字机效果
-            if (document.querySelector('.typing-effect')) {
-                const typed = new Typed('.typing-effect', {
-                    strings: ['Flyz远征飞', 'FPV远航专家', 'PokRC联名出品'],
-                    typeSpeed: 100,
-                    backSpeed: 50,
-                    loop: true
-                });
-            }
-
-            // 12. 数字计数动画
-            if (document.getElementById('counter')) {
-                const countUp = new CountUp('counter', 0, 100, 0, 2.5);
-                countUp.start();
-            }
-
-            // 13. 滚动触发动画
-            gsap.utils.toArray(".animate-on-scroll").forEach(element => {
-                gsap.from(element, {
-                    opacity: 0,
-                    y: 50,
-                    duration: 1,
-                    scrollTrigger: {
-                        trigger: element,
-                        start: "top 80%",
-                        end: "bottom 20%",
-                        toggleActions: "play none none reverse"
-                    }
-                });
-            });
-            
-            // 14. 确保所有模块可见
-            document.querySelectorAll('[data-aos]').forEach(el => {
-                el.style.opacity = '1';
-                el.style.visibility = 'visible';
             });
         });
     </script>
