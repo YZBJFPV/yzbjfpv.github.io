@@ -1,0 +1,986 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>合作伙伴页面生成</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f5f8ff;
+            font-family: 'Inter', system-ui, sans-serif;
+        }
+        .form-card {
+            background: linear-gradient(135deg, rgba(255,255,255,0.95), rgba(255,255,255,0.85));
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.8);
+            box-shadow: 0 8px 32px rgba(22,93,255,0.08);
+            border-radius: 16px;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #165DFF, #36CFC9);
+            transition: all 0.3s ease;
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(22,93,255,0.2);
+        }
+        .btn-secondary {
+            background: linear-gradient(135deg, #FF7D00, #FF9E33);
+            transition: all 0.3s ease;
+        }
+        .btn-secondary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(255,125,0,0.2);
+        }
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(5px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+        .modal.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        .modal-content {
+            background: white;
+            border-radius: 16px;
+            padding: 30px;
+            max-width: 500px;
+            width: 90%;
+            transform: translateY(-20px) scale(0.95);
+            transition: all 0.3s ease;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+        }
+        .modal.active .modal-content {
+            transform: translateY(0) scale(1);
+        }
+        textarea {
+            resize: none;
+            font-family: 'Consolas', 'Monaco', monospace;
+        }
+    </style>
+</head>
+<body class="min-h-screen py-8 px-4">
+    <div class="container mx-auto max-w-6xl">
+        <!-- 标题区域 -->
+        <div class="text-center mb-10">
+            <h1 class="text-[clamp(2rem,5vw,3rem)] font-bold text-[#333647] mb-4">
+                <span class="bg-gradient-to-r from-[#165DFF] to-[#36CFC9] bg-clip-text text-transparent">合作伙伴页面生成器</span>
+            </h1>
+            <p class="text-gray-600 text-lg">填写信息自动生成完整HTML代码，支持一键复制</p>
+        </div>
+
+        <!-- 表单区域 -->
+        <div class="form-card p-8 mb-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- 基础信息 -->
+                <div>
+                    <h3 class="text-xl font-semibold mb-4 text-[#165DFF] flex items-center">
+                        <i class="fa fa-user-circle mr-2"></i> 合作伙伴基础信息
+                    </h3>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-gray-700 mb-2 font-medium">合作伙伴名称</label>
+                            <input type="text" id="partnerName" placeholder="例如：远航动力科技" 
+                                   class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-[#165DFF] focus:ring-2 focus:ring-[#165DFF]/20 outline-none transition-all" value="远航动力科技">
+                        </div>
+                        <div>
+                            <label class="block text-gray-700 mb-2 font-medium">微信号</label>
+                            <input type="text" id="partnerWx" placeholder="例如：YuanHang2025" 
+                                   class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-[#165DFF] focus:ring-2 focus:ring-[#165DFF]/20 outline-none transition-all" value="YuanHang2025">
+                        </div>
+                        <div>
+                            <label class="block text-gray-700 mb-2 font-medium">联系电话</label>
+                            <input type="text" id="partnerPhone" placeholder="例如：13812345678" 
+                                   class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-[#165DFF] focus:ring-2 focus:ring-[#165DFF]/20 outline-none transition-all" value="13812345678">
+                        </div>
+                        <div>
+                            <label class="block text-gray-700 mb-2 font-medium">版本号</label>
+                            <input type="text" id="version" value="V1.0.1" 
+                                   class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-[#165DFF] focus:ring-2 focus:ring-[#165DFF]/20 outline-none transition-all">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 详细信息 -->
+                <div>
+                    <h3 class="text-xl font-semibold mb-4 text-[#165DFF] flex items-center">
+                        <i class="fa fa-info-circle mr-2"></i> 合作伙伴详细信息
+                    </h3>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-gray-700 mb-2 font-medium">合作伙伴简介</label>
+                            <textarea id="partnerIntro" rows="4" placeholder="例如：专注于FPV穿越机远航电池研发与生产，拥有5年行业经验..." 
+                                      class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-[#165DFF] focus:ring-2 focus:ring-[#165DFF]/20 outline-none transition-all">专注于FPV穿越机远航电池研发与生产，拥有5年行业经验，产品续航能力领先行业标准，为全球模友提供稳定可靠的动力解决方案。</textarea>
+                        </div>
+                        <div>
+                            <label class="block text-gray-700 mb-2 font-medium">合作业务说明</label>
+                            <textarea id="partnerCooperate" rows="4" placeholder="例如：主营产品：FPV远航锂电池、快充充电器、电池收纳箱..." 
+                                      class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-[#165DFF] focus:ring-2 focus:ring-[#165DFF]/20 outline-none transition-all">主营产品：FPV远航锂电池、快充充电器、电池收纳箱，支持批量采购、定制化开发、分销代理等合作模式。</textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 生成按钮 -->
+            <div class="mt-8 text-center">
+                <button id="generateBtn" class="btn-primary text-white px-8 py-4 rounded-lg text-lg font-semibold cursor-pointer inline-flex items-center">
+                    <i class="fa fa-magic mr-2"></i> 生成HTML代码
+                </button>
+            </div>
+        </div>
+
+        <!-- 生成结果区域 -->
+        <div class="form-card p-8">
+            <h3 class="text-xl font-semibold mb-4 text-[#165DFF] flex items-center">
+                <i class="fa fa-code mr-2"></i> 生成的HTML代码
+            </h3>
+            <div class="relative">
+                <textarea id="resultCode" rows="20" class="w-full px-4 py-4 rounded-lg border border-gray-300 bg-gray-50 text-sm" readonly placeholder="生成的代码将显示在这里..."></textarea>
+                <button id="copyBtn" class="btn-secondary text-white px-6 py-2 rounded-lg absolute top-4 right-4 cursor-pointer text-sm font-medium">
+                    <i class="fa fa-copy mr-1"></i> 复制代码
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 合成完毕弹窗 -->
+    <div id="successModal" class="modal">
+        <div class="modal-content text-center">
+            <div class="mb-4 text-5xl text-[#165DFF]">
+                <i class="fa fa-check-circle"></i>
+            </div>
+            <h3 class="text-2xl font-bold mb-2">合成完毕！</h3>
+            <p class="text-gray-600 mb-6">HTML代码已生成，可以点击复制按钮复制全部代码</p>
+            <button id="closeModalBtn" class="btn-primary text-white px-6 py-3 rounded-lg font-medium cursor-pointer">
+                确定
+            </button>
+        </div>
+    </div>
+
+    <!-- 复制成功弹窗 -->
+    <div id="copyModal" class="modal">
+        <div class="modal-content text-center">
+            <div class="mb-4 text-5xl text-[#36CFC9]">
+                <i class="fa fa-clipboard"></i>
+            </div>
+            <h3 class="text-2xl font-bold mb-2">复制成功！</h3>
+            <p class="text-gray-600 mb-6">代码已复制到剪贴板</p>
+            <button id="closeCopyModalBtn" class="btn-primary text-white px-6 py-3 rounded-lg font-medium cursor-pointer">
+                确定
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // 基础HTML模板 - 完整版本，优化了合作伙伴名称显示效果
+        const htmlTemplate = (data) => `<!DOCTYPE html>
+<html lang="zh-CN" id="html-lang">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>合作伙伴 | ${data.name} | Flyz远征飞官方网站 ${data.version}</title>
+    <!-- 外部资源 -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- Tailwind 配置 -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#165DFF',
+                        secondary: '#FF7D00',
+                        accent: '#36CFC9',
+                        light: '#FFFFFF',
+                        dark: '#333647',
+                    },
+                    fontFamily: {
+                        inter: ['Inter', 'system-ui', 'sans-serif'],
+                    },
+                    keyframes: {
+                        pulse: {
+                            '0%, 100%': { opacity: 1 },
+                            '50%': { opacity: 0.5 },
+                        },
+                        bounce: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-10px)' },
+                        },
+                        rotate: {
+                            '0%': { transform: 'rotate(0deg)' },
+                            '100%': { transform: 'rotate(360deg)' },
+                        },
+                        shimmer: {
+                            '0%': { backgroundPosition: '-200% 0' },
+                            '100%': { backgroundPosition: '200% 0' },
+                        },
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0px) rotate(0deg)' },
+                            '25%': { transform: 'translateY(-20px) rotate(2deg)' },
+                            '50%': { transform: 'translateY(-15px) rotate(-2deg)' },
+                            '75%': { transform: 'translateY(-20px) rotate(2deg)' },
+                        },
+                        textGradient: {
+                            '0%': { backgroundPosition: '0% 50%' },
+                            '50%': { backgroundPosition: '100% 50%' },
+                            '100%': { backgroundPosition: '0% 50%' },
+                        },
+                        glow: {
+                            '0%, 100%': { box-shadow: '0 0 20px rgba(22,93,255,0.4), 0 0 40px rgba(22,93,255,0.2)' },
+                            '50%': { box-shadow: '0 0 30px rgba(22,93,255,0.6), 0 0 60px rgba(22,93,255,0.3)' },
+                        },
+                        orbit: {
+                            '0%': { transform: 'rotate(0deg) translateX(120px) rotate(0deg)' },
+                            '100%': { transform: 'rotate(360deg) translateX(120px) rotate(-360deg)' },
+                        },
+                        gradientBorder: {
+                            '0%': { backgroundPosition: '0% 50%' },
+                            '50%': { backgroundPosition: '100% 50%' },
+                            '100%': { backgroundPosition: '0% 50%' },
+                        }
+                    },
+                    animation: {
+                        pulse: 'pulse 2s infinite',
+                        bounce: 'bounce 2s infinite',
+                        rotate: 'rotate 2s linear infinite',
+                        shimmer: 'shimmer 2s linear infinite',
+                        float: 'float 8s ease-in-out infinite',
+                        textGradient: 'textGradient 3s ease infinite',
+                        glow: 'glow 3s ease-in-out infinite',
+                        orbit: 'orbit 20s linear infinite',
+                        gradientBorder: 'gradientBorder 3s ease infinite',
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .content-auto { content-visibility: auto; }
+            .text-shadow { text-shadow: 0 2px 8px rgba(0,0,0,0.12); }
+            .text-shadow-lg { text-shadow: 0 4px 16px rgba(22,93,255,0.2); }
+            .card-elevation { box-shadow: 0 8px 30px rgba(22, 93, 255, 0.08); }
+            .hover-rise { transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1); }
+            .hover-rise:hover { transform: translateY(-6px); }
+            .click-scale { transition: transform 0.2s ease; }
+            .click-scale:active { transform: scale(0.95); }
+            .fixed-top { position: fixed; top: 0; left: 0; right: 0; z-index: 9999; }
+            .nav-float-btn {
+                width: 60px; height: 60px; border-radius: 50%;
+                display: flex; align-items: center; justify-content: center;
+                cursor: pointer; z-index: 1000;
+                box-shadow: 0 4px 20px rgba(22, 93, 255, 0.3);
+                top: 80px !important;
+            }
+            .nav-modal {
+                position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+                background: rgba(0,0,0,0.5); z-index: 99999;
+                display: flex; align-items: center; justify-content: center;
+                opacity: 0; visibility: hidden; transition: all 0.3s ease;
+            }
+            .nav-modal.active { opacity: 1; visibility: visible; }
+            .nav-content {
+                background: white; border-radius: 12px; padding: 30px;
+                width: 80%; max-width: 400px;
+                transform: translateY(-20px) scale(0.95); transition: all 0.3s ease;
+            }
+            .nav-modal.active .nav-content { transform: translateY(0) scale(1); }
+            
+            /* 超高级合作伙伴卡片样式 - 调整为白里透蓝 */
+            .partner-name-gradient {
+                background: linear-gradient(90deg, #165DFF, #36CFC9, #FF7D00, #FF9E33);
+                background-size: 300% 300%;
+                -webkit-background-clip: text; background-clip: text;
+                color: transparent;
+                animation: textGradient 4s ease infinite;
+                /* 增强文字辨识度 - 浅色调优化 */
+                text-shadow: 0 0 1px rgba(0,0,0,0.1), 0 2px 4px rgba(22,93,255,0.05);
+                opacity: 0.95;
+            }
+            /* 新增：超大字号名称的增强样式 */
+            .partner-title-large {
+                background: linear-gradient(90deg, #165DFF, #36CFC9, #FF7D00, #FF9E33);
+                background-size: 400% 400%;
+                -webkit-background-clip: text; background-clip: text;
+                color: transparent;
+                animation: textGradient 6s ease infinite;
+                /* 浅色调+强对比阴影 */
+                text-shadow: 0 2px 8px rgba(0,0,0,0.08), 0 0 2px rgba(255,255,255,0.8);
+                font-weight: 800;
+                letter-spacing: 1px;
+            }
+            .partner-card {
+                /* 调整背景为更白且带淡蓝色调 */
+                background: linear-gradient(135deg, rgba(255, 255, 255, 0.98), rgba(248, 252, 255, 0.95));
+                backdrop-filter: blur(20px);
+                border: 1px solid rgba(219, 234, 255, 0.9);
+                position: relative;
+                overflow: hidden;
+                box-shadow: 
+                    0 8px 32px rgba(22,93,255,0.06),
+                    0 2px 8px rgba(0,0,0,0.02),
+                    inset 0 1px 0 rgba(255,255,255,0.95);
+            }
+            /* 卡片伪元素装饰 - 增强淡蓝色调 */
+            .partner-card::before {
+                content: '';
+                position: absolute;
+                top: 0; left: 0; right: 0; bottom: 0;
+                background: linear-gradient(135deg, rgba(22,93,255,0.05), rgba(54,207,201,0.03));
+                z-index: -1;
+            }
+            .partner-card::after {
+                content: '';
+                position: absolute;
+                top: -50%; left: -50%;
+                width: 200%; height: 200%;
+                background: radial-gradient(circle, rgba(22,93,255,0.08) 0%, transparent 70%);
+                transform: rotate(30deg);
+                z-index: -1;
+            }
+            
+            /* 高级网格背景 - 微调蓝色调 */
+            .bg-grid {
+                background-image: 
+                    linear-gradient(rgba(22,93,255,0.04) 1px, transparent 1px),
+                    linear-gradient(90deg, rgba(22,93,255,0.04) 1px, transparent 1px);
+                background-size: 48px 48px;
+                background-position: 0 0, 24px 24px;
+            }
+            
+            /* 滚动揭示动画（更丝滑） */
+            .scroll-reveal {
+                opacity: 0; 
+                transform: translateY(50px) scale(0.95);
+                transition: all 1s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            }
+            .scroll-reveal.visible { 
+                opacity: 1; 
+                transform: translateY(0) scale(1); 
+            }
+            
+            /* 超高级按钮样式 */
+            .btn-hover-shine {
+                position: relative; 
+                overflow: hidden;
+                transition: all 0.4s ease;
+                background: linear-gradient(135deg, var(--btn-bg-start), var(--btn-bg-end));
+            }
+            .btn-hover-shine::after {
+                content: ''; 
+                position: absolute; 
+                top: 0; 
+                left: -100%;
+                width: 100%; 
+                height: 100%;
+                background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+                transition: left 0.8s cubic-bezier(0.19, 1, 0.22, 1);
+            }
+            .btn-hover-shine:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 10px 25px rgba(22,93,255,0.2);
+            }
+            .btn-hover-shine:hover::after { 
+                left: 100%; 
+            }
+            .btn-hover-shine:active {
+                transform: translateY(0) scale(0.98);
+            }
+            
+            /* 渐变边框效果 */
+            .gradient-border {
+                position: relative;
+                border-radius: 12px;
+                z-index: 1;
+            }
+            .gradient-border::before {
+                content: '';
+                position: absolute;
+                top: -2px; left: -2px; right: -2px; bottom: -2px;
+                background: linear-gradient(90deg, #165DFF, #36CFC9, #FF7D00, #165DFF);
+                background-size: 300% 300%;
+                border-radius: 14px;
+                z-index: -1;
+                animation: gradientBorder 4s ease infinite;
+                filter: blur(0.5px);
+            }
+            
+            /* 粒子装饰元素 - 调整为淡蓝色 */
+            .particle {
+                position: absolute;
+                border-radius: 50%;
+                background: rgba(22,93,255,0.15);
+                z-index: -1;
+                animation: float 15s ease-in-out infinite;
+            }
+        }
+    </style>
+
+    <style>
+        /* 顶部导航栏增强样式 */
+        .main-nav {
+            height: 70px; 
+            background: rgba(255,255,255,0.98); 
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.02);
+            display: flex; 
+            align-items: center; 
+            padding: 0 30px;
+            position: fixed; 
+            top: 0; 
+            left: 0; 
+            right: 0; 
+            z-index: 9999;
+            animation: slideDown 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+            border-bottom: 1px solid rgba(22,93,255,0.1);
+        }
+        .logo-text {
+            font-size: 20px; 
+            font-weight: 700; 
+            background: linear-gradient(90deg, #165DFF, #36CFC9);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            display: flex; 
+            align-items: center;
+            letter-spacing: 0.5px;
+        }
+        .logo-text img {
+            height: 48px; 
+            margin-right: 12px;
+            animation: rotateIn 1s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+            filter: drop-shadow(0 2px 8px rgba(22,93,255,0.1));
+        }
+        
+        /* 流动渐变导航悬浮球（增强版） */
+        .nav-gradient {
+            background: linear-gradient(135deg, #165DFF, #4080FF, #7CB3FF, #FF7D00, #FF9E33);
+            background-size: 500% 500%;
+            animation: gradientFlow 8s ease infinite, glow 4s ease-in-out infinite;
+            transform: scale(1);
+            transition: all 0.4s ease;
+        }
+        .nav-gradient:hover {
+            transform: scale(1.1) rotate(5deg);
+        }
+        @keyframes gradientFlow {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        /* 微信弹窗增强样式 */
+        .wx-modal {
+            position: fixed; 
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%;
+            background: rgba(0,0,0,0.7); 
+            backdrop-filter: blur(5px);
+            z-index: 99999 !important;
+            display: flex; 
+            align-items: center; 
+            justify-content: center;
+            opacity: 0; 
+            visibility: hidden; 
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .wx-modal.active { 
+            opacity: 1; 
+            visibility: visible; 
+        }
+        .modal-content {
+            /* 弹窗背景也调整为白里透蓝 */
+            background: linear-gradient(135deg, #ffffff, #f0f7ff);
+            padding: 40px; 
+            border-radius: 20px; 
+            text-align: center;
+            transform: translateY(-50px) scale(0.9); 
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 
+                0 20px 60px rgba(0,0,0,0.1),
+                0 8px 24px rgba(22,93,255,0.08),
+                inset 0 1px 0 rgba(255,255,255,0.9);
+            min-width: 320px;
+            border: 1px solid rgba(219, 234, 255, 0.9);
+            position: relative;
+            overflow: hidden;
+        }
+        .modal-content::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 10px;
+            background: linear-gradient(90deg, #165DFF, #36CFC9, #FF7D00);
+        }
+        .wx-modal.active .modal-content { 
+            transform: translateY(0) scale(1); 
+            animation: popIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+        
+        /* 增强版基础动画 */
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes rotateIn {
+            from { opacity: 0; transform: rotate(-45deg) scale(0.7); }
+            to { opacity: 1; transform: rotate(0) scale(1); }
+        }
+        @keyframes popIn {
+            0% { opacity: 0; transform: scale(0.8); }
+            70% { transform: scale(1.08); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+        
+        /* 页面基础样式增强 - 更浅的蓝色背景 */
+        body {
+            padding-top: 120px !important; 
+            overflow-x: hidden;
+            background-color: #f9fcff;
+            background-image: 
+                radial-gradient(rgba(22,93,255,0.02) 1px, transparent 1px),
+                radial-gradient(rgba(22,93,255,0.01) 1px, transparent 1px);
+            background-size: 50px 50px;
+            background-position: 0 0, 25px 25px;
+        }
+        
+        /* 高级装饰元素 - 调整蓝色透明度 */
+        .decor-circle {
+            position: absolute; 
+            border-radius: 50%; 
+            z-index: -1;
+            background: linear-gradient(135deg, rgba(22,93,255,0.08), rgba(54,207,201,0.05));
+            filter: blur(80px);
+            animation: float 12s ease-in-out infinite;
+        }
+        .decor-orbit {
+            position: absolute;
+            width: 40px; height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #165DFF, #36CFC9);
+            opacity: 0.7;
+            animation: orbit 25s linear infinite, float 8s ease-in-out infinite;
+            z-index: -1;
+        }
+        
+        /* 自定义滚动条 */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(22,93,255,0.03);
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #165DFF, #36CFC9);
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, #0F4CD3, #2CB8B2);
+        }
+    </style>
+</head>
+<body class="font-inter bg-light text-dark m-0 p-0 overflow-x-hidden bg-grid">
+    <!-- 高级装饰元素 -->
+    <div class="decor-circle w-[500px] h-[500px] top-[10%] -left-[150px] animate-float"></div>
+    <div class="decor-circle w-[600px] h-[600px] bottom-[10%] -right-[200px] animate-float" style="animation-delay: 3s;"></div>
+    <div class="decor-orbit top-[20%] right-[10%]"></div>
+    <div class="decor-orbit bottom-[30%] left-[15%]" style="animation-delay: 5s; width: 20px; height: 20px;"></div>
+    <div class="decor-orbit top-[60%] left-[25%]" style="animation-delay: 8s; width: 30px; height: 30px;"></div>
+
+    <!-- 顶部导航栏 -->
+    <div class="main-nav">
+        <div class="logo-text">
+            <img src="https://img520.com/UIGuUV.jpeg" alt="Logo" onerror="this.onerror=null;this.src='https://picsum.photos/48/48'">
+            <span>Flyz远征飞</span>
+        </div>
+    </div>
+
+    <!-- 微信弹窗 -->
+    <div id="wx-modal" class="wx-modal">
+        <div class="modal-content">
+            <i class="fa fa-weixin text-green-500 text-6xl mb-6 animate-bounce" style="text-shadow: 0 0 20px rgba(34,197,94,0.3);"></i>
+            <h3 class="text-2xl font-bold mb-4 text-dark text-shadow-lg">合作伙伴微信号</h3>
+            <p class="text-3xl font-mono bg-gradient-to-r from-primary/10 to-accent/10 py-4 px-8 rounded-lg mb-6 scale-in gradient-border" id="partner-wx-show">${data.wx}</p>
+            <button class="modal-close click-scale btn-hover-shine" style="--btn-bg-start: #165DFF; --btn-bg-end: #36CFC9; color: white; padding: 12px 32px; border-radius: 12px; font-size: 16px; font-weight: 600; border: none;">关闭</button>
+        </div>
+    </div>
+
+    <!-- 导航悬浮球 -->
+    <div class="fixed-top flex justify-end pr-6 md:pr-10 py-4">
+        <div id="nav-float-btn" class="nav-float-btn nav-gradient text-white click-scale animate-pulse" style="animation-delay: 0.5s;">
+            <i class="fa fa-bars text-2xl"></i>
+        </div>
+    </div>
+
+    <!-- 导航弹窗 -->
+    <div id="nav-modal" class="nav-modal">
+        <div class="nav-content gradient-border">
+            <div class="flex justify-between items-center mb-8">
+                <h3 class="text-2xl font-bold partner-name-gradient">导航菜单</h3>
+                <button id="close-nav-modal" class="text-gray-500 hover:text-primary transition-colors duration-300 click-scale">
+                    <i class="fa fa-times text-2xl"></i>
+                </button>
+            </div>
+            <div class="flex flex-col space-y-5">
+                <a href="https://yzbjfpv.top/20250709.html" class="text-dark hover:text-primary transition-all duration-300 py-3 border-b border-gray-100 flex items-center click-scale text-lg">
+                    <i class="fa fa-home mr-4 w-6 text-center text-primary"></i>首页
+                </a>
+                <a href="http://yzflight.xyz" class="text-dark hover:text-primary transition-all duration-300 py-3 border-b border-gray-100 flex items-center click-scale text-lg">
+                    <i class="fa fa-download mr-4 w-6 text-center text-primary"></i>下载中心
+                </a>
+                <a href="https://shop500685313.taobao.com/" class="text-dark hover:text-primary transition-all duration-300 py-3 border-b border-gray-100 flex items-center click-scale text-lg">
+                    <i class="fa fa-shopping-bag mr-4 w-6 text-center text-primary"></i>严选商城
+                </a>
+                <a href="https://yzbjfpv.top/flyz/202510/维修专区.html" class="text-dark hover:text-primary transition-all duration-300 py-3 border-b border-gray-100 flex items-center click-scale text-lg">
+                    <i class="fa fa-wrench mr-4 w-6 text-center text-primary"></i>维修专区
+                </a>
+                <a href="#" class="text-primary font-semibold py-3 border-b border-primary/20 flex items-center click-scale text-lg">
+                    <i class="fa fa-handshake-o mr-4 w-6 text-center text-primary"></i>合作伙伴
+                </a>
+                <a id="wx-link" class="text-dark hover:text-primary transition-all duration-300 py-3 flex items-center click-scale text-lg">
+                    <i class="fa fa-user-plus mr-4 w-6 text-center text-primary"></i>加我WX
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- 主要内容区域 -->
+    <main class="container mx-auto px-6 py-20 md:py-32 max-w-5xl relative">
+        <!-- ========== 【统一修改区域】开始 ========== -->
+        <script>
+            // 单个合作伙伴信息配置
+            const partnerConfig = {
+                name: "${data.name}",               
+                wx: "${data.wx}",                  
+                phone: "${data.phone}",                
+                intro: "${data.intro}", 
+                cooperateDesc: "${data.cooperate}" 
+            };
+
+            // 成为合作伙伴招募说明
+            const recruitDesc = \`
+                诚邀更多FPV行业伙伴加入Flyz远征飞合作体系！<br/>
+                我们欢迎<span class="text-primary font-semibold">产品供应商、渠道分销商、技术服务商、内容创作者</span>等各类伙伴携手共进。<br/>
+                合作优势：庞大用户基础、专业运营支持、灵活合作方案、长期稳定共赢。<br/>
+                立即联系官方微信 <span class="font-mono text-secondary text-xl">YGWFK2024</span> 洽谈合作！
+            \`;
+        </script>
+        <!-- ========== 【统一修改区域】结束 ========== -->
+
+        <!-- 单个合作伙伴信息卡片 -->
+        <div class="partner-card rounded-3xl p-10 md:p-16 mb-20 scroll-reveal gradient-border">
+            <div class="flex flex-col items-center text-center relative z-10">
+                <!-- 合作伙伴名称 - 优化为浅色调增强辨识度 -->
+                <h1 class="text-[clamp(3rem,10vw,5rem)] font-bold partner-title-large text-shadow-lg mb-8 animate-float" id="partner-name">
+                    ${data.name}
+                </h1>
+                
+                <!-- 合作伙伴简介 -->
+                <p class="text-gray-700 text-xl md:text-2xl leading-relaxed mb-12 max-w-2xl tracking-0.5px" id="partner-intro">
+                    ${data.intro}
+                </p>
+                
+                <!-- 联系方式 -->
+                <div class="flex flex-col sm:flex-row gap-8 justify-center w-full max-w-lg mb-12">
+                    <button id="partner-wx-btn" class="btn-hover-shine click-scale text-lg font-semibold flex items-center justify-center w-full sm:w-auto py-4 px-10 rounded-xl" style="--btn-bg-start: #165DFF; --btn-bg-end: #36CFC9; color: white;">
+                        <i class="fa fa-weixin mr-3 text-xl"></i> <span id="partner-wx-text">微信：${data.wx}</span>
+                    </button>
+                    <a href="tel:${data.phone}" class="btn-hover-shine click-scale text-lg font-semibold flex items-center justify-center w-full sm:w-auto py-4 px-10 rounded-xl border-2 border-primary" style="--btn-bg-start: #ffffff; --btn-bg-end: #f8fafc; color: #165DFF;">
+                        <i class="fa fa-phone mr-3 text-xl"></i> <span id="partner-phone-text">电话：${data.phone}</span>
+                    </a>
+                </div>
+                
+                <!-- 合作业务说明 -->
+                <div class="mt-8 pt-10 border-t border-gray-200/50 w-full max-w-2xl" id="partner-cooperate">
+                    <p class="text-gray-700 text-lg md:text-xl leading-relaxed">
+                        ${data.cooperate}
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 成为合作伙伴招募模块 -->
+        <div class="partner-card rounded-3xl p-10 md:p-16 scroll-reveal gradient-border" style="transition-delay: 0.5s;">
+            <div class="text-center mb-10 relative z-10">
+                <h2 class="text-3xl md:text-4xl font-bold text-dark flex items-center justify-center mb-2">
+                    <span class="inline-block w-14 h-14 rounded-full bg-gradient-to-r from-primary/20 to-accent/20 flex items-center justify-center mr-4 animate-pulse">
+                        <i class="fa fa-users text-primary text-2xl"></i>
+                    </span>
+                    成为我们的合作伙伴
+                </h2>
+                <div class="w-24 h-1 bg-gradient-to-r from-primary to-accent mx-auto rounded-full"></div>
+            </div>
+            <div class="text-gray-700 text-xl leading-relaxed text-center max-w-3xl mx-auto" id="recruit-desc">
+                诚邀更多FPV行业伙伴加入Flyz远征飞合作体系！<br/>
+                我们欢迎<span class="text-primary font-semibold">产品供应商、渠道分销商、技术服务商、内容创作者</span>等各类伙伴携手共进。<br/>
+                合作优势：庞大用户基础、专业运营支持、灵活合作方案、长期稳定共赢。<br/>
+                立即联系官方微信 <span class="font-mono text-secondary text-xl">YGWFK2024</span> 洽谈合作！
+            </div>
+            <div class="mt-14 flex justify-center">
+                <button id="official-wx-btn" class="btn-hover-shine click-scale text-xl font-semibold py-4 px-12 rounded-xl" style="--btn-bg-start: #FF7D00; --btn-bg-end: #FF9E33; color: white;">
+                    <i class="fa fa-handshake-o mr-3"></i> 联系官方合作
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <!-- 页脚 -->
+    <footer class="bg-gradient-to-b from-gray-50 to-gray-100 border-t border-gray-200/50 py-16 mt-32 relative overflow-hidden">
+        <div class="container mx-auto px-6 text-center relative z-10">
+            <div class="mb-8">
+                <img src="https://img520.com/UIGuUV.jpeg" alt="Flyz远征飞Logo" 
+                     class="h-16 w-auto object-contain rounded-lg mx-auto transform transition-all duration-700 hover:scale-110 hover:rotate-6 hover:shadow-lg"
+                     onerror="this.onerror=null;this.src='https://picsum.photos/64/64'">
+            </div>
+            <p class="text-gray-700 mb-4 text-lg">© 2025 Flyz远征飞官方网站 - 合作伙伴专属页面 ${data.version}</p>
+            <p class="text-gray-500 mb-10 text-lg">我们的口号是：为方便模友而生</p>
+            <div class="flex flex-wrap justify-center gap-x-8 gap-y-6 text-base">
+                <a href="https://b23.tv/JXuI9QA" class="text-primary hover:text-secondary transition-all duration-300 flex items-center group py-2">
+                    <i class="fa fa-play-circle mr-3 text-xl transition-transform duration-300 group-hover:scale-125 group-hover:text-primary"></i>
+                    哔哩哔哩｜Flyz远征飞官方账号
+                </a>
+                <a href="https://space.bilibili.com/3546970576652564" class="text-primary hover:text-secondary transition-all duration-300 flex items-center group py-2">
+                    <i class="fa fa-play-circle mr-3 text-xl transition-transform duration-300 group-hover:scale-125 group-hover:text-primary"></i>
+                    哔哩哔哩｜FlyzAI官方账号
+                </a>
+            </div>
+        </div>
+        <!-- 页脚装饰 -->
+        <div class="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-primary via-accent to-secondary"></div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // ========== 动态渲染合作伙伴信息 ==========
+            const renderPartnerInfo = () => {
+                document.getElementById('partner-name').textContent = partnerConfig.name;
+                document.getElementById('partner-intro').textContent = partnerConfig.intro;
+                document.getElementById('partner-wx-text').textContent = \`微信：\${partnerConfig.wx}\`;
+                document.getElementById('partner-phone-text').textContent = \`电话：\${partnerConfig.phone}\`;
+                document.getElementById('partner-cooperate').querySelector('p').textContent = partnerConfig.cooperateDesc;
+                document.getElementById('partner-wx-show').textContent = partnerConfig.wx;
+                document.getElementById('recruit-desc').innerHTML = recruitDesc;
+                // 替换电话链接
+                document.querySelector('a[href^="tel:"]').href = \`tel:\${partnerConfig.phone}\`;
+            };
+            renderPartnerInfo();
+
+            // ========== 滚动揭示动画（增强版） ==========
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                        // 只观察一次
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { 
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            });
+            document.querySelectorAll('.scroll-reveal').forEach(el => observer.observe(el));
+
+            // ========== 导航弹窗逻辑（增强版） ==========
+            const navFloatBtn = document.getElementById('nav-float-btn');
+            const navModal = document.getElementById('nav-modal');
+            const closeNavModal = document.getElementById('close-nav-modal');
+            
+            navFloatBtn.addEventListener('click', () => {
+                navModal.classList.add('active');
+                document.body.style.overflow = 'hidden';
+                document.body.style.paddingRight = \`\${window.innerWidth - document.documentElement.clientWidth}px\`;
+            });
+            const closeNavModalFunc = () => {
+                navModal.classList.remove('active');
+                document.body.style.overflow = '';
+                document.body.style.paddingRight = '';
+            };
+            closeNavModal.addEventListener('click', closeNavModalFunc);
+            navModal.addEventListener('click', (e) => {
+                if (e.target === navModal) closeNavModalFunc();
+            });
+
+            // ========== 微信弹窗逻辑（增强版） ==========
+            const wxModal = document.getElementById('wx-modal');
+            const wxLink = document.getElementById('wx-link');
+            const partnerWxBtn = document.getElementById('partner-wx-btn');
+            const officialWxBtn = document.getElementById('official-wx-btn');
+            const modalClose = document.querySelector('.modal-close');
+            
+            const openWxModal = () => {
+                wxModal.classList.add('active');
+                navModal.classList.remove('active');
+                document.body.style.overflow = 'hidden';
+                document.body.style.paddingRight = \`\${window.innerWidth - document.documentElement.clientWidth}px\`;
+            };
+            wxLink.addEventListener('click', (e) => { 
+                e.preventDefault(); 
+                openWxModal(); 
+            });
+            partnerWxBtn.addEventListener('click', openWxModal);
+            officialWxBtn.addEventListener('click', () => {
+                document.getElementById('partner-wx-show').textContent = 'YGWFK2024';
+                openWxModal();
+            });
+            const closeWxModalFunc = () => {
+                wxModal.classList.remove('active');
+                document.body.style.overflow = '';
+                document.body.style.paddingRight = '';
+            };
+            modalClose.addEventListener('click', closeWxModalFunc);
+            wxModal.addEventListener('click', (e) => {
+                if (e.target === wxModal) closeWxModalFunc();
+            });
+
+            // ========== 平滑滚动（增强版） ==========
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        window.scrollTo({
+                            top: target.offsetTop - 120,
+                            behavior: 'smooth'
+                        });
+                    }
+                    closeNavModalFunc();
+                });
+            });
+
+            // ========== 鼠标跟随粒子效果（极致动态） ==========
+            const createParticles = (e) => {
+                if (Math.random() > 0.7) return; // 控制粒子生成频率
+                const particle = document.createElement('div');
+                particle.classList.add('particle');
+                const size = Math.random() * 10 + 5;
+                particle.style.width = \`\${size}px\`;
+                particle.style.height = \`\${size}px\`;
+                particle.style.left = \`\${e.clientX}px\`;
+                particle.style.top = \`\${e.clientY}px\`;
+                particle.style.opacity = Math.random() * 0.5 + 0.2;
+                particle.style.animationDuration = \`\${Math.random() * 10 + 5}s\`;
+                particle.style.animationDelay = \`\${Math.random() * 5}s\`;
+                
+                document.body.appendChild(particle);
+                
+                // 移除粒子
+                setTimeout(() => {
+                    particle.style.opacity = '0';
+                    particle.style.transform = 'translateY(50px) scale(0)';
+                    particle.style.transition = 'all 1s ease';
+                    setTimeout(() => {
+                        document.body.removeChild(particle);
+                    }, 1000);
+                }, 3000);
+            };
+            
+            // 只在卡片区域生成粒子
+            document.querySelectorAll('.partner-card').forEach(card => {
+                card.addEventListener('mousemove', createParticles);
+            });
+        });
+    </script>
+</body>
+</html>`;
+
+        // DOM元素
+        const generateBtn = document.getElementById('generateBtn');
+        const copyBtn = document.getElementById('copyBtn');
+        const resultCode = document.getElementById('resultCode');
+        const successModal = document.getElementById('successModal');
+        const copyModal = document.getElementById('copyModal');
+        const closeModalBtn = document.getElementById('closeModalBtn');
+        const closeCopyModalBtn = document.getElementById('closeCopyModalBtn');
+
+        // 生成代码
+        generateBtn.addEventListener('click', function() {
+            // 获取表单数据
+            const formData = {
+                name: document.getElementById('partnerName').value.trim() || '远航动力科技',
+                wx: document.getElementById('partnerWx').value.trim() || 'YuanHang2025',
+                phone: document.getElementById('partnerPhone').value.trim() || '13812345678',
+                intro: document.getElementById('partnerIntro').value.trim() || '专注于FPV穿越机远航电池研发与生产，拥有5年行业经验，产品续航能力领先行业标准，为全球模友提供稳定可靠的动力解决方案。',
+                cooperate: document.getElementById('partnerCooperate').value.trim() || '主营产品：FPV远航锂电池、快充充电器、电池收纳箱，支持批量采购、定制化开发、分销代理等合作模式。',
+                version: document.getElementById('version').value.trim() || 'V1.0.1'
+            };
+
+            // 生成HTML代码
+            const generatedCode = htmlTemplate(formData);
+            resultCode.value = generatedCode;
+
+            // 显示合成完毕弹窗
+            successModal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        });
+
+        // 关闭合成完毕弹窗
+        closeModalBtn.addEventListener('click', function() {
+            successModal.classList.remove('active');
+            document.body.style.overflow = '';
+        });
+
+        // 复制代码
+        copyBtn.addEventListener('click', async function() {
+            if (!resultCode.value) {
+                alert('请先生成代码！');
+                return;
+            }
+
+            try {
+                // 复制到剪贴板
+                await navigator.clipboard.writeText(resultCode.value);
+                
+                // 显示复制成功弹窗
+                copyModal.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            } catch (err) {
+                alert('复制失败，请手动复制！');
+                console.error('复制失败:', err);
+            }
+        });
+
+        // 关闭复制成功弹窗
+        closeCopyModalBtn.addEventListener('click', function() {
+            copyModal.classList.remove('active');
+            document.body.style.overflow = '';
+        });
+
+        // 点击弹窗外层关闭
+        successModal.addEventListener('click', function(e) {
+            if (e.target === successModal) {
+                successModal.classList.remove('active');
+                document.body.style.overflow = '';
+            }
+        });
+
+        copyModal.addEventListener('click', function(e) {
+            if (e.target === copyModal) {
+                copyModal.classList.remove('active');
+                document.body.style.overflow = '';
+            }
+        });
+    </script>
+</body>
+</html>
