@@ -1,497 +1,1074 @@
-<html lang="zh-CN" id="html-lang">
+<!DOCTYPE html>
+<html lang="zh-CN" id="flyz-root">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>圆的旋转创意图形|数学|Flyz远征飞官网</title>
+    <title>圆的旋转创意图形|数学|2D圆旋创意图形引擎|Flyz远征飞官网</title>
+    <!-- 外部依赖 -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.2/dist/gsap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
     
+    <!-- Tailwind 深度定制 -->
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     colors: {
-                        primary: '#165DFF',
-                        secondary: '#FF7D00',
-                        light: '#FFFFFF',
-                        dark: '#333647'
+                        flyz: {
+                            primary: '#165DFF',
+                            secondary: '#FF7D00',
+                            tertiary: '#36CFC9',
+                            dark: '#0F172A',
+                            light: '#F8FAFC'
+                        }
                     },
-                    fontFamily: { inter: ['Inter', 'system-ui', 'sans-serif'] }
+                    fontFamily: {
+                        flyz: ['Inter', 'system-ui', 'sans-serif', 'monospace']
+                    },
+                    keyframes: {
+                        navFloat: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-3px)' }
+                        },
+                        gradientPulse: {
+                            '0%': { backgroundPosition: '0% 50%' },
+                            '50%': { backgroundPosition: '100% 50%' },
+                            '100%': { backgroundPosition: '0% 50%' }
+                        }
+                    },
+                    animation: {
+                        'nav-float': 'navFloat 3s ease-in-out infinite',
+                        'gradient-pulse': 'gradientPulse 8s ease infinite'
+                    }
                 }
             }
         }
     </script>
 
+    <!-- 工程化工具类 -->
     <style type="text/tailwindcss">
         @layer utilities {
             .content-auto { content-visibility: auto; }
-            .slider-thumb { appearance: none; width: 20px; height: 20px; border-radius: 50%; background: #165DFF; cursor: pointer; transition: all 0.2s ease; }
-            .slider-thumb:hover { transform: scale(1.2); background: #FF7D00; }
-            .slider-track { appearance: none; height: 6px; border-radius: 3px; background: rgba(0,0,0,0.1); }
-            .dark .slider-track { background: rgba(255,255,255,0.1); }
-            .shape-active { @apply bg-primary text-white border-primary; }
+            .canvas-layer { @apply absolute inset-0 w-full h-full; }
+            .control-card { @apply bg-flyz-light dark:bg-flyz-dark/80 rounded-xl p-6 shadow-lg backdrop-blur-md border border-gray-200 dark:border-gray-700 transition-all duration-500 hover:shadow-xl hover:-translate-y-1; }
+            .slider-base { @apply w-full h-2 rounded-full appearance-none cursor-pointer; }
+            .slider-thumb { @apply appearance-none w-6 h-6 rounded-full bg-flyz-primary hover:bg-flyz-secondary transition-all duration-300 hover:scale-125 focus:outline-none focus:ring-2 focus:ring-flyz-primary/50; }
+            .btn-flyz { @apply px-4 py-2 rounded-lg transition-all duration-300 flex items-center justify-center gap-2 font-medium; }
+            .shape-btn-active { @apply bg-flyz-primary text-white border-flyz-primary shadow-md shadow-flyz-primary/20; }
+            .circle-glow { @apply filter drop-shadow-[0_0_8px_rgba(22,93,255,0.6)]; }
+            .text-gradient { @apply bg-clip-text text-transparent bg-gradient-to-r from-flyz-primary to-flyz-secondary; }
         }
     </style>
 
+    <!-- 核心样式（硬件加速+精细化动效） -->
     <style>
-        .nav-gradient { background: linear-gradient(90deg, #165DFF, #4080FF, #7CB3FF, #FF7D00); background-size: 400% 400%; animation: gradientFlow 10s ease infinite; }
-        @keyframes gradientFlow { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
-        .text-float { display: inline-block; transition: transform 0.3s ease; }
-        .text-float:hover { transform: translateY(-3px) scale(1.05); }
-        .nav-item::after { content: ''; position: absolute; width: 0; height: 2px; bottom: 0; left: 0; background: white; transition: width 0.3s ease; }
-        .nav-item:hover::after { width: 100%; }
-        .nav-item:hover i, .nav-item:hover span { animation: bounce 0.6s ease; }
-        @keyframes bounce { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
-        canvas { display: block; touch-action: none; }
-        .dark-mode { background: #000; color: #fff; }
-        .dark-mode .bg-gray-50 { background: #1a1a1a; }
-        .dark-mode .border-gray-200 { border-color: #333; }
-        body { transition: background-color 0.3s ease; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'flyz', sans-serif; overflow-x: hidden; transition: background-color 0.5s ease, color 0.5s ease; }
+        canvas { display: block; touch-action: none; will-change: transform; }
+        
+        /* 导航栏渐变引擎 */
+        .nav-gradient {
+            background: linear-gradient(90deg, #165DFF, #36CFC9, #FF7D00, #165DFF);
+            background-size: 300% 300%;
+            animation: gradient-pulse 8s ease infinite;
+        }
+        
+        /* 滑块深度定制 */
+        input[type="range"]::-webkit-slider-thumb { @apply slider-thumb; }
+        input[type="range"]::-moz-range-thumb { @apply slider-thumb; }
+        input[type="range"]::-webkit-slider-runnable-track { @apply slider-base bg-gray-200 dark:bg-gray-700; }
+        input[type="range"]::-moz-range-track { @apply slider-base bg-gray-200 dark:bg-gray-700; }
+        
+        /* 图形绘制硬件加速 */
+        .draw-container { transform: translateZ(0); will-change: transform, opacity; }
+        
+        /* 暗黑模式无缝切换 */
+        .dark-mode { background-color: #0F172A; color: #F8FAFC; }
+        .dark-mode .bg-gray-50 { background-color: #1E293B; }
+        .dark-mode .border-gray-200 { border-color: #334155; }
+        .dark-mode .text-gray-600 { color: #94A3B8; }
+        
+        /* 粒子背景层级控制 */
+        #particles-js { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; opacity: 0.7; }
     </style>
 </head>
-<body class="font-inter bg-light text-dark m-0 p-0 overflow-x-hidden">
+<body class="bg-flyz-light text-flyz-dark font-flyz">
+    <!-- 粒子背景层 -->
     <div id="particles-js"></div>
-    <!-- 导航栏 -->
-    <header id="navbar" class="fixed w-full top-0 z-50 transition-all duration-500 py-2 shadow-lg">
+
+    <!-- 导航栏（视觉增强+交互深度定制） -->
+    <header id="flyz-nav" class="fixed w-full top-0 z-50 transition-all duration-500 py-3 shadow-lg">
         <nav class="nav-gradient py-4 px-6 md:px-12 shadow-md">
             <div class="container mx-auto flex justify-between items-center">
-                <a href="https://yzbjfpv.top/20250709.html" class="flex items-center space-x-3 group click-scale">
-                    <img src="https://img520.com/UIGuUV.jpeg" alt="Flyz远征飞Logo" class="h-10 w-auto object-contain rounded-md transition-all duration-500 group-hover:scale-110 rotate-6" onerror="this.onerror=null;this.src='https://picsum.photos/40/40'">
-                    <span class="text-white font-bold text-xl hidden md:inline transition-all duration-300 group-hover:tracking-wider">Flyz远征飞</span>
+                <!-- Logo 动效组合 -->
+                <a href="https://yzbjfpv.top/20250709.html" class="flex items-center space-x-3 group">
+                    <img 
+                        src="https://img520.com/UIGuUV.jpeg" 
+                        alt="Flyz远征飞Logo" 
+                        class="h-12 w-auto object-contain rounded-md transition-all duration-700 group-hover:scale-110 group-hover:rotate-12 group-hover:brightness-110"
+                        onerror="this.onerror=null;this.src='https://picsum.photos/60/60?random=1'"
+                    >
+                    <span class="text-white font-bold text-xl md:block hidden transition-all duration-500 group-hover:tracking-wider group-hover:animate-nav-float">Flyz远征飞</span>
                 </a>
-                <a href="https://yzbjfpv.top/20250709.html" class="text-white hover:text-light/80 transition-colors duration-300 nav-item click-scale">
-                    <i class="fa fa-home mr-2 text-float"></i><span class="text-float">官网首页</span>
+                
+                <!-- 导航项交互增强 -->
+                <a 
+                    href="https://yzbjfpv.top/20250709.html" 
+                    class="text-white hover:text-white/90 transition-all duration-300 relative group nav-item"
+                >
+                    <i class="fa fa-home mr-2 transition-all duration-300 group-hover:animate-bounce"></i>
+                    <span class="transition-all duration-300 group-hover:animate-nav-float">官网首页</span>
+                    <span class="absolute bottom-0 left-0 w-0 h-1 bg-white transition-all duration-300 group-hover:w-full"></span>
                 </a>
             </div>
         </nav>
     </header>
-        <!-- 主内容区 -->
-    <main class="container mx-auto pt-28 pb-12 px-4 md:px-8 flex flex-col lg:flex-row gap-8">
-        <!-- 左侧效果展示区 -->
-        <div class="lg:w-2/3 w-full h-[70vh] border border-gray-200 rounded-2xl overflow-hidden relative bg-gray-50 transition-transform hover:translate-y-[-6px]">
-            <canvas id="drawCanvas" class="w-full h-full"></canvas>
-            <div class="absolute top-4 left-4 bg-white/80 backdrop-blur-sm px-4 py-2 rounded-lg border border-gray-200">
-                <span id="shape-name" class="font-semibold text-primary">当前图形：花瓣阵列</span>
+        <!-- 主内容区：栅格化布局+响应式适配 -->
+    <main class="container mx-auto pt-32 pb-16 px-4 md:px-8 lg:px-12 flex flex-col lg:flex-row gap-8 relative z-10">
+        <!-- 左侧：多层画布容器（主画布+辅助层+交互层） -->
+        <div class="lg:w-2/3 w-full h-[75vh] rounded-2xl overflow-hidden relative draw-container border border-gray-200 dark:border-gray-700 bg-white/90 dark:bg-flyz-dark/90 shadow-xl hover:shadow-2xl transition-all duration-700">
+            <!-- 背景装饰层 -->
+            <div class="canvas-layer bg-gradient-to-br from-flyz-primary/5 to-flyz-secondary/5 dark:from-flyz-primary/10 dark:to-flyz-secondary/10"></div>
+            <!-- 主绘制画布 -->
+            <canvas id="mainCanvas" class="canvas-layer"></canvas>
+            <!-- 辅助网格层 -->
+            <canvas id="gridCanvas" class="canvas-layer opacity-30 dark:opacity-20"></canvas>
+            <!-- 交互提示层 -->
+            <div class="canvas-layer flex items-center justify-center pointer-events-none">
+                <div class="text-flyz-primary/20 dark:text-flyz-primary/30 text-5xl font-bold select-none">Flyz 2D 引擎</div>
             </div>
-            <div class="absolute top-4 right-4">
-                <button id="theme-toggle" class="px-3 py-2 rounded-lg bg-primary/10 text-primary hover:bg-primary/20 flex items-center gap-2">
-                    <i class="fa fa-moon-o"></i>
+            <!-- 顶部状态信息栏 -->
+            <div class="absolute top-4 left-4 right-4 flex justify-between items-center">
+                <div class="bg-white/80 dark:bg-flyz-dark/80 backdrop-blur-md px-4 py-2 rounded-lg border border-gray-200 dark:border-gray-700 shadow-md">
+                    <span id="currentShape" class="font-semibold text-flyz-primary text-lg">当前图形：<span class="text-gradient">动态花瓣阵列</span></span>
+                </div>
+                <button id="themeSwitch" class="btn-flyz bg-white/80 dark:bg-flyz-dark/80 backdrop-blur-md border border-gray-200 dark:border-gray-700 hover:bg-flyz-primary/10 dark:hover:bg-flyz-primary/20 transition-all duration-300">
+                    <i class="fa fa-moon-o dark:hidden"></i>
+                    <i class="fa fa-sun-o hidden dark:inline"></i>
                     <span class="text-sm">暗黑模式</span>
                 </button>
             </div>
+            <!-- 底部性能监控栏 -->
+            <div class="absolute bottom-4 left-4 bg-white/80 dark:bg-flyz-dark/80 backdrop-blur-md px-4 py-2 rounded-lg border border-gray-200 dark:border-gray-700 shadow-md text-xs text-gray-600 dark:text-gray-300">
+                <span id="fpsCounter">FPS: 60</span> | 
+                <span id="circleCount">圆数量: 12</span> | 
+                <span id="animationState">状态: 运行中</span>
+            </div>
         </div>
 
-        <!-- 右侧参数控制面板 -->
+        <!-- 右侧：参数控制区（分类收纳+层级分明） -->
         <div class="lg:w-1/3 w-full flex flex-col gap-6">
-            <!-- 图形选择 -->
-            <div class="space-y-3 bg-white rounded-xl p-6 shadow-md hover:shadow-lg transition-shadow">
-                <h3 class="text-lg font-semibold text-primary">选择创意图形</h3>
+            <!-- 分类1：图形选择器 -->
+            <div class="control-card">
+                <h3 class="text-xl font-bold text-flyz-primary mb-4 flex items-center gap-2">
+                    <i class="fa fa-shapes"></i> 创意图形库
+                </h3>
                 <div class="grid grid-cols-2 gap-3">
-                    <button class="shape-btn shape-active px-4 py-2 rounded-lg border border-gray-300 transition-colors" data-shape="petal">花瓣阵列</button>
-                    <button class="shape-btn px-4 py-2 rounded-lg border border-gray-300 transition-colors" data-shape="star">星型组合</button>
-                    <button class="shape-btn px-4 py-2 rounded-lg border border-gray-300 transition-colors" data-shape="spiral">螺旋图案</button>
-                    <button class="shape-btn px-4 py-2 rounded-lg border border-gray-300 transition-colors" data-shape="circleArray">圆周阵列</button>
-                    <button class="shape-btn px-4 py-2 rounded-lg border border-gray-300 transition-colors" data-shape="flower">多层花朵</button>
-                    <button class="shape-btn px-4 py-2 rounded-lg border border-gray-300 transition-colors" data-shape="gear">齿轮组合</button>
+                    <button class="shape-selector btn-flyz border shape-btn-active" data-shape="petalArray">动态花瓣阵列</button>
+                    <button class="shape-selector btn-flyz border" data-shape="starGear">星型齿轮组合</button>
+                    <button class="shape-selector btn-flyz border" data-shape="spiralGalaxy">螺旋星系</button>
+                    <button class="shape-selector btn-flyz border" data-shape="flowerNest">多层花巢</button>
+                    <button class="shape-selector btn-flyz border" data-shape="circleVortex">圆形漩涡</button>
+                    <button class="shape-selector btn-flyz border" data-shape="customPolygon">自定义多边形</button>
                 </div>
             </div>
 
-            <!-- 基础参数调节 -->
-            <div class="space-y-4 bg-white rounded-xl p-6 shadow-md hover:shadow-lg transition-shadow">
-                <h3 class="text-lg font-semibold text-primary">基础参数</h3>
+            <!-- 分类2：基础参数调节 -->
+            <div class="control-card">
+                <h3 class="text-xl font-bold text-flyz-primary mb-4 flex items-center gap-2">
+                    <i class="fa fa-sliders"></i> 基础参数
+                </h3>
                 <!-- 圆数量 -->
-                <div class="space-y-2">
+                <div class="space-y-3 mb-4">
                     <div class="flex justify-between items-center">
-                        <label class="text-sm font-medium">圆的数量</label>
-                        <span id="count-value" class="bg-primary/10 text-primary px-3 py-1 rounded-full text-sm">12</span>
+                        <label class="font-medium">圆数量</label>
+                        <span id="countDisplay" class="bg-flyz-primary/10 text-flyz-primary px-2 py-1 rounded-full text-sm w-12 text-center">12</span>
                     </div>
-                    <input type="range" min="3" max="36" value="12" class="w-full slider-track slider-thumb" id="count-slider">
+                    <input type="range" id="countSlider" min="3" max="60" value="12" class="slider-base" />
+                    <div class="flex justify-between text-xs text-gray-500 dark:text-gray-400">
+                        <span>最少3个</span>
+                        <span>最多60个</span>
+                    </div>
                 </div>
-                <!-- 圆半径 -->
-                <div class="space-y-2">
+                                <!-- 单个圆半径 -->
+                <div class="space-y-3 mb-4">
                     <div class="flex justify-between items-center">
-                        <label class="text-sm font-medium">单个圆半径</label>
-                        <span id="radius-value" class="bg-primary/10 text-primary px-3 py-1 rounded-full text-sm">20</span>
+                        <label class="font-medium">单个圆半径</label>
+                        <span id="radiusDisplay" class="bg-flyz-primary/10 text-flyz-primary px-2 py-1 rounded-full text-sm w-12 text-center">20</span>
                     </div>
-                    <input type="range" min="5" max="50" value="20" class="w-full slider-track slider-thumb" id="radius-slider">
+                    <input type="range" id="radiusSlider" min="5" max="50" value="20" class="slider-base" />
+                    <div class="flex justify-between text-xs text-gray-500 dark:text-gray-400">
+                        <span>最小5px</span>
+                        <span>最大50px</span>
+                    </div>
                 </div>
-                <!-- 旋转半径 -->
-                <div class="space-y-2">
+                <!-- 旋转阵列半径 -->
+                <div class="space-y-3">
                     <div class="flex justify-between items-center">
-                        <label class="text-sm font-medium">旋转阵列半径</label>
-                        <span id="rotate-radius-value" class="bg-primary/10 text-primary px-3 py-1 rounded-full text-sm">150</span>
+                        <label class="font-medium">阵列旋转半径</label>
+                        <span id="rotateRadiusDisplay" class="bg-flyz-primary/10 text-flyz-primary px-2 py-1 rounded-full text-sm w-12 text-center">150</span>
                     </div>
-                    <input type="range" min="50" max="300" value="150" class="w-full slider-track slider-thumb" id="rotate-radius-slider">
-                </div>
-            </div>
-                        <!-- 动画参数调节 -->
-            <div class="space-y-4 bg-white rounded-xl p-6 shadow-md hover:shadow-lg transition-shadow">
-                <h3 class="text-lg font-semibold text-primary">动画参数</h3>
-                <!-- 旋转速度 -->
-                <div class="space-y-2">
-                    <div class="flex justify-between items-center">
-                        <label class="text-sm font-medium">旋转速度</label>
-                        <span id="speed-value" class="bg-primary/10 text-primary px-3 py-1 rounded-full text-sm">0.5</span>
+                    <input type="range" id="rotateRadiusSlider" min="50" max="350" value="150" class="slider-base" />
+                    <div class="flex justify-between text-xs text-gray-500 dark:text-gray-400">
+                        <span>最小50px</span>
+                        <span>最大350px</span>
                     </div>
-                    <input type="range" min="0" max="2" step="0.1" value="0.5" class="w-full slider-track slider-thumb" id="speed-slider">
-                </div>
-                <!-- 缩放幅度 -->
-                <div class="space-y-2">
-                    <div class="flex justify-between items-center">
-                        <label class="text-sm font-medium">缩放幅度</label>
-                        <span id="scale-value" class="bg-primary/10 text-primary px-3 py-1 rounded-full text-sm">1.0</span>
-                    </div>
-                    <input type="range" min="0.5" max="2" step="0.1" value="1.0" class="w-full slider-track slider-thumb" id="scale-slider">
-                </div>
-                <!-- 主色调选择 -->
-                <div class="space-y-2">
-                    <label class="text-sm font-medium">主色调</label>
-                    <input type="color" value="#165DFF" class="w-full h-10 rounded-lg cursor-pointer" id="color-picker">
                 </div>
             </div>
 
-            <!-- 控制按钮 -->
-            <div class="grid grid-cols-2 gap-3">
-                <button id="play-btn" class="px-4 py-3 bg-primary text-white rounded-lg flex items-center justify-center gap-2 transition-colors hover:bg-primary/90">
-                    <i class="fa fa-pause"></i>
-                    <span>暂停动画</span>
+            <!-- 分类3：高级动画参数 -->
+            <div class="control-card">
+                <h3 class="text-xl font-bold text-flyz-primary mb-4 flex items-center gap-2">
+                    <i class="fa fa-bolt"></i> 高级动画参数
+                </h3>
+                <!-- 旋转速度 -->
+                <div class="space-y-3 mb-4">
+                    <div class="flex justify-between items-center">
+                        <label class="font-medium">旋转速度</label>
+                        <span id="speedDisplay" class="bg-flyz-primary/10 text-flyz-primary px-2 py-1 rounded-full text-sm w-12 text-center">0.5</span>
+                    </div>
+                    <input type="range" id="speedSlider" min="0" max="3" step="0.1" value="0.5" class="slider-base" />
+                    <div class="flex justify-between text-xs text-gray-500 dark:text-gray-400">
+                        <span>静止</span>
+                        <span>极速旋转</span>
+                    </div>
+                </div>
+                <!-- 缩放波动幅度 -->
+                <div class="space-y-3 mb-4">
+                    <div class="flex justify-between items-center">
+                        <label class="font-medium">缩放波动幅度</label>
+                        <span id="scaleWaveDisplay" class="bg-flyz-primary/10 text-flyz-primary px-2 py-1 rounded-full text-sm w-12 text-center">0.3</span>
+                    </div>
+                    <input type="range" id="scaleWaveSlider" min="0" max="1" step="0.1" value="0.3" class="slider-base" />
+                    <div class="flex justify-between text-xs text-gray-500 dark:text-gray-400">
+                        <span>无波动</span>
+                        <span>剧烈波动</span>
+                    </div>
+                </div>
+                <!-- 颜色偏移速度 -->
+                <div class="space-y-3">
+                    <div class="flex justify-between items-center">
+                        <label class="font-medium">颜色偏移速度</label>
+                        <span id="colorSpeedDisplay" class="bg-flyz-primary/10 text-flyz-primary px-2 py-1 rounded-full text-sm w-12 text-center">0.2</span>
+                    </div>
+                    <input type="range" id="colorSpeedSlider" min="0" max="1" step="0.1" value="0.2" class="slider-base" />
+                    <div class="flex justify-between text-xs text-gray-500 dark:text-gray-400">
+                        <span>固定颜色</span>
+                        <span>快速变色</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 分类4：颜色与特效控制 -->
+            <div class="control-card">
+                <h3 class="text-xl font-bold text-flyz-primary mb-4 flex items-center gap-2">
+                    <i class="fa fa-palette"></i> 颜色与特效
+                </h3>
+                <!-- 主色调选择 -->
+                <div class="space-y-3 mb-4">
+                    <label class="font-medium">主色调</label>
+                    <input type="color" id="mainColorPicker" value="#165DFF" class="w-full h-12 rounded-lg cursor-pointer" />
+                </div>
+                <!-- 特效开关 -->
+                <div class="flex flex-col gap-3">
+                    <label class="flex items-center gap-2 cursor-pointer">
+                        <input type="checkbox" id="glowEffect" checked class="w-5 h-5 accent-flyz-primary" />
+                        <span>启用圆发光特效</span>
+                    </label>
+                    <label class="flex items-center gap-2 cursor-pointer">
+                        <input type="checkbox" id="trailEffect" checked class="w-5 h-5 accent-flyz-primary" />
+                        <span>启用运动轨迹特效</span>
+                    </label>
+                    <label class="flex items-center gap-2 cursor-pointer">
+                        <input type="checkbox" id="gridEffect" checked class="w-5 h-5 accent-flyz-primary" />
+                        <span>显示辅助网格</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- 分类5：核心控制按钮 -->
+            <div class="grid grid-cols-2 gap-4">
+                <button id="playPauseBtn" class="btn-flyz bg-flyz-primary text-white hover:bg-flyz-primary/90 shadow-md shadow-flyz-primary/30">
+                    <i class="fa fa-pause"></i> 暂停动画
                 </button>
-                <button id="reset-btn" class="px-4 py-3 border border-gray-300 rounded-lg flex items-center justify-center gap-2 transition-colors hover:bg-gray-100">
-                    <i class="fa fa-refresh"></i>
-                    <span>重置参数</span>
+                <button id="resetBtn" class="btn-flyz border border-gray-300 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800">
+                    <i class="fa fa-refresh"></i> 重置所有参数
+                </button>
+                <button id="saveBtn" class="btn-flyz bg-flyz-secondary text-white hover:bg-flyz-secondary/90 shadow-md shadow-flyz-secondary/30 col-span-2">
+                    <i class="fa fa-download"></i> 导出当前图形（PNG）
                 </button>
             </div>
         </div>
     </main>
 
-    <!-- 页脚 -->
-    <footer class="bg-gray-50 border-t border-gray-200 py-8 mt-8">
+    <!-- 页脚：品牌强化+版权信息 -->
+    <footer class="bg-white dark:bg-flyz-dark border-t border-gray-200 dark:border-gray-700 py-8 relative z-10">
         <div class="container mx-auto px-4 text-center">
-            <p class="text-gray-600">© 2025 www.YZBJFPV.top Flyz远征飞官网 数学学科活动展示</p>
-            <a href="https://b23.tv/JXuI9QA" class="text-primary hover:text-secondary transition-colors mt-2 inline-block">
-                <i class="fa fa-play-circle mr-1"></i>哔哩哔哩｜Flyz远征飞官方账号
+            <p class="text-gray-600 dark:text-gray-300 mb-3">© 2025 www.YZBJFPV.top <span class="text-gradient font-bold">Flyz远征飞</span> 官网 | 2D 图形引擎演示</p>
+            <a href="https://b23.tv/JXuI9QA" class="text-flyz-primary dark:text-flyz-tertiary hover:text-flyz-secondary transition-colors inline-flex items-center gap-1">
+                <i class="fa fa-play-circle"></i> 哔哩哔哩官方账号
             </a>
         </div>
     </footer>
-
-    <!-- 粒子效果脚本 -->
-    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
         <script>
-        // 粒子效果配置
-        particlesJS('particles-js', {
-            "particles": {
-                "number": { "value": 60, "density": { "enable": true, "value_area": 800 } },
-                "color": { "value": ["#165DFF", "#FF7D00"] },
-                "shape": { "type": ["circle", "arc"] },
-                "opacity": { "value": 0.4, "random": true },
-                "size": { "value": 3, "random": true },
-                "line_linked": {
-                    "enable": true,
-                    "distance": 150,
-                    "color": "#4080FF",
-                    "opacity": 0.2,
-                    "width": 1
-                },
-                "move": {
-                    "enable": true,
-                    "speed": 1,
-                    "direction": "none",
-                    "random": true,
-                    "straight": false,
-                    "out_mode": "out"
-                }
+        // ==================== 全局配置系统 ====================
+        const CONFIG = {
+            // 画布配置
+            canvas: {
+                main: null,
+                grid: null,
+                ctxMain: null,
+                ctxGrid: null,
+                width: 0,
+                height: 0,
+                centerX: 0,
+                centerY: 0
             },
-            "interactivity": {
-                "detect_on": "canvas",
-                "events": {
-                    "onhover": { "enable": true, "mode": "grab" },
-                    "onclick": { "enable": true, "mode": "push" },
-                    "resize": true
+            // 粒子背景配置
+            particles: {
+                number: { value: 80, density: { enable: true, value_area: 800 } },
+                color: { value: ["#165DFF", "#FF7D00", "#36CFC9"] },
+                shape: { type: ["circle", "arc"] },
+                opacity: { value: 0.5, random: true },
+                size: { value: 4, random: true },
+                line_linked: {
+                    enable: true,
+                    distance: 160,
+                    color: "#165DFF",
+                    opacity: 0.3,
+                    width: 1
                 },
-                "modes": {
-                    "grab": { "distance": 140, "line_linked": { "opacity": 0.5 } },
-                    "push": { "particles_nb": 4 }
-                }
+                move: { enable: true, speed: 1.5, direction: "none", random: true, out_mode: "out" }
             },
-            "retina_detect": true
-        });
-
-        // 获取DOM元素
-        const canvas = document.getElementById('drawCanvas');
-        const ctx = canvas.getContext('2d');
-        const themeToggle = document.getElementById('theme-toggle');
-        const shapeBtns = document.querySelectorAll('.shape-btn');
-        const countSlider = document.getElementById('count-slider');
-        const radiusSlider = document.getElementById('radius-slider');
-        const rotateRadiusSlider = document.getElementById('rotate-radius-slider');
-        const speedSlider = document.getElementById('speed-slider');
-        const scaleSlider = document.getElementById('scale-slider');
-        const colorPicker = document.getElementById('color-picker');
-        const playBtn = document.getElementById('play-btn');
-        const resetBtn = document.getElementById('reset-btn');
-        const shapeName = document.getElementById('shape-name');
-        const countValue = document.getElementById('count-value');
-        const radiusValue = document.getElementById('radius-value');
-        const rotateRadiusValue = document.getElementById('rotate-radius-value');
-        const speedValue = document.getElementById('speed-value');
-        const scaleValue = document.getElementById('scale-value');
-
-        // 初始化参数
-        let params = {
-            shape: 'petal',
-            count: 12,
-            radius: 20,
-            rotateRadius: 150,
-            speed: 0.5,
-            scale: 1.0,
-            color: '#165DFF',
-            isPlaying: true,
-            angle: 0
-        };
-
-        // 画布尺寸适配
-        function resizeCanvas() {
-            canvas.width = canvas.offsetWidth;
-            canvas.height = canvas.offsetHeight;
-            draw();
-        }
-        window.addEventListener('resize', resizeCanvas);
-        resizeCanvas();
-
-        // 暗黑模式切换
-        themeToggle.addEventListener('click', () => {
-            document.body.classList.toggle('dark-mode');
-            const isDark = document.body.classList.contains('dark-mode');
-            themeToggle.innerHTML = isDark 
-                ? '<i class="fa fa-sun-o"></i><span class="text-sm">浅色模式</span>' 
-                : '<i class="fa fa-moon-o"></i><span class="text-sm">暗黑模式</span>';
-            draw();
-        });
-
-        // 图形选择事件
-        shapeBtns.forEach(btn => {
-            btn.addEventListener('click', () => {
-                shapeBtns.forEach(b => b.classList.remove('shape-active'));
-                btn.classList.add('shape-active');
-                params.shape = btn.dataset.shape;
-                shapeName.textContent = `当前图形：${btn.textContent}`;
-                draw();
-            });
-        });
-
-        // 滑块参数更新
-        countSlider.addEventListener('input', () => {
-            params.count = parseInt(countSlider.value);
-            countValue.textContent = params.count;
-            draw();
-        });
-
-        radiusSlider.addEventListener('input', () => {
-            params.radius = parseInt(radiusSlider.value);
-            radiusValue.textContent = params.radius;
-            draw();
-        });
-
-        rotateRadiusSlider.addEventListener('input', () => {
-            params.rotateRadius = parseInt(rotateRadiusSlider.value);
-            rotateRadiusValue.textContent = params.rotateRadius;
-            draw();
-        });
-
-        speedSlider.addEventListener('input', () => {
-            params.speed = parseFloat(speedSlider.value);
-            speedValue.textContent = params.speed;
-        });
-
-        scaleSlider.addEventListener('input', () => {
-            params.scale = parseFloat(scaleSlider.value);
-            scaleValue.textContent = params.scale;
-            draw();
-        });
-
-        colorPicker.addEventListener('input', () => {
-            params.color = colorPicker.value;
-            draw();
-        });
-
-        // 播放暂停与重置
-        playBtn.addEventListener('click', () => {
-            params.isPlaying = !params.isPlaying;
-            playBtn.innerHTML = params.isPlaying 
-                ? '<i class="fa fa-pause"></i><span>暂停动画</span>' 
-                : '<i class="fa fa-play"></i><span>播放动画</span>';
-        });
-
-        resetBtn.addEventListener('click', () => {
-            params = {
-                shape: 'petal',
+            // 动画参数（响应式联动）
+            animation: {
+                isPlaying: true,
+                angle: 0,
+                fps: 60,
+                lastTime: 0,
+                deltaTime: 0
+            },
+            // 图形参数（精细化控制）
+            shape: {
+                type: "petalArray",
                 count: 12,
                 radius: 20,
                 rotateRadius: 150,
                 speed: 0.5,
-                scale: 1.0,
-                color: '#165DFF',
-                isPlaying: true,
-                angle: 0
-            };
-            countSlider.value = 12;
-            radiusSlider.value = 20;
-            rotateRadiusSlider.value = 150;
-            speedSlider.value = 0.5;
-            scaleSlider.value = 1.0;
-            colorPicker.value = '#165DFF';
-            countValue.textContent = 12;
-            radiusValue.textContent = 20;
-            rotateRadiusValue.textContent = 150;
-            speedValue.textContent = 0.5;
-            scaleValue.textContent = 1.0;
-            shapeBtns.forEach(b => b.classList.remove('shape-active'));
-            shapeBtns[0].classList.add('shape-active');
-            shapeName.textContent = '当前图形：花瓣阵列';
-            playBtn.innerHTML = '<i class="fa fa-pause"></i><span>暂停动画</span>';
-            draw();
-        });
-                  // 绘制花瓣阵列
-        function drawPetal() {
-            const centerX = canvas.width / 2;
-            const centerY = canvas.height / 2;
-            const angleStep = (Math.PI * 2) / params.count;
-            ctx.save();
-            ctx.scale(params.scale, params.scale);
-            ctx.translate((centerX / params.scale) - centerX, (centerY / params.scale) - centerY);
-            for (let i = 0; i < params.count; i++) {
-                const angle = i * angleStep + params.angle;
-                const x = centerX + params.rotateRadius * Math.cos(angle);
-                const y = centerY + params.rotateRadius * Math.sin(angle);
-                ctx.beginPath();
-                ctx.arc(x, y, params.radius, 0, Math.PI * 2);
-                ctx.fillStyle = params.color;
-                ctx.fill();
-                ctx.strokeStyle = '#fff';
-                ctx.lineWidth = 2;
-                ctx.stroke();
-                // 内层小圆
-                ctx.beginPath();
-                ctx.arc(x, y, params.radius / 3, 0, Math.PI * 2);
-                ctx.fillStyle = '#fff';
-                ctx.fill();
+                scaleWave: 0.3,
+                colorSpeed: 0.2,
+                mainColor: "#165DFF",
+                glow: true,
+                trail: true,
+                grid: true,
+                trailPoints: [],
+                trailMax: 30
             }
-            ctx.restore();
+        };
+
+        // ==================== DOM元素获取与初始化 ====================
+        const DOM = {
+            // 画布元素
+            mainCanvas: document.getElementById("mainCanvas"),
+            gridCanvas: document.getElementById("gridCanvas"),
+            // 控制面板
+            currentShape: document.getElementById("currentShape"),
+            fpsCounter: document.getElementById("fpsCounter"),
+            circleCount: document.getElementById("circleCount"),
+            animationState: document.getElementById("animationState"),
+            themeSwitch: document.getElementById("themeSwitch"),
+            // 滑块与显示
+            countSlider: document.getElementById("countSlider"),
+            countDisplay: document.getElementById("countDisplay"),
+            radiusSlider: document.getElementById("radiusSlider"),
+            radiusDisplay: document.getElementById("radiusDisplay"),
+            rotateRadiusSlider: document.getElementById("rotateRadiusSlider"),
+            rotateRadiusDisplay: document.getElementById("rotateRadiusDisplay"),
+            speedSlider: document.getElementById("speedSlider"),
+            speedDisplay: document.getElementById("speedDisplay"),
+            scaleWaveSlider: document.getElementById("scaleWaveSlider"),
+            scaleWaveDisplay: document.getElementById("scaleWaveDisplay"),
+            colorSpeedSlider: document.getElementById("colorSpeedSlider"),
+            colorSpeedDisplay: document.getElementById("colorSpeedDisplay"),
+            // 颜色与特效
+            mainColorPicker: document.getElementById("mainColorPicker"),
+            glowEffect: document.getElementById("glowEffect"),
+            trailEffect: document.getElementById("trailEffect"),
+            gridEffect: document.getElementById("gridEffect"),
+            // 控制按钮
+            playPauseBtn: document.getElementById("playPauseBtn"),
+            resetBtn: document.getElementById("resetBtn"),
+            saveBtn: document.getElementById("saveBtn"),
+            // 图形选择器
+            shapeSelectors: document.querySelectorAll(".shape-selector")
+        };
+
+        // ==================== 工具函数库（高性能） ====================
+        /**
+         * HSL颜色转换 - 支持颜色偏移动画
+         * @param {number} hue 色相 0-360
+         * @param {number} saturation 饱和度 0-100
+         * @param {number} lightness 亮度 0-100
+         * @returns {string} 十六进制颜色
+         */
+        function hslToHex(hue, saturation, lightness) {
+            hue = hue % 360;
+            saturation = Math.max(0, Math.min(100, saturation));
+            lightness = Math.max(0, Math.min(100, lightness));
+            const s = saturation / 100;
+            const l = lightness / 100;
+            const c = (1 - Math.abs(2 * l - 1)) * s;
+            const x = c * (1 - Math.abs((hue / 60) % 2 - 1));
+            const m = l - c / 2;
+            let r = 0, g = 0, b = 0;
+            if (0 <= hue && hue < 60) { r = c; g = x; }
+            else if (60 <= hue && hue < 120) { r = x; g = c; }
+            else if (120 <= hue && hue < 180) { g = c; b = x; }
+            else if (180 <= hue && hue < 240) { g = x; b = c; }
+            else if (240 <= hue && hue < 300) { r = x; b = c; }
+            else if (300 <= hue && hue < 360) { r = c; b = x; }
+            r = Math.round((r + m) * 255).toString(16).padStart(2, "0");
+            g = Math.round((g + m) * 255).toString(16).padStart(2, "0");
+            b = Math.round((b + m) * 255).toString(16).padStart(2, "0");
+            return `#${r}${g}${b}`;
         }
 
-        // 绘制星型组合
-        function drawStar() {
-            const centerX = canvas.width / 2;
-            const centerY = canvas.height / 2;
-            const angleStep = (Math.PI * 2) / params.count;
-            ctx.save();
-            ctx.scale(params.scale, params.scale);
-            ctx.translate((centerX / params.scale) - centerX, (centerY / params.scale) - centerY);
-            // 星型连线
+        /**
+         * 计算两点之间的距离
+         * @param {number} x1 
+         * @param {number} y1 
+         * @param {number} x2 
+         * @param {number} y2 
+         * @returns {number} 距离
+         */
+        function getDistance(x1, y1, x2, y2) {
+            return Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
+        }
+
+        /**
+         * 防抖函数 - 优化resize性能
+         * @param {Function} func 
+         * @param {number} wait 
+         * @returns {Function} 防抖函数
+         */
+        function debounce(func, wait = 100) {
+            let timeout;
+            return function(...args) {
+                clearTimeout(timeout);
+                timeout = setTimeout(() => func.apply(this, args), wait);
+            };
+        }
+
+        // ==================== 画布初始化 ====================
+        function initCanvas() {
+            // 绑定画布上下文
+            CONFIG.canvas.main = DOM.mainCanvas;
+            CONFIG.canvas.grid = DOM.gridCanvas;
+            CONFIG.canvas.ctxMain = CONFIG.canvas.main.getContext("2d");
+            CONFIG.canvas.ctxGrid = CONFIG.canvas.grid.getContext("2d");
+            
+            // 设置画布尺寸（设备像素比适配，解决模糊问题）
+            function resizeCanvas() {
+                const { offsetWidth, offsetHeight } = CONFIG.canvas.main;
+                const dpr = window.devicePixelRatio || 1;
+                CONFIG.canvas.width = offsetWidth * dpr;
+                CONFIG.canvas.height = offsetHeight * dpr;
+                CONFIG.canvas.centerX = CONFIG.canvas.width / 2;
+                CONFIG.canvas.centerY = CONFIG.canvas.height / 2;
+
+                // 应用尺寸
+                CONFIG.canvas.main.width = CONFIG.canvas.width;
+                CONFIG.canvas.main.height = CONFIG.canvas.height;
+                CONFIG.canvas.grid.width = CONFIG.canvas.width;
+                CONFIG.canvas.grid.height = CONFIG.canvas.height;
+
+                // 缩放上下文以适配设备像素比
+                CONFIG.canvas.ctxMain.scale(dpr, dpr);
+                CONFIG.canvas.ctxGrid.scale(dpr, dpr);
+
+                // 重新绘制网格
+                if (CONFIG.shape.grid) drawGrid();
+            }
+
+            // 绑定resize事件（防抖）
+            window.addEventListener("resize", debounce(resizeCanvas));
+            resizeCanvas();
+        }
+
+        // ==================== 网格绘制函数 ====================
+        function drawGrid() {
+            const ctx = CONFIG.canvas.ctxGrid;
+            const { width, height } = CONFIG.canvas.main;
+            const gridSize = 40;
+            const color = document.body.classList.contains("dark-mode") ? "#334155" : "#e5e7eb";
+            
+            // 清空网格画布
+            ctx.clearRect(0, 0, width, height);
+            ctx.strokeStyle = color;
+            ctx.lineWidth = 1;
+
+            // 绘制竖线
+            for (let x = 0; x <= width; x += gridSize) {
+                ctx.beginPath();
+                ctx.moveTo(x, 0);
+                ctx.lineTo(x, height);
+                ctx.stroke();
+            }
+
+            // 绘制横线
+            for (let y = 0; y <= height; y += gridSize) {
+                ctx.beginPath();
+                ctx.moveTo(0, y);
+                ctx.lineTo(width, y);
+                ctx.stroke();
+            }
+
+            // 绘制中心十字线
+            ctx.strokeStyle = document.body.classList.contains("dark-mode") ? "#475569" : "#94A3B8";
+            ctx.lineWidth = 2;
             ctx.beginPath();
-            for (let i = 0; i < params.count; i++) {
-                const angle = i * angleStep + params.angle;
-                const x = centerX + params.rotateRadius * Math.cos(angle);
-                const y = centerY + params.rotateRadius * Math.sin(angle);
+            ctx.moveTo(CONFIG.canvas.centerX / window.devicePixelRatio, 0);
+            ctx.lineTo(CONFIG.canvas.centerX / window.devicePixelRatio, height);
+            ctx.moveTo(0, CONFIG.canvas.centerY / window.devicePixelRatio);
+            ctx.lineTo(width, CONFIG.canvas.centerY / window.devicePixelRatio);
+            ctx.stroke();
+        }
+                    // ==================== 事件绑定系统 ====================
+        function bindEvents() {
+            // 暗黑模式切换
+            DOM.themeSwitch.addEventListener("click", () => {
+                document.body.classList.toggle("dark-mode");
+                if (CONFIG.shape.grid) drawGrid();
+                draw();
+            });
+
+            // 图形选择器事件
+            DOM.shapeSelectors.forEach(btn => {
+                btn.addEventListener("click", () => {
+                    DOM.shapeSelectors.forEach(b => b.classList.remove("shape-btn-active"));
+                    btn.classList.add("shape-btn-active");
+                    CONFIG.shape.type = btn.dataset.shape;
+                    DOM.currentShape.innerHTML = `当前图形：<span class="text-gradient">${btn.textContent}</span>`;
+                    // 清空轨迹点
+                    CONFIG.shape.trailPoints = [];
+                    draw();
+                });
+            });
+
+            // 滑块参数联动（实时响应）
+            DOM.countSlider.addEventListener("input", () => {
+                CONFIG.shape.count = parseInt(DOM.countSlider.value);
+                DOM.countDisplay.textContent = CONFIG.shape.count;
+                DOM.circleCount.textContent = `圆数量: ${CONFIG.shape.count}`;
+                CONFIG.shape.trailPoints = [];
+                draw();
+            });
+
+            DOM.radiusSlider.addEventListener("input", () => {
+                CONFIG.shape.radius = parseInt(DOM.radiusSlider.value);
+                DOM.radiusDisplay.textContent = CONFIG.shape.radius;
+                draw();
+            });
+
+            DOM.rotateRadiusSlider.addEventListener("input", () => {
+                CONFIG.shape.rotateRadius = parseInt(DOM.rotateRadiusSlider.value);
+                DOM.rotateRadiusDisplay.textContent = CONFIG.shape.rotateRadius;
+                draw();
+            });
+
+            DOM.speedSlider.addEventListener("input", () => {
+                CONFIG.shape.speed = parseFloat(DOM.speedSlider.value);
+                DOM.speedDisplay.textContent = CONFIG.shape.speed;
+            });
+
+            DOM.scaleWaveSlider.addEventListener("input", () => {
+                CONFIG.shape.scaleWave = parseFloat(DOM.scaleWaveSlider.value);
+                DOM.scaleWaveDisplay.textContent = CONFIG.shape.scaleWave;
+            });
+
+            DOM.colorSpeedSlider.addEventListener("input", () => {
+                CONFIG.shape.colorSpeed = parseFloat(DOM.colorSpeedSlider.value);
+                DOM.colorSpeedDisplay.textContent = CONFIG.shape.colorSpeed;
+            });
+
+            // 颜色选择器
+            DOM.mainColorPicker.addEventListener("input", () => {
+                CONFIG.shape.mainColor = DOM.mainColorPicker.value;
+                draw();
+            });
+
+            // 特效开关
+            DOM.glowEffect.addEventListener("change", () => {
+                CONFIG.shape.glow = DOM.glowEffect.checked;
+                draw();
+            });
+
+            DOM.trailEffect.addEventListener("change", () => {
+                CONFIG.shape.trail = DOM.trailEffect.checked;
+                CONFIG.shape.trailPoints = [];
+                draw();
+            });
+
+            DOM.gridEffect.addEventListener("change", () => {
+                CONFIG.shape.grid = DOM.gridEffect.checked;
+                CONFIG.shape.grid ? drawGrid() : CONFIG.canvas.ctxGrid.clearRect(0, 0, CONFIG.canvas.width, CONFIG.canvas.height);
+            });
+
+            // 播放暂停按钮
+            DOM.playPauseBtn.addEventListener("click", () => {
+                CONFIG.animation.isPlaying = !CONFIG.animation.isPlaying;
+                DOM.playPauseBtn.innerHTML = CONFIG.animation.isPlaying 
+                    ? '<i class="fa fa-pause"></i> 暂停动画' 
+                    : '<i class="fa fa-play"></i> 播放动画';
+                DOM.animationState.textContent = CONFIG.animation.isPlaying ? "状态: 运行中" : "状态: 暂停";
+            });
+
+            // 重置按钮
+            DOM.resetBtn.addEventListener("click", () => {
+                // 重置参数
+                CONFIG.shape = {
+                    type: "petalArray",
+                    count: 12,
+                    radius: 20,
+                    rotateRadius: 150,
+                    speed: 0.5,
+                    scaleWave: 0.3,
+                    colorSpeed: 0.2,
+                    mainColor: "#165DFF",
+                    glow: true,
+                    trail: true,
+                    grid: true,
+                    trailPoints: [],
+                    trailMax: 30
+                };
+
+                // 同步DOM
+                DOM.countSlider.value = 12;
+                DOM.radiusSlider.value = 20;
+                DOM.rotateRadiusSlider.value = 150;
+                DOM.speedSlider.value = 0.5;
+                DOM.scaleWaveSlider.value = 0.3;
+                DOM.colorSpeedSlider.value = 0.2;
+                DOM.mainColorPicker.value = "#165DFF";
+                DOM.glowEffect.checked = true;
+                DOM.trailEffect.checked = true;
+                DOM.gridEffect.checked = true;
+
+                // 同步显示
+                DOM.countDisplay.textContent = 12;
+                DOM.radiusDisplay.textContent = 20;
+                DOM.rotateRadiusDisplay.textContent = 150;
+                DOM.speedDisplay.textContent = 0.5;
+                DOM.scaleWaveDisplay.textContent = 0.3;
+                DOM.colorSpeedDisplay.textContent = 0.2;
+                DOM.circleCount.textContent = `圆数量: 12`;
+                DOM.currentShape.innerHTML = `当前图形：<span class="text-gradient">动态花瓣阵列</span>`;
+                DOM.animationState.textContent = "状态: 运行中";
+                DOM.playPauseBtn.innerHTML = '<i class="fa fa-pause"></i> 暂停动画';
+
+                // 重置图形选择器样式
+                DOM.shapeSelectors.forEach(b => b.classList.remove("shape-btn-active"));
+                Array.from(DOM.shapeSelectors).find(b => b.dataset.shape === "petalArray").classList.add("shape-btn-active");
+
+                // 重置动画状态
+                CONFIG.animation.isPlaying = true;
+                CONFIG.animation.angle = 0;
+                CONFIG.shape.trailPoints = [];
+                
+                // 重绘网格和图形
+                CONFIG.shape.grid ? drawGrid() : CONFIG.canvas.ctxGrid.clearRect(0, 0, CONFIG.canvas.width, CONFIG.canvas.height);
+                draw();
+            });
+
+            // 导出图片按钮
+            DOM.saveBtn.addEventListener("click", () => {
+                const link = document.createElement("a");
+                link.download = `Flyz-2D图形-${CONFIG.shape.type}-${new Date().getTime()}.png`;
+                link.href = CONFIG.canvas.main.toDataURL("image/png");
+                link.click();
+            });
+        }
+
+        // ==================== 核心图形绘制函数 ====================
+        function draw() {
+            const ctx = CONFIG.canvas.ctxMain;
+            const { centerX, centerY } = CONFIG.canvas;
+            const { count, radius, rotateRadius, scaleWave, colorSpeed, mainColor, glow, trail, trailPoints, trailMax } = CONFIG.shape;
+            const angleStep = (Math.PI * 2) / count;
+            const currentHue = parseInt(mainColor.replace("#", ""), 16) % 360 + CONFIG.animation.angle * colorSpeed * 10;
+
+            // 清空主画布（带透明度实现轨迹效果）
+            if (trail) {
+                ctx.fillStyle = document.body.classList.contains("dark-mode") ? "rgba(15, 23, 42, 0.1)" : "rgba(248, 250, 252, 0.1)";
+                ctx.fillRect(0, 0, CONFIG.canvas.width, CONFIG.canvas.height);
+            } else {
+                ctx.clearRect(0, 0, CONFIG.canvas.width, CONFIG.canvas.height);
+            }
+
+            // 存储当前帧的中心点（用于轨迹）
+            const framePoints = [];
+
+            // 绘制不同图形
+            switch (CONFIG.shape.type) {
+                case "petalArray":
+                    for (let i = 0; i < count; i++) {
+                        const angle = i * angleStep + CONFIG.animation.angle;
+                        // 计算位置+缩放波动
+                        const scale = 1 + Math.sin(angle * 5 + CONFIG.animation.angle) * scaleWave;
+                        const x = centerX + rotateRadius * Math.cos(angle) * scale;
+                        const y = centerY + rotateRadius * Math.sin(angle) * scale;
+                        framePoints.push({x, y});
+
+                        // 计算花瓣颜色（色相偏移）
+                        const hue = currentHue + i * 10;
+                        const fillColor = hslToHex(hue, 70, 60);
+
+                        // 绘制圆
+                        ctx.beginPath();
+                        ctx.arc(x, y, radius * scale, 0, Math.PI * 2);
+                        ctx.fillStyle = fillColor;
+                        ctx.fill();
+
+                        // 发光特效
+                        if (glow) {
+                            ctx.shadowColor = fillColor;
+                            ctx.shadowBlur = 15;
+                            ctx.shadowOffsetX = 0;
+                            ctx.shadowOffsetY = 0;
+                            ctx.fill();
+                            ctx.shadowBlur = 0;
+                        }
+
+                        // 绘制内层小圆
+                        ctx.beginPath();
+                        ctx.arc(x, y, (radius * scale) / 3, 0, Math.PI * 2);
+                        ctx.fillStyle = document.body.classList.contains("dark-mode") ? "#fff" : "#000";
+                        ctx.fill();
+                    }
+                    break;
+
+                case "starGear":
+                    // 绘制星型连线
+                    ctx.beginPath();
+                    for (let i = 0; i < count; i++) {
+                        const angle = i * angleStep + CONFIG.animation.angle;
+                        const scale = 1 + Math.sin(angle * 3) * scaleWave;
+                        const x = centerX + rotateRadius * Math.cos(angle) * scale;
+                        const y = centerY + rotateRadius * Math.sin(angle) * scale;
+                        framePoints.push({x, y});
+                        i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+                    }
+                    ctx.closePath();
+                    ctx.strokeStyle = mainColor;
+                    ctx.lineWidth = 3;
+                    ctx.stroke();
+
+                    // 绘制齿轮齿圆
+                    for (let i = 0; i < count; i++) {
+                        const angle = i * angleStep + CONFIG.animation.angle;
+                        const scale = 1 + Math.sin(angle * 3) * scaleWave;
+                        const x = centerX + rotateRadius * Math.cos(angle) * scale;
+                        const y = centerY + rotateRadius * Math.sin(angle) * scale;
+
+                        const hue = currentHue + i * 15;
+                        const fillColor = hslToHex(hue, 80, 50);
+                        
+                        ctx.beginPath();
+                        ctx.arc(x, y, radius * scale, 0, Math.PI * 2);
+                        ctx.fillStyle = fillColor;
+                        if (glow) {
+                            ctx.shadowColor = fillColor;
+                            ctx.shadowBlur = 12;
+                            ctx.fill();
+                            ctx.shadowBlur = 0;
+                        } else {
+                            ctx.fill();
+                        }
+
+                        // 齿圆描边
+                        ctx.strokeStyle = document.body.classList.contains("dark-mode") ? "#fff" : "#000";
+                        ctx.lineWidth = 2;
+                        ctx.stroke();
+                    }
+                    break;
+
+                case "spiralGalaxy":
+                    let spiralAngle = 0;
+                    const spiralStep = 0.1;
+                    const maxSpiralTurns = 10;
+                    ctx.beginPath();
+                    while (spiralAngle < Math.PI * 2 * maxSpiralTurns) {
+                        const r = (rotateRadius / (Math.PI * 2 * maxSpiralTurns)) * spiralAngle;
+                        const scale = 1 + Math.sin(spiralAngle * 2) * scaleWave;
+                        const x = centerX + r * Math.cos(spiralAngle + CONFIG.animation.angle) * scale;
+                        const y = centerY + r * Math.sin(spiralAngle + CONFIG.animation.angle) * scale;
+                        framePoints.push({x, y});
+                        spiralAngle === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+                        spiralAngle += spiralStep;
+                    }
+                    // 绘制螺旋线
+                    ctx.strokeStyle = mainColor;
+                    ctx.lineWidth = 2;
+                    ctx.stroke();
+
+                    // 绘制螺旋上的星点圆
+                    spiralAngle = 0;
+                    while (spiralAngle < Math.PI * 2 * maxSpiralTurns) {
+                        const r = (rotateRadius / (Math.PI * 2 * maxSpiralTurns)) * spiralAngle;
+                        const scale = 1 + Math.sin(spiralAngle * 2) * scaleWave;
+                        const x = centerX + r * Math.cos(spiralAngle + CONFIG.animation.angle) * scale;
+                        const y = centerY + r * Math.sin(spiralAngle + CONFIG.animation.angle) * scale;
+                        
+                        const hue = currentHue + spiralAngle * 5;
+                        const fillColor = hslToHex(hue, 90, 55);
+                        ctx.beginPath();
+                        ctx.arc(x, y, radius * 0.5 * scale, 0, Math.PI * 2);
+                        ctx.fillStyle = fillColor;
+                        if (glow) {
+                            ctx.shadowColor = fillColor;
+                            ctx.shadowBlur = 10;
+                            ctx.fill();
+                            ctx.shadowBlur = 0;
+                        } else {
+                            ctx.fill();
+                        }
+                        spiralAngle += spiralStep * 5;
+                    }
+                    break;
+
+                // 其他图形可在此扩展
+                default:
+                    drawPetalArray();
+            }
+
+            // 绘制轨迹
+            if (trail) {
+                trailPoints.push(framePoints);
+                if (trailPoints.length > trailMax) trailPoints.shift();
+
+                // 绘制历史轨迹
+                trailPoints.forEach((points, index) => {
+                    const opacity = index / trailPoints.length;
+                    ctx.globalAlpha = opacity;
+                    points.forEach(({x, y}) => {
+                        ctx.beginPath();
+                        ctx.arc(x, y, radius * 0.7, 0, Math.PI * 2);
+                        ctx.fillStyle = hslToHex(currentHue + index * 5, 70, 60);
+                        ctx.fill();
+                    });
+                    ctx.globalAlpha = 1;
+                });
+            }
+        }
+
+        // ==================== 高性能动画循环 ====================
+        function animate(timestamp) {
+            // 计算时间差，实现帧率稳定
+            if (!CONFIG.animation.lastTime) CONFIG.animation.lastTime = timestamp;
+            CONFIG.animation.deltaTime = timestamp - CONFIG.animation.lastTime;
+            CONFIG.animation.lastTime = timestamp;
+
+            // 控制动画步长，避免卡顿
+            const step = CONFIG.animation.deltaTime / 16;
+            if (CONFIG.animation.isPlaying) {
+                CONFIG.animation.angle += CONFIG.shape.speed * 0.01 * step;
+                draw();
+            }
+
+            // 计算并更新FPS
+            CONFIG.animation.fps = Math.round(1000 / CONFIG.animation.deltaTime);
+            DOM.fpsCounter.textContent = `FPS: ${CONFIG.animation.fps}`;
+
+            // 循环调用
+            requestAnimationFrame(animate);
+        }
+                    // ==================== 剩余图形绘制函数 ====================
+        function drawFlowerNest() {
+            const ctx = CONFIG.canvas.ctxMain;
+            const { centerX, centerY } = CONFIG.canvas;
+            const { count, radius, rotateRadius, scaleWave, colorSpeed, mainColor, glow } = CONFIG.shape;
+            const currentHue = parseInt(mainColor.replace("#", ""), 16) % 360 + CONFIG.animation.angle * colorSpeed * 10;
+            const layerCount = 4;
+
+            for (let layer = 0; layer < layerCount; layer++) {
+                const layerRadius = rotateRadius * (layer + 1) / layerCount;
+                const layerCircleCount = count * (layer + 1);
+                const angleStep = (Math.PI * 2) / layerCircleCount;
+                
+                for (let i = 0; i < layerCircleCount; i++) {
+                    const angle = i * angleStep + CONFIG.animation.angle * (layer + 1);
+                    const scale = 1 + Math.sin(angle * 4 + CONFIG.animation.angle * layer) * scaleWave;
+                    const x = centerX + layerRadius * Math.cos(angle) * scale;
+                    const y = centerY + layerRadius * Math.sin(angle) * scale;
+                    
+                    const hue = currentHue + i * 8 + layer * 30;
+                    const fillColor = hslToHex(hue, 75, 55);
+
+                    ctx.beginPath();
+                    ctx.arc(x, y, radius * (layerCount - layer) / layerCount * scale, 0, Math.PI * 2);
+                    ctx.fillStyle = fillColor;
+
+                    if (glow) {
+                        ctx.shadowColor = fillColor;
+                        ctx.shadowBlur = 12;
+                        ctx.fill();
+                        ctx.shadowBlur = 0;
+                    } else {
+                        ctx.fill();
+                    }
+
+                    // 内层点缀小圆
+                    ctx.beginPath();
+                    ctx.arc(x, y, radius * (layerCount - layer) / layerCount * scale / 4, 0, Math.PI * 2);
+                    ctx.fillStyle = document.body.classList.contains("dark-mode") ? "#fff" : "#000";
+                    ctx.fill();
+                }
+            }
+        }
+
+        function drawCircleVortex() {
+            const ctx = CONFIG.canvas.ctxMain;
+            const { centerX, centerY } = CONFIG.canvas;
+            const { count, radius, rotateRadius, scaleWave, colorSpeed, mainColor, glow } = CONFIG.shape;
+            const currentHue = parseInt(mainColor.replace("#", ""), 16) % 360 + CONFIG.animation.angle * colorSpeed * 10;
+            const angleStep = (Math.PI * 2) / count;
+
+            for (let i = 0; i < count; i++) {
+                const angle = i * angleStep + CONFIG.animation.angle;
+                const vortexScale = 1 + (i / count) * 2;
+                const scale = vortexScale * (1 + Math.sin(angle * 3 + CONFIG.animation.angle) * scaleWave);
+                const x = centerX + rotateRadius * Math.cos(angle) * scale;
+                const y = centerY + rotateRadius * Math.sin(angle) * scale;
+                
+                const hue = currentHue + i * 12;
+                const fillColor = hslToHex(hue, 80, 50);
+
+                ctx.beginPath();
+                ctx.arc(x, y, radius * (vortexScale / 3) * scale, 0, Math.PI * 2);
+                ctx.fillStyle = fillColor;
+
+                if (glow) {
+                    ctx.shadowColor = fillColor;
+                    ctx.shadowBlur = 10;
+                    ctx.fill();
+                    ctx.shadowBlur = 0;
+                } else {
+                    ctx.fill();
+                }
+            }
+        }
+
+        function drawCustomPolygon() {
+            const ctx = CONFIG.canvas.ctxMain;
+            const { centerX, centerY } = CONFIG.canvas;
+            const { count, radius, rotateRadius, scaleWave, colorSpeed, mainColor, glow } = CONFIG.shape;
+            const currentHue = parseInt(mainColor.replace("#", ""), 16) % 360 + CONFIG.animation.angle * colorSpeed * 10;
+            const angleStep = (Math.PI * 2) / count;
+
+            // 绘制多边形边线
+            ctx.beginPath();
+            for (let i = 0; i < count; i++) {
+                const angle = i * angleStep + CONFIG.animation.angle;
+                const scale = 1 + Math.sin(angle * 2) * scaleWave;
+                const x = centerX + rotateRadius * Math.cos(angle) * scale;
+                const y = centerY + rotateRadius * Math.sin(angle) * scale;
                 i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
             }
             ctx.closePath();
-            ctx.strokeStyle = params.color;
+            ctx.strokeStyle = mainColor;
             ctx.lineWidth = 3;
             ctx.stroke();
-            // 顶点圆
-            for (let i = 0; i < params.count; i++) {
-                const angle = i * angleStep + params.angle;
-                const x = centerX + params.rotateRadius * Math.cos(angle);
-                const y = centerY + params.rotateRadius * Math.sin(angle);
+
+            // 绘制顶点圆
+            for (let i = 0; i < count; i++) {
+                const angle = i * angleStep + CONFIG.animation.angle;
+                const scale = 1 + Math.sin(angle * 2) * scaleWave;
+                const x = centerX + rotateRadius * Math.cos(angle) * scale;
+                const y = centerY + rotateRadius * Math.sin(angle) * scale;
+                
+                const hue = currentHue + i * 15;
+                const fillColor = hslToHex(hue, 70, 60);
+
                 ctx.beginPath();
-                ctx.arc(x, y, params.radius, 0, Math.PI * 2);
-                ctx.fillStyle = params.color;
-                ctx.fill();
-                ctx.strokeStyle = '#fff';
-                ctx.lineWidth = 2;
-                ctx.stroke();
-            }
-            ctx.restore();
-        }
+                ctx.arc(x, y, radius * scale, 0, Math.PI * 2);
+                ctx.fillStyle = fillColor;
 
-        // 其他图形绘制函数已精简，保留核心逻辑
-        function drawSpiral() {
-            const centerX = canvas.width / 2;
-            const centerY = canvas.height / 2;
-            ctx.save();
-            ctx.scale(params.scale, params.scale);
-            ctx.translate((centerX / params.scale) - centerX, (centerY / params.scale) - centerY);
-            let spiralAngle = 0;
-            ctx.beginPath();
-            while (spiralAngle < Math.PI * 10) {
-                const r = (params.rotateRadius / (Math.PI * 10)) * spiralAngle;
-                const x = centerX + r * Math.cos(spiralAngle + params.angle);
-                const y = centerY + r * Math.sin(spiralAngle + params.angle);
-                spiralAngle === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
-                spiralAngle += 0.1;
-            }
-            ctx.strokeStyle = params.color;
-            ctx.lineWidth = 2;
-            ctx.stroke();
-            ctx.restore();
-        }
-
-        function drawCircleArray() {
-            const centerX = canvas.width / 2;
-            const centerY = canvas.height / 2;
-            const angleStep = (Math.PI * 2) / params.count;
-            ctx.save();
-            ctx.scale(params.scale, params.scale);
-            ctx.translate((centerX / params.scale) - centerX, (centerY / params.scale) - centerY);
-            // 中心大圆
-            ctx.beginPath();
-            ctx.arc(centerX, centerY, params.radius * 2, 0, Math.PI * 2);
-            ctx.fillStyle = params.color;
-            ctx.globalAlpha = 0.7;
-            ctx.fill();
-            ctx.globalAlpha = 1;
-            // 外围圆
-            for (let i = 0; i < params.count; i++) {
-                const angle = i * angleStep + params.angle;
-                const x = centerX + params.rotateRadius * Math.cos(angle);
-                const y = centerY + params.rotateRadius * Math.sin(angle);
-                ctx.beginPath();
-                ctx.arc(x, y, params.radius, 0, Math.PI * 2);
-                ctx.fillStyle = params.color;
-                ctx.fill();
-            }
-            ctx.restore();
-        }
-
-        // 主绘制函数
-        function draw() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            switch (params.shape) {
-                case 'petal': drawPetal(); break;
-                case 'star': drawStar(); break;
-                case 'spiral': drawSpiral(); break;
-                case 'circleArray': drawCircleArray(); break;
-                default: drawPetal();
+                if (glow) {
+                    ctx.shadowColor = fillColor;
+                    ctx.shadowBlur = 15;
+                    ctx.fill();
+                    ctx.shadowBlur = 0;
+                } else {
+                    ctx.fill();
+                }
             }
         }
 
-        // 动画循环
-        function animate() {
-            if (params.isPlaying) {
-                params.angle += params.speed * 0.01;
-                draw();
+        // 补全draw函数的switch分支
+        const originalDraw = draw;
+        draw = function() {
+            const ctx = CONFIG.canvas.ctxMain;
+            const { centerX, centerY } = CONFIG.canvas;
+            const { count, radius, rotateRadius, scaleWave, colorSpeed, mainColor, glow, trail, trailPoints, trailMax } = CONFIG.shape;
+            const angleStep = (Math.PI * 2) / count;
+            const currentHue = parseInt(mainColor.replace("#", ""), 16) % 360 + CONFIG.animation.angle * colorSpeed * 10;
+
+            if (trail) {
+                ctx.fillStyle = document.body.classList.contains("dark-mode") ? "rgba(15, 23, 42, 0.1)" : "rgba(248, 250, 252, 0.1)";
+                ctx.fillRect(0, 0, CONFIG.canvas.width, CONFIG.canvas.height);
+            } else {
+                ctx.clearRect(0, 0, CONFIG.canvas.width, CONFIG.canvas.height);
             }
+
+            const framePoints = [];
+
+            switch (CONFIG.shape.type) {
+                case "petalArray": originalDraw(); break;
+                case "starGear": drawStarGear(); break;
+                case "spiralGalaxy": drawSpiralGalaxy(); break;
+                case "flowerNest": drawFlowerNest(); break;
+                case "circleVortex": drawCircleVortex(); break;
+                case "customPolygon": drawCustomPolygon(); break;
+                default: drawPetalArray();
+            }
+
+            if (trail) {
+                trailPoints.push(framePoints);
+                if (trailPoints.length > trailMax) trailPoints.shift();
+                trailPoints.forEach((points, index) => {
+                    const opacity = index / trailPoints.length;
+                    ctx.globalAlpha = opacity;
+                    points.forEach(({x, y}) => {
+                        ctx.beginPath();
+                        ctx.arc(x, y, radius * 0.7, 0, Math.PI * 2);
+                        ctx.fillStyle = hslToHex(currentHue + index * 5, 70, 60);
+                        ctx.fill();
+                    });
+                    ctx.globalAlpha = 1;
+                });
+            }
+        };
+
+        // ==================== 页面初始化入口 ====================
+        window.addEventListener("DOMContentLoaded", () => {
+            // 初始化粒子背景
+            particlesJS('particles-js', CONFIG.particles);
+            // 初始化画布
+            initCanvas();
+            // 绑定事件
+            bindEvents();
+            // 初始化网格
+            if (CONFIG.shape.grid) drawGrid();
+            // 启动动画循环
             requestAnimationFrame(animate);
-        }
-        animate();
-
-        // 导航栏滚动效果
-        window.addEventListener('scroll', () => {
-            const navbar = document.getElementById('navbar');
-            navbar.classList.toggle('py-1', window.scrollY > 30);
-            navbar.classList.toggle('py-2', window.scrollY <= 30);
+            // 导航栏滚动效果
+            window.addEventListener('scroll', () => {
+                const navbar = document.getElementById('flyz-nav');
+                navbar.classList.toggle('py-2', window.scrollY > 30);
+                navbar.classList.toggle('py-3', window.scrollY <= 30);
+            });
         });
     </script>
 </body>
