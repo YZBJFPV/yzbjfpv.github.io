@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="zh-CN" id="flyz-root">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>圆的旋转创意图形 | 原理解析 | Flyz远征飞</title>
+    <!-- 仅保留必要依赖，移除图标库 -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.2/dist/gsap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    
+    <!-- Tailwind 深度定制 -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        flyz: {
+                            primary: '#165DFF',
+                            secondary: '#FF7D00',
+                            tertiary: '#36CFC9',
+                            dark: '#0F172A',
+                            light: '#F8FAFC'
+                        }
+                    },
+                    fontFamily: {
+                        flyz: ['Inter', 'system-ui', 'sans-serif', 'monospace']
+                    },
+                    keyframes: {
+                        float: { '0%,100%': { transform: 'translateY(0)' }, '50%': { transform: 'translateY(-8px)' } },
+                        gradientFlow: { '0%': { backgroundPosition: '0% 50%' }, '50%': { backgroundPosition: '100% 50%' }, '100%': { backgroundPosition: '0% 50%' } },
+                        pulseSoft: { '0%,100%': { opacity: 1 }, '50%': { opacity: 0.8 } }
+                    },
+                    animation: {
+                        float: 'float 6s ease-in-out infinite',
+                        gradientFlow: 'gradientFlow 15s ease infinite',
+                        pulseSoft: 'pulseSoft 3s ease-in-out infinite'
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- 工程化工具类 -->
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .content-auto { content-visibility: auto; }
+            .card-hover { @apply transition-all duration-500 hover:shadow-xl hover:-translate-y-1; }
+            .gradient-bg { @apply bg-gradient-to-br from-flyz-primary/10 to-flyz-secondary/10 dark:from-flyz-primary/20 dark:to-flyz-secondary/20; }
+            .icon-placeholder { @apply w-6 h-6 rounded-full flex items-center justify-center font-bold text-sm; }
+        }
+    </style>
+
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'flyz', sans-serif; overflow-x: hidden; transition: background-color 0.5s ease, color 0.5s ease; }
+        .nav-gradient {
+            background: linear-gradient(90deg, #165DFF, #36CFC9, #FF7D00, #165DFF);
+            background-size: 300% 300%;
+            animation: gradientFlow 8s ease infinite;
+        }
+        .principle-card {
+            background: rgba(255,255,255,0.85);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(229, 231, 235, 0.8);
+        }
+        .dark-mode .principle-card {
+            background: rgba(15, 23, 42, 0.85);
+            border: 1px solid rgba(51, 65, 85, 0.8);
+        }
+        #interactiveCanvas { touch-action: none; transform: translateZ(0); will-change: transform; }
+        .control-slider { -webkit-appearance: none; height: 6px; border-radius: 3px; background: #e5e7eb; outline: none; }
+        .dark-mode .control-slider { background: #334155; }
+        .control-slider::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 18px; height: 18px; border-radius: 50%; background: #165DFF; cursor: pointer; transition: all 0.3s; }
+        .control-slider::-webkit-slider-thumb:hover { background: #FF7D00; transform: scale(1.2); }
+    </style>
+</head>
+<body class="bg-flyz-light text-flyz-dark font-flyz">
+    <!-- 粒子背景层 -->
+    <div id="particles-js" class="fixed inset-0 z-0 opacity-70 dark:opacity-50"></div>
+
+    <!-- 导航栏 -->
+    <header id="flyz-nav" class="fixed w-full top-0 z-50 transition-all duration-500 py-3 shadow-lg">
+        <nav class="nav-gradient py-4 px-6 md:px-12 shadow-md">
+            <div class="container mx-auto flex justify-between items-center">
+                <a href="https://yzbjfpv.top/school/math" class="flex items-center space-x-3 group">
+                    <img 
+                        src="https://img520.com/UIGuUV.jpeg" 
+                        alt="Flyz远征飞Logo" 
+                        class="h-12 w-auto object-contain rounded-md transition-all duration-700 group-hover:scale-110 group-hover:rotate-12"
+                        onerror="this.onerror=null;this.src='https://picsum.photos/60/60?random=1'"
+                    >
+                    <span class="text-white font-bold text-xl md:block hidden transition-all duration-500 group-hover:tracking-wider">Flyz远征飞</span>
+                </a>
+                <div class="flex items-center gap-4">
+                    <a href="https://yzbjfpv.top/school/math" class="text-white hover:text-white/90 transition-all duration-300 flex items-center gap-1">
+                        <span class="icon-placeholder bg-white/20 mr-1">首</span> 数学首页
+                    </a>
+                    <button id="themeSwitch" class="p-2 rounded-full bg-white/20 hover:bg-white/30 transition-all duration-300">
+                        <span class="icon-placeholder bg-transparent text-white dark:hidden">暗</span>
+                        <span class="icon-placeholder bg-transparent text-white hidden dark:inline">亮</span>
+                    </button>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- 主内容区 -->
+    <main class="container mx-auto pt-32 pb-20 px-4 md:px-8 lg:px-12 relative z-10">
+        <!-- 标题区 -->
+        <div class="text-center mb-16 animate-pulseSoft">
+            <h1 class="text-[clamp(2rem,5vw,3rem)] font-bold text-gradient bg-clip-text text-transparent bg-gradient-to-r from-flyz-primary to-flyz-secondary mb-4">
+                圆的旋转创意图形 · 原理解析
+            </h1>
+            <p class="text-lg md:text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
+                基于 <span class="text-flyz-primary font-semibold">Flyz AI 2D 引擎</span> 开发，用直观方式理解几何旋转的核心逻辑
+            </p>
+        </div>
+
+        <!-- 核心互动演示区 -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-16">
+            <!-- 左侧：互动画布（占2列） -->
+            <div class="lg:col-span-2 rounded-2xl overflow-hidden shadow-xl h-[500px] relative gradient-bg principle-card card-hover">
+                <div class="absolute top-4 left-4 bg-white/80 dark:bg-flyz-dark/80 px-4 py-2 rounded-lg backdrop-blur-md text-sm font-medium flex items-center gap-2">
+                    <span class="icon-placeholder bg-flyz-primary/10 text-flyz-primary mr-1">控</span> 互动演示：旋转参数调节
+                </div>
+                <canvas id="interactiveCanvas" class="w-full h-full"></canvas>
+                <!-- 原理标注 -->
+                <div class="absolute bottom-4 left-4 right-4 flex justify-between text-xs text-white bg-black/20 backdrop-blur-sm p-2 rounded-lg">
+                    <span><span class="inline-block w-3 h-3 rounded-full bg-flyz-primary mr-1"></span> 旋转中心</span>
+                    <span><span class="inline-block w-3 h-3 rounded-full bg-flyz-secondary mr-1"></span> 动态圆（可拖动）</span>
+                    <span><span class="inline-block w-3 h-3 rounded-full bg-flyz-tertiary mr-1"></span> 实时轨迹</span>
+                </div>
+            </div>
+
+            <!-- 右侧：互动控制面板 -->
+            <div class="principle-card rounded-2xl p-6 card-hover flex flex-col gap-6">
+                <h3 class="text-xl font-bold text-flyz-primary mb-2 flex items-center gap-2">
+                    <span class="icon-placeholder bg-flyz-primary/10 text-flyz-primary mr-1">调</span> 调整参数
+                </h3>
+                <p class="text-gray-600 dark:text-gray-300 text-sm">
+                    拖动滑块改变旋转效果，直观感受参数对图形的影响
+                </p>
+
+                <!-- 旋转速度控制 -->
+                <div class="space-y-3">
+                    <label class="font-medium text-sm flex justify-between">
+                        <span>旋转速度</span>
+                        <span id="speedValue">1.0x</span>
+                    </label>
+                    <input type="range" id="speedSlider" min="0.1" max="3" step="0.1" value="1" class="control-slider">
+                </div>
+
+                <!-- 圆数量控制 -->
+                <div class="space-y-3">
+                    <label class="font-medium text-sm flex justify-between">
+                        <span>圆的数量</span>
+                        <span id="countValue">6个</span>
+                    </label>
+                    <input type="range" id="countSlider" min="3" max="15" step="1" value="6" class="control-slider">
+                </div>
+
+                <!-- 旋转半径控制 -->
+                <div class="space-y-3">
+                    <label class="font-medium text-sm flex justify-between">
+                        <span>旋转半径</span>
+                        <span id="radiusValue">120px</span>
+                    </label>
+                    <input type="range" id="radiusSlider" min="50" max="200" step="10" value="120" class="control-slider">
+                </div>
+
+                <!-- 重置按钮 -->
+                <button id="resetBtn" class="mt-auto w-full py-2 bg-flyz-primary text-white rounded-lg hover:bg-flyz-primary/90 transition-all duration-300 flex items-center justify-center gap-2">
+                    <span class="icon-placeholder bg-white/20 mr-1">重</span> 重置参数
+                </button>
+
+                <!-- 拖动提示 -->
+                <div class="mt-4 p-3 bg-flyz-primary/10 dark:bg-flyz-primary/20 rounded-lg text-sm text-gray-700 dark:text-gray-300 flex items-center gap-2">
+                    <span class="icon-placeholder bg-flyz-primary/20 text-flyz-primary mr-1">提</span>
+                    提示：点击画布中的彩色圆可拖动位置
+                </div>
+            </div>
+        </div>
+
+        <!-- 核心原理解析 -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
+            <div class="principle-card rounded-2xl p-6 card-hover">
+                <h3 class="text-xl font-bold text-flyz-primary mb-4 flex items-center gap-2">
+                    <span class="icon-placeholder bg-flyz-primary/10 text-flyz-primary mr-1">原</span> 核心原理
+                </h3>
+                <div class="space-y-4 text-gray-700 dark:text-gray-200">
+                    <p>
+                        旋转图形的本质是「极坐标运动」：以一个固定点为中心，多个圆按照固定距离绕中心做圆周运动，通过调整运动速度、数量、半径等参数，组合出不同的创意图形。
+                    </p>
+                    <p>
+                        我们不需要深入理解复杂公式，只需知道：圆的位置会随着角度变化而移动，角度变化越快，旋转速度越快；圆的数量越多，图形越密集。
+                    </p>
+                    <div class="bg-gray-100 dark:bg-gray-800 p-3 rounded-lg text-center text-sm font-medium">
+                        关键逻辑：固定中心 + 圆周运动 + 参数调整 = 创意图形
+                    </div>
+                </div>
+            </div>
+
+            <div class="principle-card rounded-2xl p-6 card-hover">
+                <h3 class="text-xl font-bold text-flyz-secondary mb-4 flex items-center gap-2">
+                    <span class="icon-placeholder bg-flyz-secondary/10 text-flyz-secondary mr-1">拓</span> 应用与拓展
+                </h3>
+                <div class="space-y-3 text-gray-700 dark:text-gray-200">
+                    <div class="flex items-start gap-2">
+                        <span class="inline-block w-5 h-5 rounded-full bg-flyz-secondary/10 text-flyz-secondary flex items-center justify-center text-xs mt-0.5">1</span>
+                        <span>生活中的旋转现象：风车、摩天轮、时钟指针，都遵循同样的运动逻辑</span>
+                    </div>
+                    <div class="flex items-start gap-2">
+                        <span class="inline-block w-5 h-5 rounded-full bg-flyz-secondary/10 text-flyz-secondary flex items-center justify-center text-xs mt-0.5">2</span>
+                        <span>数学联系：旋转运动与三角函数相关，是几何与代数结合的典型案例</span>
+                    </div>
+                    <div class="flex items-start gap-2">
+                        <span class="inline-block w-5 h-5 rounded-full bg-flyz-secondary/10 text-flyz-secondary flex items-center justify-center text-xs mt-0.5">3</span>
+                        <span>创意拓展：改变圆的大小、颜色、运动轨迹，可生成花瓣、齿轮、星系等多种图形</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 技术与引擎说明 -->
+        <div class="principle-card rounded-2xl p-8 card-hover mb-16">
+            <h2 class="text-2xl font-bold mb-6 text-center">技术与引擎支持</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div>
+                    <h3 class="text-lg font-bold text-flyz-primary mb-3 flex items-center gap-2">
+                        <span class="icon-placeholder bg-flyz-primary/10 text-flyz-primary mr-1">引</span> 基于 Flyz AI 2D 引擎
+                    </h3>
+                    <p class="text-gray-700 dark:text-gray-200 mb-4">
+                        Flyz AI 2D 引擎是轻量级前端可视化工具，提供高效的图形绘制、动画循环和交互响应能力，让创意图形的实现更简单。
+                    </p>
+                    <a href="https://yzbjfpv.top/flyz/ai" target="_blank" class="inline-flex items-center gap-2 text-flyz-primary hover:text-flyz-secondary transition-colors duration-300">
+                        了解引擎详情 <span class="inline-block w-4 h-4 border-t-2 border-r-2 border-flyz-primary transform rotate-45"></span>
+                    </a>
+                </div>
+                <div>
+                    <h3 class="text-lg font-bold text-flyz-secondary mb-3 flex items-center gap-2">
+                        <span class="icon-placeholder bg-flyz-secondary/10 text-flyz-secondary mr-1">技</span> 核心技术
+                    </h3>
+                    <ul class="text-gray-700 dark:text-gray-200 space-y-2">
+                        <li class="flex items-center gap-2">
+                            <span class="inline-block w-2 h-2 rounded-full bg-flyz-secondary mr-1"></span>
+                            Canvas 绘图：实现动态图形的实时渲染
+                        </li>
+                        <li class="flex items-center gap-2">
+                            <span class="inline-block w-2 h-2 rounded-full bg-flyz-secondary mr-1"></span>
+                            动画循环：保证图形运动的流畅性
+                        </li>
+                        <li class="flex items-center gap-2">
+                            <span class="inline-block w-2 h-2 rounded-full bg-flyz-secondary mr-1"></span>
+                            交互响应：支持鼠标拖动、参数调节等操作
+                        </li>
+                        <li class="flex items-center gap-2">
+                            <span class="inline-block w-2 h-2 rounded-full bg-flyz-secondary mr-1"></span>
+                            响应式设计：适配不同设备的显示效果
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- 互动入口 -->
+        <div class="text-center max-w-3xl mx-auto">
+            <h2 class="text-2xl md:text-3xl font-bold mb-4 text-flyz-dark dark:text-flyz-light">
+                亲自体验创意图形制作
+            </h2>
+            <p class="text-gray-600 dark:text-gray-300 mb-8">
+                调整参数、组合图形，发挥你的创意，制作专属的旋转图形作品
+            </p>
+            <a href="https://yzbjfpv.top/school/math" class="inline-block px-8 py-3 bg-flyz-primary text-white rounded-lg hover:bg-flyz-primary/90 transition-all duration-300 shadow-lg hover:shadow-xl flex items-center gap-2 justify-center">
+                <span class="icon-placeholder bg-white/20 mr-1">体</span> 进入图形编辑器
+            </a>
+        </div>
+    </main>
+
+    <!-- 页脚 -->
+    <footer class="bg-white dark:bg-flyz-dark border-t border-gray-200 dark:border-gray-700 py-8 relative z-10">
+        <div class="container mx-auto px-4 text-center">
+            <p class="text-gray-600 dark:text-gray-300 mb-3">© 2025 www.YZBJFPV.top <span class="text-gradient font-bold bg-clip-text text-transparent bg-gradient-to-r from-flyz-primary to-flyz-secondary">Flyz远征飞</span> 官网</p>
+            <p class="text-sm text-gray-500 dark:text-gray-400">基于 Flyz AI 2D 引擎开发 | 几何图形趣味学习平台</p>
+        </div>
+    </footer>
+
+    <!-- 核心互动脚本 -->
+    <script>
+        // 全局配置
+        const config = {
+            speed: 1.0,
+            count: 6,
+            radius: 120,
+            isDragging: false,
+            dragIndex: -1,
+            trailPoints: [],
+            trailMax: 20
+        };
+
+        // DOM元素
+        const interactiveCanvas = document.getElementById('interactiveCanvas');
+        const ctx = interactiveCanvas.getContext('2d');
+        const speedSlider = document.getElementById('speedSlider');
+        const speedValue = document.getElementById('speedValue');
+        const countSlider = document.getElementById('countSlider');
+        const countValue = document.getElementById('countValue');
+        const radiusSlider = document.getElementById('radiusSlider');
+        const radiusValue = document.getElementById('radiusValue');
+        const resetBtn = document.getElementById('resetBtn');
+        const themeSwitch = document.getElementById('themeSwitch');
+
+        // 画布尺寸适配
+        function resizeCanvas() {
+            const { offsetWidth, offsetHeight } = interactiveCanvas;
+            interactiveCanvas.width = offsetWidth;
+            interactiveCanvas.height = offsetHeight;
+            config.centerX = offsetWidth / 2;
+            config.centerY = offsetHeight / 2;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        // 圆的类（用于互动）
+        class Circle {
+            constructor(index) {
+                this.index = index;
+                this.angle = (index / config.count) * Math.PI * 2;
+                this.radius = config.radius;
+                this.size = 15 + Math.random() * 10;
+                this.color = ['#165DFF', '#FF7D00', '#36CFC9', '#ec4899', '#22c55e', '#f59e0b', '#8b5cf6', '#ef4444'][index % 8];
+                this.x = config.centerX + this.radius * Math.cos(this.angle);
+                this.y = config.centerY + this.radius * Math.sin(this.angle);
+            }
+
+            update() {
+                this.angle += config.speed * 0.01;
+                this.x = config.centerX + config.radius * Math.cos(this.angle);
+                this.y = config.centerY + config.radius * Math.sin(this.angle);
+            }
+
+            draw() {
+                // 绘制轨迹点
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, 3, 0, Math.PI * 2);
+                ctx.fillStyle = `${this.color}80`;
+                ctx.fill();
+
+                // 绘制圆
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fillStyle = this.color;
+                ctx.shadowColor = this.color;
+                ctx.shadowBlur = 15;
+                ctx.fill();
+                ctx.shadowBlur = 0;
+
+                // 绘制中心点
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, 3, 0, Math.PI * 2);
+                ctx.fillStyle = '#fff';
+                ctx.fill();
+            }
+
+            // 检查是否被点击
+            isHit(mx, my) {
+                const dx = mx - this.x;
+                const dy = my - this.y;
+                return Math.sqrt(dx * dx + dy * dy) <= this.size;
+            }
+
+            // 拖动时更新位置
+            drag(mx, my) {
+                this.x = mx;
+                this.y = my;
+                // 计算新的角度和半径
+                const dx = mx - config.centerX;
+                const dy = my - config.centerY;
+                this.angle = Math.atan2(dy, dx);
+                config.radius = Math.sqrt(dx * dx + dy * dy);
+                radiusSlider.value = Math.round(config.radius);
+                radiusValue.textContent = `${Math.round(config.radius)}px`;
+            }
+        }
+
+        // 生成圆数组
+        let circles = [];
+        function generateCircles() {
+            circles = [];
+            for (let i = 0; i < config.count; i++) {
+                circles.push(new Circle(i));
+            }
+        }
+        generateCircles();
+
+        // 绘制函数
+        function draw() {
+            // 清空画布（带透明度实现轨迹）
+            ctx.clearRect(0, 0, interactiveCanvas.width, interactiveCanvas.height);
+
+            // 绘制旋转中心
+            ctx.beginPath();
+            ctx.arc(config.centerX, config.centerY, 8, 0, Math.PI * 2);
+            ctx.fillStyle = '#165DFF';
+            ctx.shadowColor = '#165DFF';
+            ctx.shadowBlur = 10;
+            ctx.fill();
+            ctx.shadowBlur = 0;
+
+            // 绘制中心十字线
+            ctx.beginPath();
+            ctx.moveTo(config.centerX - 20, config.centerY);
+            ctx.lineTo(config.centerX + 20, config.centerY);
+            ctx.moveTo(config.centerX, config.centerY - 20);
+            ctx.lineTo(config.centerX, config.centerY + 20);
+            ctx.strokeStyle = '#165DFF';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+
+            // 绘制旋转半径线
+            circles.forEach(circle => {
+                ctx.beginPath();
+                ctx.moveTo(config.centerX, config.centerY);
+                ctx.lineTo(circle.x, circle.y);
+                ctx.strokeStyle = `${circle.color}30`;
+                ctx.lineWidth = 1;
+                ctx.stroke();
+            });
+
+            // 更新并绘制圆
+            if (!config.isDragging) {
+                circles.forEach(circle => circle.update());
+            }
+            circles.forEach(circle => circle.draw());
+
+            // 绘制轨迹
+            if (circles.length > 0) {
+                config.trailPoints.push({ x: circles[0].x, y: circles[0].y, color: circles[0].color });
+                if (config.trailPoints.length > config.trailMax) {
+                    config.trailPoints.shift();
+                }
+
+                ctx.beginPath();
+                config.trailPoints.forEach((point, index) => {
+                    const opacity = index / config.trailPoints.length;
+                    ctx.globalAlpha = opacity;
+                    if (index === 0) {
+                        ctx.moveTo(point.x, point.y);
+                    } else {
+                        ctx.lineTo(point.x, point.y);
+                    }
+                    ctx.strokeStyle = point.color;
+                    ctx.lineWidth = 2;
+                    ctx.stroke();
+                });
+                ctx.globalAlpha = 1;
+            }
+
+            requestAnimationFrame(draw);
+        }
+        draw();
+
+        // 事件绑定：参数调节
+        speedSlider.addEventListener('input', () => {
+            config.speed = parseFloat(speedSlider.value);
+            speedValue.textContent = `${config.speed.toFixed(1)}x`;
+        });
+
+        countSlider.addEventListener('input', () => {
+            config.count = parseInt(countSlider.value);
+            countValue.textContent = `${config.count}个`;
+            generateCircles();
+            config.trailPoints = [];
+        });
+
+        radiusSlider.addEventListener('input', () => {
+            config.radius = parseInt(radiusSlider.value);
+            radiusValue.textContent = `${config.radius}px`;
+        });
+
+        // 重置按钮
+        resetBtn.addEventListener('click', () => {
+            config.speed = 1.0;
+            config.count = 6;
+            config.radius = 120;
+            config.trailPoints = [];
+            
+            speedSlider.value = 1.0;
+            speedValue.textContent = '1.0x';
+            countSlider.value = 6;
+            countValue.textContent = '6个';
+            radiusSlider.value = 120;
+            radiusValue.textContent = '120px';
+            
+            generateCircles();
+        });
+
+        // 鼠标拖动交互
+        interactiveCanvas.addEventListener('mousedown', (e) => {
+            const rect = interactiveCanvas.getBoundingClientRect();
+            const mx = e.clientX - rect.left;
+            const my = e.clientY - rect.top;
+
+            for (let i = 0; i < circles.length; i++) {
+                if (circles[i].isHit(mx, my)) {
+                    config.isDragging = true;
+                    config.dragIndex = i;
+                    return;
+                }
+            }
+        });
+
+        interactiveCanvas.addEventListener('mousemove', (e) => {
+            if (!config.isDragging) return;
+
+            const rect = interactiveCanvas.getBoundingClientRect();
+            const mx = e.clientX - rect.left;
+            const my = e.clientY - rect.top;
+
+            circles[config.dragIndex].drag(mx, my);
+        });
+
+        interactiveCanvas.addEventListener('mouseup', () => {
+            config.isDragging = false;
+            config.dragIndex = -1;
+        });
+
+        interactiveCanvas.addEventListener('mouseleave', () => {
+            config.isDragging = false;
+            config.dragIndex = -1;
+        });
+
+        // 触摸设备适配
+        interactiveCanvas.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            const rect = interactiveCanvas.getBoundingClientRect();
+            const mx = e.touches[0].clientX - rect.left;
+            const my = e.touches[0].clientY - rect.top;
+
+            for (let i = 0; i < circles.length; i++) {
+                if (circles[i].isHit(mx, my)) {
+                    config.isDragging = true;
+                    config.dragIndex = i;
+                    return;
+                }
+            }
+        });
+
+        interactiveCanvas.addEventListener('touchmove', (e) => {
+            if (!config.isDragging) return;
+            e.preventDefault();
+
+            const rect = interactiveCanvas.getBoundingClientRect();
+            const mx = e.touches[0].clientX - rect.left;
+            const my = e.touches[0].clientY - rect.top;
+
+            circles[config.dragIndex].drag(mx, my);
+        });
+
+        interactiveCanvas.addEventListener('touchend', () => {
+            config.isDragging = false;
+            config.dragIndex = -1;
+        });
+
+        // 暗黑模式切换
+        themeSwitch.addEventListener('click', () => {
+            document.body.classList.toggle('dark-mode');
+        });
+
+        // 粒子背景
+        particlesJS('particles-js', {
+            number: { value: 60, density: { enable: true, value_area: 800 } },
+            color: { value: ["#165DFF", "#FF7D00", "#36CFC9"] },
+            shape: { type: "circle" },
+            opacity: { value: 0.5, random: true },
+            size: { value: 3, random: true },
+            line_linked: {
+                enable: true,
+                distance: 150,
+                color: "#165DFF",
+                opacity: 0.2,
+                width: 1
+            },
+            move: { enable: true, speed: 1, direction: "none", random: true }
+        });
+
+        // 导航栏滚动效果
+        window.addEventListener('scroll', () => {
+            const navbar = document.getElementById('flyz-nav');
+            navbar.classList.toggle('py-2', window.scrollY > 30);
+            navbar.classList.toggle('py-3', window.scrollY <= 30);
+        });
+    </script>
+</body>
+</html>
