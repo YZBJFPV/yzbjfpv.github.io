@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="zh-CN" id="flyz-root">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>圆的旋转创意图形 | 原理解析｜数学 | Flyz远征飞</title>
+    <!-- 外部依赖 -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.2/dist/gsap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    
+    <!-- Tailwind 深度定制 -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        flyz: {
+                            primary: '#165DFF',
+                            secondary: '#FF7D00',
+                            tertiary: '#36CFC9',
+                            dark: '#0F172A',
+                            light: '#F8FAFC'
+                        }
+                    },
+                    fontFamily: {
+                        flyz: ['Inter', 'system-ui', 'sans-serif', 'monospace']
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-10px)' }
+                        },
+                        gradientFlow: {
+                            '0%': { backgroundPosition: '0% 50%' },
+                            '50%': { backgroundPosition: '100% 50%' },
+                            '100%': { backgroundPosition: '0% 50%' }
+                        },
+                        pulseSoft: {
+                            '0%, 100%': { opacity: 1 },
+                            '50%': { opacity: 0.7 }
+                        }
+                    },
+                    animation: {
+                        float: 'float 6s ease-in-out infinite',
+                        gradientFlow: 'gradientFlow 15s ease infinite',
+                        pulseSoft: 'pulseSoft 3s ease-in-out infinite'
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- 工程化工具类 -->
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .content-auto { content-visibility: auto; }
+            .text-shadow { text-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+            .card-hover { @apply transition-all duration-500 hover:shadow-xl hover:-translate-y-1; }
+            .gradient-bg { @apply bg-gradient-to-br from-flyz-primary/10 to-flyz-secondary/10 dark:from-flyz-primary/20 dark:to-flyz-secondary/20; }
+        }
+    </style>
+
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'flyz', sans-serif; overflow-x: hidden; transition: background-color 0.5s ease, color 0.5s ease; }
+        .nav-gradient {
+            background: linear-gradient(90deg, #165DFF, #36CFC9, #FF7D00, #165DFF);
+            background-size: 300% 300%;
+            animation: gradientFlow 8s ease infinite;
+        }
+        .principle-card {
+            background: rgba(255,255,255,0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(229, 231, 235, 0.8);
+        }
+        .dark-mode .principle-card {
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid rgba(51, 65, 85, 0.8);
+        }
+        #demoCanvas {
+            touch-action: none;
+            transform: translateZ(0);
+            will-change: transform;
+        }
+    </style>
+</head>
+<body class="bg-flyz-light text-flyz-dark font-flyz">
+    <!-- 粒子背景层 -->
+    <div id="particles-js" class="fixed inset-0 z-0 opacity-70 dark:opacity-50"></div>
+
+    <!-- 导航栏 -->
+    <header id="flyz-nav" class="fixed w-full top-0 z-50 transition-all duration-500 py-3 shadow-lg">
+        <nav class="nav-gradient py-4 px-6 md:px-12 shadow-md">
+            <div class="container mx-auto flex justify-between items-center">
+                <a href="https://yzbjfpv.top/school/math" class="flex items-center space-x-3 group">
+                    <img 
+                        src="https://img520.com/UIGuUV.jpeg" 
+                        alt="Flyz远征飞Logo" 
+                        class="h-12 w-auto object-contain rounded-md transition-all duration-700 group-hover:scale-110 group-hover:rotate-12"
+                        onerror="this.onerror=null;this.src='https://picsum.photos/60/60?random=1'"
+                    >
+                    <span class="text-white font-bold text-xl md:block hidden transition-all duration-500 group-hover:tracking-wider">Flyz远征飞</span>
+                </a>
+                <div class="flex items-center gap-4">
+                    <a href="https://yzbjfpv.top/flyz/school/math/11" class="text-white hover:text-white/90 transition-all duration-300">
+                        <i class="fa fa-home mr-2"></i>%
+                    </a>
+                    <button id="themeSwitch" class="p-2 rounded-full bg-white/20 hover:bg-white/30 transition-all duration-300">
+                        <i class="fa fa-moon-o dark:hidden text-white"></i>
+                        <i class="fa fa-sun-o hidden dark:inline text-white"></i>
+                    </button>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- 主内容区 -->
+    <main class="container mx-auto pt-32 pb-20 px-4 md:px-8 lg:px-12 relative z-10">
+        <!-- 标题区 -->
+        <div class="text-center mb-16 animate-pulseSoft">
+            <h1 class="text-[clamp(2rem,5vw,3.5rem)] font-bold text-gradient bg-clip-text text-transparent bg-gradient-to-r from-flyz-primary to-flyz-secondary mb-4">
+                圆的旋转创意图形 · 原理解析
+            </h1>
+            <p class="text-lg md:text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
+                基于 <span class="text-flyz-primary font-semibold">FlyzAI 2D 引擎</span> 制作，结合三角函数等知识与技术技术，做出动态视觉效果
+            </p>
+        </div>
+
+        <!-- 核心原理展示区 -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 mb-16">
+            <!-- 左侧：原理演示画布 -->
+            <div class="rounded-2xl overflow-hidden shadow-xl h-[500px] relative gradient-bg">
+                <div class="absolute top-4 left-4 bg-white/80 dark:bg-flyz-dark/80 px-4 py-2 rounded-lg backdrop-blur-md text-sm font-medium">
+                    实时演示：极坐标旋转运动
+                </div>
+                <canvas id="demoCanvas" class="w-full h-full"></canvas>
+                <!-- 原理标注 -->
+                <div class="absolute bottom-4 left-4 right-4 flex justify-between text-xs text-white bg-black/20 backdrop-blur-sm p-2 rounded-lg">
+                    <span><i class="fa fa-circle text-flyz-primary"></i> 旋转中心 O</span>
+                    <span><i class="fa fa-circle text-flyz-secondary"></i> 圆周运动点 P</span>
+                    <span><i class="fa fa-arrows-h text-flyz-tertiary"></i> 旋转半径 R</span>
+                </div>
+            </div>
+
+            <!-- 右侧：核心原理说明 -->
+            <div class="flex flex-col justify-center gap-6">
+                <div class="principle-card rounded-2xl p-6 card-hover">
+                    <h3 class="text-xl font-bold text-flyz-primary mb-3 flex items-center gap-2">
+                        <i class="fa fa-mathjax"></i> 核心数学原理：极坐标与三角函数
+                    </h3>
+                    <p class="text-gray-700 dark:text-gray-200 mb-4">
+                        所有旋转图形的本质是 <b>极坐标到直角坐标的转换</b>，利用正弦、余弦函数计算每个圆的实时位置：
+                    </p>
+                    <div class="bg-gray-100 dark:bg-gray-800 p-4 rounded-lg font-mono text-sm">
+                        x = centerX + R × cos(θ)<br>
+                        y = centerY + R × sin(θ)
+                    </div>
+                    <p class="text-gray-600 dark:text-gray-400 mt-3 text-sm">
+                        其中 θ 为旋转角度，R 为旋转半径，centerX/Y 为画布中心点坐标
+                    </p>
+                </div>
+
+                <div class="principle-card rounded-2xl p-6 card-hover">
+                    <h3 class="text-xl font-bold text-flyz-secondary mb-3 flex items-center gap-2">
+                        <i class="fa fa-code"></i> 技术实现核心：Canvas 动态绘图
+                    </h3>
+                    <ul class="text-gray-700 dark:text-gray-200 space-y-2 list-disc pl-5">
+                        <li>使用 <b>requestAnimationFrame</b> 实现 60fps 流畅动画循环</li>
+                        <li>通过 <b>设备像素比（DPR）适配</b> 解决 Canvas 模糊问题</li>
+                        <li>利用 <b>透明度叠加</b> 实现运动轨迹特效</li>
+                        <li>结合 <b>HSL 颜色空间</b> 实现颜色平滑过渡</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- 功能模块解析 -->
+        <div class="mb-16">
+            <h2 class="text-2xl md:text-3xl font-bold text-center mb-10 text-flyz-dark dark:text-flyz-light">
+                功能模块技术解析
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- 模块1：多图形切换 -->
+                <div class="principle-card rounded-2xl p-6 card-hover">
+                    <div class="w-12 h-12 bg-flyz-primary/10 dark:bg-flyz-primary/20 rounded-full flex items-center justify-center mb-4">
+                        <i class="fa fa-shapes text-flyz-primary text-xl"></i>
+                    </div>
+                    <h4 class="text-lg font-bold mb-2">多创意图形切换</h4>
+                    <p class="text-gray-600 dark:text-gray-300 text-sm">
+                        通过 <b>switch-case 分支逻辑</b> 实现花瓣阵列、星型齿轮、螺旋星系等6种图形的绘制逻辑切换，每种图形独立封装绘制函数，参数联动更新。
+                    </p>
+                </div>
+
+                <!-- 模块2：参数动态调节 -->
+                <div class="principle-card rounded-2xl p-6 card-hover">
+                    <div class="w-12 h-12 bg-flyz-secondary/10 dark:bg-flyz-secondary/20 rounded-full flex items-center justify-center mb-4">
+                        <i class="fa fa-sliders text-flyz-secondary text-xl"></i>
+                    </div>
+                    <h4 class="text-lg font-bold mb-2">参数实时调节系统</h4>
+                    <p class="text-gray-600 dark:text-gray-300 text-sm">
+                        绑定滑块 <b>input 事件</b>，实时同步圆数量、半径、旋转速度等参数，修改后立即重绘图形，实现无延迟的交互反馈。
+                    </p>
+                </div>
+
+                <!-- 模块3：视觉特效 -->
+                <div class="principle-card rounded-2xl p-6 card-hover">
+                    <div class="w-12 h-12 bg-flyz-tertiary/10 dark:bg-flyz-tertiary/20 rounded-full flex items-center justify-center mb-4">
+                        <i class="fa fa-magic text-flyz-tertiary text-xl"></i>
+                    </div>
+                    <h4 class="text-lg font-bold mb-2">高级视觉特效</h4>
+                    <p class="text-gray-600 dark:text-gray-300 text-sm">
+                        发光特效通过 <b>shadowBlur/shadowColor</b> 实现，运动轨迹利用 <b>画布透明度叠加</b> 和历史坐标数组存储，暗黑模式通过 CSS 类切换实现。
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 引擎与开源说明 -->
+        <div class="principle-card rounded-2xl p-8 card-hover mb-16">
+            <h2 class="text-2xl font-bold mb-6 text-center">引擎与开源技术说明</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div>
+                    <h3 class="text-lg font-bold text-flyz-primary mb-3 flex items-center gap-2">
+                        <i class="fa fa-rocket"></i> 基于 Flyz AI 2D 引擎
+                    </h3>
+                    <p class="text-gray-700 dark:text-gray-200 mb-4">
+                        FlyzAI 2D 引擎是用FlyzAI生成的前端可视化引擎，提供 Canvas 绘图封装、动画循环优化、交互事件绑定等核心能力，快速实现 2D 动态图形
+                    </p>
+                    <a href="https://yzbjfpv.top/flyz/ai" target="_blank" class="inline-flex items-center gap-2 text-flyz-primary hover:text-flyz-secondary transition-colors duration-300">
+                        点我跳转FlyzAI项目 <i class="fa fa-external-link"></i>
+                    </a>
+                </div>
+                <div>
+                    <h3 class="text-lg font-bold text-flyz-secondary mb-3 flex items-center gap-2">
+                        <i class="fa fa-github"></i> 开源技术依赖
+                    </h3>
+                    <ul class="text-gray-700 dark:text-gray-200 space-y-2">
+                        <li><b>Tailwind CSS</b>：用于快速构建响应式 UI 界面，实现样式的统一管理</li>
+                        <li><b>GSAP</b>：提供高性能的动画补间功能，优化复杂动效的流畅度</li>
+                        <li><b>Particles.js</b>：实现背景粒子动效，增强页面视觉层次感</li>
+                        <li><b>Font Awesome</b>：提供丰富的图标资源，提升界面交互体验</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- 数学教育意义 -->
+        <div class="text-center max-w-3xl mx-auto">
+            <h2 class="text-2xl md:text-3xl font-bold mb-4 text-flyz-dark dark:text-flyz-light">
+                数学意义
+            </h2>
+            <p class="text-gray-600 dark:text-gray-300 mb-8">
+                将抽象的三角函数等知识转化为直观的动态图形 <b>“数”与“形”的对应关系</b>，通过调节参数直观看到图形变化
+            </p>
+            <a href="https://yzbjfpv.top/school/math" class="inline-block px-8 py-3 bg-flyz-primary text-white rounded-lg hover:bg-flyz-primary/90 transition-all duration-300 shadow-lg hover:shadow-xl">
+                点我跳转动态图形演示
+            </a>
+        </div>
+    </main>
+
+    <!-- 页脚 -->
+    <footer class="bg-white dark:bg-flyz-dark border-t border-gray-200 dark:border-gray-700 py-8 relative z-10">
+        <div class="container mx-auto px-4 text-center">
+            <p class="text-gray-600 dark:text-gray-300 mb-3">© 2025 www.YZBJFPV.top <span class="text-gradient font-bold bg-clip-text text-transparent bg-gradient-to-r from-flyz-primary to-flyz-secondary">Flyz远征飞</span> 官网</p>
+            <p class="text-sm text-gray-500 dark:text-gray-400">基于FlyzAI 2D等开源引擎开发 | www.YZBJFPV.top｜Flyz远征飞官网</p>
+        </div>
+    </footer>
+
+    <!-- 核心演示脚本 -->
+    <script>
+        // 演示画布初始化
+        const demoCanvas = document.getElementById('demoCanvas');
+        const ctx = demoCanvas.getContext('2d');
+        let centerX, centerY;
+        let angle = 0;
+        const radius = 150;
+        const circleRadius = 20;
+
+        // 适配画布尺寸
+        function resizeDemoCanvas() {
+            const { offsetWidth, offsetHeight } = demoCanvas;
+            demoCanvas.width = offsetWidth;
+            demoCanvas.height = offsetHeight;
+            centerX = offsetWidth / 2;
+            centerY = offsetHeight / 2;
+        }
+        window.addEventListener('resize', resizeDemoCanvas);
+        resizeDemoCanvas();
+
+        // 绘制演示动画
+        function drawDemo() {
+            // 清空画布
+            ctx.clearRect(0, 0, demoCanvas.width, demoCanvas.height);
+
+            // 绘制中心点
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, 6, 0, Math.PI * 2);
+            ctx.fillStyle = '#165DFF';
+            ctx.fill();
+
+            // 计算旋转点坐标
+            const x = centerX + radius * Math.cos(angle);
+            const y = centerY + radius * Math.sin(angle);
+
+            // 绘制旋转半径线
+            ctx.beginPath();
+            ctx.moveTo(centerX, centerY);
+            ctx.lineTo(x, y);
+            ctx.strokeStyle = '#36CFC9';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+
+            // 绘制旋转圆
+            ctx.beginPath();
+            ctx.arc(x, y, circleRadius, 0, Math.PI * 2);
+            ctx.fillStyle = '#FF7D00';
+            ctx.fill();
+            ctx.shadowColor = '#FF7D00';
+            ctx.shadowBlur = 15;
+            ctx.fill();
+            ctx.shadowBlur = 0;
+
+            // 绘制角度标注
+            ctx.save();
+            ctx.translate(centerX, centerY);
+            ctx.rotate(angle);
+            ctx.fillStyle = '#0F172A';
+            ctx.font = '14px Inter';
+            ctx.fillText('θ', radius/2 - 10, 10);
+            ctx.restore();
+
+            // 更新角度
+            angle += 0.01;
+            requestAnimationFrame(drawDemo);
+        }
+        drawDemo();
+
+        // 暗黑模式切换
+        const themeSwitch = document.getElementById('themeSwitch');
+        themeSwitch.addEventListener('click', () => {
+            document.body.classList.toggle('dark-mode');
+        });
+
+        // 导航栏滚动效果
+        window.addEventListener('scroll', () => {
+            const navbar = document.getElementById('flyz-nav');
+            navbar.classList.toggle('py-2', window.scrollY > 30);
+            navbar.classList.toggle('py-3', window.scrollY <= 30);
+        });
+
+        // 粒子背景初始化
+        particlesJS('particles-js', {
+            number: { value: 60, density: { enable: true, value_area: 800 } },
+            color: { value: ["#165DFF", "#FF7D00", "#36CFC9"] },
+            shape: { type: "circle" },
+            opacity: { value: 0.5, random: true },
+            size: { value: 3, random: true },
+            line_linked: {
+                enable: true,
+                distance: 150,
+                color: "#165DFF",
+                opacity: 0.2,
+                width: 1
+            },
+            move: { enable: true, speed: 1, direction: "none", random: true }
+        });
+    </script>
+</body>
+</html>
