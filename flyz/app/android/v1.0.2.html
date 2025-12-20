@@ -1,1 +1,592 @@
+<!DOCTYPE html>
+<html lang="zh-CN" id="html-lang">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Flyz远征飞</title>
+    <!-- 外部资源 -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- Tailwind 配置 -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#165DFF',
+                        secondary: '#FF7D00',
+                        accent: '#36CFC9',
+                        light: '#FFFFFF',
+                        dark: '#333647',
+                        tab: {
+                            inactive: '#999',
+                            active: '#165DFF'
+                        }
+                    },
+                    fontFamily: {
+                        inter: ['Inter', 'system-ui', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .content-auto {
+                content-visibility: auto;
+            }
+            .text-shadow {
+                text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            }
+            .card-elevation {
+                box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            }
+            .hover-rise {
+                transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+            }
+            .hover-rise:hover {
+                transform: translateY(-6px);
+            }
+            .click-scale {
+                transition: transform 0.2s ease;
+            }
+            .click-scale:active {
+                transform: scale(0.95);
+            }
+            .tab-item {
+                transition: all 0.2s ease;
+            }
+            .tab-item.active i,
+            .tab-item.active span {
+                color: theme('colors.tab.active');
+            }
+            .page-container {
+                display: none;
+                height: calc(100vh - 120px);
+                overflow-y: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+            .page-container.active {
+                display: block;
+            }
+        }
+    </style>
 
+    <style>
+        /* 基础样式重置 */
+        body {
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+            font-family: "Inter", system-ui, sans-serif;
+            background-color: #f8f9fa;
+        }
+        
+        /* 顶部导航栏 */
+        .nav-bar {
+            background: linear-gradient(90deg, #165DFF, #4080FF);
+            padding: 12px 16px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 99;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        /* 广播栏 */
+        .broadcast-bar {
+            background: linear-gradient(90deg, #FF7D00, #FFB042);
+            height: 36px;
+            line-height: 36px;
+            overflow: hidden;
+            position: fixed;
+            top: 60px;
+            left: 0;
+            right: 0;
+            z-index: 98;
+        }
+        
+        .broadcast-text {
+            display: inline-block;
+            white-space: nowrap;
+            animation: scrollBroadcast 15s linear infinite;
+            color: white;
+            padding-left: 100%;
+        }
+        
+        @keyframes scrollBroadcast {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-100%); }
+        }
+        
+        /* 底部Tab栏 */
+        .tab-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: white;
+            display: flex;
+            justify-content: space-around;
+            padding: 8px 0;
+            box-shadow: 0 -2px 8px rgba(0,0,0,0.05);
+            z-index: 99;
+            border-top: 1px solid #eee;
+        }
+        
+        .tab-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 20%;
+        }
+        
+        .tab-item i {
+            font-size: 20px;
+            margin-bottom: 4px;
+            color: #999;
+        }
+        
+        .tab-item span {
+            font-size: 12px;
+            color: #999;
+        }
+        
+        /* 内容容器 */
+        .content-wrap {
+            padding-top: 96px;
+            padding-bottom: 60px;
+            height: 100vh;
+            box-sizing: border-box;
+        }
+        
+        /* 微信弹窗 */
+        .wx-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .wx-modal.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            text-align: center;
+            transform: translateY(-20px);
+            transition: transform 0.3s ease;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            min-width: 280px;
+        }
+        
+        .wx-modal.active .modal-content {
+            transform: translateY(0);
+        }
+        
+        .modal-close {
+            margin-top: 20px;
+            padding: 8px 24px;
+            background-color: #165DFF;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        
+        /* 内嵌页面容器 */
+        .embed-container {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+        
+        /* 渐入动画 */
+        .fade-in {
+            animation: fadeIn 0.3s ease forwards;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* 产品卡片样式 */
+        .product-card {
+            background: white;
+            border-radius: 12px;
+            padding: 16px;
+            margin: 8px 16px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        
+        .collapse-btn {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 0;
+            cursor: pointer;
+            color: #165DFF;
+            font-size: 14px;
+        }
+        
+        .collapse-panel {
+            display: none;
+            padding: 8px 0;
+        }
+        
+        .collapse-panel.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+    <!-- 微信弹窗 -->
+    <div id="wx-modal" class="wx-modal">
+        <div class="modal-content">
+            <i class="fa fa-weixin text-green-500 text-5xl mb-4"></i>
+            <h3 class="text-xl font-bold mb-2">微信号</h3>
+            <p class="text-2xl font-mono bg-gray-100 py-2 px-4 rounded mb-4">YGWFK2024</p>
+            <button class="modal-close click-scale">关闭</button>
+        </div>
+    </div>
+
+    <!-- 顶部导航栏 -->
+    <header class="nav-bar">
+        <div class="flex items-center justify-between">
+            <div class="flex items-center">
+                <img src="https://img520.com/UIGuUV.jpeg" alt="Flyz远征飞Logo" 
+                     class="h-8 w-auto rounded-md mr-2"
+                     onerror="this.onerror=null;this.src='https://picsum.photos/32/32'">
+                <span class="text-white font-bold text-lg">Flyz远征飞</span>
+            </div>
+            <button id="wx-btn" class="text-white click-scale">
+                <i class="fa fa-user-plus text-lg"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- 广播栏 -->
+    <div class="broadcast-bar">
+        <div class="broadcast-text">
+            <i class="fa fa-bullhorn mr-2"></i>
+            新品预告：新联名专利定向平板天线即将发布，敬请期待！
+        </div>
+    </div>
+
+    <!-- 主内容区域 -->
+    <div class="content-wrap">
+        <!-- 首页 -->
+        <div id="page-home" class="page-container active">
+            <!-- 视频模块 -->
+            <div class="p-4">
+                <div class="rounded-xl overflow-hidden">
+                    <iframe 
+                        src="https://player.bilibili.com/player.html?bvid=BV1MWjgzvEED&autoplay=0&dm=0" 
+                        class="embed-container"
+                        allowfullscreen
+                        allow="autoplay; fullscreen; encrypted-media"
+                    ></iframe>
+                </div>
+            </div>
+            
+            <!-- 产品特点 -->
+            <div class="mt-8">
+                <h2 class="text-center text-xl font-bold text-primary mb-8">
+                    Pokrc × Flyz联名FPV穿越机远航电池
+                </h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 px-16">
+                    <!-- 核心配置卡片 -->
+                    <div class="product-card fade-in">
+                        <div class="flex items-center mb-4">
+                            <div class="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center mr-3">
+                                <i class="fa fa-bolt text-primary"></i>
+                            </div>
+                            <h4 class="font-bold text-dark">核心配置</h4>
+                        </div>
+                        <p class="text-gray-600 text-sm mb-4">
+                            21700特供电芯 | FPV高爆发远航专用<br>
+                            35C瞬时放电 肆意花飞
+                        </p>
+                        <div class="collapse-btn" data-target="config-panel">
+                            <span>查看详细参数</span>
+                            <i class="fa fa-chevron-down"></i>
+                        </div>
+                        <div id="config-panel" class="collapse-panel">
+                            <div class="text-gray-600 text-sm space-y-2 pt-4 border-t border-gray-100">
+                                <p><i class="fa fa-check-circle text-primary mr-2"></i>电芯类型：高容量21700动力电芯</p>
+                                <p><i class="fa fa-check-circle text-primary mr-2"></i>电压范围：3.7V-4.2V（单节）</p>
+                                <p><i class="fa fa-check-circle text-primary mr-2"></i>持续放电：25C</p>
+                                <p><i class="fa fa-check-circle text-primary mr-2"></i>瞬时放电：35C（10秒内）</p>
+                                <p><i class="fa fa-check-circle text-primary mr-2"></i>工作温度：-10℃~60℃</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 定制方案卡片 -->
+                    <div class="product-card fade-in" style="animation-delay: 0.1s">
+                        <div class="flex items-center mb-4">
+                            <div class="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center mr-3">
+                                <i class="fa fa-sliders text-primary"></i>
+                            </div>
+                            <h4 class="font-bold text-dark">定制方案</h4>
+                        </div>
+                        <p class="text-gray-600 text-sm mb-4">
+                            1-16S电压组合 | 电芯参数可选<br>
+                            FPV设备供电接口适配
+                        </p>
+                        <div class="collapse-btn" data-target="custom-panel">
+                            <span>查看详细参数</span>
+                            <i class="fa fa-chevron-down"></i>
+                        </div>
+                        <div id="custom-panel" class="collapse-panel">
+                            <div class="text-gray-600 text-sm space-y-2 pt-4 border-t border-gray-100">
+                                <p><i class="fa fa-check-circle text-primary mr-2"></i>电压组合：1S~16S灵活定制</p>
+                                <p><i class="fa fa-check-circle text-primary mr-2"></i>容量选项：2000mAh~10000mAh</p>
+                                <p><i class="fa fa-check-circle text-primary mr-2"></i>接口类型：XT60/XT90/XT30可选</p>
+                                <p><i class="fa fa-check-circle text-primary mr-2"></i>均衡头：支持JST-XH平衡充</p>
+                                <p><i class="fa fa-check-circle text-primary mr-2"></i>出线方式：可定制长度与方向</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 易用设计卡片 -->
+                    <div class="product-card fade-in" style="animation-delay: 0.2s">
+                        <div class="flex items-center mb-4">
+                            <div class="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center mr-3">
+                                <i class="fa fa-dashboard text-primary"></i>
+                            </div>
+                            <h4 class="font-bold text-dark">易用设计</h4>
+                        </div>
+                        <p class="text-gray-600 text-sm mb-4">
+                            集成电压显示 | 单芯状态实时查<br>
+                            智能保护 不惧过放过充
+                        </p>
+                        <div class="collapse-btn" data-target="design-panel">
+                            <span>查看详细参数</span>
+                            <i class="fa fa-chevron-down"></i>
+                        </div>
+                        <div id="design-panel" class="collapse-panel">
+                            <div class="text-gray-600 text-sm space-y-2 pt-4 border-t border-gray-100">
+                                <p><i class="fa fa-check-circle text-primary mr-2"></i>保护功能：过充/过放/过流/短路保护</p>
+                                <p><i class="fa fa-check-circle text-primary mr-2"></i>显示方式：LED电压指示灯</p>
+                                <p><i class="fa fa-check-circle text-primary mr-2"></i>外壳材质：防火ABS+PC复合材料</p>
+                                <p><i class="fa fa-check-circle text-primary mr-2"></i>尺寸规格：根据容量定制（约100-180mm）</p>
+                                <p><i class="fa fa-check-circle text-primary mr-2"></i>重量：根据容量定制（约150-450g）</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 网站案例 -->
+            <div class="mt-16 px-16">
+                <h3 class="text-center text-lg font-bold text-primary mb-8">网站定制案例</h3>
+                
+                <div class="product-card">
+                    <div class="collapse-btn" data-target="cases-panel">
+                        <span>点击查看我们的定制案例</span>
+                        <i class="fa fa-chevron-down"></i>
+                    </div>
+                    <div id="cases-panel" class="collapse-panel">
+                        <div class="grid grid-cols-2 gap-4 mt-4">
+                            <a href="https://www.wanshizan.com.cn/dudurc" target="_blank" class="click-scale bg-primary/5 rounded-lg p-4 text-center">
+                                <div class="w-12 h-12 bg-primary text-white rounded-full flex items-center justify-center mx-auto mb-2">
+                                    <i class="fa fa-battery-full"></i>
+                                </div>
+                                <h4 class="font-bold text-sm mb-1">嘟嘟电池官网</h4>
+                                <p class="text-gray-500 text-xs">专业电池品牌展示平台</p>
+                            </a>
+                            
+                            <a href="https://www.wanshizan.com.cn" target="_blank" class="click-scale bg-secondary/5 rounded-lg p-4 text-center">
+                                <div class="w-12 h-12 bg-secondary text-white rounded-full flex items-center justify-center mx-auto mb-2">
+                                    <i class="fa fa-cogs"></i>
+                                </div>
+                                <h4 class="font-bold text-sm mb-1">康易安科技官网</h4>
+                                <p class="text-gray-500 text-xs">科技企业综合展示平台</p>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 页脚信息 -->
+            <div class="mt-16 text-center text-gray-500 text-xs pb-8">
+                <p>© 2025 Flyz远征飞官方网站</p>
+                <p class="mt-2">我们的口号是：为方便模友而生</p>
+                <a href="https://b23.tv/JXuI9QA" class="text-primary mt-2 inline-block">
+                    <i class="fa fa-play-circle mr-1"></i>哔哩哔哩｜Flyz远征飞官方账号
+                </a>
+            </div>
+        </div>
+
+        <!-- 下载中心 -->
+        <div id="page-download" class="page-container">
+            <iframe src="http://yzflight.xyz" class="embed-container"></iframe>
+        </div>
+
+        <!-- 严选商城 -->
+        <div id="page-shop" class="page-container">
+            <iframe src="https://shop500685313.taobao.com/" class="embed-container"></iframe>
+        </div>
+
+        <!-- 维修专区 -->
+        <div id="page-repair" class="page-container">
+            <iframe src="https://yzbjfpv.top/flyz/202510/维修专区.html" class="embed-container"></iframe>
+        </div>
+
+        <!-- 我的 -->
+        <div id="page-me" class="page-container">
+            <iframe src="https://yzbjfpv.top/flyz/app/android/v1.0.2/me" class="embed-container"></iframe>
+        </div>
+    </div>
+
+    <!-- 底部Tab栏 -->
+    <nav class="tab-bar">
+        <div class="tab-item active" data-page="page-home">
+            <i class="fa fa-home"></i>
+            <span>首页</span>
+        </div>
+        <div class="tab-item" data-page="page-download">
+            <i class="fa fa-download"></i>
+            <span>下载中心</span>
+        </div>
+        <div class="tab-item" data-page="page-shop">
+            <i class="fa fa-shopping-bag"></i>
+            <span>严选商城</span>
+        </div>
+        <div class="tab-item" data-page="page-repair">
+            <i class="fa fa-wrench"></i>
+            <span>维修专区</span>
+        </div>
+        <div class="tab-item" data-page="page-me">
+            <i class="fa fa-user"></i>
+            <span>我的</span>
+        </div>
+    </nav>
+
+    <script>
+        // 页面加载完成后执行
+        document.addEventListener('DOMContentLoaded', function() {
+            // Tab栏切换逻辑
+            const tabItems = document.querySelectorAll('.tab-item');
+            const pageContainers = document.querySelectorAll('.page-container');
+            
+            tabItems.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    // 移除所有active类
+                    tabItems.forEach(item => item.classList.remove('active'));
+                    pageContainers.forEach(page => page.classList.remove('active'));
+                    
+                    // 添加当前active类
+                    this.classList.add('active');
+                    const targetPage = this.getAttribute('data-page');
+                    document.getElementById(targetPage).classList.add('active');
+                    
+                    // 添加点击反馈
+                    this.classList.add('scale-95');
+                    setTimeout(() => {
+                        this.classList.remove('scale-95');
+                    }, 200);
+                });
+            });
+            
+            // 折叠面板交互
+            const collapseBtns = document.querySelectorAll('.collapse-btn');
+            collapseBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const targetId = this.getAttribute('data-target');
+                    const targetPanel = document.getElementById(targetId);
+                    
+                    // 切换面板显示状态
+                    targetPanel.classList.toggle('active');
+                    
+                    // 切换箭头方向
+                    const icon = this.querySelector('i');
+                    if (targetPanel.classList.contains('active')) {
+                        icon.classList.remove('fa-chevron-down');
+                        icon.classList.add('fa-chevron-up');
+                    } else {
+                        icon.classList.remove('fa-chevron-up');
+                        icon.classList.add('fa-chevron-down');
+                    }
+                    
+                    // 点击反馈
+                    this.classList.add('scale-95');
+                    setTimeout(() => {
+                        this.classList.remove('scale-95');
+                    }, 200);
+                });
+            });
+            
+            // 微信弹窗控制
+            const wxModal = document.getElementById('wx-modal');
+            const wxBtn = document.getElementById('wx-btn');
+            const modalClose = document.querySelector('.modal-close');
+            
+            wxBtn.addEventListener('click', function() {
+                wxModal.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            });
+            
+            modalClose.addEventListener('click', function() {
+                wxModal.classList.remove('active');
+                document.body.style.overflow = '';
+            });
+            
+            // 点击弹窗外部关闭
+            wxModal.addEventListener('click', function(e) {
+                if (e.target === wxModal) {
+                    wxModal.classList.remove('active');
+                    document.body.style.overflow = '';
+                }
+            });
+            
+            // 预加载所有内嵌页面（隐藏方式）
+            // 所有iframe都已在页面加载时创建，只是默认隐藏，实现预加载效果
+            
+            // 页面滚动优化
+            document.querySelectorAll('.page-container').forEach(page => {
+                page.addEventListener('touchmove', function(e) {
+                    // 防止滚动穿透
+                    if (this.scrollTop === 0 && e.touches[0].clientY < 50) {
+                        e.preventDefault();
+                    }
+                }, { passive: false });
+            });
+            
+            // 适配不同屏幕高度
+            function adjustHeight() {
+                const contentHeight = window.innerHeight - 96 - 60;
+                document.querySelectorAll('.page-container').forEach(page => {
+                    page.style.height = `${contentHeight}px`;
+                });
+            }
+            
+            // 初始化高度并监听窗口变化
+            adjustHeight();
+            window.addEventListener('resize', adjustHeight);
+        });
+    </script>
+</body>
+</html>
