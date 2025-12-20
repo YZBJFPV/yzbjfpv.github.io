@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>我的 | Flyz远征飞</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: "Inter", system-ui, sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .user-header {
+            background: linear-gradient(135deg, #165DFF, #4080FF);
+            padding: 30px 20px 20px;
+            color: white;
+            text-align: center;
+            border-radius: 0 0 20px 20px;
+        }
+        
+        .avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            border: 3px solid white;
+            margin: 0 auto 10px;
+            background-color: #eee;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+            color: #165DFF;
+        }
+        
+        .user-info {
+            margin-bottom: 15px;
+        }
+        
+        .usage-days {
+            font-size: 12px;
+            opacity: 0.8;
+        }
+        
+        .menu-item {
+            display: flex;
+            align-items: center;
+            padding: 15px 20px;
+            background: white;
+            margin: 8px 16px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            transition: all 0.2s ease;
+        }
+        
+        .menu-item:active {
+            transform: scale(0.98);
+            background-color: #f5f5f5;
+        }
+        
+        .menu-item i {
+            font-size: 20px;
+            color: #165DFF;
+            margin-right: 15px;
+            width: 24px;
+            text-align: center;
+        }
+        
+        .menu-item .arrow {
+            margin-left: auto;
+            color: #999;
+            font-size: 14px;
+        }
+        
+        .menu-group {
+            margin-top: 20px;
+        }
+        
+        .version-info {
+            text-align: center;
+            color: #999;
+            font-size: 12px;
+            margin-top: 30px;
+            padding-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <!-- 用户信息头部 -->
+    <div class="user-header">
+        <div class="avatar">
+            <i class="fa fa-user"></i>
+        </div>
+        <div class="user-info">
+            <h2 class="text-xl font-bold">Flyz用户</h2>
+            <p class="usage-days" id="usageDays">欢迎使用Flyz远征飞</p>
+        </div>
+    </div>
+
+    <!-- 功能菜单 -->
+    <div class="menu-group">
+        <div class="menu-item">
+            <i class="fa fa-cog"></i>
+            <span>设置</span>
+            <i class="fa fa-chevron-right arrow"></i>
+        </div>
+        
+        <div class="menu-item">
+            <i class="fa fa-headphones"></i>
+            <span>联系客服</span>
+            <i class="fa fa-chevron-right arrow"></i>
+        </div>
+        
+        <div class="menu-item">
+            <i class="fa fa-shield"></i>
+            <span>隐私政策</span>
+            <i class="fa fa-chevron-right arrow"></i>
+        </div>
+        
+        <div class="menu-item">
+            <i class="fa fa-info-circle"></i>
+            <span>关于我们</span>
+            <i class="fa fa-chevron-right arrow"></i>
+        </div>
+        
+        <div class="menu-item">
+            <i class="fa fa-star"></i>
+            <span>给个好评</span>
+            <i class="fa fa-chevron-right arrow"></i>
+        </div>
+        
+        <div class="menu-item">
+            <i class="fa fa-share-alt"></i>
+            <span>分享APP</span>
+            <i class="fa fa-chevron-right arrow"></i>
+        </div>
+    </div>
+
+    <!-- 版本信息 -->
+    <div class="version-info">
+        <p>版本号：v1.0.2</p>
+        <p class="mt-2">© 2025 Flyz远征飞 版权所有</p>
+    </div>
+
+    <script>
+        // 计算使用天数
+        function calculateUsageDays() {
+            const storageKey = 'flyz_first_open_date';
+            const firstOpenDate = localStorage.getItem(storageKey);
+            
+            if (!firstOpenDate) {
+                // 首次打开，记录当前日期
+                const today = new Date();
+                const dateStr = today.toISOString().split('T')[0];
+                localStorage.setItem(storageKey, dateStr);
+                return 0;
+            }
+            
+            // 计算天数差
+            const firstDate = new Date(firstOpenDate);
+            const today = new Date();
+            firstDate.setHours(0, 0, 0, 0);
+            today.setHours(0, 0, 0, 0);
+            
+            const diffTime = today - firstDate;
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            
+            return diffDays;
+        }
+        
+        // 显示使用天数
+        document.addEventListener('DOMContentLoaded', function() {
+            const days = calculateUsageDays();
+            const usageDaysEl = document.getElementById('usageDays');
+            
+            if (days === 0 || days === 1) {
+                usageDaysEl.textContent = `使用第${days || 1}天`;
+            } else {
+                usageDaysEl.textContent = `使用第${days}天`;
+            }
+            
+            // 菜单点击效果
+            document.querySelectorAll('.menu-item').forEach(item => {
+                item.addEventListener('click', function() {
+                    // 这里可以添加具体的跳转逻辑
+                    const text = this.querySelector('span').textContent;
+                    if (text === '隐私政策') {
+                        window.open('https://yzbjfpv.top/flyz/privacy.html', '_blank');
+                    } else if (text === '联系客服') {
+                        // 显示微信号
+                        alert('客服微信号：YGWFK2024');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
