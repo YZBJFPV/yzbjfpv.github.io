@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>我的 | Flyz远征飞</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'SF Pro Display', 'Inter', system-ui, sans-serif;
+            background-color: #F7F8FA;
+            color: #1D2129;
+        }
+        
+        /* 用户信息头部 */
+        .user-header {
+            background: linear-gradient(135deg, #165DFF, #4080FF);
+            height: 200px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            padding-top: 20px;
+            border-radius: 0 0 24px 24px;
+        }
+        
+        .avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background-color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 12px;
+            border: 4px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .avatar i {
+            font-size: 36px;
+            color: #165DFF;
+        }
+        
+        .user-name {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        
+        .user-days {
+            font-size: 12px;
+            opacity: 0.9;
+        }
+        
+        /* 菜单列表 */
+        .menu-list {
+            margin: 16px;
+        }
+        
+        .menu-card {
+            background-color: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+        }
+        
+        .menu-item {
+            display: flex;
+            align-items: center;
+            padding: 16px;
+            border-bottom: 1px solid #F2F3F5;
+            transition: background-color 0.2s ease;
+        }
+        
+        .menu-item:last-child {
+            border-bottom: none;
+        }
+        
+        .menu-item:active {
+            background-color: #F7F8FA;
+        }
+        
+        .menu-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            background-color: #F0F7FF;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+        }
+        
+        .menu-icon i {
+            font-size: 16px;
+            color: #165DFF;
+        }
+        
+        .menu-text {
+            flex: 1;
+            font-size: 15px;
+        }
+        
+        .menu-arrow {
+            color: #C9CDD4;
+            font-size: 16px;
+        }
+        
+        /* 版本信息 */
+        .version-info {
+            text-align: center;
+            color: #86909C;
+            font-size: 12px;
+            margin-top: 20px;
+            padding-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <!-- 用户信息头部 -->
+    <div class="user-header">
+        <div class="avatar">
+            <i class="fa fa-user"></i>
+        </div>
+        <div class="user-name">Flyz用户</div>
+        <div class="user-days" id="usageDays">使用第1天</div>
+    </div>
+
+    <!-- 菜单列表 -->
+    <div class="menu-list">
+        <div class="menu-card">
+            <div class="menu-item" data-action="contact">
+                <div class="menu-icon">
+                    <i class="fa fa-headphones"></i>
+                </div>
+                <div class="menu-text">联系客服</div>
+                <i class="fa fa-chevron-right menu-arrow"></i>
+            </div>
+            
+            <div class="menu-item" data-action="privacy">
+                <div class="menu-icon">
+                    <i class="fa fa-shield"></i>
+                </div>
+                <div class="menu-text">隐私政策</div>
+                <i class="fa fa-chevron-right menu-arrow"></i>
+            </div>
+            
+            <div class="menu-item" data-action="about">
+                <div class="menu-icon">
+                    <i class="fa fa-info-circle"></i>
+                </div>
+                <div class="menu-text">关于我们</div>
+                <i class="fa fa-chevron-right menu-arrow"></i>
+            </div>
+            
+            <div class="menu-item" data-action="share">
+                <div class="menu-icon">
+                    <i class="fa fa-share-alt"></i>
+                </div>
+                <div class="menu-text">分享APP</div>
+                <i class="fa fa-chevron-right menu-arrow"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- 版本信息 -->
+    <div class="version-info">
+        <p>Flyz远征飞 v1.0.2</p>
+        <p class="mt-2">© 2025 版权所有</p>
+    </div>
+
+    <script>
+        // 计算使用天数
+        function calculateUsageDays() {
+            const storageKey = 'flyz_first_open_date';
+            const firstOpenDate = localStorage.getItem(storageKey);
+            
+            if (!firstOpenDate) {
+                const today = new Date();
+                const dateStr = today.toISOString().split('T')[0];
+                localStorage.setItem(storageKey, dateStr);
+                return 1;
+            }
+            
+            const firstDate = new Date(firstOpenDate);
+            const today = new Date();
+            firstDate.setHours(0, 0, 0, 0);
+            today.setHours(0, 0, 0, 0);
+            
+            const diffTime = today - firstDate;
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) || 1;
+            
+            return diffDays;
+        }
+        
+        // 初始化页面
+        document.addEventListener('DOMContentLoaded', function() {
+            // 显示使用天数
+            const days = calculateUsageDays();
+            document.getElementById('usageDays').textContent = `使用第${days}天`;
+            
+            // 菜单点击事件
+            const menuItems = document.querySelectorAll('.menu-item');
+            menuItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    const action = this.getAttribute('data-action');
+                    
+                    switch(action) {
+                        case 'contact':
+                            alert('客服微信号：YGWFK2024');
+                            break;
+                        case 'privacy':
+                            // 向父页面发送消息打开隐私政策弹窗
+                            window.parent.postMessage('openPrivacy', '*');
+                            break;
+                        case 'about':
+                            alert('Flyz远征飞 v1.0.2\n为方便模友而生');
+                            break;
+                        case 'share':
+                            alert('分享链接：https://yzbjfpv.top/flyz/app');
+                            break;
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
