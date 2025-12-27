@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>九六｜歌曲｜2025元旦联欢会｜Flyz远征飞</title>
+    <link href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            overflow: hidden;
+            background-color: #000;
+            font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
+        }
+
+        /* 开屏动画容器 */
+        .splash-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: linear-gradient(135deg, #ff6b6b, #feca57, #48dbfb, #ff9ff3);
+            background-size: 400% 400%;
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: #fff;
+            animation: bgAnimate 3s ease-in-out forwards;
+        }
+        @keyframes bgAnimate {
+            0% { background-position: 0% 50%; opacity: 1; }
+            90% { background-position: 100% 50%; opacity: 1; }
+            100% { background-position: 100% 50%; opacity: 0; visibility: hidden; }
+        }
+
+        /* 开屏标题排版 */
+        .splash-title-wrap {
+            text-align: center;
+            margin-bottom: 3vw;
+            position: relative;
+        }
+        .splash-main-title {
+            font-size: 5vw;
+            font-weight: 700;
+            letter-spacing: 0.8vw;
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.6);
+            opacity: 0;
+            animation: titleFade 3s ease forwards;
+        }
+        .splash-sub-title {
+            font-size: 2.2vw;
+            letter-spacing: 1.8vw;
+            margin-top: 1.5vw;
+            color: #fff;
+            opacity: 0;
+            animation: subTitleFade 3s ease forwards 0.5s;
+            position: relative;
+            font-weight: 500;
+        }
+        .splash-sub-title::before {
+            content: "";
+            position: absolute;
+            top: -0.5vw;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 30%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #fff, transparent);
+        }
+        @keyframes titleFade {
+            0% { opacity: 0; transform: translateY(-50px) scale(0.9); }
+            30% { opacity: 1; transform: translateY(0) scale(1); }
+            70% { opacity: 1; transform: translateY(0) scale(1); }
+            100% { opacity: 0; transform: translateY(50px) scale(0.9); }
+        }
+        @keyframes subTitleFade {
+            0% { opacity: 0; transform: translateY(20px); }
+            40% { opacity: 1; transform: translateY(0); }
+            70% { opacity: 1; transform: translateY(0); }
+            100% { opacity: 0; transform: translateY(20px); }
+        }
+
+        /* 加载提示与进度条 */
+        .splash-tip {
+            font-size: 1.5vw;
+            margin-bottom: 1.5vw;
+            opacity: 0;
+            animation: tipFade 3s ease forwards;
+        }
+        @keyframes tipFade {
+            0% { opacity: 0; }
+            20% { opacity: 1; }
+            80% { opacity: 1; }
+            100% { opacity: 0; }
+        }
+        .progress-container {
+            width: 40vw;
+            height: 0.8vw;
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 0.4vw;
+            overflow: hidden;
+            opacity: 0;
+            animation: progressShow 3s ease forwards;
+        }
+        @keyframes progressShow {
+            0% { opacity: 0; }
+            20% { opacity: 1; }
+            80% { opacity: 1; }
+            100% { opacity: 0; }
+        }
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #ffd700, #f5c518, #ffd700);
+            background-size: 200% 100%;
+            border-radius: 0.4vw;
+            width: 0;
+            animation: progressMove 2.5s ease forwards 0.3s, shimmer 1.5s ease infinite;
+        }
+        @keyframes progressMove {
+            0% { width: 0; }
+            100% { width: 100%; }
+        }
+        @keyframes shimmer {
+            0% { background-position: 0% 0; }
+            100% { background-position: 200% 0; }
+        }
+
+        /* 视频容器 */
+        .video-container {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            opacity: 0;
+            animation: videoShow 0.5s ease forwards 3s;
+        }
+        @keyframes videoShow {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+        video {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        /* 浮动水印：网址（标准等宽字体） */
+        .watermark-move {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 1.8vw;
+            color: rgba(255, 255, 255, 0.12);
+            pointer-events: none;
+            z-index: 10;
+            white-space: nowrap;
+            animation: smoothFloat 20s ease-in-out infinite;
+            font-family: "Consolas", "Monaco", monospace;
+        }
+        @keyframes smoothFloat {
+            0%   { transform: translate(-50%, -50%) translateX(-30vw) translateY(0); }
+            25%  { transform: translate(-50%, -50%) translateX(0) translateY(-10vh); }
+            50%  { transform: translate(-50%, -50%) translateX(30vw) translateY(0); }
+            75%  { transform: translate(-50%, -50%) translateX(0) translateY(10vh); }
+            100% { transform: translate(-50%, -50%) translateX(-30vw) translateY(0); }
+        }
+
+        /* 右下角水印：书法字体 + 动态光影 */
+        .watermark-fixed {
+            position: absolute;
+            bottom: 30px;
+            right: 30px;
+            font-size: 2.5vw;
+            z-index: 10;
+            pointer-events: none;
+            font-family: "Ma Shan Zheng", cursive;
+            background: linear-gradient(120deg, #d4af37, #ffd700, #fff8dc, #ffd700, #d4af37);
+            background-size: 300% 100%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 0 5px rgba(255, 215, 0, 0.5), 0 0 10px rgba(255, 215, 0, 0.3);
+            animation: goldBreath 4s ease-in-out infinite, textTremble 6s ease-in-out infinite;
+        }
+        @keyframes goldBreath {
+            0%, 100% { text-shadow: 0 0 5px rgba(255,215,0,0.5), 0 0 10px rgba(255,215,0,0.3); }
+            50% { text-shadow: 0 0 15px rgba(255,215,0,0.8), 0 0 25px rgba(255,215,0,0.5), 0 0 35px rgba(255,215,0,0.3); }
+        }
+        @keyframes textTremble {
+            0%, 100% { transform: rotate(0deg) scale(1); }
+            25% { transform: rotate(-0.5deg) scale(1.02); }
+            75% { transform: rotate(0.5deg) scale(0.98); }
+        }
+    </style>
+</head>
+<body>
+    <div class="splash-screen">
+        <div class="splash-title-wrap">
+            <div class="splash-main-title">2025元旦联欢会</div>
+            <div class="splash-sub-title">九年级六班</div>
+        </div>
+        <div class="splash-tip">歌曲加载中...</div>
+        <div class="progress-container">
+            <div class="progress-bar"></div>
+        </div>
+    </div>
+
+    <div class="video-container">
+        <div class="watermark-move">yzbjfpv.top</div>
+        <div class="watermark-fixed">2025元旦联欢会｜九年级六班</div>
+
+        <!-- ######################################################################## -->
+        <!-- ########################## VIDEO SOURCE TEMPLATE ########################## -->
+        <!-- #                                                                        # -->
+        <!-- #  你不需要改下面这一坨 HTML！                                             # -->
+        <!-- #  真正要改的链接在页面最底部的 <script> 里的 VIDEO_SRC 变量！               # -->
+        <!-- #                                                                        # -->
+        <!-- ######################################################################## -->
+        <video id="videoPlayer" controls autoplay muted playsinline>
+            <source id="videoSource" src="" type="video/mp4">
+            您的浏览器不支持HTML5视频播放
+        </video>
+    </div>
+
+    <script>
+        // ########################################################################
+        // ########################## ✅ 修改这里即可 ✅ ##########################
+        // 把下面这一行的字符串替换成你的新视频链接（保持引号）
+        const VIDEO_SRC = "https://vodkgeyttp8.vod.126.net/cloudmusic/MTE1MjYxNjQ2/ff2f8cfbc575651a98c359b745df5a02/e08dbae46138f64344bc30c9912e0aea.mp4?wsSecret=3d70a3d75c5bff2675da2668adb3bf90&wsTime=1766770884";
+        // ########################################################################
+
+        document.getElementById('videoSource').src = VIDEO_SRC;
+        document.getElementById('videoPlayer').load();
+
+        window.onload = function() {
+            const video = document.getElementById('videoPlayer');
+            setTimeout(() => {
+                video.addEventListener('canplay', function() {
+                    if (video.requestFullscreen) video.requestFullscreen();
+                    else if (video.webkitRequestFullscreen) video.webkitRequestFullscreen();
+                    else if (video.msRequestFullscreen) video.msRequestFullscreen();
+                });
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
