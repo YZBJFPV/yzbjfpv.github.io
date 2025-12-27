@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>操作说明 - 2026元旦联欢会</title>
+    <!-- 粒子特效（增强科技感，可选） -->
+    <script src="https://cdn.bootcdn.net/ajax/libs/particles.js/2.0.0/particles.min.js"></script>
+    <style>
+        /* 全局变量：统一科技感色彩体系 */
+        :root {
+            --tech-bg: #0a0e17; /* 深空灰背景 */
+            --tech-gradient1: #162238; /* 渐变深色 */
+            --tech-gradient2: #20365e; /* 渐变中色 */
+            --tech-accent: #4fc3f7; /* 冷光蓝高亮 */
+            --tech-accent-light: #81d4fa; /* 浅蓝微光 */
+            --tech-card: rgba(22, 34, 56, 0.7); /* 卡片底色 */
+            --tech-card-blur: 12px; /* 玻璃拟态模糊 */
+            --tech-border: rgba(79, 195, 247, 0.3); /* 边框颜色 */
+            --tech-text: #e0efff; /* 常规文字色 */
+            --tech-key-bg: #1a2c4c; /* 按键底色 */
+        }
+
+        /* 全局重置与基础样式 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Microsoft YaHei", "PingFang SC", "Helvetica Neue", sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--tech-bg) 0%, var(--tech-gradient1) 50%, var(--tech-gradient2) 100%);
+            background-size: 400% 400%;
+            animation: bg-flow 15s ease-in-out infinite;
+            min-height: 100vh;
+            color: var(--tech-text);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* 背景流动动画 */
+        @keyframes bg-flow {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* 粒子容器（全屏底层，不干扰内容） */
+        #particles-js {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            opacity: 0.6;
+        }
+
+        /* 页面头部 */
+        .page-header {
+            text-align: center;
+            margin-bottom: 50px;
+            z-index: 1;
+        }
+
+        .page-title {
+            font-size: 2.8rem;
+            font-weight: 700;
+            color: var(--tech-accent);
+            text-shadow: 0 0 20px rgba(79, 195, 247, 0.5);
+            margin-bottom: 12px;
+        }
+
+        .page-subtitle {
+            font-size: 1.2rem;
+            opacity: 0.8;
+            letter-spacing: 1px;
+        }
+
+        /* 核心操作说明卡片（玻璃拟态） */
+        .operation-card {
+            background: var(--tech-card);
+            backdrop-filter: blur(var(--tech-card-blur));
+            -webkit-backdrop-filter: blur(var(--tech-card-blur));
+            border: 1px solid var(--tech-border);
+            border-radius: 20px;
+            padding: 40px 30px;
+            width: 100%;
+            max-width: 800px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), 0 0 16px rgba(79, 195, 247, 0.2);
+            z-index: 1;
+        }
+
+        /* 操作列表 */
+        .operation-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .operation-item {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            padding-bottom: 24px;
+            border-bottom: 1px solid rgba(79, 195, 247, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .operation-item:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+        .operation-item:hover {
+            transform: translateX(5px);
+        }
+
+        /* 按键样式（高亮突出） */
+        .key-btn {
+            background: var(--tech-key-bg);
+            border: 2px solid var(--tech-accent);
+            border-radius: 10px;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--tech-accent);
+            box-shadow: 0 0 12px rgba(79, 195, 247, 0.4);
+            flex-shrink: 0;
+            transition: all 0.3s ease;
+        }
+
+        .key-btn.double {
+            width: 100px;
+        }
+
+        .key-btn:hover {
+            background: var(--tech-accent);
+            color: var(--tech-key-bg);
+            box-shadow: 0 0 20px rgba(79, 195, 247, 0.6);
+            transform: scale(1.05);
+        }
+
+        /* 操作说明内容 */
+        .operation-content {
+            flex: 1;
+        }
+
+        .operation-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--tech-accent-light);
+        }
+
+        .operation-desc {
+            font-size: 1rem;
+            opacity: 0.7;
+            line-height: 1.6;
+        }
+
+        /* 页面底部提示 */
+        .page-footer {
+            margin-top: 60px;
+            z-index: 1;
+            opacity: 0.6;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+
+        /* 响应式适配（移动端优化） */
+        @media (max-width: 768px) {
+            .page-title {
+                font-size: 2rem;
+            }
+
+            .operation-card {
+                padding: 30px 20px;
+            }
+
+            .operation-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 12px;
+            }
+
+            .key-btn {
+                width: 50px;
+                height: 50px;
+                font-size: 1.2rem;
+            }
+
+            .key-btn.double {
+                width: 80px;
+            }
+
+            .operation-title {
+                font-size: 1.1rem;
+            }
+
+            .operation-desc {
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 粒子特效容器（科技感底层装饰） -->
+    <div id="particles-js"></div>
+
+    <!-- 页面头部 -->
+    <div class="page-header">
+        <h1 class="page-title">按键操作说明</h1>
+        <p class="page-subtitle">2026元旦联欢会 · 九年级六班</p>
+    </div>
+
+    <!-- 核心操作说明卡片 -->
+    <div class="operation-card">
+        <ul class="operation-list">
+            <li class="operation-item">
+                <span class="key-btn">A</span>
+                <div class="operation-content">
+                    <h3 class="operation-title">显示/隐藏操作提示</h3>
+                    <p class="operation-desc">任意页面按下A键，可快速调出或隐藏本操作说明弹窗，方便随时查阅。</p>
+                </div>
+            </li>
+            <li class="operation-item">
+                <span class="key-btn">␣</span>
+                <div class="operation-content">
+                    <h3 class="operation-title">多场景核心操作</h3>
+                    <p class="operation-desc">倒计时页：跳过常规倒计时，直接进入3秒快速开场；结束页：进入音乐播放页；音乐页：暂停/播放背景音乐。</p>
+                </div>
+            </li>
+            <li class="operation-item">
+                <span class="key-btn">S</span>
+                <div class="operation-content">
+                    <h3 class="operation-title">播放MV视频</h3>
+                    <p class="operation-desc">音乐播放页按下S键，将关闭音乐页并打开MV播放页面（每次按下都会重新加载最新MV内容）。</p>
+                </div>
+            </li>
+            <li class="operation-item">
+                <span class="key-btn">W</span>
+                <div class="operation-content">
+                    <h3 class="operation-title">跳转签名墙</h3>
+                    <p class="operation-desc">音乐播放页按下W键，将关闭音乐页并跳转至签名墙页面（页面仅创建一次，隐藏后再次打开不重新加载）。</p>
+                </div>
+            </li>
+            <li class="operation-item">
+                <span class="key-btn">X</span>
+                <div class="operation-content">
+                    <h3 class="operation-title">返回音乐播放页</h3>
+                    <p class="operation-desc">在MV播放页或签名墙页面按下X键，将关闭当前页面并返回至音乐播放页，恢复背景音乐播放。</p>
+                </div>
+            </li>
+            <li class="operation-item">
+                <span class="key-btn double">+ / -</span>
+                <div class="operation-content">
+                    <h3 class="operation-title">调节背景音乐音量</h3>
+                    <p class="operation-desc">任意页面按下+键提高音量，按下-键降低音量，音量调节平滑过渡，不影响其他操作。</p>
+                </div>
+            </li>
+        </ul>
+    </div>
+
+    <!-- 页面底部 -->
+    <div class="page-footer">
+        <p>高端科技感操作面板 · 简约高效 | 祝您联欢会圆满成功</p>
+    </div>
+
+    <!-- 粒子特效初始化（低调科技感，不喧宾夺主） -->
+    <script>
+        particlesJS('particles-js', {
+            "particles": {
+                "number": {
+                    "value": 80,
+                    "density": {
+                        "enable": true,
+                        "value_area": 800
+                    }
+                },
+                "color": {
+                    "value": "#4fc3f7"
+                },
+                "shape": {
+                    "type": "circle"
+                },
+                "opacity": {
+                    "value": 0.2,
+                    "random": true,
+                    "anim": {
+                        "enable": true,
+                        "speed": 0.5,
+                        "opacity_min": 0.1
+                    }
+                },
+                "size": {
+                    "value": 3,
+                    "random": true,
+                    "anim": {
+                        "enable": true,
+                        "speed": 2,
+                        "size_min": 1
+                    }
+                },
+                "line_linked": {
+                    "enable": true,
+                    "distance": 150,
+                    "color": "#4fc3f7",
+                    "opacity": 0.1,
+                    "width": 1
+                },
+                "move": {
+                    "enable": true,
+                    "speed": 1,
+                    "direction": "none",
+                    "random": true,
+                    "straight": false,
+                    "out_mode": "out",
+                    "bounce": false
+                }
+            },
+            "interactivity": {
+                "events": {
+                    "onhover": {
+                        "enable": true,
+                        "mode": "grab"
+                    },
+                    "onclick": {
+                        "enable": true,
+                        "mode": "push"
+                    },
+                    "resize": true
+                }
+            },
+            "retina_detect": true
+        });
+    </script>
+</body>
+</html>
