@@ -2,39 +2,83 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>2026元旦联欢会 - 九年级六班</title>
-    <!-- 动画库（国内CDN） -->
     <link href="https://cdn.bootcdn.net/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
-    <!-- 端庄中文字体+粗体数字 -->
     <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@700&family=Ma+Shan+Zheng&family=Noto+Serif+SC:wght@400;700;900&display=swap" rel="stylesheet">
     
-    <!-- 灯笼样式（8个灯笼） -->
     <style type="text/css">
-        /* 8个灯笼布局 */
-        .deng-box1 { position: fixed; top: -40px; right: 250px; z-index: 9999; pointer-events: none; }
-        .deng-box2 { position: fixed; top: -40px; right: 150px; z-index: 9999; pointer-events: none; }
-        .deng-box3 { position: fixed; top: -40px; right: 50px; z-index: 9999; pointer-events: none; }
-        .deng-box4 { position: fixed; top: -40px; right: -50px; z-index: 9999; pointer-events: none; }
-        .deng-box5 { position: fixed; top: -40px; left: 250px; z-index: 9999; pointer-events: none; }
-        .deng-box6 { position: fixed; top: -40px; left: 150px; z-index: 9999; pointer-events: none; }
-        .deng-box7 { position: fixed; top: -40px; left: 50px; z-index: 9999; pointer-events: none; }
-        .deng-box8 { position: fixed; top: -40px; left: -50px; z-index: 9999; pointer-events: none; }
+        :root {
+            --red-deep: #8B0000;    
+            --red-medium: #B22222;  
+            --gold-main: #FFD700;   
+            --gold-light: #FFED4F;  
+            --gold-dark: #FFA500;   
+            --gold-shadow: #FF8C00;
 
-        /* 灯笼基础样式 */
+            --font-title: "Ma Shan Zheng", "Noto Serif SC", "宋体", serif;
+            --font-number: "Oswald", "Consolas", "Monaco", sans-serif;
+            --font-text: "Noto Serif SC", "楷体", serif;
+            
+            --font-weight-heavy: 900;
+            --font-weight-bold: 700;
+            --font-weight-regular: 400;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            transform: translateZ(0);
+            -webkit-transform: translateZ(0);
+        }
+
+        body {
+            overflow: hidden;
+            position: relative;
+            font-family: var(--font-text);
+            color: var(--gold-main);
+            background: linear-gradient(135deg, var(--red-deep) 0%, var(--red-medium) 50%, var(--red-deep) 100%);
+        }
+
+        #canvasBg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        /* 灯笼保留（不删除、不影响置顶文字） */
+        .deng-box {
+            position: fixed;
+            top: -40px;
+            z-index: 9999; /* 低于置顶文字，不遮挡 */
+            pointer-events: none;
+            transition: opacity 0.5s ease;
+        }
+        .deng-box1 { right: 250px; }
+        .deng-box2 { right: 150px; }
+        .deng-box3 { right: 50px; }
+        .deng-box4 { right: -50px; }
+        .deng-box5 { left: 250px; }
+        .deng-box6 { left: 150px; }
+        .deng-box7 { left: 50px; }
+        .deng-box8 { left: -50px; }
+
         .deng {
             position: relative;
             width: 100px;
             height: 80px;
             margin: 50px;
-            background: #d8000f;
             background: rgba(216, 0, 15, .8);
             border-radius: 50% 50%;
             transform-origin: 50% -100px;
             animation: swing 3s infinite ease-in-out;
             box-shadow: -5px 5px 50px 4px #fa6c00;
         }
-        /* 不同灯笼摆动速度区分 */
         .deng-box1 .deng { animation-duration: 2.5s; }
         .deng-box2 .deng { animation-duration: 3s; }
         .deng-box3 .deng { animation-duration: 3.5s; }
@@ -47,7 +91,6 @@
         .deng-a {
             width: 80px;
             height: 80px;
-            background: #d8000f;
             background: rgba(216, 0, 15, .1);
             margin: 10px 8px 8px 8px;
             border-radius: 50% 50%;
@@ -56,7 +99,6 @@
         .deng-b {
             width: 40px;
             height: 80px;
-            background: #d8000f;
             background: rgba(216, 0, 15, .1);
             margin: -4px 8px 8px 20px;
             border-radius: 50% 50%;
@@ -106,7 +148,7 @@
             width: 50px;
             content: " ";
             display: block;
-            z-index: 999;
+            z-index: 1;
             border-radius: 5px 5px 0 0;
             border: solid 1px #dc8f03;
             background: linear-gradient(to right, #dc8f03, orange, #dc8f03, orange, #dc8f03);
@@ -139,33 +181,34 @@
             100% { transform: rotate(-10deg); }
         }
 
-        /* 操作提示弹窗样式 */
+        /* 操作提示弹窗 */
         .help-modal {
             position: fixed;
-            top: 50%;
+            top: 30%;
             left: 50%;
             transform: translate(-50%, -50%);
             background: linear-gradient(135deg, #8B0000, #B22222);
             border: 4px solid #FFD700;
             border-radius: 20px;
-            padding: 30px 40px;
-            z-index: 99999;
+            padding: 25px 30px;
+            z-index: 99999; /* 与置顶文字同级，不遮挡文字核心 */
             box-shadow: 0 0 80px rgba(255, 215, 0, 0.9);
             opacity: 0;
             pointer-events: none;
             transition: all 0.5s ease;
-            max-width: 80%;
+            max-width: 70vh;
+            overflow-y: auto;
         }
         .help-modal.show {
             opacity: 1;
             pointer-events: all;
         }
         .help-title {
-            font-size: 2vw;
+            font-size: 1.8vw;
             color: #FFD700;
             font-family: "Ma Shan Zheng", serif;
             font-weight: 900;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
             text-align: center;
             text-shadow: 0 0 15px #FFD700;
         }
@@ -175,116 +218,34 @@
             margin: 0;
         }
         .help-item {
-            font-size: 1.2vw;
+            font-size: 1vw;
             color: #fff;
             font-family: "Noto Serif SC", serif;
-            margin: 10px 0;
-            padding: 8px 0;
+            margin: 8px 0;
+            padding: 6px 0;
             border-bottom: 1px dashed rgba(255, 215, 0, 0.5);
             display: flex;
             justify-content: space-between;
             align-items: center;
+            flex-wrap: wrap;
         }
         .help-key {
             color: #FFD700;
             font-weight: 700;
-            margin-right: 20px;
-            min-width: 60px;
+            margin-right: 15px;
+            min-width: 50px;
             text-align: center;
             background: rgba(255, 215, 0, 0.1);
-            padding: 4px 10px;
+            padding: 3px 8px;
             border-radius: 8px;
+            margin-bottom: 5px;
         }
         .help-desc {
             flex: 1;
-            line-height: 1.5;
+            line-height: 1.4;
         }
 
-        /* 全局样式重置 */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            transform: translateZ(0);
-            -webkit-transform: translateZ(0);
-        }
-
-        /* 核心变量 */
-        :root {
-            /* 红金配色 */
-            --red-deep: #8B0000;    
-            --red-medium: #B22222;  
-            --red-light: #CD5C5C;   
-            --gold-main: #FFD700;   
-            --gold-light: #FFED4F;  
-            --gold-dark: #FFA500;   
-            --gold-shadow: #FF8C00;
-
-            /* 字体体系 */
-            --font-title: "Ma Shan Zheng", "Noto Serif SC", "宋体", serif;
-            --font-number: "Oswald", "Consolas", "Monaco", sans-serif;
-            --font-text: "Noto Serif SC", "楷体", serif;
-            
-            /* 字重 */
-            --font-weight-heavy: 900;
-            --font-weight-bold: 700;
-            --font-weight-regular: 400;
-        }
-
-        /* ========== 修复金沙背景动画 ========== */
-        body {
-            overflow: hidden;
-            position: relative;
-            /* 修复背景叠加顺序和动画 */
-            background: 
-                /* 底层红渐变（流动） */
-                linear-gradient(135deg, var(--red-deep) 0%, var(--red-medium) 50%, var(--red-deep) 100%),
-                /* 中层金沙纹理（密集） */
-                repeating-linear-gradient(90deg, 
-                    rgba(255, 215, 0, 0.05) 0px, 
-                    rgba(255, 215, 0, 0.12) 1px, 
-                    rgba(255, 215, 0, 0.05) 2px,
-                    rgba(255, 215, 0, 0.08) 3px,
-                    rgba(255, 215, 0, 0.05) 4px
-                ),
-                /* 高光层（闪烁） */
-                linear-gradient(45deg, rgba(255, 255, 255, 0.05) 0%, transparent 100%),
-                /* 噪点层（质感） */
-                url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 20 20'%3E%3Cpath fill='%23ffd700' fill-opacity='0.03' d='M0 0h20v20H0V0zm2 2h16v16H2V2z'%3E%3C/path%3E%3C/svg%3E");
-            background-blend-mode: overlay, multiply, lighten, normal;
-            background-size: 400% 400%, 8px 8px, 100% 100%, 20px 20px;
-            animation: 
-                bg-flow 20s ease-in-out infinite,
-                sand-flow 25s linear infinite,
-                sand-glow 8s ease-in-out infinite alternate,
-                sand-brightness 15s ease-in-out infinite alternate;
-            font-family: var(--font-text);
-            color: var(--gold-main);
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-        }
-
-        /* 背景动画修复 */
-        @keyframes bg-flow {
-            0% { background-position: 0% 50%, 0 0, 0 0, 0 0; }
-            50% { background-position: 100% 50%, 0 0, 0 0, 0 0; }
-            100% { background-position: 0% 50%, 0 0, 0 0, 0 0; }
-        }
-        @keyframes sand-flow {
-            0% { background-position: 0% 50%, 0 0, 0 0, 0 0; }
-            100% { background-position: 0% 50%, 60px 60px, 0 0, 0 0; }
-        }
-        @keyframes sand-glow {
-            0% { filter: brightness(1.0) contrast(1.2); }
-            100% { filter: brightness(1.1) contrast(1.3); }
-        }
-        @keyframes sand-brightness {
-            0% { opacity: 1; }
-            50% { opacity: 1.05; }
-            100% { opacity: 1; }
-        }
-
-        /* ========== 时间设置弹窗 ========== */
+        /* 时间设置弹窗 */
         .modal {
             position: fixed;
             top: 0;
@@ -383,7 +344,7 @@
             left: 50%;
             width: 0;
             height: 0;
-            background: rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.2);
             border-radius: 50%;
             transform: translate(-50%, -50%);
             transition: width 0.6s ease, height 0.6s ease;
@@ -401,7 +362,7 @@
             transform: scale(1.05);
         }
 
-        /* ========== 倒计时页面（优化标题+圆形框） ========== */
+        /* 倒计时页面 */
         .countdown-page {
             width: 100vw;
             height: 100vh;
@@ -412,21 +373,19 @@
             opacity: 0;
             transition: opacity 1.5s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative;
-            z-index: 3;
+            z-index: 1;
             padding: 0 20px;
         }
         .countdown-page.show {
             opacity: 1;
         }
 
-        /* 标题区域（优化文字模糊问题） */
         .title-container {
             text-align: center;
             margin-bottom: 80px;
             position: relative;
             width: 100%;
         }
-        /* 主标题：优化发光效果，解决模糊问题 */
         .main-title {
             font-size: 8vw;
             font-family: var(--font-title);
@@ -440,8 +399,8 @@
             color: var(--gold-main);
             line-height: 1.2;
             position: relative;
+            z-index: 2;
         }
-        /* 九年级六班：圆形框样式 */
         .sub-title {
             font-size: 3.5vw;
             font-family: var(--font-title);
@@ -455,17 +414,19 @@
             background: rgba(139, 0, 0, 0.6);
             box-shadow: 0 0 20px var(--gold-main), inset 0 0 10px var(--gold-main);
             display: inline-block;
+            z-index: 2;
+            position: relative;
         }
 
-        /* 倒计时容器 */
         .countdown-container {
             display: flex;
             gap: 50px;
             margin-bottom: 60px;
             perspective: 2000px;
+            z-index: 2;
+            position: relative;
         }
 
-        /* 倒计时项 */
         .countdown-item {
             text-align: center;
             background: linear-gradient(135deg, rgba(139, 0, 0, 0.9), rgba(178, 34, 34, 0.9));
@@ -480,6 +441,7 @@
             transform-style: preserve-3d;
             position: relative;
             min-width: 220px;
+            z-index: 2;
         }
         @keyframes item-pulse {
             0% { transform: scale(1) rotateY(0); box-shadow: 0 0 80px rgba(255, 215, 0, 0.8), inset 0 0 40px rgba(255, 215, 0, 0.3), 0 8px 0 var(--gold-shadow); }
@@ -492,7 +454,6 @@
             100% { transform: rotateY(0) rotateX(0); }
         }
 
-        /* 倒计时数字 */
         .countdown-number {
             font-size: 14vw;
             font-weight: var(--font-weight-heavy);
@@ -507,9 +468,9 @@
             position: relative;
             line-height: 1;
             transform-origin: center;
+            z-index: 2;
         }
 
-        /* 翻牌动画 */
         .countdown-number.flip {
             animation: flip-card 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
         }
@@ -519,7 +480,6 @@
             100% { transform: rotateX(0deg); opacity: 1; text-shadow: 0 0 30px var(--gold-main), 0 0 60px var(--red-deep), 0 0 90px var(--gold-main); }
         }
 
-        /* 倒计时单位 */
         .countdown-label {
             font-size: 2.5vw;
             margin-top: 20px;
@@ -528,6 +488,8 @@
             font-weight: var(--font-weight-bold);
             text-shadow: 0 0 15px var(--gold-main), 1px 1px 0 var(--gold-shadow);
             letter-spacing: 10px;
+            z-index: 2;
+            position: relative;
         }
 
         .music-tip {
@@ -536,9 +498,11 @@
             color: #fff;
             text-shadow: 0 0 10px var(--gold-main);
             margin-top: 20px;
+            z-index: 2;
+            position: relative;
         }
 
-        /* ========== 强化版3/2/1倒计时 ========== */
+        /* 3秒快速倒计时 */
         .fast-countdown {
             position: fixed;
             top: 0;
@@ -566,16 +530,16 @@
             text-shadow: 0 0 60px var(--gold-main), 0 0 120px var(--red-deep), 0 0 180px var(--gold-main), 5px 5px 0 var(--gold-shadow);
             position: relative;
             animation: fast-count-explode 1s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 901;
         }
-        /* 强化倒计时动画 */
         @keyframes fast-count-explode {
             0% { transform: scale(0) rotate(0) skew(0); opacity: 0; text-shadow: 0 0 0 var(--gold-main); }
             30% { transform: scale(2.5) rotate(10deg) skew(5deg); opacity: 1; text-shadow: 0 0 150px var(--gold-main); }
             70% { transform: scale(1.2) rotate(-5deg) skew(-3deg); }
-            100% { transform: scale(1) rotate(0) skew(0); opacity: 1; text-shadow: 0 0 60px var(--gold-main), 0 0 120px var(--red-deep), 0 0 180px var(--gold-main); }
+            100% { transform: scale(1) rotate(0); opacity: 1; text-shadow: 0 0 60px var(--gold-main), 0 0 120px var(--red-deep), 0 0 180px var(--gold-main); }
         }
 
-        /* ========== 结束页 ========== */
+        /* 结束页（保留原UI，不切换，仅新增置顶文字） */
         .end-countdown-page {
             width: 100vw;
             height: 100vh;
@@ -604,6 +568,8 @@
             margin-bottom: 50px;
             animation: end-title-glow 4s ease-in-out infinite alternate;
             line-height: 1.2;
+            z-index: 801;
+            position: relative;
         }
         @keyframes end-title-glow {
             0% { text-shadow: 0 0 40px var(--gold-main), 0 0 80px var(--red-deep), 4px 4px 0 var(--gold-shadow); }
@@ -620,44 +586,126 @@
             border: 3px solid var(--gold-main);
             border-radius: 40px;
             background: rgba(139, 0, 0, 0.5);
+            z-index: 801;
+            position: relative;
         }
 
-        /* ========== 音乐播放页面（增强特效） ========== */
-        .music-page {
+        /* ========== 核心新增：置顶文字容器（图层最高，默认隐藏） ========== */
+        .top-fixed-text {
+            position: fixed; /* 固定置顶，不随页面内容滚动 */
+            top: 0; /* 置顶对齐 */
+            left: 0;
             width: 100vw;
-            height: 100vh;
-            display: none;
+            height: auto;
+            display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            position: relative;
-            background: linear-gradient(135deg, var(--red-deep), var(--red-medium), var(--red-deep));
-            background-size: 400% 400%;
-            animation: opening-bg 18s ease-in-out infinite;
-            z-index: 700;
-            overflow: hidden;
-        }
-        .music-page.show {
-            display: flex;
-        }
-        @keyframes opening-bg {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
+            padding-top: 5vh; /* 顶部预留少量空间，避免完全贴边 */
+            z-index: 999999; /* 极致最高层级，不被任何元素遮挡 */
+            pointer-events: none; /* 不遮挡任何操作（如空格、A键） */
+            opacity: 0; /* 默认隐藏 */
+            visibility: hidden; /* 默认不可见 */
+            transition: opacity 1s ease-in-out, visibility 1s ease-in-out; /* 平滑弹出过渡 */
         }
 
-        /* 烟花容器 */
-        #fireworks {
-            position: absolute;
+        /* 文字显示类（按空格触发） */
+        .top-fixed-text.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* 置顶主标题（大气书法粗字，带动态效果） */
+        .top-main-title {
+            font-size: 12vw;
+            min-font-size: 60px;
+            font-family: var(--font-title);
+            font-weight: var(--font-weight-heavy);
+            letter-spacing: 40px;
+            margin-bottom: 50px;
+            line-height: 1.2;
+            /* 流动金色渐变 */
+            background: linear-gradient(90deg, var(--gold-shadow), var(--gold-main), var(--gold-light), var(--gold-main), var(--gold-shadow));
+            background-size: 300% 100%;
+            -webkit-background-clip: text;
+            -moz-background-clip: text;
+            background-clip: text;
+            color: var(--gold-main); /* 回退色 */
+            /* 多重动态效果 */
+            animation: 
+                gold-flow 5s linear infinite,
+                gold-glow 3s ease-in-out infinite alternate,
+                gold-float 6s ease-in-out infinite;
+            /* 厚重阴影强化质感 */
+            text-shadow: 
+                0 0 25px var(--gold-main), 
+                0 0 50px var(--gold-shadow), 
+                0 0 75px var(--gold-main), 
+                3px 3px 0 rgba(0, 0, 0, 0.3),
+                0 0 100px var(--gold-light);
+        }
+
+        /* 置顶副标题（小字，延迟动画） */
+        .top-sub-title {
+            font-size: 5vw;
+            min-font-size: 30px;
+            font-family: var(--font-title);
+            font-weight: var(--font-weight-bold);
+            letter-spacing: 25px;
+            /* 流动金色渐变 */
+            background: linear-gradient(90deg, var(--gold-shadow), var(--gold-main), var(--gold-light));
+            background-size: 300% 100%;
+            -webkit-background-clip: text;
+            -moz-background-clip: text;
+            background-clip: text;
+            color: var(--gold-main); /* 回退色 */
+            /* 动态效果（延迟，增加层次感） */
+            animation: 
+                gold-flow 6s linear infinite,
+                gold-glow 4s ease-in-out infinite alternate,
+                gold-float 7s ease-in-out infinite 0.5s;
+            text-shadow: 
+                0 0 15px var(--gold-main), 
+                0 0 30px var(--gold-shadow), 
+                0 0 45px var(--gold-main), 
+                2px 2px 0 rgba(0, 0, 0, 0.2);
+        }
+
+        /* 文字动态效果关键帧 */
+        @keyframes gold-flow {
+            0% { background-position: 300% 0; }
+            100% { background-position: 0 0; }
+        }
+
+        @keyframes gold-glow {
+            0% { text-shadow: 
+                0 0 25px var(--gold-main), 
+                0 0 50px var(--gold-shadow), 
+                0 0 75px var(--gold-main), 
+                3px 3px 0 rgba(0, 0, 0, 0.3); }
+            100% { text-shadow: 
+                0 0 40px var(--gold-main), 
+                0 0 80px var(--gold-shadow), 
+                0 0 120px var(--gold-light), 
+                3px 3px 0 rgba(0, 0, 0, 0.3); }
+        }
+
+        @keyframes gold-float {
+            0% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-15px) rotate(1deg); }
+            100% { transform: translateY(0px) rotate(0deg); }
+        }
+
+        /* 粒子/烟花效果（层级低于置顶文字） */
+        #fireworks, #particles-js {
+            position: fixed;
             top: 0;
             left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 1;
+            width: 100vw;
+            height: 100vh;
+            z-index: 701; /* 低于置顶文字 */
             pointer-events: none;
         }
-
-        /* 飘落的花瓣/金片 */
         .confetti {
             position: absolute;
             width: 10px;
@@ -666,6 +714,8 @@
             opacity: 0.8;
             border-radius: 50%;
             animation: confetti-fall linear infinite;
+            z-index: 701; /* 低于置顶文字 */
+            pointer-events: none;
         }
         @keyframes confetti-fall {
             0% {
@@ -678,43 +728,7 @@
             }
         }
 
-        /* 音乐页标题 */
-        .music-title {
-            font-size: 9vw;
-            font-family: var(--font-title);
-            font-weight: var(--font-weight-heavy);
-            text-shadow: 0 0 40px var(--gold-main), 0 0 80px var(--red-deep), 0 0 120px var(--gold-main), 4px 4px 0 var(--gold-shadow);
-            letter-spacing: 25px;
-            margin-bottom: 40px;
-            color: var(--gold-main);
-            line-height: 1.2;
-            position: relative;
-            z-index: 2;
-        }
-        .music-subtitle {
-            font-size: 4.5vw;
-            font-family: var(--font-title);
-            font-weight: var(--font-weight-bold);
-            color: #fff;
-            text-shadow: 0 0 30px var(--gold-main), 0 0 60px var(--red-deep), 3px 3px 0 var(--gold-shadow);
-            letter-spacing: 20px;
-            margin-bottom: 60px;
-            padding: 15px 30px;
-            border: 3px solid var(--gold-main);
-            border-radius: 40px;
-            background: rgba(139, 0, 0, 0.5);
-            position: relative;
-            z-index: 2;
-        }
-
-        #particles-js {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            z-index: 1;
-        }
-
-        /* ========== 全屏iframe（name和mv页面） ========== */
+        /* 其他容器（层级低于置顶文字） */
         .iframe-container {
             position: fixed;
             top: 0;
@@ -732,9 +746,9 @@
             width: 100%;
             height: 100%;
             border: 0;
+            z-index: 2001;
         }
 
-        /* 音量提示 */
         .volume-tip {
             display: none;
             position: fixed;
@@ -743,12 +757,16 @@
             font-size: 1.2vw;
             color: var(--gold-main);
             text-shadow: 0 0 5px var(--red-deep);
+            z-index: 100;
         }
     </style>
 </head>
 <body>
-    <!-- 8个灯笼（2 0 2 0 元 旦 快 乐） -->
-    <div class="deng-box1">
+    <!-- Canvas背景容器 -->
+    <canvas id="canvasBg"></canvas>
+
+    <!-- 8个灯笼（完整保留，不删除） -->
+    <div class="deng-box deng-box1">
         <div class="deng">
             <div class="xian"></div>
             <div class="deng-a">
@@ -762,7 +780,7 @@
             </div>
         </div>
     </div>
-    <div class="deng-box2">
+    <div class="deng-box deng-box2">
         <div class="deng">
             <div class="xian"></div>
             <div class="deng-a">
@@ -776,7 +794,7 @@
             </div>
         </div>
     </div>
-    <div class="deng-box3">
+    <div class="deng-box deng-box3">
         <div class="deng">
             <div class="xian"></div>
             <div class="deng-a">
@@ -790,7 +808,7 @@
             </div>
         </div>
     </div>
-    <div class="deng-box4">
+    <div class="deng-box deng-box4">
         <div class="deng">
             <div class="xian"></div>
             <div class="deng-a">
@@ -804,12 +822,12 @@
             </div>
         </div>
     </div>
-    <div class="deng-box5">
+    <div class="deng-box deng-box5">
         <div class="deng">
             <div class="xian"></div>
             <div class="deng-a">
                 <div class="deng-b">
-                    <div class="deng-t">乐</div>
+                    <div class="deng-t">元</div>
                 </div>
             </div>
             <div class="shui shui-a">
@@ -818,21 +836,7 @@
             </div>
         </div>
     </div>
-    <div class="deng-box6">
-        <div class="deng">
-            <div class="xian"></div>
-            <div class="deng-a">
-                <div class="deng-b">
-                    <div class="deng-t">快</div>
-                </div>
-            </div>
-            <div class="shui shui-a">
-                <div class="shui-c"></div>
-                <div class="shui-b"></div>
-            </div>
-        </div>
-    </div>
-    <div class="deng-box7">
+    <div class="deng-box deng-box6">
         <div class="deng">
             <div class="xian"></div>
             <div class="deng-a">
@@ -846,12 +850,26 @@
             </div>
         </div>
     </div>
-    <div class="deng-box8">
+    <div class="deng-box deng-box7">
         <div class="deng">
             <div class="xian"></div>
             <div class="deng-a">
                 <div class="deng-b">
-                    <div class="deng-t">元</div>
+                    <div class="deng-t">快</div>
+                </div>
+            </div>
+            <div class="shui shui-a">
+                <div class="shui-c"></div>
+                <div class="shui-b"></div>
+            </div>
+        </div>
+    </div>
+    <div class="deng-box deng-box8">
+        <div class="deng">
+            <div class="xian"></div>
+            <div class="deng-a">
+                <div class="deng-b">
+                    <div class="deng-t">乐</div>
                 </div>
             </div>
             <div class="shui shui-a">
@@ -867,27 +885,27 @@
         <ul class="help-list">
             <li class="help-item">
                 <span class="help-key">A键</span>
-                <span class="help-desc">任意页面：显示/隐藏本操作提示</span>
+                <span class="help-desc">任意页面：显示/隐藏本操作提示，方便随时查阅</span>
             </li>
             <li class="help-item">
                 <span class="help-key">空格键</span>
-                <span class="help-desc">倒计时页：跳过倒计时 | 结束页：进入音乐页 | 音乐页：播放/暂停音乐</span>
+                <span class="help-desc">倒计时页：跳过常规倒计时，直接进入3秒快速开场；结束页：播放背景音乐并弹出置顶文字</span>
             </li>
             <li class="help-item">
                 <span class="help-key">S键</span>
-                <span class="help-desc">音乐页：打开MV页面（每次重新加载），按X键返回</span>
+                <span class="help-desc">结束页：打开MV播放页面（关闭后返回原结束页）</span>
             </li>
             <li class="help-item">
                 <span class="help-key">W键</span>
-                <span class="help-desc">音乐页：打开姓名页面（隐藏不重新加载），按X键返回</span>
-            </li>
-            <li class="help-item">
-                <span class="help-key">+/-键</span>
-                <span class="help-desc">调节音量大小</span>
+                <span class="help-desc">结束页：打开签名墙页面（关闭后返回原结束页）</span>
             </li>
             <li class="help-item">
                 <span class="help-key">X键</span>
-                <span class="help-desc">MV/姓名页面：返回音乐播放页</span>
+                <span class="help-desc">MV/签名墙页面：关闭当前页面并返回结束页，恢复背景音乐</span>
+            </li>
+            <li class="help-item">
+                <span class="help-key">+/-键</span>
+                <span class="help-desc">任意页面：调节背景音乐音量，音量调节平滑过渡</span>
             </li>
         </ul>
     </div>
@@ -949,37 +967,38 @@
             </div>
         </div>
         <p class="music-tip">按空格键可提前开场 | 按A键查看操作说明</p>
-    </div>
+    </div> 
 
     <!-- 3秒快速倒计时 -->
     <div class="fast-countdown" id="fastCountdown">
         <div class="fast-count-number" id="fastCountNumber">3</div>
     </div>
 
-    <!-- 结束页 -->
+    <!-- 结束页（保留原UI，新增置顶文字容器 + 粒子/烟花） -->
     <div class="end-countdown-page" id="endCountdownPage">
+        <!-- 粒子/烟花效果（层级低于置顶文字） -->
+        <div id="fireworks"></div>
+        <div id="particles-js"></div>
+        
+        <!-- 原UI内容（保留不变） -->
         <h1 class="end-title">2026元旦联欢会</h1>
         <h2 class="end-subtitle">九年级六班</h2>
+        
+        <!-- 核心新增：置顶文字容器（默认隐藏，按空格显示） -->
+        <div class="top-fixed-text" id="topFixedText">
+            <h1 class="top-main-title">2026元旦联欢会</h1>
+            <h2 class="top-sub-title">九年级六班</h2>
+        </div>
     </div>
 
-    <!-- 音乐播放页面（增强特效） -->
-    <div class="music-page" id="musicPage">
-        <!-- 烟花容器 -->
-        <div id="fireworks"></div>
-        <!-- 粒子特效 -->
-        <div id="particles-js"></div>
-        <h1 class="music-title">2026元旦联欢会</h1>
-        <h2 class="music-subtitle">九年级六班 正式开始！</h2>
-    </div>
-
-    <!-- MV页面容器（重新加载） -->
+    <!-- MV页面容器 -->
     <div class="iframe-container" id="mvContainer">
-        <iframe id="mvIframe" src="" frameborder="0"></iframe>
+        <iframe id="mvIframe" src="" frameborder="0" allowfullscreen></iframe>
     </div>
 
-    <!-- 姓名页面容器（隐藏不重新加载） -->
+    <!-- 姓名页面容器 -->
     <div class="iframe-container" id="nameContainer">
-        <iframe id="nameIframe" src="https://yzbjfpv.top/school/2026/name" frameborder="0"></iframe>
+        <iframe id="nameIframe" src="https://yzbjfpv.top/school/2026/name" frameborder="0" allowfullscreen></iframe>
     </div>
 
     <!-- 音频元素 -->
@@ -989,26 +1008,193 @@
     <script src="https://cdn.bootcdn.net/ajax/libs/particles.js/2.0.0/particles.min.js"></script>
     <script>
         // 全局变量
-        let isNamePageCreated = false; // 标记姓名页面是否已创建
-        let helpModalTimeout = null; // 操作提示弹窗倒计时
+        let isNamePageCreated = false;
+        let helpModalTimeout = null;
+        const MV_URL = 'https://yzbjfpv.top/school/2026/music/mv';
+        const VOLUME_STEP = 0.05; // 补充音量步长（原代码缺失）
+
+        // Canvas相关全局变量
+        let canvas, ctx, particles = [];
+        const MAX_PARTICLES = 100;
+        let currentScene = 'init';
 
         // 页面加载完成初始化
         window.onload = function() {
-            // 初始化页面逻辑
+            initCanvas();
             initPageLogic();
-            // 初始化烟花效果
             initFireworks();
-            // 初始化飘落特效
             initConfetti();
         };
 
-        // ========== 烟花效果 ==========
+        // 初始化Canvas
+        function initCanvas() {
+            canvas = document.getElementById('canvasBg');
+            ctx = canvas.getContext('2d');
+
+            resizeCanvas();
+            window.addEventListener('resize', resizeCanvas);
+
+            requestAnimationFrame(animateCanvas);
+        }
+
+        // Canvas全屏适配
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            if (currentScene === 'countdown') {
+                createBottom3DRiverParticles();
+            } else if (currentScene === 'end') { // 适配结束页场景
+                createBottom3DRiverParticles(); // 保留原金河效果，不切换粒子
+            }
+        }
+
+        // Particle类（保留原修复逻辑，不修改）
+        class Particle {
+            constructor(x, y, progress, isBottomRiver = true) {
+                this.x = x;
+                this.y = y;
+                this.progress = progress;
+                this.maxOpacity = 0.9;
+                this.minOpacity = 0.1;
+                this.isBottomRiver = isBottomRiver;
+                this.color = '';
+                this.size = 0;
+                this.opacity = 0;
+                this.opacitySpeed = 0;
+                this.speed = 0;
+                this.offset = 0;
+                this.offsetSpeed = 0;
+
+                if (this.isBottomRiver) {
+                    this.size = progress < 0.5 ? (Math.random() * 6 + 4) : (Math.random() * 3 + 1);
+                    this.opacity = progress < 0.5 ? (Math.random() * 0.8 + 0.6) : (Math.random() * 0.5 + 0.2);
+                    this.opacitySpeed = (Math.random() - 0.5) * 0.005;
+                    this.colors = ['#FFD700', '#FFA500', '#FF8C00', '#FFED4F'];
+                    this.speed = Math.random() * 0.0008 + 0.0003;
+                    this.offset = Math.random() * 30 - 15;
+                    this.offsetSpeed = Math.random() * 0.3 - 0.15;
+                } else {
+                    this.size = Math.random() * 4 + 2;
+                    this.opacity = Math.random() * 0.6 + 0.3;
+                    this.opacitySpeed = (Math.random() - 0.5) * 0.01;
+                    this.colors = ['#FFD700', '#FFED4F', '#FFFF00', '#FF8C00'];
+                    this.speed = Math.random() * 0.0005 + 0.0002;
+                    this.offset = Math.random() * 50 - 25;
+                    this.offsetSpeed = Math.random() * 0.4 - 0.2;
+                }
+
+                this.color = this.colors[Math.floor(Math.random() * this.colors.length)];
+            }
+
+            getCurvePoint(progress) {
+                const width = canvas.width;
+                const height = canvas.height;
+
+                if (this.isBottomRiver) {
+                    const x = progress * width * 1.1 - width * 0.05;
+                    const y = height * 0.88 + (1 - progress) * 50 + Math.sin(progress * Math.PI * 2) * 30 + this.offset;
+                    return { x, y };
+                } else {
+                    const x = progress * width * 1.1 - width * 0.05;
+                    const y = height * 0.4 + (1 - progress) * 50 + Math.sin(progress * Math.PI * 4) * 40 + this.offset;
+                    return { x, y };
+                }
+            }
+
+            update() {
+                this.progress += this.speed;
+                if (this.progress > 1) {
+                    this.progress = 0;
+                    this.offset = this.isBottomRiver ? (Math.random() * 30 - 15) : (Math.random() * 50 - 25);
+                    if (this.isBottomRiver) {
+                        this.size = this.progress < 0.5 ? (Math.random() * 6 + 4) : (Math.random() * 3 + 1);
+                        this.opacity = this.progress < 0.5 ? (Math.random() * 0.8 + 0.6) : (Math.random() * 0.5 + 0.2);
+                    }
+                }
+                this.offset += this.offsetSpeed;
+                const maxOffset = this.isBottomRiver ? 15 : 25;
+                if (this.offset > maxOffset) this.offset = maxOffset;
+                if (this.offset < -maxOffset) this.offset = -maxOffset;
+
+                const curvePoint = this.getCurvePoint(this.progress);
+                this.x = curvePoint.x;
+                this.y = curvePoint.y;
+
+                this.opacity += this.opacitySpeed;
+                if (this.opacity > this.maxOpacity || this.opacity < this.minOpacity) {
+                    this.opacitySpeed *= -1;
+                }
+            }
+
+            draw() {
+                ctx.save();
+                ctx.globalAlpha = this.opacity;
+                ctx.fillStyle = this.color;
+                if (this.isBottomRiver) {
+                    ctx.beginPath();
+                    ctx.ellipse(this.x, this.y, this.size, this.size * 0.7, Math.PI / 10, 0, Math.PI * 2);
+                    ctx.fill();
+                } else {
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+                ctx.restore();
+            }
+        }
+
+        // 创建底部伪3D金河粒子（保留原效果）
+        function createBottom3DRiverParticles() {
+            particles = [];
+            for (let i = 0; i < MAX_PARTICLES; i++) {
+                const progress = Math.random();
+                const curvePoint = new Particle(0, 0, progress, true).getCurvePoint(progress);
+                particles.push(new Particle(curvePoint.x, curvePoint.y, progress, true));
+            }
+        }
+
+        // Canvas动画循环
+        function animateCanvas() {
+            ctx.fillStyle = 'rgba(139, 0, 0, 0.05)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            for (let i = 0; i < particles.length; i++) {
+                particles[i].update();
+                particles[i].draw();
+            }
+
+            requestAnimationFrame(animateCanvas);
+        }
+
+        // 场景切换（简化，仅保留倒计时/结束页，不切换音乐页）
+        function switchScene(scene) {
+            currentScene = scene;
+            particles = [];
+            const allDengBoxes = document.querySelectorAll('.deng-box');
+
+            switch (scene) {
+                case 'countdown':
+                    createBottom3DRiverParticles();
+                    allDengBoxes.forEach(box => box.classList.remove('hidden'));
+                    break;
+                case 'end':
+                    createBottom3DRiverParticles(); // 保留原金河效果，不隐藏灯笼
+                    allDengBoxes.forEach(box => box.classList.remove('hidden'));
+                    break;
+                default:
+                    particles = [];
+                    allDengBoxes.forEach(box => box.classList.remove('hidden'));
+                    break;
+            }
+        }
+
+        // 烟花效果（保留，层级低于置顶文字）
         function initFireworks() {
             const fireworks = document.getElementById('fireworks');
+            if (!fireworks) return;
 
             function createFirework() {
-                // 只在音乐页面显示烟花
-                if (!document.getElementById('musicPage').classList.contains('show')) return;
+                if (!document.getElementById('endCountdownPage').classList.contains('show')) return;
 
                 const firework = document.createElement('div');
                 firework.style.position = 'absolute';
@@ -1018,14 +1204,12 @@
                 firework.style.borderRadius = '50%';
                 firework.style.left = Math.random() * 100 + '%';
                 firework.style.bottom = '0';
-                firework.style.zIndex = '1';
+                firework.style.zIndex = '701';
                 fireworks.appendChild(firework);
 
-                // 随机颜色
                 const colors = ['#ffd700', '#ff0000', '#ffffff', '#ff8c00', '#ff69b4'];
                 firework.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
 
-                // 烟花上升动画
                 let top = 100;
                 const duration = Math.random() * 2000 + 1000;
                 const speed = Math.random() * 5 + 3;
@@ -1038,9 +1222,7 @@
                     }
                 }, 16);
 
-                // 烟花爆炸效果
                 setTimeout(function() {
-                    // 创建爆炸粒子
                     for (let i = 0; i < 50; i++) {
                         const particle = document.createElement('div');
                         particle.style.position = 'absolute';
@@ -1051,17 +1233,16 @@
                         particle.style.left = firework.style.left;
                         particle.style.top = firework.style.top;
                         particle.style.opacity = '1';
-                        particle.style.zIndex = '1';
+                        particle.style.zIndex = '701';
                         fireworks.appendChild(particle);
 
-                        // 粒子扩散
                         const angle = Math.random() * Math.PI * 2;
                         const distance = Math.random() * 80 + 20;
                         const vx = Math.cos(angle) * distance;
                         const vy = Math.sin(angle) * distance;
 
-                        let px = parseFloat(particle.style.left) || 50;
-                        let py = parseFloat(particle.style.top) || 50;
+                        let px = parseFloat(firework.style.left) || 50;
+                        let py = parseFloat(firework.style.top) || 50;
                         let opacity = 1;
                         const particleAnim = setInterval(() => {
                             px += vx / 20;
@@ -1078,20 +1259,20 @@
                         }, 16);
                     }
 
-                    // 移除原烟花
                     fireworks.removeChild(firework);
                 }, duration);
             }
 
-            // 每隔一段时间创建烟花
             setInterval(createFirework, 500);
         }
 
-        // ========== 飘落金片/花瓣特效 ==========
+        // 飘落金片/花瓣特效（保留，层级低于置顶文字）
         function initConfetti() {
+            const endPage = document.getElementById('endCountdownPage');
+            if (!endPage) return;
+
             function createConfetti() {
-                // 只在音乐页面显示
-                if (!document.getElementById('musicPage').classList.contains('show')) return;
+                if (!endPage.classList.contains('show')) return;
 
                 const confetti = document.createElement('div');
                 confetti.className = 'confetti';
@@ -1101,78 +1282,72 @@
                 confetti.style.width = Math.random() * 10 + 5 + 'px';
                 confetti.style.height = Math.random() * 10 + 5 + 'px';
                 
-                // 随机形状和颜色
                 if (Math.random() > 0.5) {
-                    confetti.style.borderRadius = '0'; // 方形
+                    confetti.style.borderRadius = '0';
                 }
                 const colors = ['#ffd700', '#ff8c00', '#fff'];
                 confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
 
-                document.getElementById('musicPage').appendChild(confetti);
+                endPage.appendChild(confetti);
 
-                // 移除消失的金片
                 setTimeout(() => {
                     confetti.remove();
                 }, 15000);
             }
 
-            setInterval(createConfetti, 300);
+            setInterval(createConfetti, 200);
         }
 
-        // ========== 操作提示弹窗 ==========
+        // 操作提示弹窗切换
         function toggleHelpModal() {
             const helpModal = document.getElementById('helpModal');
-            
-            // 清除之前的倒计时
+            if (!helpModal) return;
+
             if (helpModalTimeout) clearTimeout(helpModalTimeout);
             
-            // 显示/隐藏弹窗
             if (helpModal.classList.contains('show')) {
                 helpModal.classList.remove('show');
             } else {
                 helpModal.classList.add('show');
-                // 8秒后自动关闭
                 helpModalTimeout = setTimeout(() => {
                     helpModal.classList.remove('show');
                 }, 8000);
             }
         }
 
-        // ========== 页面核心逻辑 ==========
+        // 页面核心逻辑（核心修改：取消页面切换，同步播放音乐+显示置顶文字）
         function initPageLogic() {
-            // 核心元素
             const timeModal = document.getElementById('timeModal');
             const countdownPage = document.getElementById('countdownPage');
             const fastCountdown = document.getElementById('fastCountdown');
             const endCountdownPage = document.getElementById('endCountdownPage');
-            const musicPage = document.getElementById('musicPage');
+            const topFixedText = document.getElementById('topFixedText'); // 新增置顶文字DOM
             const mvContainer = document.getElementById('mvContainer');
             const nameContainer = document.getElementById('nameContainer');
             const mvIframe = document.getElementById('mvIframe');
             const backgroundMusic = document.getElementById('backgroundMusic');
             
-            // 时间设置元素
             const dateInput = document.getElementById('dateInput');
             const periodSelect = document.getElementById('periodSelect');
             const hourSelect = document.getElementById('hourSelect');
             const minuteSelect = document.getElementById('minuteSelect');
             const timeConfirmBtn = document.getElementById('timeConfirmBtn');
             
-            // 倒计时元素
             const hoursEl = document.getElementById('hours');
             const minutesEl = document.getElementById('minutes');
             const secondsEl = document.getElementById('seconds');
             const fastCountNumber = document.getElementById('fastCountNumber');
             
-            // 全局变量
             let targetTime = null;
             let countdownInterval = null;
-            const MV_URL = 'https://yzbjfpv.top/school/2026/music/mv';
-            // 音量控制
             let volumeInterval = null;
-            const VOLUME_STEP = 0.01;
-            // 翻牌变量
             let lastHours = '00', lastMinutes = '00', lastSeconds = '00';
+            let isMusicPlayed = false; // 标记音乐是否已播放，避免重复触发
+
+            if (![timeModal, countdownPage, endCountdownPage, timeConfirmBtn].every(el => el)) {
+                console.error('部分核心元素缺失，无法正常初始化');
+                return;
+            }
 
             // 初始化时间选择器
             const today = new Date();
@@ -1186,25 +1361,22 @@
                 const hourVal = hourSelect.value;
                 const minuteVal = minuteSelect.value;
 
-                // 24小时制转换
                 let hour = parseInt(hourVal);
                 if (period === '下午' && hour < 12) hour += 12;
                 else if (period === '上午' && hour === 12) hour = 0;
                 const minute = parseInt(minuteVal);
 
-                // 构建目标时间
                 targetTime = new Date(selectedDate);
                 targetTime.setHours(hour);
                 targetTime.setMinutes(minute);
                 targetTime.setSeconds(0);
 
-                // 校验
                 if (isNaN(targetTime.getTime())) {
                     alert('时间设置错误，请重新选择！');
                     return;
                 }
 
-                // 显示倒计时
+                switchScene('countdown');
                 timeModal.classList.add('hidden');
                 countdownPage.classList.add('show');
                 startCountdown();
@@ -1221,20 +1393,18 @@
                 const now = new Date();
                 const diff = targetTime - now;
                 
-                // 倒计时结束
                 if (diff <= 0) {
                     clearInterval(countdownInterval);
                     countdownPage.classList.remove('show');
                     endCountdownPage.classList.add('show');
+                    switchScene('end'); // 切换到结束页场景，保留原UI
                     return;
                 }
                 
-                // 计算时分秒
                 const hours = Math.floor(diff / 3600000).toString().padStart(2, '0');
                 const minutes = Math.floor((diff % 3600000) / 60000).toString().padStart(2, '0');
                 const seconds = Math.floor((diff % 60000) / 1000).toString().padStart(2, '0');
                 
-                // 翻牌动画
                 if (hours !== lastHours) {
                     hoursEl.textContent = hours;
                     hoursEl.classList.add('flip');
@@ -1255,14 +1425,13 @@
                 }
             }
 
-            // 强化版3秒倒计时
+            // 3秒快速倒计时（结束后直接显示结束页，不切换其他页面）
             function startFastCountdown() {
                 countdownPage.classList.remove('show');
                 fastCountdown.classList.add('show');
                 
                 let count = 3;
                 fastCountNumber.textContent = count;
-                // 添加初始动画
                 fastCountNumber.classList.add('animate__animated', 'animate__bounceIn', 'animate__rotateIn');
                 
                 const fastInterval = setInterval(() => {
@@ -1271,11 +1440,11 @@
                         clearInterval(fastInterval);
                         fastCountdown.classList.remove('show');
                         endCountdownPage.classList.add('show');
+                        switchScene('end'); // 切换到结束页场景，保留原UI
                         return;
                     }
                     
                     fastCountNumber.textContent = count;
-                    // 重置动画
                     fastCountNumber.classList.remove('animate__animated', 'animate__bounceIn', 'animate__rotateIn');
                     setTimeout(() => {
                         fastCountNumber.classList.add('animate__animated', 'animate__bounceIn', 'animate__rotateIn');
@@ -1283,8 +1452,9 @@
                 }, 1000);
             }
 
-            // 粒子特效
+            // 粒子特效（初始化在结束页，不切换页面）
             function initParticles() {
+                if (typeof particlesJS === 'undefined') return;
                 particlesJS('particles-js', {
                     "particles": {
                         "number": { "value": 300, "density": { "enable": true, "value_area": 800 } },
@@ -1325,77 +1495,87 @@
                 });
             }
 
-            // ========== 键盘操作逻辑（简化版） ==========
+            // 键盘操作逻辑（核心修改：取消页面切换，同步播放音乐+显示置顶文字）
             document.addEventListener('keydown', (e) => {
                 e.preventDefault();
                 
-                // A键：显示/隐藏操作提示（任意页面）
                 if (e.key.toLowerCase() === 'a') {
                     toggleHelpModal();
                     return;
                 }
 
-                // X键：返回音乐页面（MV/姓名页面）
                 if (e.key.toLowerCase() === 'x') {
-                    mvContainer.classList.remove('show');
-                    nameContainer.classList.remove('show');
-                    musicPage.classList.add('show');
-                    backgroundMusic.play().catch(err => {
-                        document.addEventListener('click', () => backgroundMusic.play(), { once: true });
-                    });
-                    return;
-                }
-
-                // 空格键：核心操作
-                if (e.code === 'Space') {
-                    // 倒计时页 → 快速倒计时
-                    if (countdownPage.classList.contains('show')) {
-                        clearInterval(countdownInterval);
-                        startFastCountdown();
-                    }
-                    // 结束页 → 音乐页
-                    else if (endCountdownPage.classList.contains('show')) {
-                        endCountdownPage.classList.remove('show');
-                        musicPage.classList.add('show');
-                        initParticles();
+                    const isMvShow = mvContainer.classList.contains('show');
+                    const isNameShow = nameContainer.classList.contains('show');
+                    if (isMvShow || isNameShow) {
+                        mvContainer.classList.remove('show');
+                        nameContainer.classList.remove('show');
+                        endCountdownPage.classList.add('show'); // 返回结束页（原UI）
+                        switchScene('end');
                         backgroundMusic.play().catch(err => {
                             document.addEventListener('click', () => backgroundMusic.play(), { once: true });
                         });
                     }
-                    // 音乐页：暂停/播放音乐
-                    else if (musicPage.classList.contains('show')) {
+                    return;
+                }
+
+                if (e.code === 'Space') {
+                    // 场景1：倒计时页 → 快速倒计时（保留原逻辑）
+                    if (countdownPage.classList.contains('show')) {
+                        clearInterval(countdownInterval);
+                        startFastCountdown();
+                    }
+                    // 场景2：结束页 → 播放音乐 + 显示置顶文字（核心修改：不切换页面）
+                    else if (endCountdownPage.classList.contains('show') && !isMusicPlayed) {
+                        isMusicPlayed = true; // 标记已播放，避免重复触发
+                        
+                        // 1. 播放背景音乐
+                        backgroundMusic.play().catch(err => {
+                            document.addEventListener('click', () => backgroundMusic.play(), { once: true });
+                        });
+                        
+                        // 2. 初始化粒子特效（在结束页显示，不切换页面）
+                        initParticles();
+                        
+                        // 3. 显示置顶文字（同步弹出，平滑过渡）
+                        topFixedText.classList.add('show');
+                        
+                        // 4. 保留原灯笼、金河效果（不隐藏任何元素）
+                        const allDengBoxes = document.querySelectorAll('.deng-box');
+                        allDengBoxes.forEach(box => box.classList.remove('hidden'));
+                    }
+                    // 场景3：结束页（音乐已播放）→ 暂停/播放音乐（保留原功能）
+                    else if (endCountdownPage.classList.contains('show') && isMusicPlayed) {
                         if (backgroundMusic.paused) {
                             backgroundMusic.play();
                         } else {
                             backgroundMusic.pause();
                         }
                     }
+                    return;
                 }
 
-                // S键：打开MV页面（重新加载）
-                if (e.key.toLowerCase() === 's' && musicPage.classList.contains('show')) {
+                if (e.key.toLowerCase() === 's' && endCountdownPage.classList.contains('show')) {
                     backgroundMusic.pause();
-                    musicPage.classList.remove('show');
+                    endCountdownPage.classList.remove('show');
                     mvContainer.classList.add('show');
-                    // 重新加载MV页面
                     mvIframe.src = '';
                     setTimeout(() => {
-                        mvIframe.src = MV_URL;
+                        mvIframe.src = MV_URL + '?t=' + new Date().getTime();
                     }, 100);
+                    return;
                 }
 
-                // W键：打开姓名页面（隐藏不重新加载）
-                if (e.key.toLowerCase() === 'w' && musicPage.classList.contains('show')) {
+                if (e.key.toLowerCase() === 'w' && endCountdownPage.classList.contains('show')) {
                     backgroundMusic.pause();
-                    musicPage.classList.remove('show');
+                    endCountdownPage.classList.remove('show');
                     nameContainer.classList.add('show');
-                    // 只创建一次
                     if (!isNamePageCreated) {
                         isNamePageCreated = true;
                     }
+                    return;
                 }
 
-                // 音量控制
                 if (e.code === 'Minus' || e.code === 'NumpadSubtract') {
                     if (!volumeInterval) {
                         volumeInterval = setInterval(() => {
