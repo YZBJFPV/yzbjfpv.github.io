@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>九年级六班|2026元旦联欢会|Flyz官方网站</title>
+    <!-- 引入第三方库：Animate.css + particles.js（金沙特效） -->
+    <link href="https://cdn.bootcdn.net/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            overflow: hidden;
+            background: #000;
+            font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
+        }
+
+        /* ========== 开屏动画 ========== */
+        .splash-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: linear-gradient(135deg, #ff6b6b, #feca57, #48dbfb, #ff9ff3);
+            background-size: 400% 400%;
+            z-index: 200;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: #fff;
+        }
+        #splash-init {
+            animation: splashFadeOut 3s ease-in-out forwards;
+        }
+        #splash-mv {
+            opacity: 0;
+            visibility: hidden;
+            z-index: 150;
+        }
+        @keyframes splashFadeOut {
+            0% { background-position: 0% 50%; opacity: 1; visibility: visible; }
+            90% { background-position: 100% 50%; opacity: 1; visibility: visible; }
+            100% { background-position: 100% 50%; opacity: 0; visibility: hidden; z-index: -1; }
+        }
+
+        .splash-title {
+            font-size: 5vw;
+            font-weight: 700;
+            letter-spacing: 0.8vw;
+            text-shadow: 0 0 20px #fff;
+            opacity: 0;
+            animation: titleFade 3s ease forwards;
+        }
+        .splash-subtitle {
+            font-size: 2.2vw;
+            letter-spacing: 1.8vw;
+            margin: 1.5vw 0;
+            opacity: 0;
+            animation: titleFade 3s ease 0.5s forwards;
+        }
+        .splash-tip {
+            font-size: 1.5vw;
+            margin-bottom: 1.5vw;
+            opacity: 0;
+            animation: titleFade 3s ease 1s forwards;
+        }
+        .progress-bar-wrap {
+            width: 40vw;
+            height: 0.8vw;
+            background: rgba(255,255,255,0.2);
+            border-radius: 0.4vw;
+            overflow: hidden;
+            opacity: 0;
+            animation: titleFade 3s ease 1s forwards;
+        }
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #ffd700, #f5c518, #ffd700);
+            background-size: 200% 100%;
+            width: 0;
+            animation: progressFill 2.5s ease 1.2s forwards, shimmer 1.5s infinite;
+        }
+        @keyframes titleFade {
+            0% { opacity: 0; transform: translateY(20px); }
+            30% { opacity: 1; transform: translateY(0); }
+            70% { opacity: 1; transform: translateY(0); }
+            100% { opacity: 0; transform: translateY(-20px); }
+        }
+        @keyframes progressFill { to { width: 100%; } }
+        @keyframes shimmer { to { background-position: 200% 0; } }
+
+        /* ========== 视频容器和自定义播放器 ========== */
+        .video-container {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            background: #000;
+            z-index: 10;
+        }
+        video {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            display: none;
+        }
+
+        /* 自定义播放器控制栏 */
+        .custom-controls {
+            position: absolute;
+            bottom: 20px;
+            left: 0;
+            width: 100%;
+            padding: 12px 25px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            background: linear-gradient(transparent, rgba(0,0,0,0.8));
+            z-index: 20;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            backdrop-filter: blur(8px);
+        }
+        .video-container:hover .custom-controls {
+            opacity: 1;
+        }
+
+        /* 播放器按钮样式 */
+        .control-btn {
+            background: rgba(255,255,255,0.15);
+            border: 1px solid rgba(255,215,0,0.3);
+            color: #fff;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 20px;
+        }
+        .control-btn:hover {
+            background: linear-gradient(135deg, #ffd700, #ffb800);
+            border-color: #ffd700;
+            transform: scale(1.08);
+            box-shadow: 0 0 15px rgba(255,215,0,0.6);
+        }
+        .control-btn.active {
+            background: linear-gradient(135deg, #ffd700, #ffb800);
+            border-color: #ffd700;
+        }
+
+        /* 进度条样式 */
+        .progress-container {
+            flex: 1;
+            height: 8px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 4px;
+            cursor: pointer;
+            position: relative;
+        }
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #ffd700, #ffb800);
+            border-radius: 4px;
+            width: 0%;
+            transition: width 0.1s ease;
+        }
+        .progress-handle {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 16px;
+            height: 16px;
+            background: #ffd700;
+            border-radius: 50%;
+            opacity: 0;
+            transition: opacity 0.2s ease, box-shadow 0.2s ease;
+            box-shadow: 0 0 8px rgba(255,215,0,0.5);
+        }
+        .progress-container:hover .progress-handle {
+            opacity: 1;
+        }
+
+        /* 时间显示 */
+        .time-display {
+            color: #fff;
+            font-size: 16px;
+            min-width: 90px;
+            text-align: center;
+            text-shadow: 0 0 4px rgba(0,0,0,0.5);
+        }
+
+        /* ========== 水印样式 ========== */
+        .watermark-move {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 1.8vw;
+            color: rgba(255,255,255,0.12);
+            font-family: "Consolas", "Monaco", monospace;
+            white-space: nowrap;
+            pointer-events: none;
+            animation: float 20s ease-in-out infinite;
+        }
+        @keyframes float {
+            0% { transform: translate(-50%, -50%) translateX(-30vw); }
+            25% { transform: translate(-50%, -50%) translateY(-10vh); }
+            50% { transform: translate(-50%, -50%) translateX(30vw); }
+            75% { transform: translate(-50%, -50%) translateY(10vh); }
+            100% { transform: translate(-50%, -50%) translateX(-30vw); }
+        }
+
+        /* ========== 金沙特效3D卡片（高度减半+特殊圆角+金色文字） ========== */
+        .watermark-fixed {
+            position: absolute;
+            bottom: 40px;
+            right: 20px;
+            pointer-events: none;
+            z-index: 15;
+            width: 120px;  /* 适配高度减半 */
+            height: 45px; /* 高度减半（原90px→45px） */
+        }
+        /* 金沙特效容器 */
+        .gold-sand-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border-radius: 12px 2px 12px 2px; /* 非普通圆角：上下大圆角+左右小圆角 */
+            overflow: hidden;
+            z-index: 1;
+        }
+        /* 旋转容器（多动画叠加） */
+        .watermark-3d-container {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            animation: 
+                rotate-card 8s linear infinite,
+                scale-pulse 4s ease-in-out infinite;
+            transform-style: preserve-3d;
+            z-index: 2;
+        }
+        /* 卡片通用样式（无普通圆角+金色质感） */
+        .watermark-card {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border-radius: 12px 2px 12px 2px; /* 特殊不规则圆角 */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 8px;
+            backface-visibility: hidden;
+            background: rgba(0,0,0,0.7); /* 半透明黑底衬托金沙 */
+            border: 2px solid #ffd700;
+            box-shadow: 0 0 15px rgba(255,215,0,0.8);
+        }
+        /* 正面卡片 */
+        .watermark-card-front {
+            background: linear-gradient(135deg, rgba(156, 102, 0, 0.8), rgba(255, 215, 0, 0.4));
+        }
+        /* 背面卡片 */
+        .watermark-card-back {
+            background: linear-gradient(135deg, rgba(255, 153, 0, 0.8), rgba(255, 215, 0, 0.4));
+            transform: rotateY(180deg);
+        }
+        /* 动画优化（适配小尺寸） */
+        @keyframes rotate-card {
+            0% { transform: rotateY(0deg); }
+            100% { transform: rotateY(360deg); }
+        }
+        @keyframes scale-pulse {
+            0% { transform: scale(0.98); }
+            50% { transform: scale(1.02); }
+            100% { transform: scale(0.98); }
+        }
+        /* 纯金色文字（无黑色阴影） */
+        .watermark-text {
+            font-family: "Ma Shan Zheng", cursive;
+            text-align: center;
+            width: 100%;
+            position: relative;
+            z-index: 3;
+        }
+        .wm-main {
+            font-size: 14px; /* 适配小尺寸 */
+            font-weight: bold;
+            /* 高级金色渐变（无黑色） */
+            background: linear-gradient(120deg, #ffd700, #fff8dc, #ffd700);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            line-height: 1.2;
+            display: block;
+            /* 文字金沙闪烁 */
+            animation: gold-text-shimmer 3s ease-in-out infinite;
+        }
+        .wm-sub {
+            font-size: 12px; /* 适配小尺寸 */
+            font-weight: bold;
+            /* 亮金色渐变（无黑色） */
+            background: linear-gradient(120deg, #fff8dc, #ffd700, #fff8dc);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            line-height: 1.2;
+            display: block;
+            /* 文字轻微摇摆 */
+            animation: gold-text-shake 4s ease-in-out infinite;
+        }
+        /* 金色文字专属动画 */
+        @keyframes gold-text-shimmer {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        @keyframes gold-text-shake {
+            0% { transform: rotate(-0.5deg); }
+            50% { transform: rotate(0.5deg); }
+            100% { transform: rotate(-0.5deg); }
+        }
+
+        /* ========== 缩小版音量提示 ========== */
+        .volume-toast {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0,0,0,0.9);
+            color: #fff;
+            padding: 15px 25px;
+            border-radius: 12px;
+            font-size: 24px;
+            z-index: 300;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            pointer-events: none;
+            border: 2px solid #ffd700;
+            box-shadow: 0 0 15px rgba(255,215,0,0.7);
+            text-align: center;
+        }
+        .volume-toast .main-text {
+            display: block;
+            margin-bottom: 5px;
+        }
+        .volume-toast .sub-text {
+            font-size: 12px;
+            color: #ffd700;
+            font-family: "Ma Shan Zheng", cursive;
+            letter-spacing: 1px;
+        }
+        .volume-toast.show {
+            opacity: 1;
+        }
+
+        /* ========== 选择按钮 ========== */
+        #selectBtn {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 20px 40px;
+            font-size: 2.5vw;
+            font-weight: 700;
+            letter-spacing: 0.5vw;
+            background: linear-gradient(135deg, #ff2d55, #ffd60a);
+            color: #fff;
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 0 25px rgba(255,255,255,0.6);
+            cursor: pointer;
+            z-index: 100;
+            opacity: 0;
+            visibility: hidden;
+            animation: btnFadeIn 0.5s ease 3s forwards;
+            transition: all 0.4s ease;
+        }
+        #selectBtn:hover {
+            transform: translate(-50%, -50%) scale(1.1);
+            box-shadow: 0 0 40px #fff, 0 0 15px #ffd60a;
+            background: linear-gradient(135deg, #ff3760, #ffdd33);
+        }
+        #selectBtn:active { transform: translate(-50%, -50%) scale(0.95); }
+        @keyframes btnFadeIn {
+            0% { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
+            100% { opacity: 1; visibility: visible; transform: translate(-50%, -50%) scale(1); }
+        }
+
+        #fileInput { display: none; }
+    </style>
+</head>
+<body>
+    <!-- 初始开屏 -->
+    <div class="splash-screen" id="splash-init">
+        <div class="splash-title">2026元旦联欢会</div>
+        <div class="splash-subtitle">九年级六班</div>
+        <div class="splash-tip">页面加载中...</div>
+        <div class="progress-bar-wrap">
+            <div class="progress-bar"></div>
+        </div>
+    </div>
+
+    <!-- MV加载开屏 -->
+    <div class="splash-screen" id="splash-mv">
+        <div class="splash-title">2026元旦联欢会</div>
+        <div class="splash-subtitle">九年级六班</div>
+        <div class="splash-tip">歌曲MV加载中...</div>
+        <div class="progress-bar-wrap">
+            <div class="progress-bar"></div>
+        </div>
+    </div>
+
+    <!-- 视频容器 -->
+    <div class="video-container">
+        <div class="watermark-move">yzbjfpv.top/school/2026</div>
+        
+        <!-- ========== 金沙特效3D卡片 ========== -->
+        <div class="watermark-fixed">
+            <!-- 金沙特效容器（第三方particles.js） -->
+            <div class="gold-sand-container" id="goldSandContainer"></div>
+            <div class="watermark-3d-container">
+                <!-- 正面卡片 -->
+                <div class="watermark-card watermark-card-front">
+                    <div class="watermark-text">
+                        <span class="wm-main">2026元旦联欢会</span>
+                    </div>
+                </div>
+                <!-- 背面卡片 -->
+                <div class="watermark-card watermark-card-back">
+                    <div class="watermark-text">
+                        <span class="wm-sub">九年级六班</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 缩小版音量提示框 -->
+        <div class="volume-toast" id="volumeToast">
+            <span class="main-text">音量: 100%</span>
+            <span class="sub-text">九年级六班 | 2026元旦联欢会</span>
+        </div>
+
+        <button id="selectBtn">选择MV文件</button>
+        <input type="file" id="fileInput" accept="video/mp4">
+        <video id="videoPlayer" autoplay playsinline>
+            <source id="videoSource" type="video/mp4">
+            您的浏览器不支持HTML5视频播放
+        </video>
+
+        <!-- 自定义播放器控制栏 -->
+        <div class="custom-controls">
+            <button class="control-btn" id="playPauseBtn">
+                <i class="fas fa-play"></i>
+            </button>
+            <button class="control-btn" id="loopBtn">
+                <i class="fas fa-repeat"></i>
+            </button>
+            <div class="progress-container" id="progressContainer">
+                <div class="progress-bar" id="videoProgress"></div>
+                <div class="progress-handle" id="progressHandle"></div>
+            </div>
+            <div class="time-display" id="timeDisplay">00:00 / 00:00</div>
+            <button class="control-btn" id="fullscreenBtn">
+                <i class="fas fa-expand"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- 引入第三方金沙特效库：particles.js（国内CDN） -->
+    <script src="https://cdn.bootcdn.net/ajax/libs/particles.js/2.0.0/particles.min.js"></script>
+    <script>
+        // 核心元素
+        const selectBtn = document.getElementById('selectBtn');
+        const fileInput = document.getElementById('fileInput');
+        const videoPlayer = document.getElementById('videoPlayer');
+        const videoSource = document.getElementById('videoSource');
+        const splashMv = document.getElementById('splash-mv');
+        const volumeToast = document.getElementById('volumeToast');
+        
+        // 自定义播放器元素
+        const playPauseBtn = document.getElementById('playPauseBtn');
+        const loopBtn = document.getElementById('loopBtn');
+        const progressContainer = document.getElementById('progressContainer');
+        const videoProgress = document.getElementById('videoProgress');
+        const progressHandle = document.getElementById('progressHandle');
+        const timeDisplay = document.getElementById('timeDisplay');
+        const fullscreenBtn = document.getElementById('fullscreenBtn');
+
+        // 循环播放状态
+        let isLoop = false;
+        
+        // 音量控制（1%步长+丝滑长按）
+        let volumeTimer = null; 
+        let isKeyDown = false;  
+        const VOLUME_STEP = 0.01; 
+        const LONG_PRESS_INTERVAL = 30; 
+        let volumeSmoothing = false;
+
+        // ========== 第三方金沙特效初始化（particles.js） ==========
+        particlesJS('goldSandContainer', {
+            "particles": {
+                "number": {
+                    "value": 80,      // 金沙粒子数量
+                    "density": {
+                        "enable": true,
+                        "value_area": 200 // 粒子密度（适配小卡片）
+                    }
+                },
+                "color": {
+                    "value": "#ffd700" // 纯金色（无杂色）
+                },
+                "shape": {
+                    "type": "circle"   // 圆形粒子模拟金沙
+                },
+                "opacity": {
+                    "value": 0.7,
+                    "random": true,
+                    "anim": {
+                        "enable": true,
+                        "speed": 0.5,
+                        "opacity_min": 0.2,
+                        "sync": false
+                    }
+                },
+                "size": {
+                    "value": 1.5,      // 细金沙效果
+                    "random": true,
+                    "anim": {
+                        "enable": true,
+                        "speed": 0.3,
+                        "size_min": 0.5,
+                        "sync": false
+                    }
+                },
+                "line_linked": {
+                    "enable": true,
+                    "distance": 30,    // 金沙连线距离
+                    "color": "#ffd700",// 连线金色
+                    "opacity": 0.4,
+                    "width": 0.8
+                },
+                "move": {
+                    "enable": true,
+                    "speed": 0.8,      // 慢动金沙更自然
+                    "direction": "none",
+                    "random": true,
+                    "straight": false,
+                    "out_mode": "in",  // 粒子不超出卡片
+                    "bounce": false,
+                    "attract": {
+                        "enable": true,
+                        "rotateX": 30,
+                        "rotateY": 100
+                    }
+                }
+            },
+            "interactivity": {
+                "detect_on": "canvas",
+                "events": {
+                    "onhover": {
+                        "enable": false // 关闭hover交互，避免干扰
+                    },
+                    "onclick": {
+                        "enable": false // 关闭click交互
+                    },
+                    "resize": true
+                }
+            },
+            "retina_detect": true // 高清屏适配
+        });
+
+        // ========== 音量控制（丝滑优化） ==========
+        function adjustVolume(change) {
+            if (volumeSmoothing) return;
+            volumeSmoothing = true;
+            
+            let newVolume = videoPlayer.volume + change;
+            newVolume = Math.max(0, Math.min(1, newVolume));
+            videoPlayer.volume = Math.round(newVolume * 100) / 100;
+            videoPlayer.muted = newVolume === 0;
+            
+            showVolumeToast(Math.round(newVolume * 100));
+            
+            setTimeout(() => {
+                volumeSmoothing = false;
+            }, 5);
+        }
+
+        function showVolumeToast(volumePercent) {
+            volumeToast.querySelector('.main-text').textContent = `音量: ${volumePercent}%`;
+            volumeToast.classList.add('show');
+            
+            clearTimeout(volumeToast.timer);
+            volumeToast.timer = setTimeout(() => {
+                volumeToast.classList.remove('show');
+            }, 1000);
+        }
+
+        // 键盘控制（丝滑长按）
+        document.addEventListener('keydown', (e) => {
+            if (isKeyDown) return;
+            isKeyDown = true;
+            const key = e.key;
+
+            if (key === '-' || key === '_') {
+                e.preventDefault();
+                adjustVolume(-VOLUME_STEP);
+                volumeTimer = setInterval(() => adjustVolume(-VOLUME_STEP), LONG_PRESS_INTERVAL);
+            } else if (key === '=' || key === '+' || key === 'Plus') {
+                e.preventDefault();
+                adjustVolume(VOLUME_STEP);
+                volumeTimer = setInterval(() => adjustVolume(VOLUME_STEP), LONG_PRESS_INTERVAL);
+            }
+        });
+
+        document.addEventListener('keyup', (e) => {
+            isKeyDown = false;
+            clearInterval(volumeTimer);
+            volumeTimer = null;
+        });
+
+        window.addEventListener('blur', () => {
+            isKeyDown = false;
+            clearInterval(volumeTimer);
+            volumeTimer = null;
+        });
+
+        // ========== 播放器核心逻辑 ==========
+        selectBtn.addEventListener('click', () => fileInput.click());
+
+        fileInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (!file) {
+                alert('请选择MP4格式的MV文件！');
+                return;
+            }
+
+            selectBtn.style.display = 'none';
+            splashMv.style.opacity = 1;
+            splashMv.style.visibility = 'visible';
+            splashMv.style.animation = 'splashFadeOut 3s ease-in-out forwards';
+            
+            const videoUrl = URL.createObjectURL(file);
+            
+            setTimeout(() => {
+                videoPlayer.style.display = 'block';
+                videoSource.src = videoUrl;
+                videoPlayer.load();
+                
+                videoPlayer.volume = 1;
+                videoPlayer.muted = false;
+                
+                videoPlayer.addEventListener('loadedmetadata', () => {
+                    updateTimeDisplay();
+                    videoPlayer.play().then(() => updatePlayPauseIcon())
+                    .catch(err => {
+                        console.log('自动播放失败，请手动点击播放');
+                        alert('自动播放失败，请手动点击播放按钮');
+                    });
+                });
+                
+                videoPlayer.addEventListener('canplay', () => {
+                    try {
+                        if (videoPlayer.requestFullscreen) videoPlayer.requestFullscreen();
+                        else if (videoPlayer.webkitRequestFullscreen) videoPlayer.webkitRequestFullscreen();
+                        else if (videoPlayer.msRequestFullscreen) videoPlayer.msRequestFullscreen();
+                    } catch (err) {
+                        console.log('自动全屏失败，可手动点击全屏按钮');
+                    }
+                });
+            }, 3000);
+        });
+
+        // 播放/暂停
+        playPauseBtn.addEventListener('click', () => {
+            videoPlayer.paused ? videoPlayer.play() : videoPlayer.pause();
+            updatePlayPauseIcon();
+        });
+
+        // 循环播放
+        loopBtn.addEventListener('click', () => {
+            isLoop = !isLoop;
+            loopBtn.classList.toggle('active', isLoop);
+            loopBtn.querySelector('i').style.color = isLoop ? '#000' : '#fff';
+            videoPlayer.loop = isLoop;
+        });
+
+        // 更新播放图标
+        function updatePlayPauseIcon() {
+            const icon = playPauseBtn.querySelector('i');
+            icon.classList.toggle('fa-play', videoPlayer.paused);
+            icon.classList.toggle('fa-pause', !videoPlayer.paused);
+        }
+
+        // 进度条更新
+        videoPlayer.addEventListener('timeupdate', () => {
+            const progress = (videoPlayer.currentTime / videoPlayer.duration) * 100;
+            videoProgress.style.width = `${progress}%`;
+            progressHandle.style.left = `${progress}%`;
+            updateTimeDisplay();
+        });
+
+        // 点击进度条跳转
+        progressContainer.addEventListener('click', (e) => {
+            const rect = progressContainer.getBoundingClientRect();
+            const pos = (e.clientX - rect.left) / rect.width;
+            videoPlayer.currentTime = pos * videoPlayer.duration;
+        });
+
+        // 时间格式化
+        function formatTime(seconds) {
+            if (isNaN(seconds)) return '00:00';
+            const mins = Math.floor(seconds / 60);
+            const secs = Math.floor(seconds % 60);
+            return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        }
+
+        function updateTimeDisplay() {
+            const current = formatTime(videoPlayer.currentTime);
+            const duration = formatTime(videoPlayer.duration);
+            timeDisplay.textContent = `${current} / ${duration}`;
+        }
+
+        // 全屏切换
+        fullscreenBtn.addEventListener('click', () => {
+            if (!document.fullscreenElement) {
+                if (videoPlayer.requestFullscreen) videoPlayer.requestFullscreen();
+                else if (videoPlayer.webkitRequestFullscreen) videoPlayer.webkitRequestFullscreen();
+                else if (videoPlayer.msRequestFullscreen) videoPlayer.msRequestFullscreen();
+                fullscreenBtn.querySelector('i').classList.replace('fa-expand', 'fa-compress');
+            } else {
+                if (document.exitFullscreen) document.exitFullscreen();
+                else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
+                else if (document.msExitFullscreen) document.msExitFullscreen();
+                fullscreenBtn.querySelector('i').classList.replace('fa-compress', 'fa-expand');
+            }
+        });
+
+        // 视频结束处理
+        videoPlayer.addEventListener('ended', () => {
+            updatePlayPauseIcon();
+            if (isLoop) {
+                videoPlayer.currentTime = 0;
+                videoPlayer.play();
+            }
+        });
+
+        // 清理内存
+        window.onbeforeunload = () => {
+            if (videoSource.src.startsWith('blob:')) {
+                URL.revokeObjectURL(videoSource.src);
+            }
+        };
+    </script>
+</body>
+</html>
