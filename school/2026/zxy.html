@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>九年级六班 | 元旦晚会游戏PPT | Flyz出品</title>
+    <link href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --gold: #FFD700;
+            --light-gold: #FFF8DC;
+            --bright-gold: #FFE47F;
+            --crimson: #8B0000;
+            --light-crimson: #A52A2A;
+            --dark-crimson: #5A0000;
+            --bg-main: #3a0f0f;
+            --bg-gradient: linear-gradient(180deg, #6a1a1a, #3a0f0f, #2a0a0a);
+            --glass: rgba(165, 42, 42, 0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+        }
+
+        body {
+            font-family: "PingFang SC", "Microsoft YaHei", "华文行楷", "华文楷体", sans-serif;
+            background: var(--bg-gradient);
+            color: var(--light-gold);
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* PPT容器 */
+        .ppt-container {
+            width: 90vw;
+            height: 85vh;
+            position: relative;
+            overflow: hidden;
+            border-radius: 20px;
+            border: 2px solid var(--bright-gold);
+            box-shadow: 0 0 80px rgba(255, 215, 0, 0.4), inset 0 0 40px rgba(165, 42, 42, 0.2);
+            backdrop-filter: blur(10px);
+            background: var(--glass);
+        }
+
+        /* PPT页面容器（滚动切换） */
+        .ppt-slides {
+            display: flex;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.8s ease-in-out;
+        }
+
+        /* 单页PPT样式 */
+        .ppt-slide {
+            flex: 0 0 100%;
+            height: 100%;
+            padding: 4vw;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        /* PPT标题样式（延续原页面风格） */
+        .ppt-title {
+            font-family: "华文行楷";
+            font-size: 5vw;
+            background: linear-gradient(180deg, #fff, #ffd700, #ffE47F);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 0 20px rgba(255, 215, 0, 0.8);
+            margin-bottom: 3vw;
+            animation: breathe 4s infinite alternate;
+        }
+
+        .ppt-subtitle {
+            font-family: "华文行楷";
+            font-size: 3vw;
+            color: var(--bright-gold);
+            margin-bottom: 2vw;
+            text-shadow: 0 0 10px var(--crimson);
+        }
+
+        /* 游戏内容样式 */
+        .game-card {
+            width: 70%;
+            padding: 3vw;
+            border-radius: 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--bright-gold);
+            box-shadow: 0 0 30px rgba(255, 215, 0, 0.2);
+            margin-top: 2vw;
+        }
+
+        .game-name {
+            font-size: 2.5vw;
+            color: var(--bright-gold);
+            margin-bottom: 1.5vw;
+            border-bottom: 2px solid var(--light-crimson);
+            padding-bottom: 1vw;
+        }
+
+        .game-desc {
+            font-size: 1.5vw;
+            line-height: 2;
+            opacity: 0.9;
+            text-align: left;
+            margin-top: 1vw;
+        }
+
+        .game-desc span {
+            color: var(--bright-gold);
+            font-weight: bold;
+        }
+
+        /* 切换按钮 */
+        .ppt-nav-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--glass);
+            border: 1px solid var(--bright-gold);
+            color: var(--bright-gold);
+            font-size: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 10;
+        }
+
+        .ppt-nav-btn:hover {
+            background: linear-gradient(135deg, #ffd700, #ffb800);
+            color: var(--crimson);
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.8);
+            transform: translateY(-50%) scale(1.1);
+        }
+
+        .prev-btn {
+            left: 20px;
+        }
+
+        .next-btn {
+            right: 20px;
+        }
+
+        /* 页码指示器 */
+        .ppt-pagination {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 15px;
+            z-index: 10;
+        }
+
+        .pagination-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid var(--bright-gold);
+            transition: all 0.3s ease;
+        }
+
+        .pagination-dot.active {
+            background: var(--bright-gold);
+            box-shadow: 0 0 10px rgba(255, 215, 0, 0.8);
+            transform: scale(1.3);
+        }
+
+        /* 底部水印（延续原页面风格） */
+        .ppt-watermark {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            font-family: "华文行楷";
+            font-size: 1.2vw;
+            color: var(--bright-gold);
+            opacity: 0.7;
+            text-shadow: 0 0 5px var(--crimson);
+        }
+
+        /* 呼吸动画（延续原页面） */
+        @keyframes breathe {
+            from { transform: scale(0.98); opacity: 0.9; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        /* 响应式适配 */
+        @media (max-width: 768px) {
+            .ppt-title {
+                font-size: 8vw;
+            }
+            .ppt-subtitle {
+                font-size: 5vw;
+            }
+            .game-card {
+                width: 90%;
+            }
+            .game-name {
+                font-size: 4vw;
+            }
+            .game-desc {
+                font-size: 3vw;
+            }
+            .ppt-watermark {
+                font-size: 2vw;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="ppt-container">
+        <!-- PPT页面集合 -->
+        <div class="ppt-slides" id="pptSlides">
+            <!-- 第1页：封面 -->
+            <div class="ppt-slide">
+                <div class="ppt-title">九年级六班</div>
+                <div class="ppt-subtitle">2026元旦晚会 · 趣味小游戏</div>
+                <p style="font-size: 1.5vw; opacity: 0.8; margin-top: 2vw;">Flyz远征飞 专属定制 | 道具简单 · 互动性强</p>
+            </div>
+
+            <!-- 第2页：反向指令大挑战 -->
+            <div class="ppt-slide">
+                <div class="ppt-subtitle">游戏一：反向指令大挑战</div>
+                <div class="game-card">
+                    <div class="game-name">核心规则</div>
+                    <div class="game-desc">
+                        <span>道具：</span>无（可选手势牌辅助）<br>
+                        <span>玩法：</span>主持人喊出口令（如“举左手”“蹲下”“向左转”），参与者必须做出<strong>相反动作</strong>，做错立即淘汰，最后剩余的1-2人获胜。<br>
+                        <span>亮点：</span>考验反应力，笑点密集，无需准备道具，快速带动气氛。
+                    </div>
+                </div>
+            </div>
+
+            <!-- 第3页：听歌识曲·青春限定版 -->
+            <div class="ppt-slide">
+                <div class="ppt-subtitle">游戏二：听歌识曲·青春限定版</div>
+                <div class="game-card">
+                    <div class="game-name">核心规则</div>
+                    <div class="game-desc">
+                        <span>道具：</span>手机+音响（提前下载初三学生熟悉的歌曲片段）<br>
+                        <span>歌曲范围：</span>校园歌曲、流行热歌、动漫主题曲、毕业季金曲。<br>
+                        <span>玩法：</span>分组抢答，播放10-15秒歌曲片段，答对得1分，答错不扣分，最终得分最高的小组获胜。<br>
+                        <span>亮点：</span>引发青春共鸣，增强团队凝聚力，氛围轻松愉悦。
+                    </div>
+                </div>
+            </div>
+
+            <!-- 第4页：成语接龙·班级限定版 -->
+            <div class="ppt-slide">
+                <div class="ppt-subtitle">游戏三：成语接龙·班级限定版</div>
+                <div class="game-card">
+                    <div class="game-name">核心规则</div>
+                    <div class="game-desc">
+                        <span>道具：</span>无（可选白板记录接龙过程）<br>
+                        <span>玩法：</span>分组接力，以班级名称、元旦等关键词开头，每人限时5秒说出下一个成语，首尾字需对应（同音可放宽），卡壳则该组淘汰，最后剩余小组获胜。<br>
+                        <span>亮点：</span>兼顾知识性与趣味性，考验团队协作，适合安静过渡气氛。
+                    </div>
+                </div>
+            </div>
+
+            <!-- 第5页：绕口令接力赛 -->
+            <div class="ppt-slide">
+                <div class="ppt-subtitle">游戏四：绕口令接力赛</div>
+                <div class="game-card">
+                    <div class="game-name">核心规则</div>
+                    <div class="game-desc">
+                        <span>道具：</span>绕口令纸条（适配初中生难度）<br>
+                        <span>绕口令示例：</span>“四是四，十是十，十四是十四，四十是四十”、“粉红墙上画凤凰，凤凰画在粉红墙”。<br>
+                        <span>玩法：</span>分组接力，每人念一段绕口令，不可停顿、出错，否则重新来过，最快完成接力的小组获胜。<br>
+                        <span>亮点：</span>容易出现口误名场面，笑点十足，道具准备简单。
+                    </div>
+                </div>
+            </div>
+
+            <!-- 第6页：抢椅子·升级版 -->
+            <div class="ppt-slide">
+                <div class="ppt-subtitle">游戏五：抢椅子·升级版</div>
+                <div class="game-card">
+                    <div class="game-name">核心规则</div>
+                    <div class="game-desc">
+                        <span>道具：</span>椅子（数量比参与者少1）、欢快背景音乐<br>
+                        <span>玩法：</span>经典规则升级，音乐播放时参与者绕椅子行走，音乐骤停时抢坐椅子，淘汰1人并撤走1把椅子，依次类推，最后坐上新椅子的人获胜。<br>
+                        <span>升级亮点：</span>可加入“反向绕圈”“单脚行走”等附加规则，增加难度与趣味性。
+                    </div>
+                </div>
+            </div>
+
+            <!-- 第7页：你画我猜·青春主题版 -->
+            <div class="ppt-slide">
+                <div class="ppt-subtitle">游戏六：你画我猜·青春主题版</div>
+                <div class="game-card">
+                    <div class="game-name">核心规则</div>
+                    <div class="game-desc">
+                        <span>道具：</span>白板、马克笔、主题词语纸条<br>
+                        <span>主题范围：</span>校园生活、流行词汇、动漫角色、元旦相关事物。<br>
+                        <span>玩法：</span>分组接力，一人画画一人猜，限时2分钟，猜对词语数量最多的小组获胜，画画者不可说话、不可写汉字。<br>
+                        <span>亮点：</span>考验默契与想象力，画作容易引发爆笑，适合长时间活跃气氛。
+                    </div>
+                </div>
+            </div>
+
+            <!-- 第8页：结束页 -->
+            <div class="ppt-slide">
+                <div class="ppt-title">祝大家元旦快乐</div>
+                <div class="ppt-subtitle">九年级六班 · 前程似锦</div>
+                <p style="font-size: 1.5vw; opacity: 0.8; margin-top: 2vw;">愿此夜欢声笑语，不负韶华，未来可期！</p>
+                <p style="font-size: 1.2vw; opacity: 0.7; margin-top: 1vw;">Flyz远征飞 出品</p>
+            </div>
+        </div>
+
+        <!-- 切换按钮 -->
+        <button class="ppt-nav-btn prev-btn" id="prevBtn" onclick="prevSlide()">
+            <i class="fas fa-angle-left"></i>
+        </button>
+        <button class="ppt-nav-btn next-btn" id="nextBtn" onclick="nextSlide()">
+            <i class="fas fa-angle-right"></i>
+        </button>
+
+        <!-- 页码指示器 -->
+        <div class="ppt-pagination" id="pagination">
+            <!-- 动态生成页码点 -->
+        </div>
+
+        <!-- 底部水印 -->
+        <div class="ppt-watermark">九年级六班 | 2026元旦联欢会 | yzbjfpv.top</div>
+    </div>
+
+    <script>
+        // PPT核心切换逻辑
+        const pptSlides = document.getElementById('pptSlides');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const pagination = document.getElementById('pagination');
+        let currentSlide = 0;
+        const totalSlides = document.querySelectorAll('.ppt-slide').length;
+
+        // 动态生成页码点
+        function initPagination() {
+            for (let i = 0; i < totalSlides; i++) {
+                const dot = document.createElement('div');
+                dot.className = 'pagination-dot';
+                if (i === 0) dot.classList.add('active');
+                dot.onclick = () => goToSlide(i);
+                pagination.appendChild(dot);
+            }
+        }
+
+        // 更新页码点状态
+        function updatePagination() {
+            const dots = document.querySelectorAll('.pagination-dot');
+            dots.forEach((dot, index) => {
+                dot.classList.toggle('active', index === currentSlide);
+            });
+        }
+
+        // 切换到指定页面
+        function goToSlide(index) {
+            if (index < 0 || index >= totalSlides) return;
+            currentSlide = index;
+            const translateValue = -currentSlide * 100 + '%';
+            pptSlides.style.transform = `translateX(${translateValue})`;
+            updatePagination();
+        }
+
+        // 上一页
+        function prevSlide() {
+            goToSlide(currentSlide - 1);
+        }
+
+        // 下一页
+        function nextSlide() {
+            goToSlide(currentSlide + 1);
+        }
+
+        // 键盘控制（左箭头/右箭头/空格键）- 兼容遥控PPT笔
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft') prevSlide();
+            if (e.key === 'ArrowRight' || e.key === ' ') {
+                // 阻止空格键默认行为（避免页面滚动）
+                e.preventDefault();
+                nextSlide();
+            }
+        });
+
+        // 任意位置点击触发下一页（排除导航按钮和页码点，避免冲突）
+        document.addEventListener('click', (e) => {
+            const isNavElement = e.target.closest('.ppt-nav-btn') || e.target.closest('.pagination-dot');
+            if (!isNavElement) {
+                nextSlide();
+            }
+        });
+
+        // 初始化
+        window.onload = initPagination;
+    </script>
+</body>
+</html>
