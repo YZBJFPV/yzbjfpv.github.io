@@ -37,12 +37,9 @@
             height: 100vh;
         }
 
-        /* ========== 画布与视觉层（保留烟花画布，移除粒子相关） ========== */
+        /* ========== 画布与视觉层（移除烟花相关，仅保留暗角） ========== */
         #stage-canvas {
-            position: fixed;
-            inset: 0;
-            z-index: 1;
-            pointer-events: none;
+            display: none; /* 隐藏无用画布（原烟花画布） */
         }
         .vignette {
             position: fixed;
@@ -285,7 +282,7 @@
             display: flex;
             align-items: center;
             gap: 20px;
-            background: rgba(58, 15, 15, 0.3); /* 泛红半透明替换原纯黑 */
+            background: rgba(58, 15, 15, 0.6); /* 泛红半透明替换原纯黑 */
             backdrop-filter: blur(15px);
             padding: 15px 30px;
             border-radius: 50px;
@@ -561,13 +558,13 @@
             opacity: 1;
         }
 
-        /* ========== 底部Dock栏（增加PPT入口，泛红背景优化） ========== */
+        /* ========== 底部Dock栏（保留、删除烟花按钮、优化样式） ========== */
         .dock {
             position: fixed;
             bottom: 30px;
             left: 50%;
             transform: translateX(-50%);
-            z-index: 100;
+            z-index: 100; /* 最高层级之一，确保始终可见 */
             display: flex;
             gap: 25px;
             padding: 15px 40px;
@@ -575,7 +572,7 @@
             backdrop-filter: blur(25px);
             border-radius: 40px;
             border: 1px solid rgba(255, 215, 0, 0.5);
-            box-shadow: 0 20px 50px rgba(58, 15, 15, 0.4), inset 0 0 20px rgba(255, 215, 0, 0.2); /* 泛红阴影替换原纯黑 */
+            box-shadow: 0 20px 50px rgba(58, 15, 15, 0.4), inset 0 0 20px rgba(255, 215, 0, 0.2);
         }
         .dock-item {
             font-size: 28px;
@@ -594,6 +591,46 @@
             font-size: 12px;
             margin-top: 8px;
             opacity: 0.8;
+        }
+
+        /* ========== 新增：嵌入容器样式（PPT/随机抽人） ========== */
+        #embed-container {
+            position: fixed;
+            inset: 0;
+            z-index: 90; /* 低于dock栏，确保dock栏可见 */
+            display: none;
+            background: #000;
+        }
+        .embed-iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            outline: none;
+        }
+        #exit-embed {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 95; /* 高于嵌入容器，低于dock栏 */
+            background: var(--light-crimson);
+            color: var(--gold);
+            border: 2px solid var(--bright-gold);
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: 0 0 20px rgba(255,215,0,0.5);
+            transition: 0.3s;
+            display: none;
+        }
+        #exit-embed:hover {
+            transform: scale(1.1);
+            background: var(--crimson);
+            box-shadow: 0 0 30px rgba(255,215,0,0.8);
         }
 
         /* ========== 隐藏文件输入 ========== */
@@ -637,7 +674,7 @@
         </div>
     </div>
 
-    <!-- 画布与暗角层（仅保留烟花画布，移除粒子） -->
+    <!-- 画布与暗角层（隐藏烟花画布，保留暗角） -->
     <canvas id="stage-canvas"></canvas>
     <div class="vignette"></div>
 
@@ -709,13 +746,19 @@
         </div>
     </div>
 
-    <!-- 底部Dock栏（增加PPT入口、新增随机抽人，泛红背景优化） -->
+    <!-- 新增：嵌入容器（PPT/随机抽人） -->
+    <div id="embed-container">
+        <iframe id="ppt-iframe" class="embed-iframe" src="" allowfullscreen></iframe>
+        <iframe id="random-iframe" class="embed-iframe" src="" allowfullscreen style="display: none;"></iframe>
+    </div>
+    <div id="exit-embed" onclick="exitEmbed()">
+        <i class="fas fa-times"></i>
+    </div>
+
+    <!-- 底部Dock栏（删除烟花按钮、保留其余、修正PPT链接） -->
     <div class="dock">
         <div class="dock-item" onclick="toggleMusic()">
             <i class="fas fa-music"></i><span>音乐</span>
-        </div>
-        <div class="dock-item" style="color:#ff6b6b;" onclick="fireworksBang()">
-            <i class="fas fa-fire"></i><span>烟花</span>
         </div>
         <div class="dock-item" onclick="triggerApp('mv')">
             <i class="fas fa-film"></i><span>MV</span>
@@ -723,11 +766,11 @@
         <div class="dock-item" onclick="manualStart()">
             <i class="fas fa-rocket"></i><span>开场</span>
         </div>
-        <!-- 原有：PPT入口，打开指定链接 -->
+        <!-- 游戏PPT（修正链接：2025→2026，改为嵌入） -->
         <div class="dock-item" onclick="openPPT()">
             <i class="fas fa-file-powerpoint"></i><span>游戏PPT</span>
         </div>
-        <!-- 新增：随机抽人入口，打开指定H5链接 -->
+        <!-- 随机抽人（改为嵌入，保留功能） -->
         <div class="dock-item" onclick="openRandomPerson()">
             <i class="fas fa-random"></i><span>随机抽人</span>
         </div>
@@ -738,74 +781,13 @@
     <audio id="bg-music" loop src="https://yzbjfpv.top/school/2026/music/start.mp3">
 
     <script>
-        // ========== 核心渲染引擎（仅保留烟花，移除所有粒子相关代码） ==========
-        const canvas = document.getElementById('stage-canvas');
-        const ctx = canvas.getContext('2d');
-        let fireworks = [];
-        let w, h;
+        // ========== 核心逻辑（删除所有烟花相关代码、新增嵌入逻辑） ==========
         let countdownTimer = null;
         let isLaunched = false;
         let targetTime;
         const bgMusic = document.getElementById('bg-music');
 
-        // 初始化画布（仅设置大小，无粒子）
-        function initCanvas() {
-            w = canvas.width = window.innerWidth;
-            h = canvas.height = window.innerHeight;
-            render(); // 仅渲染烟花
-        }
-
-        // 窗口大小适配
-        window.addEventListener('resize', () => {
-            w = canvas.width = window.innerWidth;
-            h = canvas.height = window.innerHeight;
-        });
-
-        // 渲染循环（仅保留烟花，移除粒子更新绘制）
-        function render() {
-            // 泛红画布遮罩，替换原纯黑
-            ctx.fillStyle = 'rgba(58, 15, 15, 0.05)';
-            ctx.fillRect(0, 0, w, h);
-            // 仅渲染烟花
-            fireworks.forEach((f, i) => {
-                f.update();
-                f.draw();
-                if(f.life <= 0) fireworks.splice(i, 1);
-            });
-            requestAnimationFrame(render);
-        }
-
-        // 烟花系统（保留，亮度不变）
-        function fireworksBang() {
-            const x = Math.random() * w;
-            const y = Math.random() * h * 0.5;
-            for(let i=0; i<100; i++) fireworks.push(new FireworkPart(x, y));
-        }
-
-        class FireworkPart {
-            constructor(x, y) {
-                this.x = x; this.y = y;
-                const ang = Math.random() * Math.PI * 2;
-                const spd = Math.random() * 6 + 2;
-                this.vx = Math.cos(ang) * spd;
-                this.vy = Math.sin(ang) * spd;
-                this.life = 1;
-                this.color = `hsl(${Math.random() * 360}, 100%, 60%)`;
-            }
-            update() {
-                this.x += this.vx;
-                this.y += this.vy;
-                this.vy += 0.1; this.life -= 0.015;
-            }
-            draw() {
-                ctx.globalAlpha = this.life;
-                ctx.fillStyle = this.color;
-                ctx.beginPath(); ctx.arc(this.x, this.y, 2, 0, Math.PI*2); ctx.fill();
-                ctx.globalAlpha = 1;
-            }
-        }
-
-        // ========== 系统核心逻辑（移除initGoldSand调用） ==========
+        // 系统核心逻辑（移除烟花相关初始化）
         function launchSystem() {
             if(isLaunched) return;
             const val = document.getElementById('target-time').value;
@@ -821,7 +803,6 @@
             }
             
             document.getElementById('setup-layer').style.display = 'none';
-            initCanvas(); // 仅初始化画布，无粒子
             isLaunched = true;
         }
 
@@ -840,14 +821,13 @@
             document.getElementById('s').innerText = s.toString().padStart(2,'0');
         }
 
-        // 手动开场
+        // 手动开场（删除烟花调用）
         function manualStart() {
             clearInterval(countdownTimer);
             document.getElementById('timer-ui').style.display = 'none';
             document.getElementById('sub-title').style.display = 'block';
             document.getElementById('display-title').classList.add('animate__animated', 'animate__pulse');
             bgMusic.play().catch(err => console.log("背景音乐播放失败:", err));
-            fireworksBang();
         }
 
         // 背景音乐切换
@@ -855,18 +835,55 @@
             bgMusic.paused ? bgMusic.play().catch(err => console.log("背景音乐播放失败:", err)) : bgMusic.pause();
         }
 
-        // ========== 原有：打开PPT页面 ==========
+        // ========== 游戏PPT（修正链接：2025→2026，实现嵌入显示） ==========
         function openPPT() {
-            window.open('https://yzbjfpv.top/school/2025/zxy', '_blank');
+            // 隐藏原页面核心内容
+            document.getElementById('main-hero').style.display = 'none';
+            document.getElementById('mv-system').style.display = 'none';
+            // 显示嵌入容器和退出按钮
+            document.getElementById('embed-container').style.display = 'block';
+            document.getElementById('exit-embed').style.display = 'flex';
+            // 显示PPT iframe，隐藏随机抽人iframe
+            document.getElementById('ppt-iframe').style.display = 'block';
+            document.getElementById('random-iframe').style.display = 'none';
+            // 设置PPT src（修正：2025→2026）
+            document.getElementById('ppt-iframe').src = 'https://yzbjfpv.top/school/2026/zxy';
+            // 暂停背景音乐
+            bgMusic.pause();
         }
 
-        // ========== 新增：打开随机抽人H5页面 ==========
+        // ========== 随机抽人（实现嵌入显示，保留原链接） ==========
         function openRandomPerson() {
-            // 新窗口打开指定H5链接，不影响当前联欢会主页面
-            window.open('https://yzbjfpv.top/school/2026/ys', '_blank');
+            // 隐藏原页面核心内容
+            document.getElementById('main-hero').style.display = 'none';
+            document.getElementById('mv-system').style.display = 'none';
+            // 显示嵌入容器和退出按钮
+            document.getElementById('embed-container').style.display = 'block';
+            document.getElementById('exit-embed').style.display = 'flex';
+            // 显示随机抽人iframe，隐藏PPT iframe
+            document.getElementById('ppt-iframe').style.display = 'none';
+            document.getElementById('random-iframe').style.display = 'block';
+            // 设置随机抽人src
+            document.getElementById('random-iframe').src = 'https://yzbjfpv.top/school/2026/ys';
+            // 暂停背景音乐
+            bgMusic.pause();
         }
 
-        // ========== MV播放逻辑（移除initGoldSand相关代码） ==========
+        // ========== 新增：退出嵌入（返回原页面） ==========
+        function exitEmbed() {
+            // 隐藏嵌入容器和退出按钮
+            document.getElementById('embed-container').style.display = 'none';
+            document.getElementById('exit-embed').style.display = 'none';
+            // 恢复原页面核心内容
+            document.getElementById('main-hero').style.display = 'block';
+            // 清空iframe src（释放资源）
+            document.getElementById('ppt-iframe').src = '';
+            document.getElementById('random-iframe').src = '';
+            // 恢复背景音乐播放
+            bgMusic.play().catch(err => console.log("背景音乐播放失败:", err));
+        }
+
+        // ========== MV播放逻辑（保留原有，删除烟花相关） ==========
         const video = document.getElementById('video-player');
         const playPauseBtn = document.getElementById('playPauseBtn');
         const loopBtn = document.getElementById('loopBtn');
