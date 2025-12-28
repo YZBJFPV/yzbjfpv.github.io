@@ -2,1607 +2,1096 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>2026元旦联欢会 - 九年级六班</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>九年级六班|2026元旦联欢会|Flyz官方网站</title>
+    <!-- 移除particles.js CDN引入 -->
     <link href="https://cdn.bootcdn.net/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@700&family=Ma+Shan+Zheng&family=Noto+Serif+SC:wght@400;700;900&display=swap" rel="stylesheet">
-    
-    <style type="text/css">
+    <link href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
         :root {
-            --red-deep: #8B0000;    
-            --red-medium: #B22222;  
-            --gold-main: #FFD700;   
-            --gold-light: #FFED4F;  
-            --gold-dark: #FFA500;   
-            --gold-shadow: #FF8C00;
-
-            --font-title: "Ma Shan Zheng", "Noto Serif SC", "宋体", serif;
-            --font-number: "Oswald", "Consolas", "Monaco", sans-serif;
-            --font-text: "Noto Serif SC", "楷体", serif;
-            
-            --font-weight-heavy: 900;
-            --font-weight-bold: 700;
-            --font-weight-regular: 400;
+            --gold: #FFD700;
+            --light-gold: #FFF8DC;
+            --bright-gold: #FFE47F;
+            --crimson: #8B0000;
+            --light-crimson: #A52A2A;
+            --dark-crimson: #5A0000;
+            --glass: rgba(255, 255, 255, 0.2);
+            /* 核心修改：泛红背景替换原深色暖棕 */
+            --bg-main: #3a0f0f; /* 暗红底色（泛红） */
+            --bg-gradient: linear-gradient(180deg, #6a1a1a, #3a0f0f, #2a0a0a); /* 绯红渐变（从上到下由深到浅，保持质感不压抑） */
         }
 
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            transform: translateZ(0);
-            -webkit-transform: translateZ(0);
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
         }
 
         body {
             overflow: hidden;
-            position: relative;
-            font-family: var(--font-text);
-            color: var(--gold-main);
-            background: linear-gradient(135deg, var(--red-deep) 0%, var(--red-medium) 50%, var(--red-deep) 100%);
-        }
-
-        #canvasBg {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
+            background: var(--bg-gradient);
+            font-family: "PingFang SC", "Microsoft YaHei", "华文行楷", "华文楷体", "宋体", sans-serif;
+            color: var(--light-gold);
             height: 100vh;
-            z-index: 0;
-            pointer-events: none;
         }
 
-        /* 灯笼保留（不删除、不影响置顶文字） */
-        .deng-box {
+        /* ========== 画布与视觉层（保留烟花画布，移除粒子相关） ========== */
+        #stage-canvas {
             position: fixed;
-            top: -40px;
-            z-index: 9999; /* 低于置顶文字，不遮挡 */
-            pointer-events: none;
-            transition: opacity 0.5s ease;
-        }
-        .deng-box1 { right: 250px; }
-        .deng-box2 { right: 150px; }
-        .deng-box3 { right: 50px; }
-        .deng-box4 { right: -50px; }
-        .deng-box5 { left: 250px; }
-        .deng-box6 { left: 150px; }
-        .deng-box7 { left: 50px; }
-        .deng-box8 { left: -50px; }
-
-        .deng {
-            position: relative;
-            width: 100px;
-            height: 80px;
-            margin: 50px;
-            background: rgba(216, 0, 15, .8);
-            border-radius: 50% 50%;
-            transform-origin: 50% -100px;
-            animation: swing 3s infinite ease-in-out;
-            box-shadow: -5px 5px 50px 4px #fa6c00;
-        }
-        .deng-box1 .deng { animation-duration: 2.5s; }
-        .deng-box2 .deng { animation-duration: 3s; }
-        .deng-box3 .deng { animation-duration: 3.5s; }
-        .deng-box4 .deng { animation-duration: 2.8s; }
-        .deng-box5 .deng { animation-duration: 3.2s; }
-        .deng-box6 .deng { animation-duration: 2.7s; }
-        .deng-box7 .deng { animation-duration: 3.3s; }
-        .deng-box8 .deng { animation-duration: 2.9s; }
-
-        .deng-a {
-            width: 80px;
-            height: 80px;
-            background: rgba(216, 0, 15, .1);
-            margin: 10px 8px 8px 8px;
-            border-radius: 50% 50%;
-            border: 2px solid #dc8f03;
-        }
-        .deng-b {
-            width: 40px;
-            height: 80px;
-            background: rgba(216, 0, 15, .1);
-            margin: -4px 8px 8px 20px;
-            border-radius: 50% 50%;
-            border: 2px solid #dc8f03;
-        }
-        .xian {
-            position: absolute;
-            top: -20px;
-            left: 50px;
-            width: 2px;
-            height: 20px;
-            background: #dc8f03;
-        }
-        .shui-a {
-            position: relative;
-            width: 5px;
-            height: 20px;
-            margin: -5px 0 0 48px;
-            animation: swing 4s infinite ease-in-out;
-            transform-origin: 50% -45px;
-            background: orange;
-            border-radius: 0 0 5px 5px;
-        }
-        .shui-b {
-            position: absolute;
-            top: 14px;
-            left: -2px;
-            width: 10px;
-            height: 10px;
-            background: #dc8f03;
-            border-radius: 50%;
-        }
-        .shui-c {
-            position: absolute;
-            top: 18px;
-            left: -2px;
-            width: 10px;
-            height: 35px;
-            background: orange;
-            border-radius: 0 0 0 5px;
-        }
-        .deng:before {
-            position: absolute;
-            top: -7px;
-            left: 24px;
-            height: 12px;
-            width: 50px;
-            content: " ";
-            display: block;
+            inset: 0;
             z-index: 1;
-            border-radius: 5px 5px 0 0;
-            border: solid 1px #dc8f03;
-            background: linear-gradient(to right, #dc8f03, orange, #dc8f03, orange, #dc8f03);
-        }
-        .deng:after {
-            position: absolute;
-            bottom: -7px;
-            left: 10px;
-            height: 12px;
-            width: 50px;
-            content: " ";
-            display: block;
-            margin-left: 15px;
-            border-radius: 0 0 5px 5px;
-            border: solid 1px #dc8f03;
-            background: linear-gradient(to right, #dc8f03, orange, #dc8f03, orange, #dc8f03);
-        }
-        .deng-t {
-            font-family: "Ma Shan Zheng", "黑体", Arial, sans-serif;
-            font-size: 2.5rem;
-            color: #ffd700;
-            font-weight: 700;
-            line-height: 75px;
-            text-align: center;
-            text-shadow: 0 0 10px #fff, 0 0 20px #ffd700;
-        }
-        @keyframes swing {
-            0% { transform: rotate(-10deg); }
-            50% { transform: rotate(10deg); }
-            100% { transform: rotate(-10deg); }
-        }
-
-        /* 操作提示弹窗 */
-        .help-modal {
-            position: fixed;
-            top: 30%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: linear-gradient(135deg, #8B0000, #B22222);
-            border: 4px solid #FFD700;
-            border-radius: 20px;
-            padding: 25px 30px;
-            z-index: 99999; /* 与置顶文字同级，不遮挡文字核心 */
-            box-shadow: 0 0 80px rgba(255, 215, 0, 0.9);
-            opacity: 0;
             pointer-events: none;
-            transition: all 0.5s ease;
-            max-width: 70vh;
-            overflow-y: auto;
         }
-        .help-modal.show {
-            opacity: 1;
-            pointer-events: all;
-        }
-        .help-title {
-            font-size: 1.8vw;
-            color: #FFD700;
-            font-family: "Ma Shan Zheng", serif;
-            font-weight: 900;
-            margin-bottom: 15px;
-            text-align: center;
-            text-shadow: 0 0 15px #FFD700;
-        }
-        .help-list {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-        .help-item {
-            font-size: 1vw;
-            color: #fff;
-            font-family: "Noto Serif SC", serif;
-            margin: 8px 0;
-            padding: 6px 0;
-            border-bottom: 1px dashed rgba(255, 215, 0, 0.5);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-        }
-        .help-key {
-            color: #FFD700;
-            font-weight: 700;
-            margin-right: 15px;
-            min-width: 50px;
-            text-align: center;
-            background: rgba(255, 215, 0, 0.1);
-            padding: 3px 8px;
-            border-radius: 8px;
-            margin-bottom: 5px;
-        }
-        .help-desc {
-            flex: 1;
-            line-height: 1.4;
+        .vignette {
+            position: fixed;
+            inset: 0;
+            z-index: 2;
+            pointer-events: none;
+            /* 泛红暗角，替换原纯黑暗角 */
+            background: radial-gradient(circle at center, transparent 60%, rgba(90, 10, 10, 0.2) 100%);
         }
 
-        /* 时间设置弹窗 */
-        .modal {
+        /* ========== 开屏动画（保留风格，亮度不变） ========== */
+        .splash-screen {
             position: fixed;
             top: 0;
             left: 0;
             width: 100vw;
             height: 100vh;
-            background: linear-gradient(135deg, rgba(139, 0, 0, 0.98), rgba(178, 34, 34, 0.98));
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-            opacity: 1;
-            transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        .modal.hidden {
-            opacity: 0;
-            pointer-events: none;
-        }
-        .modal-content {
-            background: linear-gradient(135deg, var(--red-medium), var(--gold-main));
-            padding: 50px 70px;
-            border-radius: 24px;
-            box-shadow: 0 0 100px rgba(255, 215, 0, 0.7), inset 0 0 30px rgba(255, 255, 255, 0.9);
-            border: 6px solid var(--gold-main);
-            text-align: center;
-            animation: modal-pop 1.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            z-index: 1001;
-        }
-        @keyframes modal-pop {
-            0% { transform: scale(0); opacity: 0; }
-            70% { transform: scale(1.05); }
-            100% { transform: scale(1); opacity: 1; }
-        }
-        .modal-title {
-            font-size: 2.8vw;
-            margin-bottom: 35px;
-            font-family: var(--font-title);
-            font-weight: var(--font-weight-bold);
-            text-shadow: 0 0 10px var(--gold-main), 0 0 20px var(--red-deep);
-            letter-spacing: 8px;
-            color: #fff;
-        }
-        .time-set-group {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 25px;
-            margin-bottom: 35px;
-            flex-wrap: wrap;
-        }
-        .time-input {
-            padding: 18px 24px;
-            font-size: 1.8vw;
-            border: 4px solid var(--gold-main);
-            border-radius: 12px;
-            background: linear-gradient(135deg, var(--red-deep), var(--red-medium));
-            color: var(--gold-main);
-            font-family: var(--font-number);
-            text-align: center;
-            min-width: 130px;
-            transition: all 0.3s ease;
-        }
-        .time-input:focus {
-            outline: none;
-            box-shadow: 0 0 30px var(--gold-main);
-            transform: translateY(-2px);
-        }
-        .tip-text {
-            font-size: 1.5vw;
-            margin-bottom: 35px;
-            color: #fff;
-            font-family: var(--font-text);
-            text-shadow: 0 0 8px var(--red-deep);
-            line-height: 1.8;
-            font-weight: var(--font-weight-regular);
-        }
-        .confirm-btn {
-            padding: 18px 45px;
-            font-size: 2vw;
-            background: linear-gradient(135deg, var(--gold-main), var(--gold-light));
-            border: none;
-            border-radius: 12px;
-            color: var(--red-deep);
-            font-weight: var(--font-weight-bold);
-            font-family: var(--font-title);
-            cursor: pointer;
-            box-shadow: 0 0 30px rgba(255, 215, 0, 0.8);
-            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            position: relative;
-            overflow: hidden;
-        }
-        .confirm-btn::after {
-            content: "";
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 0;
-            height: 0;
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 50%;
-            transform: translate(-50%, -50%);
-            transition: width 0.6s ease, height 0.6s ease;
-        }
-        .confirm-btn:active::after {
-            width: 300px;
-            height: 300px;
-            opacity: 0;
-        }
-        .confirm-btn:hover {
-            transform: scale(1.15);
-            box-shadow: 0 0 50px #fff, 0 0 20px var(--gold-main);
-        }
-        .confirm-btn:active {
-            transform: scale(1.05);
-        }
-
-        /* 倒计时页面 */
-        .countdown-page {
-            width: 100vw;
-            height: 100vh;
+            background: linear-gradient(135deg, #ff8b8b, #feca57, #6dd5fa, #ffb6e8);
+            background-size: 400% 400%;
+            z-index: 200;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            opacity: 0;
-            transition: opacity 1.5s cubic-bezier(0.4, 0, 0.2, 1);
-            position: relative;
-            z-index: 1;
-            padding: 0 20px;
         }
-        .countdown-page.show {
-            opacity: 1;
+        #splash-init {
+            animation: splashFadeOut 3s ease-in-out forwards;
+        }
+        #splash-mv {
+            opacity: 0;
+            visibility: hidden;
+            z-index: 150;
+        }
+        @keyframes splashFadeOut {
+            0% { background-position: 0% 50%; opacity: 1; visibility: visible; }
+            90% { background-position: 100% 50%; opacity: 1; visibility: visible; }
+            100% { background-position: 100% 50%; opacity: 0; visibility: hidden; z-index: -1; }
         }
 
-        .title-container {
+        .splash-title {
+            font-size: 5vw;
+            font-weight: 700;
+            letter-spacing: 0.8vw;
+            text-shadow: 0 0 20px var(--bright-gold);
+            opacity: 0;
+            animation: titleFade 3s ease forwards;
+            color: #fff;
+        }
+        .splash-subtitle {
+            font-size: 2.2vw;
+            letter-spacing: 1.8vw;
+            margin: 1.5vw 0;
+            opacity: 0;
+            animation: titleFade 3s ease 0.5s forwards;
+            color: #fff;
+        }
+        .splash-flyz {
+            font-size: 1.8vw;
+            color: var(--light-crimson);
+            margin-bottom: 1vw;
+            opacity: 0;
+            animation: titleFade 3s ease 0.8s forwards;
+            text-shadow: 0 0 10px var(--gold);
+        }
+        .splash-tip {
+            font-size: 1.5vw;
+            margin-bottom: 1.5vw;
+            opacity: 0;
+            animation: titleFade 3s ease 1s forwards;
+            color: #333;
+        }
+        .progress-bar-wrap {
+            width: 40vw;
+            height: 0.8vw;
+            background: rgba(255,255,255,0.3);
+            border-radius: 0.4vw;
+            overflow: hidden;
+            opacity: 0;
+            animation: titleFade 3s ease 1s forwards;
+        }
+        .splash-progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #ffd700, #f5c518, #ffd700);
+            background-size: 200% 100%;
+            animation: progressFill 2.5s ease 1.2s forwards, shimmer 1.5s infinite;
+        }
+        @keyframes titleFade {
+            0% { opacity: 0; transform: translateY(20px); }
+            30% { opacity: 1; transform: translateY(0); }
+            70% { opacity: 1; transform: translateY(0); }
+            100% { opacity: 0; transform: translateY(-20px); }
+        }
+        @keyframes progressFill { to { width: 100%; } }
+        @keyframes shimmer { to { background-position: 200% 0; } }
+
+        /* ========== 初始设置层（泛红背景优化） ========== */
+        #setup-layer {
+            position: fixed;
+            inset: 0;
+            z-index: 1000;
+            background: var(--bg-gradient);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .setup-card {
+            background: var(--light-crimson);
+            padding: 50px;
+            border-radius: 30px;
+            border: 2px solid var(--bright-gold);
             text-align: center;
-            margin-bottom: 80px;
-            position: relative;
+            box-shadow: 0 0 50px rgba(255,215,0,0.5);
+        }
+        .setup-title {
+            font-family: "华文行楷";
+            font-size: 3rem;
+            margin-bottom: 10px;
+            color: var(--light-gold);
+            text-shadow: 0 0 10px var(--bright-gold);
+        }
+        .setup-flyz {
+            font-size: 1.2rem;
+            color: var(--gold);
+            margin: 15px 0;
+            letter-spacing: 2px;
+        }
+        .setup-desc {
+            margin-top: 10px;
+            opacity: 0.9;
+            color: var(--light-gold);
+        }
+        input[type="datetime-local"] {
+            padding: 15px;
+            border-radius: 10px;
+            border: none;
+            margin: 20px 0;
+            background: #fff;
+            color: #333;
+            font-size: 1rem;
+            width: 100%;
+            box-shadow: 0 0 10px rgba(255,215,0,0.3);
+        }
+        .btn-gold {
+            background: var(--gold);
+            color: var(--crimson);
+            padding: 15px 40px;
+            border: none;
+            border-radius: 50px;
+            font-weight: 900;
+            cursor: pointer;
+            font-size: 1.2rem;
+            box-shadow: 0 0 20px var(--bright-gold);
+            transition: 0.3s;
+        }
+        .btn-gold:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 30px var(--bright-gold);
+            background: var(--bright-gold);
+        }
+
+        /* ========== 舞台主界面（泛红背景优化） ========== */
+        .hero {
+            position: absolute;
+            top: 45%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 10;
+            text-align: center;
             width: 100%;
         }
         .main-title {
+            font-family: "华文行楷";
             font-size: 8vw;
-            font-family: var(--font-title);
-            font-weight: var(--font-weight-heavy);
-            text-shadow: 
-                0 2px 4px rgba(0,0,0,0.8),
-                0 0 20px var(--gold-main), 
-                0 0 40px var(--gold-main);
-            letter-spacing: 30px;
-            margin-bottom: 30px;
-            color: var(--gold-main);
-            line-height: 1.2;
-            position: relative;
-            z-index: 2;
+            background: linear-gradient(180deg, #fff, #ffd700, #ffE47F);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            filter: drop-shadow(0 0 30px rgba(255,215,0,0.8));
+            animation: breathe 4s infinite alternate;
+        }
+        .countdown {
+            display: flex;
+            justify-content: center;
+            gap: 2vw;
+            margin-top: 30px;
+        }
+        .time-box {
+            background: rgba(165, 42, 42, 0.3);
+            border: 1px solid var(--bright-gold);
+            padding: 20px;
+            border-radius: 15px;
+            min-width: 120px;
+            box-shadow: inset 0 0 10px rgba(255,215,0,0.4);
+        }
+        .time-num {
+            font-size: 4rem;
+            font-weight: 900;
+            color: var(--bright-gold);
+        }
+        .time-text {
+            color: var(--light-gold);
+            opacity: 0.9;
         }
         .sub-title {
-            font-size: 3.5vw;
-            font-family: var(--font-title);
-            font-weight: var(--font-weight-bold);
-            color: #fff;
-            letter-spacing: 15px;
-            line-height: 1.3;
-            padding: 20px 40px;
-            border: 4px solid var(--gold-main);
-            border-radius: 50px;
-            background: rgba(139, 0, 0, 0.6);
-            box-shadow: 0 0 20px var(--gold-main), inset 0 0 10px var(--gold-main);
-            display: inline-block;
-            z-index: 2;
-            position: relative;
-        }
-
-        .countdown-container {
-            display: flex;
-            gap: 50px;
-            margin-bottom: 60px;
-            perspective: 2000px;
-            z-index: 2;
-            position: relative;
-        }
-
-        .countdown-item {
-            text-align: center;
-            background: linear-gradient(135deg, rgba(139, 0, 0, 0.9), rgba(178, 34, 34, 0.9));
-            padding: 40px 50px;
-            border-radius: 30px;
-            border: 8px solid var(--gold-main);
-            box-shadow: 
-                0 0 80px rgba(255, 215, 0, 0.8), 
-                inset 0 0 40px rgba(255, 215, 0, 0.3),
-                0 8px 0 var(--gold-shadow);
-            animation: item-pulse 4s ease-in-out infinite, item-rotate 12s ease-in-out infinite;
-            transform-style: preserve-3d;
-            position: relative;
-            min-width: 220px;
-            z-index: 2;
-        }
-        @keyframes item-pulse {
-            0% { transform: scale(1) rotateY(0); box-shadow: 0 0 80px rgba(255, 215, 0, 0.8), inset 0 0 40px rgba(255, 215, 0, 0.3), 0 8px 0 var(--gold-shadow); }
-            50% { transform: scale(1.1) rotateY(8deg); box-shadow: 0 0 120px #fff, 0 0 60px var(--gold-main), inset 0 0 50px rgba(255, 215, 0, 0.4), 0 10px 0 var(--gold-shadow); }
-            100% { transform: scale(1) rotateY(0); box-shadow: 0 0 80px rgba(255, 215, 0, 0.8), inset 0 0 40px rgba(255, 215, 0, 0.3), 0 8px 0 var(--gold-shadow); }
-        }
-        @keyframes item-rotate {
-            0% { transform: rotateY(0) rotateX(0); }
-            50% { transform: rotateY(6deg) rotateX(4deg); }
-            100% { transform: rotateY(0) rotateX(0); }
-        }
-
-        .countdown-number {
-            font-size: 14vw;
-            font-weight: var(--font-weight-heavy);
-            font-family: var(--font-number);
-            color: var(--gold-main);
-            text-shadow: 
-                0 0 30px var(--gold-main), 
-                0 0 60px var(--red-deep), 
-                0 0 90px var(--gold-main),
-                4px 4px 0 var(--gold-shadow),
-                -4px -4px 0 var(--gold-shadow);
-            position: relative;
-            line-height: 1;
-            transform-origin: center;
-            z-index: 2;
-        }
-
-        .countdown-number.flip {
-            animation: flip-card 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-        }
-        @keyframes flip-card {
-            0% { transform: rotateX(0deg); opacity: 1; }
-            50% { transform: rotateX(90deg); opacity: 0.5; text-shadow: 0 0 50px var(--gold-main); }
-            100% { transform: rotateX(0deg); opacity: 1; text-shadow: 0 0 30px var(--gold-main), 0 0 60px var(--red-deep), 0 0 90px var(--gold-main); }
-        }
-
-        .countdown-label {
-            font-size: 2.5vw;
-            margin-top: 20px;
-            color: #fff;
-            font-family: var(--font-text);
-            font-weight: var(--font-weight-bold);
-            text-shadow: 0 0 15px var(--gold-main), 1px 1px 0 var(--gold-shadow);
-            letter-spacing: 10px;
-            z-index: 2;
-            position: relative;
-        }
-
-        .music-tip {
-            display: block;
-            font-size: 1.2vw;
-            color: #fff;
-            text-shadow: 0 0 10px var(--gold-main);
-            margin-top: 20px;
-            z-index: 2;
-            position: relative;
-        }
-
-        /* 3秒快速倒计时 */
-        .fast-countdown {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background: linear-gradient(135deg, var(--red-deep), var(--red-medium));
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 900;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        .fast-countdown.show {
-            opacity: 1;
-            pointer-events: all;
-        }
-        .fast-count-number {
-            font-size: 30vw;
-            font-family: var(--font-number);
-            font-weight: var(--font-weight-heavy);
-            color: var(--gold-main);
-            text-shadow: 0 0 60px var(--gold-main), 0 0 120px var(--red-deep), 0 0 180px var(--gold-main), 5px 5px 0 var(--gold-shadow);
-            position: relative;
-            animation: fast-count-explode 1s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            z-index: 901;
-        }
-        @keyframes fast-count-explode {
-            0% { transform: scale(0) rotate(0) skew(0); opacity: 0; text-shadow: 0 0 0 var(--gold-main); }
-            30% { transform: scale(2.5) rotate(10deg) skew(5deg); opacity: 1; text-shadow: 0 0 150px var(--gold-main); }
-            70% { transform: scale(1.2) rotate(-5deg) skew(-3deg); }
-            100% { transform: scale(1) rotate(0); opacity: 1; text-shadow: 0 0 60px var(--gold-main), 0 0 120px var(--red-deep), 0 0 180px var(--gold-main); }
-        }
-
-        /* 结束页（保留原UI，不切换，仅新增置顶文字） */
-        .end-countdown-page {
-            width: 100vw;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 1.5s cubic-bezier(0.4, 0, 0.2, 1);
-            position: relative;
-            z-index: 800;
-            background: linear-gradient(135deg, var(--red-deep), var(--red-medium));
-        }
-        .end-countdown-page.show {
-            opacity: 1;
-            pointer-events: all;
-        }
-        .end-title {
-            font-size: 10vw;
-            font-family: var(--font-title);
-            font-weight: var(--font-weight-heavy);
-            color: var(--gold-main);
-            text-shadow: 0 0 40px var(--gold-main), 0 0 80px var(--red-deep), 0 0 120px var(--gold-main), 4px 4px 0 var(--gold-shadow);
-            letter-spacing: 25px;
-            margin-bottom: 50px;
-            animation: end-title-glow 4s ease-in-out infinite alternate;
-            line-height: 1.2;
-            z-index: 801;
-            position: relative;
-        }
-        @keyframes end-title-glow {
-            0% { text-shadow: 0 0 40px var(--gold-main), 0 0 80px var(--red-deep), 4px 4px 0 var(--gold-shadow); }
-            100% { text-shadow: 0 0 80px var(--gold-main), 0 0 160px var(--red-deep), 0 0 240px var(--gold-main), 6px 6px 0 var(--gold-shadow); }
-        }
-        .end-subtitle {
-            font-size: 5vw;
-            font-family: var(--font-title);
-            font-weight: var(--font-weight-bold);
-            color: #fff;
-            text-shadow: 0 0 30px var(--gold-main), 0 0 60px var(--red-deep), 3px 3px 0 var(--gold-shadow);
-            letter-spacing: 20px;
-            padding: 15px 35px;
-            border: 3px solid var(--gold-main);
-            border-radius: 40px;
-            background: rgba(139, 0, 0, 0.5);
-            z-index: 801;
-            position: relative;
-        }
-
-        /* ========== 核心新增：置顶文字容器（图层最高，默认隐藏） ========== */
-        .top-fixed-text {
-            position: fixed; /* 固定置顶，不随页面内容滚动 */
-            top: 0; /* 置顶对齐 */
-            left: 0;
-            width: 100vw;
-            height: auto;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            padding-top: 5vh; /* 顶部预留少量空间，避免完全贴边 */
-            z-index: 999999; /* 极致最高层级，不被任何元素遮挡 */
-            pointer-events: none; /* 不遮挡任何操作（如空格、A键） */
-            opacity: 0; /* 默认隐藏 */
-            visibility: hidden; /* 默认不可见 */
-            transition: opacity 1s ease-in-out, visibility 1s ease-in-out; /* 平滑弹出过渡 */
-        }
-
-        /* 文字显示类（按空格触发） */
-        .top-fixed-text.show {
-            opacity: 1;
-            visibility: visible;
-        }
-
-        /* 置顶主标题（大气书法粗字，带动态效果） */
-        .top-main-title {
-            font-size: 12vw;
-            min-font-size: 60px;
-            font-family: var(--font-title);
-            font-weight: var(--font-weight-heavy);
-            letter-spacing: 40px;
-            margin-bottom: 50px;
-            line-height: 1.2;
-            /* 流动金色渐变 */
-            background: linear-gradient(90deg, var(--gold-shadow), var(--gold-main), var(--gold-light), var(--gold-main), var(--gold-shadow));
-            background-size: 300% 100%;
-            -webkit-background-clip: text;
-            -moz-background-clip: text;
-            background-clip: text;
-            color: var(--gold-main); /* 回退色 */
-            /* 多重动态效果 */
-            animation: 
-                gold-flow 5s linear infinite,
-                gold-glow 3s ease-in-out infinite alternate,
-                gold-float 6s ease-in-out infinite;
-            /* 厚重阴影强化质感 */
-            text-shadow: 
-                0 0 25px var(--gold-main), 
-                0 0 50px var(--gold-shadow), 
-                0 0 75px var(--gold-main), 
-                3px 3px 0 rgba(0, 0, 0, 0.3),
-                0 0 100px var(--gold-light);
-        }
-
-        /* 置顶副标题（小字，延迟动画） */
-        .top-sub-title {
-            font-size: 5vw;
-            min-font-size: 30px;
-            font-family: var(--font-title);
-            font-weight: var(--font-weight-bold);
-            letter-spacing: 25px;
-            /* 流动金色渐变 */
-            background: linear-gradient(90deg, var(--gold-shadow), var(--gold-main), var(--gold-light));
-            background-size: 300% 100%;
-            -webkit-background-clip: text;
-            -moz-background-clip: text;
-            background-clip: text;
-            color: var(--gold-main); /* 回退色 */
-            /* 动态效果（延迟，增加层次感） */
-            animation: 
-                gold-flow 6s linear infinite,
-                gold-glow 4s ease-in-out infinite alternate,
-                gold-float 7s ease-in-out infinite 0.5s;
-            text-shadow: 
-                0 0 15px var(--gold-main), 
-                0 0 30px var(--gold-shadow), 
-                0 0 45px var(--gold-main), 
-                2px 2px 0 rgba(0, 0, 0, 0.2);
-        }
-
-        /* 文字动态效果关键帧 */
-        @keyframes gold-flow {
-            0% { background-position: 300% 0; }
-            100% { background-position: 0 0; }
-        }
-
-        @keyframes gold-glow {
-            0% { text-shadow: 
-                0 0 25px var(--gold-main), 
-                0 0 50px var(--gold-shadow), 
-                0 0 75px var(--gold-main), 
-                3px 3px 0 rgba(0, 0, 0, 0.3); }
-            100% { text-shadow: 
-                0 0 40px var(--gold-main), 
-                0 0 80px var(--gold-shadow), 
-                0 0 120px var(--gold-light), 
-                3px 3px 0 rgba(0, 0, 0, 0.3); }
-        }
-
-        @keyframes gold-float {
-            0% { transform: translateY(0px) rotate(0deg); }
-            50% { transform: translateY(-15px) rotate(1deg); }
-            100% { transform: translateY(0px) rotate(0deg); }
-        }
-
-        /* 粒子/烟花效果（层级低于置顶文字） */
-        #fireworks, #particles-js {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            z-index: 701; /* 低于置顶文字 */
-            pointer-events: none;
-        }
-        .confetti {
-            position: absolute;
-            width: 10px;
-            height: 10px;
-            background: var(--gold-main);
-            opacity: 0.8;
-            border-radius: 50%;
-            animation: confetti-fall linear infinite;
-            z-index: 701; /* 低于置顶文字 */
-            pointer-events: none;
-        }
-        @keyframes confetti-fall {
-            0% {
-                transform: translateY(-10px) rotate(0deg);
-                opacity: 1;
-            }
-            100% {
-                transform: translateY(100vh) rotate(720deg);
-                opacity: 0;
-            }
-        }
-
-        /* 其他容器（层级低于置顶文字） */
-        .iframe-container {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            z-index: 2000;
+            font-size: 2vw;
+            letter-spacing: 1vw;
+            margin-top: 40px;
             display: none;
-            background: #000;
+            color: var(--bright-gold);
+            text-shadow: 0 0 10px var(--gold);
         }
-        .iframe-container.show {
-            display: block;
+        @keyframes breathe {
+            from { transform: scale(0.95); opacity: 0.9; }
+            to { transform: scale(1); opacity: 1; }
         }
-        .iframe-container iframe {
+
+        /* ========== MV播放系统（泛红背景优化，移除金沙粒子） ========== */
+        .video-container {
+            position: fixed;
+            inset: 0;
+            z-index: 50;
+            display: none;
+            background: linear-gradient(180deg, #2a0a0a, #3a0f0f); /* 泛红背景替换原深黑 */
+        }
+        #video-player {
             width: 100%;
             height: 100%;
-            border: 0;
-            z-index: 2001;
+            object-fit: contain;
+            box-shadow: 0 0 100px rgba(255,215,0,0.3);
         }
 
-        .volume-tip {
-            display: none;
-            position: fixed;
-            bottom: 20px;
+        /* 自定义播放器控制栏（泛红背景优化） */
+        .video-ui {
+            position: absolute;
+            bottom: 50px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 85%;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            background: rgba(58, 15, 15, 0.3); /* 泛红半透明替换原纯黑 */
+            backdrop-filter: blur(15px);
+            padding: 15px 30px;
+            border-radius: 50px;
+            border: 1px solid var(--bright-gold);
+            opacity: 0;
+            transition: 0.5s;
+        }
+        .video-container:hover .video-ui {
+            opacity: 1;
+        }
+
+        /* 播放器按钮样式 */
+        .control-btn {
+            background: rgba(255,255,255,0.25);
+            border: 1px solid rgba(255,215,0,0.7);
+            color: var(--light-gold);
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 20px;
+        }
+        .control-btn:hover {
+            background: linear-gradient(135deg, #ffd700, #ffb800);
+            border-color: #ffd700;
+            transform: scale(1.08);
+            box-shadow: 0 0 15px rgba(255,215,0,0.8);
+            color: #000;
+        }
+        .control-btn.active {
+            background: linear-gradient(135deg, #ffd700, #ffb800);
+            border-color: #ffd700;
+            color: #000;
+        }
+
+        /* 进度条样式 */
+        .progress-container {
+            flex: 1;
+            height: 8px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 4px;
+            cursor: pointer;
+            position: relative;
+        }
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #ffd700, #ffb800);
+            border-radius: 4px;
+            width: 0%;
+            transition: width 0.1s ease;
+        }
+        .progress-handle {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 16px;
+            height: 16px;
+            background: #ffd700;
+            border-radius: 50%;
+            opacity: 0;
+            transition: opacity 0.2s ease, box-shadow 0.2s ease;
+            box-shadow: 0 0 8px rgba(255,215,0,0.8);
+        }
+        .progress-container:hover .progress-handle {
+            opacity: 1;
+        }
+        .time-display {
+            color: var(--light-gold);
+            font-size: 16px;
+            min-width: 90px;
+            text-align: center;
+            text-shadow: 0 0 4px rgba(58, 15, 15, 0.3); /* 泛红阴影替换原纯黑 */
+        }
+
+        /* 2D卡片（移除粒子相关，保留纯样式） */
+        .watermark-fixed {
+            position: absolute;
+            bottom: 40px;
             right: 20px;
-            font-size: 1.2vw;
-            color: var(--gold-main);
-            text-shadow: 0 0 5px var(--red-deep);
+            pointer-events: none;
+            z-index: 15;
+            width: 240px;
+            height: 45px;
+        }
+        .watermark-3d-container {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            animation: rotate-card-2d 10s ease-in-out infinite, scale-pulse 4s ease-in-out infinite;
+            -webkit-transform-style: flat;
+            transform-style: flat;
+            z-index: 2;
+        }
+        .watermark-card {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border-radius: 12px 2px 12px 2px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 4px 8px;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            background: rgba(58, 15, 15, 0.4); /* 泛红半透明替换原纯黑 */
+            border: 1px solid var(--bright-gold);
+            box-shadow: 0 0 12px rgba(255,215,0,0.9);
+            overflow: hidden;
+            position: relative;
+        }
+        .watermark-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,210,0.5), transparent);
+            z-index: 1;
+            animation: card-light-shimmer 2s ease-in-out infinite paused;
+            -webkit-animation: card-light-shimmer 2s ease-in-out infinite paused;
+        }
+        .watermark-card-front {
+            background: linear-gradient(135deg, rgba(180, 120, 0, 0.8), rgba(255, 215, 0, 0.6));
+        }
+        .watermark-3d-container:hover .watermark-card-front::before {
+            -webkit-animation-play-state: running;
+            animation-play-state: running;
+        }
+        .watermark-card-back {
+            background: linear-gradient(135deg, rgba(255, 170, 0, 0.8), rgba(255, 215, 0, 0.6));
+            -webkit-transform: rotateY(180deg);
+            transform: rotateY(180deg);
+        }
+        .watermark-3d-container:hover .watermark-card-back::before {
+            -webkit-animation-play-state: running;
+            animation-play-state: running;
+        }
+        @-webkit-keyframes rotate-card-2d {
+            0% { -webkit-transform: rotateY(0deg); transform: rotateY(0deg); }
+            10% { -webkit-transform: rotateY(0deg); transform: rotateY(0deg); }
+            20% { -webkit-transform: rotateY(90deg); transform: rotateY(90deg); }
+            30% { -webkit-transform: rotateY(90deg); transform: rotateY(90deg); }
+            50% { -webkit-transform: rotateY(90deg); transform: rotateY(90deg); }
+            60% { -webkit-transform: rotateY(180deg); transform: rotateY(180deg); }
+            70% { -webkit-transform: rotateY(180deg); transform: rotateY(180deg); }
+            80% { -webkit-transform: rotateY(270deg); transform: rotateY(270deg); }
+            90% { -webkit-transform: rotateY(270deg); transform: rotateY(270deg); }
+            100% { -webkit-transform: rotateY(360deg); transform: rotateY(360deg); }
+        }
+        @keyframes rotate-card-2d {
+            0% { -webkit-transform: rotateY(0deg); transform: rotateY(0deg); }
+            10% { -webkit-transform: rotateY(0deg); transform: rotateY(0deg); }
+            20% { -webkit-transform: rotateY(90deg); transform: rotateY(90deg); }
+            30% { -webkit-transform: rotateY(90deg); transform: rotateY(90deg); }
+            50% { -webkit-transform: rotateY(90deg); transform: rotateY(90deg); }
+            60% { -webkit-transform: rotateY(180deg); transform: rotateY(180deg); }
+            70% { -webkit-transform: rotateY(180deg); transform: rotateY(180deg); }
+            80% { -webkit-transform: rotateY(270deg); transform: rotateY(270deg); }
+            90% { -webkit-transform: rotateY(270deg); transform: rotateY(270deg); }
+            100% { -webkit-transform: rotateY(360deg); transform: rotateY(360deg); }
+        }
+        @-webkit-keyframes scale-pulse {
+            0% { -webkit-transform: scale(0.98); transform: scale(0.98); }
+            50% { -webkit-transform: scale(1.02); transform: scale(1.02); }
+            100% { -webkit-transform: scale(0.98); transform: scale(0.98); }
+        }
+        @keyframes scale-pulse {
+            0% { -webkit-transform: scale(0.98); transform: scale(0.98); }
+            50% { -webkit-transform: scale(1.02); transform: scale(1.02); }
+            100% { -webkit-transform: scale(0.98); transform: scale(0.98); }
+        }
+        @-webkit-keyframes card-light-shimmer {
+            0% { left: -100%; }
+            50% { left: 100%; }
+            100% { left: 100%; }
+        }
+        @keyframes card-light-shimmer {
+            0% { left: -100%; }
+            50% { left: 100%; }
+            100% { left: 100%; }
+        }
+        .watermark-text {
+            font-family: "华文行楷", "方正楷体", "PingFang SC", sans-serif;
+            text-align: center;
+            width: 100%;
+            position: relative;
+            z-index: 3;
+        }
+        .wm-main {
+            font-size: 16px;
+            font-weight: 600;
+            background: linear-gradient(120deg, #ffd700, #fff8dc, #ffd700, #fff8dc, #ffd700);
+            background-size: 400% 100%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            line-height: 1.2;
+            display: block;
+            -webkit-animation: gold-text-shimmer 8s ease-in-out infinite;
+            animation: gold-text-shimmer 8s ease-in-out infinite;
+        }
+        .wm-flyz {
+            font-size: 12px;
+            font-weight: 600;
+            background: linear-gradient(120deg, #fff8dc, #ffd700, #fff8dc, #ffd700, #fff8dc);
+            background-size: 400% 100%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            line-height: 1.2;
+            display: block;
+            -webkit-animation: gold-text-shimmer 8s ease-in-out infinite, gold-text-shake 6s ease-in-out infinite;
+            animation: gold-text-shimmer 8s ease-in-out infinite, gold-text-shake 6s ease-in-out infinite;
+        }
+        @-webkit-keyframes gold-text-shimmer {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        @keyframes gold-text-shimmer {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        @-webkit-keyframes gold-text-shake {
+            0% { -webkit-transform: rotate(-0.3deg); transform: rotate(-0.3deg); }
+            50% { -webkit-transform: rotate(0.3deg); transform: rotate(0.3deg); }
+            100% { -webkit-transform: rotate(-0.3deg); transform: rotate(-0.3deg); }
+        }
+        @keyframes gold-text-shake {
+            0% { -webkit-transform: rotate(-0.3deg); transform: rotate(-0.3deg); }
+            50% { -webkit-transform: rotate(0.3deg); transform: rotate(0.3deg); }
+            100% { -webkit-transform: rotate(-0.3deg); transform: rotate(-0.3deg); }
+        }
+
+        /* 缩小版音量提示（泛红背景优化） */
+        .volume-toast {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(58, 15, 15, 0.6); /* 泛红半透明替换原纯黑 */
+            color: #fff;
+            padding: 15px 25px;
+            border-radius: 12px;
+            font-size: 24px;
+            z-index: 300;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            pointer-events: none;
+            border: 2px solid var(--bright-gold);
+            box-shadow: 0 0 15px rgba(255,215,0,0.9);
+            text-align: center;
+        }
+        .volume-toast .main-text {
+            display: block;
+            margin-bottom: 5px;
+        }
+        .volume-toast .sub-text {
+            font-size: 12px;
+            color: var(--bright-gold);
+            font-family: "华文行楷", "PingFang SC", cursive;
+            letter-spacing: 1px;
+        }
+        .volume-toast.show {
+            opacity: 1;
+        }
+
+        /* ========== 底部Dock栏（增加PPT入口，泛红背景优化） ========== */
+        .dock {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
             z-index: 100;
+            display: flex;
+            gap: 25px;
+            padding: 15px 40px;
+            background: rgba(165, 42, 42, 0.2);
+            backdrop-filter: blur(25px);
+            border-radius: 40px;
+            border: 1px solid rgba(255, 215, 0, 0.5);
+            box-shadow: 0 20px 50px rgba(58, 15, 15, 0.4), inset 0 0 20px rgba(255, 215, 0, 0.2); /* 泛红阴影替换原纯黑 */
+        }
+        .dock-item {
+            font-size: 28px;
+            color: var(--bright-gold);
+            cursor: pointer;
+            transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .dock-item:hover {
+            transform: scale(1.4) translateY(-15px);
+            text-shadow: 0 0 15px var(--bright-gold);
+        }
+        .dock-item span {
+            font-size: 12px;
+            margin-top: 8px;
+            opacity: 0.8;
+        }
+
+        /* ========== 隐藏文件输入 ========== */
+        #mv-upload {
+            display: none;
         }
     </style>
 </head>
 <body>
-    <!-- Canvas背景容器 -->
-    <canvas id="canvasBg"></canvas>
-
-    <!-- 8个灯笼（完整保留，不删除） -->
-    <div class="deng-box deng-box1">
-        <div class="deng">
-            <div class="xian"></div>
-            <div class="deng-a">
-                <div class="deng-b">
-                    <div class="deng-t">2</div>
-                </div>
-            </div>
-            <div class="shui shui-a">
-                <div class="shui-c"></div>
-                <div class="shui-b"></div>
-            </div>
-        </div>
-    </div>
-    <div class="deng-box deng-box2">
-        <div class="deng">
-            <div class="xian"></div>
-            <div class="deng-a">
-                <div class="deng-b">
-                    <div class="deng-t">0</div>
-                </div>
-            </div>
-            <div class="shui shui-a">
-                <div class="shui-c"></div>
-                <div class="shui-b"></div>
-            </div>
-        </div>
-    </div>
-    <div class="deng-box deng-box3">
-        <div class="deng">
-            <div class="xian"></div>
-            <div class="deng-a">
-                <div class="deng-b">
-                    <div class="deng-t">2</div>
-                </div>
-            </div>
-            <div class="shui shui-a">
-                <div class="shui-c"></div>
-                <div class="shui-b"></div>
-            </div>
-        </div>
-    </div>
-    <div class="deng-box deng-box4">
-        <div class="deng">
-            <div class="xian"></div>
-            <div class="deng-a">
-                <div class="deng-b">
-                    <div class="deng-t">6</div>
-                </div>
-            </div>
-            <div class="shui shui-a">
-                <div class="shui-c"></div>
-                <div class="shui-b"></div>
-            </div>
-        </div>
-    </div>
-    <div class="deng-box deng-box5">
-        <div class="deng">
-            <div class="xian"></div>
-            <div class="deng-a">
-                <div class="deng-b">
-                    <div class="deng-t">元</div>
-                </div>
-            </div>
-            <div class="shui shui-a">
-                <div class="shui-c"></div>
-                <div class="shui-b"></div>
-            </div>
-        </div>
-    </div>
-    <div class="deng-box deng-box6">
-        <div class="deng">
-            <div class="xian"></div>
-            <div class="deng-a">
-                <div class="deng-b">
-                    <div class="deng-t">旦</div>
-                </div>
-            </div>
-            <div class="shui shui-a">
-                <div class="shui-c"></div>
-                <div class="shui-b"></div>
-            </div>
-        </div>
-    </div>
-    <div class="deng-box deng-box7">
-        <div class="deng">
-            <div class="xian"></div>
-            <div class="deng-a">
-                <div class="deng-b">
-                    <div class="deng-t">快</div>
-                </div>
-            </div>
-            <div class="shui shui-a">
-                <div class="shui-c"></div>
-                <div class="shui-b"></div>
-            </div>
-        </div>
-    </div>
-    <div class="deng-box deng-box8">
-        <div class="deng">
-            <div class="xian"></div>
-            <div class="deng-a">
-                <div class="deng-b">
-                    <div class="deng-t">乐</div>
-                </div>
-            </div>
-            <div class="shui shui-a">
-                <div class="shui-c"></div>
-                <div class="shui-b"></div>
-            </div>
+    <!-- 初始开屏 -->
+    <div class="splash-screen" id="splash-init">
+        <div class="splash-title">2026元旦联欢会</div>
+        <div class="splash-subtitle">九年级六班</div>
+        <div class="splash-flyz">Flyz远征飞 出品</div>
+        <div class="splash-tip">页面加载中...</div>
+        <div class="progress-bar-wrap">
+            <div class="splash-progress-bar"></div>
         </div>
     </div>
 
-    <!-- 操作提示弹窗 -->
-    <div class="help-modal" id="helpModal">
-        <h3 class="help-title">操作说明</h3>
-        <ul class="help-list">
-            <li class="help-item">
-                <span class="help-key">A键</span>
-                <span class="help-desc">任意页面：显示/隐藏本操作提示，方便随时查阅</span>
-            </li>
-            <li class="help-item">
-                <span class="help-key">空格键</span>
-                <span class="help-desc">倒计时页：跳过常规倒计时，直接进入3秒快速开场；结束页：播放背景音乐并弹出置顶文字</span>
-            </li>
-            <li class="help-item">
-                <span class="help-key">S键</span>
-                <span class="help-desc">结束页：打开MV播放页面（关闭后返回原结束页）</span>
-            </li>
-            <li class="help-item">
-                <span class="help-key">W键</span>
-                <span class="help-desc">结束页：打开签名墙页面（关闭后返回原结束页）</span>
-            </li>
-            <li class="help-item">
-                <span class="help-key">X键</span>
-                <span class="help-desc">MV/签名墙页面：关闭当前页面并返回结束页，恢复背景音乐</span>
-            </li>
-            <li class="help-item">
-                <span class="help-key">+/-键</span>
-                <span class="help-desc">任意页面：调节背景音乐音量，音量调节平滑过渡</span>
-            </li>
-        </ul>
-    </div>
-
-    <!-- 时间设置弹窗 -->
-    <div class="modal" id="timeModal">
-        <div class="modal-content">
-            <h2 class="modal-title">设置联欢会开始时间</h2>
-            <div class="time-set-group">
-                <input type="date" class="time-input" id="dateInput">
-                <select class="time-input" id="periodSelect">
-                    <option value="上午">上午</option>
-                    <option value="下午">下午</option>
-                </select>
-                <select class="time-input" id="hourSelect">
-                    <option value="08">08</option>
-                    <option value="09">09</option>
-                    <option value="10">10</option>
-                    <option value="11">11</option>
-                    <option value="12">12</option>
-                    <option value="13">13</option>
-                    <option value="14">14</option>
-                    <option value="15">15</option>
-                    <option value="16">16</option>
-                    <option value="17">17</option>
-                </select>
-                <select class="time-input" id="minuteSelect">
-                    <option value="00">00</option>
-                    <option value="10">10</option>
-                    <option value="20">20</option>
-                    <option value="30">30</option>
-                    <option value="40">40</option>
-                    <option value="50">50</option>
-                </select>
-            </div>
-            <p class="tip-text">💡 提示：设置完成后按<span style="color: var(--gold-main); font-weight: bold;">空格键</span>可跳过倒计时，直接进入3秒快速开场！按A键查看所有操作说明</p>
-            <button class="confirm-btn" id="timeConfirmBtn">确认开始时间</button>
+    <!-- MV加载开屏 -->
+    <div class="splash-screen" id="splash-mv">
+        <div class="splash-title">2026元旦联欢会</div>
+        <div class="splash-subtitle">九年级六班</div>
+        <div class="splash-flyz">Flyz远征飞 出品</div>
+        <div class="splash-tip">歌曲MV加载中...</div>
+        <div class="progress-bar-wrap">
+            <div class="splash-progress-bar"></div>
         </div>
     </div>
 
-    <!-- 倒计时页面 -->
-    <div class="countdown-page" id="countdownPage">
-        <div class="title-container">
-            <h1 class="main-title">2026元旦联欢会</h1>
-            <h2 class="sub-title">九年级六班</h2>
+    <!-- 初始设置层 -->
+    <div id="setup-layer">
+        <div class="setup-card animate__animated animate__fadeIn">
+            <h1 class="setup-title">盛典控台初始化</h1>
+            <div class="setup-flyz">Flyz远征飞 专属定制</div>
+            <p class="setup-desc">请设定联欢会正式开启时间</p>
+            <input type="datetime-local" id="target-time">
+            <br>
+            <button class="btn-gold" onclick="launchSystem()">启动盛世</button>
         </div>
-        <div class="countdown-container">
-            <div class="countdown-item">
-                <div class="countdown-number" id="hours">00</div>
-                <div class="countdown-label">小时</div>
-            </div>
-            <div class="countdown-item">
-                <div class="countdown-number" id="minutes">00</div>
-                <div class="countdown-label">分钟</div>
-            </div>
-            <div class="countdown-item">
-                <div class="countdown-number" id="seconds">00</div>
-                <div class="countdown-label">秒</div>
-            </div>
-        </div>
-        <p class="music-tip">按空格键可提前开场 | 按A键查看操作说明</p>
-    </div> 
-
-    <!-- 3秒快速倒计时 -->
-    <div class="fast-countdown" id="fastCountdown">
-        <div class="fast-count-number" id="fastCountNumber">3</div>
     </div>
 
-    <!-- 结束页（保留原UI，新增置顶文字容器 + 粒子/烟花） -->
-    <div class="end-countdown-page" id="endCountdownPage">
-        <!-- 粒子/烟花效果（层级低于置顶文字） -->
-        <div id="fireworks"></div>
-        <div id="particles-js"></div>
+    <!-- 画布与暗角层（仅保留烟花画布，移除粒子） -->
+    <canvas id="stage-canvas"></canvas>
+    <div class="vignette"></div>
+
+    <!-- 舞台主界面 -->
+    <div class="hero" id="main-hero">
+        <div class="main-title" id="display-title">2026 元旦联欢会</div>
+        <div class="countdown" id="timer-ui">
+            <div class="time-box">
+                <div class="time-num" id="h">00</div>
+                <span class="time-text">时</span>
+            </div>
+            <div class="time-box">
+                <div class="time-num" id="m">00</div>
+                <span class="time-text">分</span>
+            </div>
+            <div class="time-box">
+                <div class="time-num" id="s">00</div>
+                <span class="time-text">秒</span>
+            </div>
+        </div>
+        <div class="sub-title" id="sub-title">九年级六班 · 龙腾四海</div>
+    </div>
+
+    <!-- MV播放容器（移除金沙粒子DOM） -->
+    <div class="video-container" id="mv-system">
+        <video id="video-player" playsinline></video>
         
-        <!-- 原UI内容（保留不变） -->
-        <h1 class="end-title">2026元旦联欢会</h1>
-        <h2 class="end-subtitle">九年级六班</h2>
-        
-        <!-- 核心新增：置顶文字容器（默认隐藏，按空格显示） -->
-        <div class="top-fixed-text" id="topFixedText">
-            <h1 class="top-main-title">2026元旦联欢会</h1>
-            <h2 class="top-sub-title">九年级六班</h2>
+        <!-- 2D卡片（移除金沙容器） -->
+        <div class="watermark-fixed">
+            <div class="watermark-3d-container">
+                <div class="watermark-card watermark-card-front">
+                    <div class="watermark-text">
+                        <span class="wm-main">九年级六班|2026元旦联欢会</span>
+                    </div>
+                </div>
+                <div class="watermark-card watermark-card-back">
+                    <div class="watermark-text">
+                        <span class="wm-flyz">yzbjfpv.top</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 音量提示框 -->
+        <div class="volume-toast" id="volumeToast">
+            <span class="main-text">音量: 100%</span>
+            <span class="sub-text">九年级六班 | 2026元旦联欢会</span>
+        </div>
+
+        <!-- 自定义播放器控制栏 -->
+        <div class="video-ui">
+            <button class="control-btn" id="playPauseBtn" onclick="togglePlay()">
+                <i class="fas fa-play"></i>
+            </button>
+            <button class="control-btn" id="loopBtn" onclick="toggleLoop()">
+                <i class="fas fa-repeat"></i>
+            </button>
+            <div class="progress-container" id="progressContainer" onclick="seekVideo(event)">
+                <div class="progress-bar" id="videoProgress"></div>
+                <div class="progress-handle" id="progressHandle"></div>
+            </div>
+            <div class="time-display" id="timeDisplay">00:00 / 00:00</div>
+            <button class="control-btn" id="fullscreenBtn" onclick="toggleFullscreen()">
+                <i class="fas fa-expand"></i>
+            </button>
+            <button class="control-btn" style="color:#ff6b6b;" onclick="exitMV()">
+                <i class="fas fa-times-circle"></i>
+            </button>
         </div>
     </div>
 
-    <!-- MV页面容器 -->
-    <div class="iframe-container" id="mvContainer">
-        <iframe id="mvIframe" src="" frameborder="0" allowfullscreen></iframe>
+    <!-- 底部Dock栏（增加PPT入口、新增随机抽人，泛红背景优化） -->
+    <div class="dock">
+        <div class="dock-item" onclick="toggleMusic()">
+            <i class="fas fa-music"></i><span>音乐</span>
+        </div>
+        <div class="dock-item" style="color:#ff6b6b;" onclick="fireworksBang()">
+            <i class="fas fa-fire"></i><span>烟花</span>
+        </div>
+        <div class="dock-item" onclick="triggerApp('mv')">
+            <i class="fas fa-film"></i><span>MV</span>
+        </div>
+        <div class="dock-item" onclick="manualStart()">
+            <i class="fas fa-rocket"></i><span>开场</span>
+        </div>
+        <!-- 原有：PPT入口，打开指定链接 -->
+        <div class="dock-item" onclick="openPPT()">
+            <i class="fas fa-file-powerpoint"></i><span>游戏PPT</span>
+        </div>
+        <!-- 新增：随机抽人入口，打开指定H5链接 -->
+        <div class="dock-item" onclick="openRandomPerson()">
+            <i class="fas fa-random"></i><span>随机抽人</span>
+        </div>
     </div>
 
-    <!-- 姓名页面容器 -->
-    <div class="iframe-container" id="nameContainer">
-        <iframe id="nameIframe" src="https://yzbjfpv.top/school/2026/name" frameborder="0" allowfullscreen></iframe>
-    </div>
+    <!-- 文件输入与背景音乐 -->
+    <input type="file" id="mv-upload" accept="video/mp4" onchange="handleMVFile(this)">
+    <audio id="bg-music" loop src="https://yzbjfpv.top/school/2026/music/start.mp3">
 
-    <!-- 音频元素 -->
-    <audio id="backgroundMusic" loop src="https://yzbjfpv.top/school/2026/music/start.mp3"></audio>
-
-    <!-- 粒子特效 -->
-    <script src="https://cdn.bootcdn.net/ajax/libs/particles.js/2.0.0/particles.min.js"></script>
     <script>
-        // 全局变量
-        let isNamePageCreated = false;
-        let helpModalTimeout = null;
-        const MV_URL = 'https://yzbjfpv.top/school/2026/music/mv';
-        const VOLUME_STEP = 0.05; // 补充音量步长（原代码缺失）
+        // ========== 核心渲染引擎（仅保留烟花，移除所有粒子相关代码） ==========
+        const canvas = document.getElementById('stage-canvas');
+        const ctx = canvas.getContext('2d');
+        let fireworks = [];
+        let w, h;
+        let countdownTimer = null;
+        let isLaunched = false;
+        let targetTime;
+        const bgMusic = document.getElementById('bg-music');
 
-        // Canvas相关全局变量
-        let canvas, ctx, particles = [];
-        const MAX_PARTICLES = 100;
-        let currentScene = 'init';
-
-        // 页面加载完成初始化
-        window.onload = function() {
-            initCanvas();
-            initPageLogic();
-            initFireworks();
-            initConfetti();
-        };
-
-        // 初始化Canvas
+        // 初始化画布（仅设置大小，无粒子）
         function initCanvas() {
-            canvas = document.getElementById('canvasBg');
-            ctx = canvas.getContext('2d');
-
-            resizeCanvas();
-            window.addEventListener('resize', resizeCanvas);
-
-            requestAnimationFrame(animateCanvas);
+            w = canvas.width = window.innerWidth;
+            h = canvas.height = window.innerHeight;
+            render(); // 仅渲染烟花
         }
 
-        // Canvas全屏适配
-        function resizeCanvas() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-            if (currentScene === 'countdown') {
-                createBottom3DRiverParticles();
-            } else if (currentScene === 'end') { // 适配结束页场景
-                createBottom3DRiverParticles(); // 保留原金河效果，不切换粒子
-            }
+        // 窗口大小适配
+        window.addEventListener('resize', () => {
+            w = canvas.width = window.innerWidth;
+            h = canvas.height = window.innerHeight;
+        });
+
+        // 渲染循环（仅保留烟花，移除粒子更新绘制）
+        function render() {
+            // 泛红画布遮罩，替换原纯黑
+            ctx.fillStyle = 'rgba(58, 15, 15, 0.05)';
+            ctx.fillRect(0, 0, w, h);
+            // 仅渲染烟花
+            fireworks.forEach((f, i) => {
+                f.update();
+                f.draw();
+                if(f.life <= 0) fireworks.splice(i, 1);
+            });
+            requestAnimationFrame(render);
         }
 
-        // Particle类（保留原修复逻辑，不修改）
-        class Particle {
-            constructor(x, y, progress, isBottomRiver = true) {
-                this.x = x;
-                this.y = y;
-                this.progress = progress;
-                this.maxOpacity = 0.9;
-                this.minOpacity = 0.1;
-                this.isBottomRiver = isBottomRiver;
-                this.color = '';
-                this.size = 0;
-                this.opacity = 0;
-                this.opacitySpeed = 0;
-                this.speed = 0;
-                this.offset = 0;
-                this.offsetSpeed = 0;
+        // 烟花系统（保留，亮度不变）
+        function fireworksBang() {
+            const x = Math.random() * w;
+            const y = Math.random() * h * 0.5;
+            for(let i=0; i<100; i++) fireworks.push(new FireworkPart(x, y));
+        }
 
-                if (this.isBottomRiver) {
-                    this.size = progress < 0.5 ? (Math.random() * 6 + 4) : (Math.random() * 3 + 1);
-                    this.opacity = progress < 0.5 ? (Math.random() * 0.8 + 0.6) : (Math.random() * 0.5 + 0.2);
-                    this.opacitySpeed = (Math.random() - 0.5) * 0.005;
-                    this.colors = ['#FFD700', '#FFA500', '#FF8C00', '#FFED4F'];
-                    this.speed = Math.random() * 0.0008 + 0.0003;
-                    this.offset = Math.random() * 30 - 15;
-                    this.offsetSpeed = Math.random() * 0.3 - 0.15;
-                } else {
-                    this.size = Math.random() * 4 + 2;
-                    this.opacity = Math.random() * 0.6 + 0.3;
-                    this.opacitySpeed = (Math.random() - 0.5) * 0.01;
-                    this.colors = ['#FFD700', '#FFED4F', '#FFFF00', '#FF8C00'];
-                    this.speed = Math.random() * 0.0005 + 0.0002;
-                    this.offset = Math.random() * 50 - 25;
-                    this.offsetSpeed = Math.random() * 0.4 - 0.2;
-                }
-
-                this.color = this.colors[Math.floor(Math.random() * this.colors.length)];
+        class FireworkPart {
+            constructor(x, y) {
+                this.x = x; this.y = y;
+                const ang = Math.random() * Math.PI * 2;
+                const spd = Math.random() * 6 + 2;
+                this.vx = Math.cos(ang) * spd;
+                this.vy = Math.sin(ang) * spd;
+                this.life = 1;
+                this.color = `hsl(${Math.random() * 360}, 100%, 60%)`;
             }
-
-            getCurvePoint(progress) {
-                const width = canvas.width;
-                const height = canvas.height;
-
-                if (this.isBottomRiver) {
-                    const x = progress * width * 1.1 - width * 0.05;
-                    const y = height * 0.88 + (1 - progress) * 50 + Math.sin(progress * Math.PI * 2) * 30 + this.offset;
-                    return { x, y };
-                } else {
-                    const x = progress * width * 1.1 - width * 0.05;
-                    const y = height * 0.4 + (1 - progress) * 50 + Math.sin(progress * Math.PI * 4) * 40 + this.offset;
-                    return { x, y };
-                }
-            }
-
             update() {
-                this.progress += this.speed;
-                if (this.progress > 1) {
-                    this.progress = 0;
-                    this.offset = this.isBottomRiver ? (Math.random() * 30 - 15) : (Math.random() * 50 - 25);
-                    if (this.isBottomRiver) {
-                        this.size = this.progress < 0.5 ? (Math.random() * 6 + 4) : (Math.random() * 3 + 1);
-                        this.opacity = this.progress < 0.5 ? (Math.random() * 0.8 + 0.6) : (Math.random() * 0.5 + 0.2);
-                    }
-                }
-                this.offset += this.offsetSpeed;
-                const maxOffset = this.isBottomRiver ? 15 : 25;
-                if (this.offset > maxOffset) this.offset = maxOffset;
-                if (this.offset < -maxOffset) this.offset = -maxOffset;
-
-                const curvePoint = this.getCurvePoint(this.progress);
-                this.x = curvePoint.x;
-                this.y = curvePoint.y;
-
-                this.opacity += this.opacitySpeed;
-                if (this.opacity > this.maxOpacity || this.opacity < this.minOpacity) {
-                    this.opacitySpeed *= -1;
-                }
+                this.x += this.vx;
+                this.y += this.vy;
+                this.vy += 0.1; this.life -= 0.015;
             }
-
             draw() {
-                ctx.save();
-                ctx.globalAlpha = this.opacity;
+                ctx.globalAlpha = this.life;
                 ctx.fillStyle = this.color;
-                if (this.isBottomRiver) {
-                    ctx.beginPath();
-                    ctx.ellipse(this.x, this.y, this.size, this.size * 0.7, Math.PI / 10, 0, Math.PI * 2);
-                    ctx.fill();
-                } else {
-                    ctx.beginPath();
-                    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-                    ctx.fill();
-                }
-                ctx.restore();
+                ctx.beginPath(); ctx.arc(this.x, this.y, 2, 0, Math.PI*2); ctx.fill();
+                ctx.globalAlpha = 1;
             }
         }
 
-        // 创建底部伪3D金河粒子（保留原效果）
-        function createBottom3DRiverParticles() {
-            particles = [];
-            for (let i = 0; i < MAX_PARTICLES; i++) {
-                const progress = Math.random();
-                const curvePoint = new Particle(0, 0, progress, true).getCurvePoint(progress);
-                particles.push(new Particle(curvePoint.x, curvePoint.y, progress, true));
-            }
-        }
-
-        // Canvas动画循环
-        function animateCanvas() {
-            ctx.fillStyle = 'rgba(139, 0, 0, 0.05)';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-            for (let i = 0; i < particles.length; i++) {
-                particles[i].update();
-                particles[i].draw();
-            }
-
-            requestAnimationFrame(animateCanvas);
-        }
-
-        // 场景切换（简化，仅保留倒计时/结束页，不切换音乐页）
-        function switchScene(scene) {
-            currentScene = scene;
-            particles = [];
-            const allDengBoxes = document.querySelectorAll('.deng-box');
-
-            switch (scene) {
-                case 'countdown':
-                    createBottom3DRiverParticles();
-                    allDengBoxes.forEach(box => box.classList.remove('hidden'));
-                    break;
-                case 'end':
-                    createBottom3DRiverParticles(); // 保留原金河效果，不隐藏灯笼
-                    allDengBoxes.forEach(box => box.classList.remove('hidden'));
-                    break;
-                default:
-                    particles = [];
-                    allDengBoxes.forEach(box => box.classList.remove('hidden'));
-                    break;
-            }
-        }
-
-        // 烟花效果（保留，层级低于置顶文字）
-        function initFireworks() {
-            const fireworks = document.getElementById('fireworks');
-            if (!fireworks) return;
-
-            function createFirework() {
-                if (!document.getElementById('endCountdownPage').classList.contains('show')) return;
-
-                const firework = document.createElement('div');
-                firework.style.position = 'absolute';
-                firework.style.width = '5px';
-                firework.style.height = '5px';
-                firework.style.backgroundColor = '#ffd700';
-                firework.style.borderRadius = '50%';
-                firework.style.left = Math.random() * 100 + '%';
-                firework.style.bottom = '0';
-                firework.style.zIndex = '701';
-                fireworks.appendChild(firework);
-
-                const colors = ['#ffd700', '#ff0000', '#ffffff', '#ff8c00', '#ff69b4'];
-                firework.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
-
-                let top = 100;
-                const duration = Math.random() * 2000 + 1000;
-                const speed = Math.random() * 5 + 3;
-                const animation = setInterval(function() {
-                    top -= speed;
-                    firework.style.top = top + '%';
-                    if (top < 0) {
-                        clearInterval(animation);
-                        fireworks.removeChild(firework);
-                    }
-                }, 16);
-
-                setTimeout(function() {
-                    for (let i = 0; i < 50; i++) {
-                        const particle = document.createElement('div');
-                        particle.style.position = 'absolute';
-                        particle.style.width = Math.random() * 8 + 2 + 'px';
-                        particle.style.height = Math.random() * 8 + 2 + 'px';
-                        particle.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
-                        particle.style.borderRadius = '50%';
-                        particle.style.left = firework.style.left;
-                        particle.style.top = firework.style.top;
-                        particle.style.opacity = '1';
-                        particle.style.zIndex = '701';
-                        fireworks.appendChild(particle);
-
-                        const angle = Math.random() * Math.PI * 2;
-                        const distance = Math.random() * 80 + 20;
-                        const vx = Math.cos(angle) * distance;
-                        const vy = Math.sin(angle) * distance;
-
-                        let px = parseFloat(firework.style.left) || 50;
-                        let py = parseFloat(firework.style.top) || 50;
-                        let opacity = 1;
-                        const particleAnim = setInterval(() => {
-                            px += vx / 20;
-                            py += vy / 20;
-                            opacity -= 0.02;
-                            particle.style.left = px + '%';
-                            particle.style.top = py + '%';
-                            particle.style.opacity = opacity;
-
-                            if (opacity <= 0) {
-                                clearInterval(particleAnim);
-                                fireworks.removeChild(particle);
-                            }
-                        }, 16);
-                    }
-
-                    fireworks.removeChild(firework);
-                }, duration);
-            }
-
-            setInterval(createFirework, 500);
-        }
-
-        // 飘落金片/花瓣特效（保留，层级低于置顶文字）
-        function initConfetti() {
-            const endPage = document.getElementById('endCountdownPage');
-            if (!endPage) return;
-
-            function createConfetti() {
-                if (!endPage.classList.contains('show')) return;
-
-                const confetti = document.createElement('div');
-                confetti.className = 'confetti';
-                confetti.style.left = Math.random() * 100 + '%';
-                confetti.style.top = '-10px';
-                confetti.style.animationDuration = Math.random() * 10 + 5 + 's';
-                confetti.style.width = Math.random() * 10 + 5 + 'px';
-                confetti.style.height = Math.random() * 10 + 5 + 'px';
-                
-                if (Math.random() > 0.5) {
-                    confetti.style.borderRadius = '0';
-                }
-                const colors = ['#ffd700', '#ff8c00', '#fff'];
-                confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
-
-                endPage.appendChild(confetti);
-
-                setTimeout(() => {
-                    confetti.remove();
-                }, 15000);
-            }
-
-            setInterval(createConfetti, 200);
-        }
-
-        // 操作提示弹窗切换
-        function toggleHelpModal() {
-            const helpModal = document.getElementById('helpModal');
-            if (!helpModal) return;
-
-            if (helpModalTimeout) clearTimeout(helpModalTimeout);
+        // ========== 系统核心逻辑（移除initGoldSand调用） ==========
+        function launchSystem() {
+            if(isLaunched) return;
+            const val = document.getElementById('target-time').value;
+            if(!val) return alert("请设置联欢会开启时间！");
+            targetTime = new Date(val);
             
-            if (helpModal.classList.contains('show')) {
-                helpModal.classList.remove('show');
+            // 时间校验
+            if(targetTime <= new Date()) {
+                manualStart();
             } else {
-                helpModal.classList.add('show');
-                helpModalTimeout = setTimeout(() => {
-                    helpModal.classList.remove('show');
-                }, 8000);
+                updateCountdown();
+                countdownTimer = setInterval(updateCountdown, 1000);
+            }
+            
+            document.getElementById('setup-layer').style.display = 'none';
+            initCanvas(); // 仅初始化画布，无粒子
+            isLaunched = true;
+        }
+
+        // 倒计时更新
+        function updateCountdown() {
+            const diff = targetTime - new Date();
+            if(diff <= 0) { 
+                manualStart(); 
+                return; 
+            }
+            const h = Math.floor(diff/3600000);
+            const m = Math.floor((diff%3600000)/60000);
+            const s = Math.floor((diff%60000)/1000);
+            document.getElementById('h').innerText = h.toString().padStart(2,'0');
+            document.getElementById('m').innerText = m.toString().padStart(2,'0');
+            document.getElementById('s').innerText = s.toString().padStart(2,'0');
+        }
+
+        // 手动开场
+        function manualStart() {
+            clearInterval(countdownTimer);
+            document.getElementById('timer-ui').style.display = 'none';
+            document.getElementById('sub-title').style.display = 'block';
+            document.getElementById('display-title').classList.add('animate__animated', 'animate__pulse');
+            bgMusic.play().catch(err => console.log("背景音乐播放失败:", err));
+            fireworksBang();
+        }
+
+        // 背景音乐切换
+        function toggleMusic() {
+            bgMusic.paused ? bgMusic.play().catch(err => console.log("背景音乐播放失败:", err)) : bgMusic.pause();
+        }
+
+        // ========== 原有：打开PPT页面 ==========
+        function openPPT() {
+            window.open('https://yzbjfpv.top/school/2025/zxy', '_blank');
+        }
+
+        // ========== 新增：打开随机抽人H5页面 ==========
+        function openRandomPerson() {
+            // 新窗口打开指定H5链接，不影响当前联欢会主页面
+            window.open('https://yzbjfpv.top/school/2026/ys', '_blank');
+        }
+
+        // ========== MV播放逻辑（移除initGoldSand相关代码） ==========
+        const video = document.getElementById('video-player');
+        const playPauseBtn = document.getElementById('playPauseBtn');
+        const loopBtn = document.getElementById('loopBtn');
+        const videoProgress = document.getElementById('videoProgress');
+        const progressHandle = document.getElementById('progressHandle');
+        const timeDisplay = document.getElementById('timeDisplay');
+        const fullscreenBtn = document.getElementById('fullscreenBtn');
+        const volumeToast = document.getElementById('volumeToast');
+        const splashMv = document.getElementById('splash-mv');
+
+        let isLoop = false;
+        let volumeTimer = null;
+        let isKeyDown = false;
+        const VOLUME_STEP = 0.01;
+        const LONG_PRESS_INTERVAL = 30;
+        let volumeSmoothing = false;
+
+        // 触发MV功能
+        function triggerApp(type) {
+            if(type === 'mv') {
+                document.getElementById('mv-upload').click();
             }
         }
 
-        // 页面核心逻辑（核心修改：取消页面切换，同步播放音乐+显示置顶文字）
-        function initPageLogic() {
-            const timeModal = document.getElementById('timeModal');
-            const countdownPage = document.getElementById('countdownPage');
-            const fastCountdown = document.getElementById('fastCountdown');
-            const endCountdownPage = document.getElementById('endCountdownPage');
-            const topFixedText = document.getElementById('topFixedText'); // 新增置顶文字DOM
-            const mvContainer = document.getElementById('mvContainer');
-            const nameContainer = document.getElementById('nameContainer');
-            const mvIframe = document.getElementById('mvIframe');
-            const backgroundMusic = document.getElementById('backgroundMusic');
+        // 处理MV文件选择
+        function handleMVFile(input) {
+            const file = input.files[0];
+            if(!file) return;
             
-            const dateInput = document.getElementById('dateInput');
-            const periodSelect = document.getElementById('periodSelect');
-            const hourSelect = document.getElementById('hourSelect');
-            const minuteSelect = document.getElementById('minuteSelect');
-            const timeConfirmBtn = document.getElementById('timeConfirmBtn');
+            bgMusic.pause();
+            const videoUrl = URL.createObjectURL(file);
             
-            const hoursEl = document.getElementById('hours');
-            const minutesEl = document.getElementById('minutes');
-            const secondsEl = document.getElementById('seconds');
-            const fastCountNumber = document.getElementById('fastCountNumber');
+            splashMv.style.opacity = 1;
+            splashMv.style.visibility = 'visible';
+            splashMv.style.animation = 'splashFadeOut 3s ease-in-out forwards';
             
-            let targetTime = null;
-            let countdownInterval = null;
-            let volumeInterval = null;
-            let lastHours = '00', lastMinutes = '00', lastSeconds = '00';
-            let isMusicPlayed = false; // 标记音乐是否已播放，避免重复触发
-
-            if (![timeModal, countdownPage, endCountdownPage, timeConfirmBtn].every(el => el)) {
-                console.error('部分核心元素缺失，无法正常初始化');
-                return;
-            }
-
-            // 初始化时间选择器
-            const today = new Date();
-            const formattedDate = today.toISOString().split('T')[0];
-            dateInput.value = formattedDate;
-
-            // 确认按钮事件
-            timeConfirmBtn.addEventListener('click', function() {
-                const selectedDate = dateInput.value || formattedDate;
-                const period = periodSelect.value;
-                const hourVal = hourSelect.value;
-                const minuteVal = minuteSelect.value;
-
-                let hour = parseInt(hourVal);
-                if (period === '下午' && hour < 12) hour += 12;
-                else if (period === '上午' && hour === 12) hour = 0;
-                const minute = parseInt(minuteVal);
-
-                targetTime = new Date(selectedDate);
-                targetTime.setHours(hour);
-                targetTime.setMinutes(minute);
-                targetTime.setSeconds(0);
-
-                if (isNaN(targetTime.getTime())) {
-                    alert('时间设置错误，请重新选择！');
-                    return;
-                }
-
-                switchScene('countdown');
-                timeModal.classList.add('hidden');
-                countdownPage.classList.add('show');
-                startCountdown();
-            });
-
-            // 倒计时逻辑
-            function startCountdown() {
-                if (countdownInterval) clearInterval(countdownInterval);
-                updateCountdown();
-                countdownInterval = setInterval(updateCountdown, 1000);
-            }
-
-            function updateCountdown() {
-                const now = new Date();
-                const diff = targetTime - now;
+            setTimeout(() => {
+                const mvSystem = document.getElementById('mv-system');
+                mvSystem.style.display = 'block';
+                video.src = videoUrl;
+                video.load();
                 
-                if (diff <= 0) {
-                    clearInterval(countdownInterval);
-                    countdownPage.classList.remove('show');
-                    endCountdownPage.classList.add('show');
-                    switchScene('end'); // 切换到结束页场景，保留原UI
-                    return;
-                }
+                // 初始化音量
+                video.volume = 1;
+                video.muted = false;
                 
-                const hours = Math.floor(diff / 3600000).toString().padStart(2, '0');
-                const minutes = Math.floor((diff % 3600000) / 60000).toString().padStart(2, '0');
-                const seconds = Math.floor((diff % 60000) / 1000).toString().padStart(2, '0');
-                
-                if (hours !== lastHours) {
-                    hoursEl.textContent = hours;
-                    hoursEl.classList.add('flip');
-                    setTimeout(() => hoursEl.classList.remove('flip'), 800);
-                    lastHours = hours;
-                }
-                if (minutes !== lastMinutes) {
-                    minutesEl.textContent = minutes;
-                    minutesEl.classList.add('flip');
-                    setTimeout(() => minutesEl.classList.remove('flip'), 800);
-                    lastMinutes = minutes;
-                }
-                if (seconds !== lastSeconds) {
-                    secondsEl.textContent = seconds;
-                    secondsEl.classList.add('flip');
-                    setTimeout(() => secondsEl.classList.remove('flip'), 800);
-                    lastSeconds = seconds;
-                }
-            }
-
-            // 3秒快速倒计时（结束后直接显示结束页，不切换其他页面）
-            function startFastCountdown() {
-                countdownPage.classList.remove('show');
-                fastCountdown.classList.add('show');
-                
-                let count = 3;
-                fastCountNumber.textContent = count;
-                fastCountNumber.classList.add('animate__animated', 'animate__bounceIn', 'animate__rotateIn');
-                
-                const fastInterval = setInterval(() => {
-                    count--;
-                    if (count < 0) {
-                        clearInterval(fastInterval);
-                        fastCountdown.classList.remove('show');
-                        endCountdownPage.classList.add('show');
-                        switchScene('end'); // 切换到结束页场景，保留原UI
-                        return;
-                    }
-                    
-                    fastCountNumber.textContent = count;
-                    fastCountNumber.classList.remove('animate__animated', 'animate__bounceIn', 'animate__rotateIn');
-                    setTimeout(() => {
-                        fastCountNumber.classList.add('animate__animated', 'animate__bounceIn', 'animate__rotateIn');
-                    }, 10);
-                }, 1000);
-            }
-
-            // 粒子特效（初始化在结束页，不切换页面）
-            function initParticles() {
-                if (typeof particlesJS === 'undefined') return;
-                particlesJS('particles-js', {
-                    "particles": {
-                        "number": { "value": 300, "density": { "enable": true, "value_area": 800 } },
-                        "color": { "value": "#FFD700" },
-                        "shape": { "type": "circle" },
-                        "opacity": { 
-                            "value": 0.9, 
-                            "anim": { "enable": true, "speed": 0.5, "opacity_min": 0.4 } 
-                        },
-                        "size": { 
-                            "value": 10, 
-                            "random": true, 
-                            "anim": { "enable": true, "speed": 1, "size_min": 4 } 
-                        },
-                        "line_linked": { 
-                            "enable": true, 
-                            "distance": 180, 
-                            "color": "#FFD700", 
-                            "opacity": 0.8, 
-                            "width": 3 
-                        },
-                        "move": { 
-                            "enable": true, 
-                            "speed": 8, 
-                            "direction": "none", 
-                            "random": true, 
-                            "bounce": true 
-                        }
-                    },
-                    "interactivity": {
-                        "events": {
-                            "onhover": { "enable": true, "mode": "grab" },
-                            "onclick": { "enable": true, "mode": "push" },
-                            "resize": true
-                        }
-                    },
-                    "retina_detect": true
+                // 加载完成回调
+                video.addEventListener('loadedmetadata', () => {
+                    updateTimeDisplay();
+                    video.play().then(() => updatePlayPauseIcon())
+                    .catch(err => {
+                        console.log('自动播放失败，请手动点击播放');
+                        alert('自动播放失败，请手动点击播放按钮');
+                    });
                 });
-            }
-
-            // 键盘操作逻辑（核心修改：取消页面切换，同步播放音乐+显示置顶文字）
-            document.addEventListener('keydown', (e) => {
-                e.preventDefault();
                 
-                if (e.key.toLowerCase() === 'a') {
-                    toggleHelpModal();
-                    return;
-                }
-
-                if (e.key.toLowerCase() === 'x') {
-                    const isMvShow = mvContainer.classList.contains('show');
-                    const isNameShow = nameContainer.classList.contains('show');
-                    if (isMvShow || isNameShow) {
-                        mvContainer.classList.remove('show');
-                        nameContainer.classList.remove('show');
-                        endCountdownPage.classList.add('show'); // 返回结束页（原UI）
-                        switchScene('end');
-                        backgroundMusic.play().catch(err => {
-                            document.addEventListener('click', () => backgroundMusic.play(), { once: true });
-                        });
+                // 播放进度更新
+                video.addEventListener('timeupdate', () => {
+                    const progress = (video.currentTime / video.duration) * 100;
+                    videoProgress.style.width = `${progress}%`;
+                    progressHandle.style.left = `${progress}%`;
+                    updateTimeDisplay();
+                });
+                
+                // 自动全屏尝试
+                video.addEventListener('canplay', () => {
+                    try {
+                        if (video.requestFullscreen) video.requestFullscreen();
+                        else if (video.webkitRequestFullscreen) video.webkitRequestFullscreen();
+                        else if (video.msRequestFullscreen) video.msRequestFullscreen();
+                    } catch (err) {
+                        console.log('自动全屏失败，可手动点击全屏按钮');
                     }
-                    return;
-                }
+                });
+            }, 3000);
+        }
 
-                if (e.code === 'Space') {
-                    // 场景1：倒计时页 → 快速倒计时（保留原逻辑）
-                    if (countdownPage.classList.contains('show')) {
-                        clearInterval(countdownInterval);
-                        startFastCountdown();
-                    }
-                    // 场景2：结束页 → 播放音乐 + 显示置顶文字（核心修改：不切换页面）
-                    else if (endCountdownPage.classList.contains('show') && !isMusicPlayed) {
-                        isMusicPlayed = true; // 标记已播放，避免重复触发
-                        
-                        // 1. 播放背景音乐
-                        backgroundMusic.play().catch(err => {
-                            document.addEventListener('click', () => backgroundMusic.play(), { once: true });
-                        });
-                        
-                        // 2. 初始化粒子特效（在结束页显示，不切换页面）
-                        initParticles();
-                        
-                        // 3. 显示置顶文字（同步弹出，平滑过渡）
-                        topFixedText.classList.add('show');
-                        
-                        // 4. 保留原灯笼、金河效果（不隐藏任何元素）
-                        const allDengBoxes = document.querySelectorAll('.deng-box');
-                        allDengBoxes.forEach(box => box.classList.remove('hidden'));
-                    }
-                    // 场景3：结束页（音乐已播放）→ 暂停/播放音乐（保留原功能）
-                    else if (endCountdownPage.classList.contains('show') && isMusicPlayed) {
-                        if (backgroundMusic.paused) {
-                            backgroundMusic.play();
-                        } else {
-                            backgroundMusic.pause();
-                        }
-                    }
-                    return;
-                }
+        // 播放/暂停切换
+        function togglePlay() {
+            video.paused ? video.play() : video.pause();
+            updatePlayPauseIcon();
+        }
 
-                if (e.key.toLowerCase() === 's' && endCountdownPage.classList.contains('show')) {
-                    backgroundMusic.pause();
-                    endCountdownPage.classList.remove('show');
-                    mvContainer.classList.add('show');
-                    mvIframe.src = '';
-                    setTimeout(() => {
-                        mvIframe.src = MV_URL + '?t=' + new Date().getTime();
-                    }, 100);
-                    return;
-                }
+        // 更新播放图标
+        function updatePlayPauseIcon() {
+            const icon = playPauseBtn.querySelector('i');
+            icon.classList.toggle('fa-play', video.paused);
+            icon.classList.toggle('fa-pause', !video.paused);
+        }
 
-                if (e.key.toLowerCase() === 'w' && endCountdownPage.classList.contains('show')) {
-                    backgroundMusic.pause();
-                    endCountdownPage.classList.remove('show');
-                    nameContainer.classList.add('show');
-                    if (!isNamePageCreated) {
-                        isNamePageCreated = true;
-                    }
-                    return;
-                }
+        // 循环播放切换
+        function toggleLoop() {
+            isLoop = !isLoop;
+            loopBtn.classList.toggle('active', isLoop);
+            video.loop = isLoop;
+        }
 
-                if (e.code === 'Minus' || e.code === 'NumpadSubtract') {
-                    if (!volumeInterval) {
-                        volumeInterval = setInterval(() => {
-                            backgroundMusic.volume = Math.max(0, backgroundMusic.volume - VOLUME_STEP);
-                        }, 50);
-                    }
-                }
-                if (e.code === 'Equal' || e.code === 'NumpadAdd') {
-                    if (!volumeInterval) {
-                        volumeInterval = setInterval(() => {
-                            backgroundMusic.volume = Math.min(1, backgroundMusic.volume + VOLUME_STEP);
-                        }, 50);
-                    }
-                }
-            });
+        // 进度条跳转
+        function seekVideo(event) {
+            if(!video.duration) return;
+            const progressBar = event.currentTarget;
+            const rect = progressBar.getBoundingClientRect();
+            const clickX = event.clientX - rect.left;
+            const ratio = clickX / rect.width;
+            video.currentTime = ratio * video.duration;
+        }
 
-            // 按键松开停止音量调节
-            document.addEventListener('keyup', (e) => {
-                if (e.code === 'Minus' || e.code === 'NumpadSubtract' || 
-                    e.code === 'Equal' || e.code === 'NumpadAdd') {
-                    clearInterval(volumeInterval);
-                    volumeInterval = null;
-                }
-            });
+        // 全屏切换
+        function toggleFullscreen() {
+            if (!document.fullscreenElement) {
+                if (video.requestFullscreen) video.requestFullscreen();
+                else if (video.webkitRequestFullscreen) video.webkitRequestFullscreen();
+                else if (video.msRequestFullscreen) video.msRequestFullscreen();
+                fullscreenBtn.querySelector('i').classList.replace('fa-expand', 'fa-compress');
+            } else {
+                if (document.exitFullscreen) document.exitFullscreen();
+                else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
+                else if (document.msExitFullscreen) document.msExitFullscreen();
+                fullscreenBtn.querySelector('i').classList.replace('fa-compress', 'fa-expand');
+            }
+        }
 
-            // 初始化音量
-            backgroundMusic.volume = 0.8;
+        // 退出MV播放
+        function exitMV() {
+            video.pause();
+            const mvSystem = document.getElementById('mv-system');
+            mvSystem.style.display = 'none';
+            bgMusic.play();
+            
+            // 释放资源
+            URL.revokeObjectURL(video.src);
+            video.src = '';
+            videoProgress.style.width = '0%';
+            progressHandle.style.left = '0%';
+            timeDisplay.textContent = '00:00 / 00:00';
+            updatePlayPauseIcon();
+            loopBtn.classList.remove('active');
+            isLoop = false;
+            video.loop = false;
+        }
+
+        // 时间格式化
+        function formatTime(seconds) {
+            if (isNaN(seconds)) return '00:00';
+            const mins = Math.floor(seconds / 60);
+            const secs = Math.floor(seconds % 60);
+            return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        }
+
+        // 更新时间显示
+        function updateTimeDisplay() {
+            const current = formatTime(video.currentTime);
+            const duration = formatTime(video.duration);
+            timeDisplay.textContent = `${current} / ${duration}`;
+        }
+
+        // 音量控制（丝滑调节）
+        function adjustVolume(change) {
+            if (volumeSmoothing) return;
+            volumeSmoothing = true;
+            
+            let newVolume = video.volume + change;
+            newVolume = Math.max(0, Math.min(1, newVolume));
+            video.volume = Math.round(newVolume * 100) / 100;
+            video.muted = newVolume === 0;
+            
+            showVolumeToast(Math.round(newVolume * 100));
+            
+            setTimeout(() => {
+                volumeSmoothing = false;
+            }, 5);
+        }
+
+        // 显示音量提示
+        function showVolumeToast(volumePercent) {
+            volumeToast.querySelector('.main-text').textContent = `音量: ${volumePercent}%`;
+            volumeToast.classList.add('show');
+            
+            clearTimeout(volumeToast.timer);
+            volumeToast.timer = setTimeout(() => {
+                volumeToast.classList.remove('show');
+            }, 1000);
+        }
+
+        // 键盘音量控制
+        document.addEventListener('keydown', (e) => {
+            if (isKeyDown) return;
+            isKeyDown = true;
+            const key = e.key;
+
+            if (key === '-' || key === '_') {
+                e.preventDefault();
+                adjustVolume(-VOLUME_STEP);
+                volumeTimer = setInterval(() => adjustVolume(-VOLUME_STEP), LONG_PRESS_INTERVAL);
+            } else if (key === '=' || key === '+' || key === 'Plus') {
+                e.preventDefault();
+                adjustVolume(VOLUME_STEP);
+                volumeTimer = setInterval(() => adjustVolume(VOLUME_STEP), LONG_PRESS_INTERVAL);
+            }
+        });
+
+        document.addEventListener('keyup', (e) => {
+            isKeyDown = false;
+            clearInterval(volumeTimer);
+            volumeTimer = null;
+        });
+
+        window.addEventListener('blur', () => {
+            isKeyDown = false;
+            clearInterval(volumeTimer);
+            volumeTimer = null;
+        });
+
+        // 全屏状态监听
+        document.addEventListener('fullscreenchange', updateFullscreenIcon);
+        document.addEventListener('webkitfullscreenchange', updateFullscreenIcon);
+        document.addEventListener('msfullscreenchange', updateFullscreenIcon);
+
+        function updateFullscreenIcon() {
+            const icon = fullscreenBtn.querySelector('i');
+            if (document.fullscreenElement) {
+                icon.classList.replace('fa-expand', 'fa-compress');
+            } else {
+                icon.classList.replace('fa-compress', 'fa-expand');
+            }
         }
     </script>
 </body>
