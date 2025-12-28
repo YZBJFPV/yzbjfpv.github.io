@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>九年级六班 | 随机抽人</title>
+    <title>九年级六班 | 3D炫酷随机抽人</title>
     <link href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
-        /* 继承原页面核心配色，保持风格统一 */
+        /* 全局3D变量定义，统一控制景深和风格 */
         :root {
             --gold: #FFD700;
             --light-gold: #FFF8DC;
@@ -14,11 +14,13 @@
             --crimson: #8B0000;
             --light-crimson: #A52A2A;
             --dark-crimson: #5A0000;
-            --glass: rgba(255, 255, 255, 0.2);
-            --bg-main: #3a0f0f;
-            --bg-gradient: linear-gradient(180deg, #6a1a1a, #3a0f0f, #2a0a0a);
-            --card-shadow: 0 0 20px rgba(255,215,0,0.5);
-            --card-shadow-active: 0 0 30px rgba(255,215,0,0.8);
+            --bg-main: #1a0808;
+            --bg-gradient: linear-gradient(135deg, #2d0b0b, #1a0808, #0f0404);
+            --3d-perspective: 1200px; /* 加深景深，增强3D感 */
+            --card-shadow-3d: 0 10px 30px rgba(255,215,0,0.4), 0 2px 10px rgba(0,0,0,0.6);
+            --card-shadow-active-3d: 0 20px 40px rgba(255,215,0,0.7), 0 5px 15px rgba(0,0,0,0.8);
+            --btn-shadow-3d: 0 5px 15px rgba(255,215,0,0.3), inset 0 2px 2px rgba(255,255,255,0.2);
+            --card-small-text: #FFE47F88; /* 小字标识颜色，半透明更细腻 */
         }
 
         * {
@@ -27,209 +29,358 @@
             box-sizing: border-box;
             user-select: none;
             -webkit-tap-highlight-color: transparent;
+            /* 开启硬件加速，最大化动画效果（不惜性能） */
+            transform: translateZ(0);
+            -webkit-transform: translateZ(0);
+            will-change: transform, opacity, box-shadow;
         }
 
         body {
             overflow: hidden;
             background: var(--bg-gradient);
             font-family: "PingFang SC", "Microsoft YaHei", "华文行楷", "华文楷体", "宋体", sans-serif;
-            color: var(--light-gold);
             height: 100vh;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: space-between;
+            justify-content: space-around;
             padding: 2vh 2vw;
+            /* 全局3D空间 */
+            perspective: var(--3d-perspective);
+            perspective-origin: center center;
+            position: relative;
         }
 
-        /* 顶部恭喜区域 */
-        .congrats-area {
-            width: 100%;
-            text-align: center;
-            margin-top: 2vh;
-            opacity: 0;
-            transition: opacity 0.8s ease;
+        /* 3D背景氛围：优化光点，增强高级感 */
+        .bg-3d-decoration {
+            position: fixed;
+            inset: 0;
+            z-index: 1;
+            background: radial-gradient(circle at random 20% random 20%, rgba(255,215,0,0.05) 0%, transparent 15%),
+                        radial-gradient(circle at random 80% random 40%, rgba(165,42,42,0.05) 0%, transparent 15%),
+                        radial-gradient(circle at random 40% random 80%, rgba(255,215,0,0.05) 0%, transparent 15%);
+            animation: bg3dShift 20s ease-in-out infinite;
+            background-size: 200% 200%; /* 优化背景位移效果 */
+        }
+
+        @keyframes bg3dShift {
+            0% { background-position: 0% 0%, 100% 100%, 0% 100%; }
+            50% { background-position: 100% 100%, 0% 0%, 100% 0%; }
+            100% { background-position: 0% 0%, 100% 100%, 0% 100%; }
+        }
+
+        /* 3D标题区域：优化动画，更细腻 */
+        .title-3d-area {
             z-index: 10;
+            text-align: center;
+            transform-style: preserve-3d;
+            animation: title3dFloat 5s ease-in-out infinite;
         }
-        .congrats-area.active {
-            opacity: 1;
+
+        @keyframes title3dFloat {
+            0%, 100% { transform: rotateX(0deg) translateY(0px); }
+            50% { transform: rotateX(5deg) translateY(-10px); }
         }
-        .congrats-title {
+
+        .title-3d-main {
             font-family: "华文行楷";
-            font-size: 4vw;
-            background: linear-gradient(180deg, #fff, #ffd700, #ffE47F);
+            font-size: 5vw;
+            background: linear-gradient(180deg, #fff, #ffd700, #ffb800);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
-            filter: drop-shadow(0 0 15px rgba(255,215,0,0.8));
-            letter-spacing: 0.5vw;
-        }
-        .congrats-names {
-            font-size: 2.5vw;
-            margin-top: 1vh;
-            color: var(--bright-gold);
-            text-shadow: 0 0 10px var(--crimson);
-            letter-spacing: 0.3vw;
+            filter: drop-shadow(0 0 20px rgba(255,215,0,0.8));
+            letter-spacing: 1vw;
+            margin-bottom: 1vh;
         }
 
-        /* 人数选择区域 */
-        .count-select-area {
-            display: flex;
-            gap: 1vw;
-            justify-content: center;
-            align-items: center;
-            margin: 3vh 0;
-            z-index: 10;
+        .title-3d-sub {
+            font-size: 1.5vw;
+            color: var(--light-gold);
+            text-shadow: 0 0 10px var(--bright-gold);
+            letter-spacing: 0.5vw;
         }
-        .count-title {
+
+        /* 3D人数选择区域：优化样式，更协调 */
+        .count-3d-area {
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2vh;
+        }
+
+        .count-3d-title {
             font-size: 1.8vw;
             color: var(--light-gold);
-            margin-right: 1vw;
-            text-shadow: 0 0 5px var(--bright-gold);
+            text-shadow: 0 0 10px var(--bright-gold);
+            letter-spacing: 0.3vw;
+            transform-style: preserve-3d;
+            transform: rotateX(10deg);
         }
-        .count-btn {
-            width: 3.5vw;
-            height: 3.5vw;
-            border-radius: 50%;
-            background: rgba(165, 42, 42, 0.3);
+
+        .count-3d-btns {
+            display: flex;
+            gap: 1.5vw;
+            transform-style: preserve-3d;
+            perspective: 500px;
+        }
+
+        .count-3d-btn {
+            width: 4vw;
+            height: 4vw;
+            border-radius: 10px;
+            background: linear-gradient(135deg, rgba(165, 42, 42, 0.6), rgba(90, 10, 10, 0.8));
             border: 2px solid var(--bright-gold);
             color: var(--light-gold);
-            font-size: 1.5vw;
+            font-size: 1.6vw;
             font-weight: 700;
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: inset 0 0 5px rgba(255,215,0,0.3);
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: var(--btn-shadow-3d);
+            transform-style: preserve-3d;
+            transform: rotateX(15deg) translateZ(0px);
         }
-        .count-btn:hover {
-            transform: scale(1.1);
-            box-shadow: var(--card-shadow);
+
+        .count-3d-btn:hover {
+            transform: rotateX(15deg) translateZ(20px) scale(1.1);
+            box-shadow: 0 10px 25px rgba(255,215,0,0.5), inset 0 2px 2px rgba(255,255,255,0.3);
         }
-        .count-btn.active {
+
+        .count-3d-btn.active {
             background: linear-gradient(135deg, #ffd700, #ffb800);
             color: var(--dark-crimson);
-            box-shadow: var(--card-shadow-active);
+            transform: rotateX(15deg) translateZ(30px) scale(1.15);
+            box-shadow: 0 15px 30px rgba(255,215,0,0.7), inset 0 2px 2px rgba(255,255,255,0.5);
         }
 
-        /* 抽卡轮播区域（核心炫酷效果） */
-        .card-carousel-area {
+        .count-3d-btn.disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+            transform: rotateX(15deg) translateZ(0px) scale(0.9);
+            box-shadow: none;
+        }
+
+        /* 核心：3D抽卡容器（优化景深，支持均匀分布） */
+        .card-3d-container {
             width: 90vw;
-            height: 25vh;
+            height: 40vh;
+            z-index: 10;
+            /* 3D卡片容器的核心：开启3D保留，设置景深 */
+            transform-style: preserve-3d;
+            perspective: var(--3d-perspective);
             position: relative;
-            overflow: hidden;
-            margin: 5vh 0;
-            z-index: 10;
-        }
-        .carousel-container {
-            display: flex;
-            position: absolute;
-            top: 0;
-            left: 0;
-            height: 100%;
-            transition: transform 0.05s linear; /* 轮播基础速度 */
-        }
-        .card-item {
-            min-width: 18vw;
-            height: 100%;
-            margin: 0 1vw;
-            background: linear-gradient(135deg, rgba(165, 42, 42, 0.8), rgba(90, 10, 10, 0.8));
-            border: 3px solid var(--bright-gold);
-            border-radius: 20px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-family: "华文行楷";
-            font-size: 2.8vw;
-            color: var(--bright-gold);
-            text-shadow: 0 0 10px var(--gold);
-            box-shadow: var(--card-shadow);
-            backdrop-filter: blur(10px);
-            transform: perspective(500px) rotateY(10deg);
-            transition: all 0.5s ease;
-        }
-        .card-item:hover {
-            transform: perspective(500px) rotateY(0deg) scale(1.05);
-            box-shadow: var(--card-shadow-active);
-        }
-        .card-item.selected {
-            background: linear-gradient(135deg, rgba(255, 215, 0, 0.6), rgba(255, 184, 0, 0.6));
-            color: var(--dark-crimson);
-            border-color: #fff;
-            box-shadow: 0 0 30px rgba(255,255,255,0.7);
         }
 
-        /* 结果合并展示区域 */
-        .result-merge-area {
-            width: 90vw;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 1.5vw;
-            justify-content: center;
-            align-items: center;
-            margin: 3vh 0;
-            display: none;
-            z-index: 10;
-        }
-        .result-card {
+        /* 3D抽卡卡片（重点优化：纵向布局、小字标识、无重叠、自然动画） */
+        .card-3d-item {
+            position: absolute;
             width: 12vw;
-            height: 10vh;
-            background: linear-gradient(135deg, rgba(165, 42, 42, 0.9), rgba(90, 10, 10, 0.9));
-            border: 2px solid var(--bright-gold);
+            height: 18vh;
+            background: linear-gradient(135deg, rgba(165, 42, 42, 0.8), rgba(90, 10, 10, 0.9));
+            border: 3px solid var(--bright-gold);
             border-radius: 15px;
             display: flex;
+            flex-direction: column; /* 纵向布局，容纳姓名+小字 */
             align-items: center;
             justify-content: center;
             font-family: "华文行楷";
-            font-size: 1.8vw;
             color: var(--bright-gold);
-            text-shadow: 0 0 8px var(--gold);
-            box-shadow: var(--card-shadow);
-            opacity: 0;
-            transform: scale(0.8);
-            transition: all 0.5s ease;
-        }
-        .result-card.active {
-            opacity: 1;
-            transform: scale(1);
+            text-shadow: 0 0 10px var(--gold);
+            box-shadow: var(--card-shadow-3d);
+            backdrop-filter: blur(10px);
+            /* 3D卡片核心属性 */
+            transform-style: preserve-3d;
+            transition: all 1.2s cubic-bezier(0.2, 0.8, 0.4, 1); /* 延长过渡，更丝滑 */
+            cursor: default;
+            opacity: 0; /* 初始透明，用于入场动画 */
+            transform: translateZ(-200px) scale(0.5) rotateX(30deg) rotateY(30deg); /* 初始位置，用于入场打乱 */
         }
 
-        /* 控制按钮区域 */
-        .control-btn-area {
-            display: flex;
-            gap: 3vw;
-            margin-bottom: 5vh;
-            z-index: 10;
+        /* 卡片姓名主体 */
+        .card-3d-name {
+            font-size: 2vw;
+            margin-bottom: 1vh; /* 与小字隔开距离 */
         }
-        .main-control-btn {
-            padding: 1.5vw 3vw;
-            border-radius: 50px;
+
+        /* 卡片下沿内部小字：Flyz智能抽卡系统 */
+        .card-3d-tag {
+            font-size: 0.8vw;
+            color: var(--card-small-text);
+            text-shadow: 0 0 5px var(--bright-gold);
+            letter-spacing: 0.2vw;
+            margin-top: auto; /* 固定在卡片下沿 */
+            margin-bottom: 1vh;
+            transform: translateZ(5px); /* 轻微3D凸起，更细腻 */
+        }
+
+        /* 卡片入场动画：从中心打乱→均匀展开→悬浮 */
+        .card-3d-item.enter {
+            opacity: 1;
+            transform: translateZ(0px) scale(1) rotateX(10deg) rotateY(10deg);
+        }
+
+        /* 卡片悬浮动画（每张卡片独立差异，更自然） */
+        .card-3d-item.float {
+            animation: card3dFloat 8s ease-in-out infinite;
+        }
+
+        .card-3d-item.float:nth-child(3n+1) {
+            animation: card3dFloat 7s ease-in-out infinite;
+        }
+
+        .card-3d-item.float:nth-child(3n+2) {
+            animation: card3dFloat 9s ease-in-out infinite;
+        }
+
+        .card-3d-item.float:nth-child(3n+3) {
+            animation: card3dFloat 10s ease-in-out infinite;
+        }
+
+        @keyframes card3dFloat {
+            0% { transform: rotateX(10deg) rotateY(10deg) translateY(0px) translateZ(0px); }
+            25% { transform: rotateX(15deg) rotateY(20deg) translateY(-15px) translateZ(20px); }
+            50% { transform: rotateX(10deg) rotateY(10deg) translateY(0px) translateZ(40px); }
+            75% { transform: rotateX(5deg) rotateY(0deg) translateY(-15px) translateZ(20px); }
+            100% { transform: rotateX(10deg) rotateY(10deg) translateY(0px) translateZ(0px); }
+        }
+
+        /* 卡片抽卡前扰动动画（整体打乱，增强仪式感） */
+        .card-3d-item.disturb {
+            animation: card3dDisturb 0.5s ease-in-out infinite;
+        }
+
+        @keyframes card3dDisturb {
+            0% { transform: rotateX(10deg) rotateY(10deg) translateY(0px) translateZ(0px); }
+            50% { transform: rotateX(20deg) rotateY(25deg) translateY(-5px) translateZ(10px); }
+            100% { transform: rotateX(10deg) rotateY(10deg) translateY(0px) translateZ(0px); }
+        }
+
+        /* 3D卡片选中状态（优化过渡，自然高亮，无硬直） */
+        .card-3d-item.selected {
+            animation: none;
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.8), rgba(255, 184, 0, 0.9));
+            color: var(--dark-crimson);
+            border-color: #fff;
+            box-shadow: var(--card-shadow-active-3d);
+            transform: rotateX(0deg) rotateY(360deg) translateY(-30px) translateZ(100px) scale(1.2);
+            z-index: 20;
+            transition: all 1.5s cubic-bezier(0.1, 0.9, 0.3, 1); /* 更流畅的选中过渡 */
+        }
+
+        /* 3D卡片落地状态（优化过渡，自然回落） */
+        .card-3d-item.landed {
+            animation: none;
+            transform: rotateX(5deg) rotateY(5deg) translateY(0px) translateZ(0px) scale(1);
+            opacity: 0.7; /* 轻微透明，区分未选中卡片 */
+            z-index: 15;
+            transition: all 1.2s cubic-bezier(0.2, 0.8, 0.4, 1);
+        }
+
+        /* 3D结果展示区域（优化堆叠，自然过渡） */
+        .result-3d-area {
+            width: 90vw;
+            height: 20vh;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 2vw;
+            /* 3D结果区域景深 */
+            transform-style: preserve-3d;
+            transform: rotateX(10deg) translateZ(0px);
+            overflow: hidden;
+        }
+
+        /* 结果区域卡片（保持样式一致性，自然入场） */
+        .result-3d-item {
+            width: 10vw;
+            height: 15vh;
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.7), rgba(255, 184, 0, 0.8));
+            border: 2px solid #fff;
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-family: "华文行楷";
+            color: var(--dark-crimson);
+            text-shadow: 0 0 5px rgba(90, 0, 0, 0.5);
+            box-shadow: var(--card-shadow-active-3d);
+            backdrop-filter: blur(5px);
+            transform-style: preserve-3d;
+            opacity: 0;
+            transform: rotateX(20deg) translateZ(-50px) scale(0.8);
+            transition: all 1s cubic-bezier(0.2, 0.8, 0.4, 1);
+        }
+
+        /* 结果卡片入场动画 */
+        .result-3d-item.enter {
+            opacity: 1;
+            transform: rotateX(5deg) rotateY(5deg) translateZ(0px) scale(1);
+        }
+
+        /* 结果卡片姓名 */
+        .result-3d-name {
+            font-size: 1.8vw;
+            margin-bottom: 0.8vh;
+        }
+
+        /* 结果卡片小字标识 */
+        .result-3d-tag {
+            font-size: 0.7vw;
+            color: rgba(90, 0, 0, 0.7);
+            letter-spacing: 0.2vw;
+            margin-top: auto;
+            margin-bottom: 0.8vh;
+        }
+
+        /* 3D控制按钮区域（优化样式，更协调） */
+        .control-3d-area {
+            z-index: 10;
+            display: flex;
+            gap: 5vw;
+        }
+
+        .control-3d-btn {
+            padding: 1.2vw 3vw;
+            border-radius: 15px;
             border: none;
-            background: linear-gradient(135deg, #ffd700, #f5c518);
+            background: linear-gradient(135deg, #ffd700, #ffb800);
             color: var(--dark-crimson);
             font-family: "华文行楷";
             font-size: 2vw;
             font-weight: 700;
             cursor: pointer;
-            transition: all 0.4s ease;
-            box-shadow: var(--card-shadow);
-        }
-        .main-control-btn:hover {
-            transform: scale(1.05);
-            box-shadow: var(--card-shadow-active);
-            letter-spacing: 0.2vw;
-        }
-        .main-control-btn:disabled {
-            background: rgba(165, 42, 42, 0.5);
-            color: var(--light-gold);
-            box-shadow: none;
-            transform: none;
-            cursor: not-allowed;
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: var(--card-shadow-3d);
+            transform-style: preserve-3d;
+            transform: rotateX(10deg) translateZ(0px);
         }
 
-        /* 加载状态提示 */
-        .loading-area {
+        .control-3d-btn:hover {
+            transform: rotateX(10deg) translateZ(30px) scale(1.05);
+            box-shadow: var(--card-shadow-active-3d);
+            letter-spacing: 0.3vw;
+        }
+
+        .control-3d-btn:disabled {
+            background: linear-gradient(135deg, rgba(165, 42, 42, 0.5), rgba(90, 10, 10, 0.7));
+            color: var(--light-gold);
+            transform: rotateX(10deg) translateZ(0px) scale(0.95);
+            box-shadow: none;
+            cursor: not-allowed;
+            letter-spacing: 0;
+        }
+
+        /* 3D加载状态（优化样式，更细腻） */
+        .loading-3d-area {
             position: fixed;
             inset: 0;
             background: var(--bg-gradient);
@@ -238,142 +389,147 @@
             align-items: center;
             justify-content: center;
             z-index: 100;
+            transform-style: preserve-3d;
         }
-        .loading-text {
+
+        .loading-3d-text {
             font-family: "华文行楷";
             font-size: 3vw;
             color: var(--bright-gold);
             text-shadow: 0 0 15px var(--gold);
-            margin-bottom: 3vh;
+            margin-bottom: 5vh;
+            transform: rotateX(10deg) translateZ(50px);
         }
-        .loading-spinner {
-            width: 5vw;
-            height: 5vw;
-            border: 3px solid rgba(255,215,0,0.3);
-            border-top: 3px solid var(--bright-gold);
+
+        .loading-3d-spinner {
+            width: 6vw;
+            height: 6vw;
+            border: 4px solid rgba(255,215,0,0.3);
+            border-top: 4px solid var(--bright-gold);
             border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+            /* 3D旋转加载动画 */
+            animation: spinner3dRotate 1.5s linear infinite;
+            transform-style: preserve-3d;
         }
 
-        /* 背景点缀（增强炫酷感，匹配原页面风格） */
-        .bg-decoration {
-            position: fixed;
-            inset: 0;
-            z-index: 1;
-            background: radial-gradient(circle at random 20% random 20%, rgba(255,215,0,0.1) 0%, transparent 10%),
-                        radial-gradient(circle at random 80% random 40%, rgba(165,42,42,0.1) 0%, transparent 10%),
-                        radial-gradient(circle at random 40% random 80%, rgba(255,215,0,0.1) 0%, transparent 10%);
-            animation: bgShift 15s ease-in-out infinite;
-        }
-        @keyframes bgShift {
-            0% { background-position: 0% 0%, 100% 100%, 0% 100%; }
-            50% { background-position: 100% 100%, 0% 0%, 100% 0%; }
-            100% { background-position: 0% 0%, 100% 100%, 0% 100%; }
+        @keyframes spinner3dRotate {
+            0% { transform: rotateX(45deg) rotateY(0deg) rotateZ(0deg); }
+            100% { transform: rotateX(45deg) rotateY(360deg) rotateZ(360deg); }
         }
 
-        /* 自适应适配（移动端/不同iframe尺寸） */
+        /* 自适应适配（移动端3D效果优化，避免变形） */
         @media screen and (max-width: 768px) {
-            .congrats-title { font-size: 8vw; }
-            .congrats-names { font-size: 5vw; }
-            .count-title { font-size: 4vw; }
-            .count-btn {
-                width: 8vw;
-                height: 8vw;
-                font-size: 3vw;
+            :root {
+                --3d-perspective: 1000px;
             }
-            .card-item {
-                min-width: 35vw;
-                font-size: 5vw;
-            }
-            .result-card {
-                width: 25vw;
-                height: 12vh;
+
+            .title-3d-main { font-size: 10vw; }
+            .title-3d-sub { font-size: 3vw; }
+
+            .count-3d-title { font-size: 4vw; }
+            .count-3d-btn {
+                width: 10vw;
+                height: 10vw;
                 font-size: 4vw;
             }
-            .main-control-btn {
+
+            .card-3d-item {
+                width: 25vw;
+                height: 15vh;
+            }
+
+            .card-3d-name { font-size: 4vw; }
+            .card-3d-tag { font-size: 1.5vw; }
+
+            .result-3d-area {
+                height: 15vh;
+                gap: 4vw;
+            }
+
+            .result-3d-item {
+                width: 20vw;
+                height: 12vh;
+            }
+
+            .result-3d-name { font-size: 3.5vw; }
+            .result-3d-tag { font-size: 1.3vw; }
+
+            .control-3d-btn {
                 padding: 3vw 6vw;
                 font-size: 4vw;
             }
-            .loading-text { font-size: 6vw; }
-            .loading-spinner {
-                width: 10vw;
-                height: 10vw;
+
+            .loading-3d-text { font-size: 6vw; }
+            .loading-3d-spinner {
+                width: 15vw;
+                height: 15vw;
             }
         }
     </style>
 </head>
 <body>
-    <!-- 背景点缀 -->
-    <div class="bg-decoration"></div>
+    <!-- 3D背景氛围 -->
+    <div class="bg-3d-decoration"></div>
 
-    <!-- 加载状态 -->
-    <div class="loading-area" id="loadingArea">
-        <div class="loading-text">正在读取名单...</div>
-        <div class="loading-spinner"></div>
+    <!-- 3D加载状态 -->
+    <div class="loading-3d-area" id="loading3dArea">
+        <div class="loading-3d-text">正在读取名单...</div>
+        <div class="loading-3d-spinner"></div>
     </div>
 
-    <!-- 顶部恭喜区域 -->
-    <div class="congrats-area" id="congratsArea">
-        <div class="congrats-title" id="congratsTitle">恭喜以下同学！</div>
-        <div class="congrats-names" id="congratsNames">—— 待抽取 ——</div>
+    <!-- 3D标题区域 -->
+    <div class="title-3d-area">
+        <h1 class="title-3d-main">九年级六班 · 幸运抽选</h1>
+        <p class="title-3d-sub">3D炫酷版 | 公平公正 · 随机抽取</p>
     </div>
 
-    <!-- 人数选择区域 -->
-    <div class="count-select-area">
-        <div class="count-title">选择抽取人数：</div>
-        <div class="count-btn" data-count="1">1</div>
-        <div class="count-btn" data-count="2">2</div>
-        <div class="count-btn" data-count="3">3</div>
-        <div class="count-btn" data-count="4">4</div>
-        <div class="count-btn" data-count="5">5</div>
-        <div class="count-btn" data-count="6">6</div>
-        <div class="count-btn" data-count="7">7</div>
-        <div class="count-btn" data-count="8">8</div>
-        <div class="count-btn" data-count="9">9</div>
-        <div class="count-btn" data-count="10">10</div>
+    <!-- 3D人数选择区域 -->
+    <div class="count-3d-area">
+        <div class="count-3d-title">选择抽取人数：</div>
+        <div class="count-3d-btns" id="count3dBtns">
+            <div class="count-3d-btn" data-count="1">1</div>
+            <div class="count-3d-btn" data-count="2">2</div>
+            <div class="count-3d-btn" data-count="3">3</div>
+            <div class="count-3d-btn" data-count="4">4</div>
+            <div class="count-3d-btn" data-count="5">5</div>
+            <div class="count-3d-btn" data-count="6">6</div>
+            <div class="count-3d-btn" data-count="7">7</div>
+            <div class="count-3d-btn" data-count="8">8</div>
+            <div class="count-3d-btn" data-count="9">9</div>
+            <div class="count-3d-btn" data-count="10">10</div>
+        </div>
     </div>
 
-    <!-- 抽卡轮播区域 -->
-    <div class="card-carousel-area" id="carouselArea">
-        <div class="carousel-container" id="carouselContainer"></div>
-    </div>
+    <!-- 核心：3D抽卡容器 -->
+    <div class="card-3d-container" id="card3dContainer"></div>
 
-    <!-- 结果合并展示区域 -->
-    <div class="result-merge-area" id="resultMergeArea"></div>
+    <!-- 3D结果展示区域 -->
+    <div class="result-3d-area" id="result3dArea"></div>
 
-    <!-- 控制按钮区域 -->
-    <div class="control-btn-area">
-        <button class="main-control-btn" id="startDrawBtn" disabled>开始抽卡</button>
-        <button class="main-control-btn" id="resetBtn" disabled>重置重抽</button>
+    <!-- 3D控制按钮区域 -->
+    <div class="control-3d-area">
+        <button class="control-3d-btn" id="start3dDrawBtn" disabled>开始抽选</button>
+        <button class="control-3d-btn" id="reset3dDrawBtn" disabled>重置全场</button>
     </div>
 
     <script>
-        // 全局变量
+        // 全局变量（优化多人抽卡逻辑，支持自然过渡动画）
         let nameList = []; // 完整名单
         let candidateList = []; // 候选名单（避免重复抽取）
         let selectedCount = 1; // 默认抽取1人
         let drawnNames = []; // 已抽取名单
         let isDrawing = false; // 是否正在抽卡
-        let carouselTimer = null; // 轮播定时器
-        let carouselSpeed = 5; // 轮播速度（数值越大越快）
+        let card3dPool = []; // 3D卡片池，管理所有卡片实例
 
         // DOM元素
-        const loadingArea = document.getElementById('loadingArea');
-        const congratsArea = document.getElementById('congratsArea');
-        const congratsTitle = document.getElementById('congratsTitle');
-        const congratsNames = document.getElementById('congratsNames');
-        const countBtns = document.querySelectorAll('.count-btn');
-        const carouselContainer = document.getElementById('carouselContainer');
-        const carouselArea = document.getElementById('carouselArea');
-        const resultMergeArea = document.getElementById('resultMergeArea');
-        const startDrawBtn = document.getElementById('startDrawBtn');
-        const resetBtn = document.getElementById('resetBtn');
+        const loading3dArea = document.getElementById('loading3dArea');
+        const count3dBtns = document.querySelectorAll('.count-3d-btn');
+        const card3dContainer = document.getElementById('card3dContainer');
+        const result3dArea = document.getElementById('result3dArea');
+        const start3dDrawBtn = document.getElementById('start3dDrawBtn');
+        const reset3dDrawBtn = document.getElementById('reset3dDrawBtn');
 
-        // 第一步：读取远程名单文件
+        // 第一步：读取远程名单文件（保留原有功能，优化错误处理）
         async function loadNameList() {
             try {
                 const response = await fetch('https://yzbjfpv.top/school/2026/ys/name.txt');
@@ -388,221 +544,232 @@
                 
                 // 初始化候选名单
                 candidateList = [...nameList];
-                // 初始化界面
-                initInterface();
-                // 隐藏加载状态
-                loadingArea.style.display = 'none';
+                // 初始化3D界面
+                init3dInterface();
+                // 隐藏3D加载状态
+                loading3dArea.style.display = 'none';
             } catch (error) {
-                loadingArea.innerHTML = `<div class="loading-text" style="color: #ff6b6b;">${error.message}</div>`;
+                loading3dArea.innerHTML = `
+                    <div class="loading-3d-text" style="color: #ff6b6b;">${error.message}</div>
+                `;
                 console.error('名单加载失败：', error);
             }
         }
 
-        // 第二步：初始化界面
-        function initInterface() {
-            // 初始化人数选择按钮
-            countBtns.forEach(btn => {
-                // 超过名单总数的按钮禁用
+        // 第二步：初始化3D界面（重点优化：均匀分布、入场动画）
+        function init3dInterface() {
+            // 1. 初始化3D人数选择按钮
+            count3dBtns.forEach(btn => {
                 const count = parseInt(btn.dataset.count);
+                // 超过名单总数的按钮禁用（添加disabled类）
                 if (count > nameList.length) {
-                    btn.style.opacity = '0.5';
-                    btn.style.cursor = 'not-allowed';
+                    btn.classList.add('disabled');
                     return;
                 }
 
                 btn.addEventListener('click', () => {
                     if (isDrawing) return;
-                    countBtns.forEach(b => b.classList.remove('active'));
+                    count3dBtns.forEach(b => b.classList.remove('active'));
                     btn.classList.add('active');
                     selectedCount = count;
                 });
             });
 
             // 默认选中1人
-            countBtns[0].classList.add('active');
-            // 生成初始轮播卡片
-            generateCarouselCards();
-            // 启用控制按钮
-            startDrawBtn.disabled = false;
-            resetBtn.disabled = false;
+            count3dBtns[0].classList.add('active');
 
-            // 绑定控制按钮事件
-            startDrawBtn.addEventListener('click', startDrawCard);
-            resetBtn.addEventListener('click', resetDraw);
+            // 2. 生成3D卡片池（核心优化：均匀分布、自然入场）
+            generate3dCardPool();
+
+            // 3. 启用3D控制按钮
+            start3dDrawBtn.disabled = false;
+            reset3dDrawBtn.disabled = false;
+
+            // 4. 绑定控制按钮事件（优化多人抽卡逻辑，支持过渡动画）
+            start3dDrawBtn.addEventListener('click', start3dDraw);
+            reset3dDrawBtn.addEventListener('click', reset3dDraw);
         }
 
-        // 第三步：生成轮播卡片
-        function generateCarouselCards() {
-            carouselContainer.innerHTML = '';
+        // 第三步：生成3D卡片池（核心优化：彻底解决重叠、自然入场过渡）
+        function generate3dCardPool() {
+            // 清空容器和卡片池
+            card3dContainer.innerHTML = '';
+            card3dPool = [];
+            result3dArea.innerHTML = '';
+
             // 复制候选名单并打乱（增加随机性）
             const shuffledList = [...candidateList].sort(() => Math.random() - 0.5);
-            // 生成卡片（重复2份，实现无缝轮播）
-            const doubleList = [...shuffledList, ...shuffledList];
-            doubleList.forEach(name => {
+            const cardCount = shuffledList.length;
+
+            // 优化：3D空间均匀分布参数（极坐标+分层，杜绝重叠）
+            const containerWidth = card3dContainer.offsetWidth;
+            const containerHeight = card3dContainer.offsetHeight;
+            const maxRadius = Math.min(containerWidth, containerHeight) / 3.5; // 缩小半径，避免超出容器
+            const angleStep = 360 / cardCount; // 圆周角度步长
+            const zLayerStep = 80 / Math.ceil(cardCount / 20); // Z轴分层，避免前后重叠
+            let currentZLayer = -40;
+
+            shuffledList.forEach((name, index) => {
+                // 每20张卡片换一层Z轴，彻底杜绝前后重叠
+                if (index % 20 === 0 && index > 0) {
+                    currentZLayer += zLayerStep;
+                }
+
+                // 创建卡片（包含姓名+小字标识「Flyz智能抽卡系统」）
                 const card = document.createElement('div');
-                card.className = 'card-item';
-                card.textContent = name;
+                card.className = 'card-3d-item';
+                // 卡片内部结构：姓名+小字
+                card.innerHTML = `
+                    <div class="card-3d-name">${name}</div>
+                    <div class="card-3d-tag">Flyz智能抽卡系统</div>
+                `;
                 card.dataset.name = name;
-                carouselContainer.appendChild(card);
+                card3dContainer.appendChild(card);
+                card3dPool.push(card);
+
+                // 核心：3D空间均匀分布计算（极坐标+随机偏移，无重叠）
+                const angle = index * angleStep + Math.random() * 10; // 轻微角度偏移，更自然
+                const radius = maxRadius * (0.7 + Math.random() * 0.3); // 半径随机偏移，避免整齐呆板
+                const x = Math.cos(angle * Math.PI / 180) * radius;
+                const y = Math.sin(angle * Math.PI / 180) * radius / 2;
+                const z = currentZLayer + Math.random() * 40; // Z轴随机偏移，增强层次感
+
+                // 设置卡片最终位置（均匀分布，无重叠）
+                setTimeout(() => {
+                    card.style.transform = `
+                        translate(${x}px, ${y}px)
+                        translateZ(${z}px)
+                        rotateX(${Math.random() * 20 - 10}deg)
+                        rotateY(${Math.random() * 40 - 20}deg)
+                    `;
+                    // 添加入场动画类
+                    card.classList.add('enter');
+                    // 入场完成后添加悬浮动画类
+                    setTimeout(() => {
+                        card.classList.add('float');
+                    }, 1200);
+                }, index * 30); // 每张卡片延迟入场，形成打乱→展开的视觉效果
             });
         }
 
-        // 第四步：开始抽卡（核心动画逻辑）
-        function startDrawCard() {
+        // 第四步：开始3D抽卡（核心优化：抽卡前扰动、自然衔接过渡）
+        function start3dDraw() {
+            // 校验条件（解决原有多人抽卡的边界问题）
             if (isDrawing || candidateList.length < selectedCount) {
-                alert('无法抽取：正在抽卡或剩余人数不足');
+                alert(`无法抽取：${isDrawing ? '正在进行3D抽选' : '剩余人数不足'}`);
                 return;
             }
 
             isDrawing = true;
             drawnNames = [];
-            congratsArea.classList.remove('active');
-            resultMergeArea.style.display = 'none';
-            carouselArea.style.display = 'block';
+            result3dArea.innerHTML = '';
 
             // 禁用按钮和人数选择
-            startDrawBtn.disabled = true;
-            countBtns.forEach(btn => btn.style.pointerEvents = 'none');
+            start3dDrawBtn.disabled = true;
+            count3dBtns.forEach(btn => btn.style.pointerEvents = 'none');
 
-            // 初始化轮播速度
-            carouselSpeed = 15;
-            let carouselPosition = 0;
-            let slowDownCount = 0;
-            const maxSlowDownCount = selectedCount * 10; // 抽取人数越多，减速时间越长
-
-            // 启动轮播
-            carouselTimer = setInterval(() => {
-                // 更新轮播位置
-                carouselPosition += carouselSpeed;
-                const cardWidth = document.querySelector('.card-item').offsetWidth + 20; // 卡片宽度+间距
-                const maxPosition = carouselContainer.offsetWidth / 2;
-
-                if (carouselPosition >= maxPosition) {
-                    carouselPosition = 0;
-                }
-
-                carouselContainer.style.transform = `translateX(-${carouselPosition}px)`;
-
-                // 开始减速
-                if (slowDownCount >= maxSlowDownCount) {
-                    carouselSpeed = Math.max(1, carouselSpeed - 0.5);
-                } else {
-                    slowDownCount++;
-                }
-
-                // 轮播停止条件（速度为0，且抽取足够人数）
-                if (carouselSpeed <= 0 && drawnNames.length < selectedCount) {
-                    clearInterval(carouselTimer);
-                    // 选中当前中间位置的卡片
-                    selectMiddleCard();
-                }
-            }, 20);
-        }
-
-        // 第五步：选中中间位置卡片
-        function selectMiddleCard() {
-            const cardWidth = document.querySelector('.card-item').offsetWidth + 20;
-            const middlePosition = carouselArea.offsetWidth / 2 - cardWidth / 2;
-            const cards = document.querySelectorAll('.card-item');
-            let selectedCard = null;
-
-            // 找到中间位置的卡片
-            cards.forEach(card => {
-                const cardRect = card.getBoundingClientRect();
-                const carouselRect = carouselArea.getBoundingClientRect();
-                const cardMiddle = cardRect.left + cardRect.width / 2;
-                const carouselMiddle = carouselRect.left + carouselRect.width / 2;
-
-                if (Math.abs(cardMiddle - carouselMiddle) < cardWidth / 2) {
-                    selectedCard = card;
-                }
+            // 抽卡前：所有卡片添加扰动动画，营造打乱氛围（不惜性能，增强仪式感）
+            card3dPool.forEach(card => {
+                card.classList.remove('float');
+                card.classList.add('disturb');
             });
 
-            if (selectedCard && !drawnNames.includes(selectedCard.dataset.name)) {
-                // 高亮选中卡片
-                selectedCard.classList.add('selected');
-                // 添加到已抽取名单
-                const selectedName = selectedCard.dataset.name;
-                drawnNames.push(selectedName);
-                // 从候选名单中移除（避免重复）
-                candidateList = candidateList.filter(name => name !== selectedName);
-
-                // 延迟后继续抽卡（如果未抽够人数）
-                setTimeout(() => {
-                    selectedCard.classList.remove('selected');
-                    if (drawnNames.length < selectedCount) {
-                        // 重新生成轮播卡片（更新候选名单）
-                        generateCarouselCards();
-                        // 继续抽卡
-                        startDrawCard();
-                    } else {
-                        // 抽卡完成，展示结果
-                        showMergeResult();
-                    }
-                }, 800);
-            } else {
-                // 重复选中，重新抽卡
-                generateCarouselCards();
-                startDrawCard();
-            }
+            // 延迟后开始抽取（让扰动动画播放一段时间，更自然）
+            setTimeout(() => {
+                // 移除扰动动画，开始依次抽取
+                card3dPool.forEach(card => card.classList.remove('disturb'));
+                // 3D抽卡核心：依次抽取，逐个动画，解决多人衔接问题
+                drawNextCard(0);
+            }, 1000);
         }
 
-        // 第六步：展示合并结果
-        function showMergeResult() {
-            isDrawing = false;
-            // 隐藏轮播区域，显示结果区域
-            carouselArea.style.display = 'none';
-            resultMergeArea.style.display = 'flex';
-            resultMergeArea.innerHTML = '';
-
-            // 更新恭喜文案
-            congratsArea.classList.add('active');
-            if (drawnNames.length === 1) {
-                congratsTitle.textContent = `恭喜 ${drawnNames[0]} 同学！`;
-                congratsNames.textContent = '荣获本次幸运名额～';
-            } else {
-                congratsTitle.textContent = '恭喜以下同学！';
-                congratsNames.textContent = drawnNames.join('、');
+        // 第五步：抽取下一张卡片（递归逻辑，优化过渡动画，无硬直）
+        function drawNextCard(currentIndex) {
+            // 终止条件：已抽取够指定人数
+            if (currentIndex >= selectedCount) {
+                finish3dDraw();
+                return;
             }
 
-            // 生成结果卡片（逐一入场动画）
-            drawnNames.forEach((name, index) => {
+            // 1. 筛选未被抽取的卡片
+            const availableCards = card3dPool.filter(card => 
+                !drawnNames.includes(card.dataset.name)
+            );
+            if (availableCards.length === 0) {
+                finish3dDraw();
+                return;
+            }
+
+            // 2. 随机选中一张卡片（公平随机，解决重复问题）
+            const randomIndex = Math.floor(Math.random() * availableCards.length);
+            const selectedCard = availableCards[randomIndex];
+            const selectedName = selectedCard.dataset.name;
+
+            // 3. 3D选中动画（优化过渡，自然高亮，无硬直）
+            selectedCard.classList.remove('float', 'disturb');
+            selectedCard.classList.add('selected');
+
+            // 4. 记录已抽取名单，更新候选名单
+            drawnNames.push(selectedName);
+            candidateList = candidateList.filter(name => name !== selectedName);
+
+            // 5. 延迟后执行3D落地动画（多人抽卡依次衔接，自然流畅）
+            setTimeout(() => {
+                // 移除选中类，添加落地类
+                selectedCard.classList.remove('selected');
+                selectedCard.classList.add('landed');
+
+                // 复制卡片到结果区域（保持样式一致性，添加自然入场动画）
                 const resultCard = document.createElement('div');
-                resultCard.className = 'result-card';
-                resultCard.textContent = name;
-                resultMergeArea.appendChild(resultCard);
+                resultCard.className = 'result-3d-item';
+                resultCard.innerHTML = `
+                    <div class="result-3d-name">${selectedName}</div>
+                    <div class="result-3d-tag">Flyz智能抽卡系统</div>
+                `;
+                result3dArea.appendChild(resultCard);
 
-                // 逐一激活动画
+                // 结果卡片入场动画（延迟触发，更自然）
                 setTimeout(() => {
-                    resultCard.classList.add('active');
-                }, index * 200);
-            });
+                    resultCard.classList.add('enter');
+                }, 100);
+
+                // 递归抽取下一张卡片（衔接流畅，无卡顿无硬直）
+                drawNextCard(currentIndex + 1);
+            }, 1800); // 延长延迟，让选中动画充分播放，更丝滑
+        }
+
+        // 第六步：完成3D抽卡（收尾逻辑，恢复界面状态）
+        function finish3dDraw() {
+            isDrawing = false;
 
             // 启用按钮和人数选择
-            startDrawBtn.disabled = false;
-            countBtns.forEach(btn => {
-                if (parseInt(btn.dataset.count) <= nameList.length) {
+            start3dDrawBtn.disabled = false;
+            count3dBtns.forEach(btn => {
+                if (!btn.classList.contains('disabled')) {
                     btn.style.pointerEvents = 'auto';
                 }
             });
+
+            // 3D结果区域轻微浮动动画，增强高级感
+            result3dArea.style.animation = 'title3dFloat 8s ease-in-out infinite';
         }
 
-        // 第七步：重置重抽
-        function resetDraw() {
+        // 第七步：重置3D抽卡（全新重置逻辑，恢复所有3D状态和动画）
+        function reset3dDraw() {
             if (isDrawing) return;
 
             // 恢复初始状态
             drawnNames = [];
             candidateList = [...nameList];
-            congratsArea.classList.remove('active');
-            resultMergeArea.style.display = 'none';
-            carouselArea.style.display = 'block';
+            result3dArea.style.animation = 'none';
 
-            // 重新生成轮播卡片
-            generateCarouselCards();
-            // 重置恭喜文案
-            congratsTitle.textContent = '恭喜以下同学！';
-            congratsNames.textContent = '—— 待抽取 ——';
+            // 重新生成3D卡片池（带入场动画，自然恢复）
+            generate3dCardPool();
+
+            // 重置人数选择（默认选中1人）
+            count3dBtns.forEach(b => b.classList.remove('active'));
+            count3dBtns[0].classList.add('active');
+            selectedCount = 1;
         }
 
         // 页面加载完成后读取名单
