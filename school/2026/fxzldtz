@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>反向指令大挑战 | 闪电转盘版</title>
+    <style>
+        :root {
+            --gold: #FFD700;
+            --crimson: #8B0000;
+            --bg: #1a1a1a;
+            --light: #FFF8DC;
+            --btn-gold: #FFC107;
+            --btn-crimson: #D32F2F;
+        }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "微软雅黑", "华文行楷", sans-serif;
+        }
+        body {
+            background: var(--bg);
+            color: var(--light);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            overflow: hidden;
+            perspective: 2000px;
+        }
+        .container {
+            width: 90vw;
+            max-width: 1000px;
+            text-align: center;
+            background: rgba(165, 42, 42, 0.2);
+            border: 2px solid var(--gold);
+            border-radius: 20px;
+            padding: 40px 20px;
+            box-shadow: 0 0 50px rgba(255, 215, 0, 0.3);
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+        }
+        .title {
+            font-size: 3rem;
+            color: var(--gold);
+            text-shadow: 0 0 20px var(--crimson);
+            margin-bottom: 20px;
+            animation: pulse 2s infinite alternate;
+        }
+        .mode-indicator {
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+            color: var(--gold);
+            height: 1.5rem;
+        }
+        .mode-indicator.auto {
+            animation: blink 1s infinite;
+        }
+
+        /* 3D舞台 */
+        .stage-3d {
+            position: relative;
+            width: 100%;
+            height: 400px;
+            margin-bottom: 40px;
+            transform-style: preserve-3d;
+            pointer-events: none;
+        }
+
+        /* 3D指令转盘 */
+        .command-wheel-3d {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform-style: preserve-3d;
+            transform: translate(-50%, -50%);
+            width: 80%;
+            height: 200px;
+        }
+
+        .command-item-3d {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+            color: var(--gold);
+            text-shadow: 0 0 20px rgba(255, 215, 0, 0.8);
+            opacity: 0.2;
+            transition: opacity 0.5s ease, transform 0.5s ease;
+            backface-visibility: hidden;
+            user-select: none;
+        }
+        
+        .command-item-3d.focused {
+            opacity: 1;
+            transform: scale(1.1);
+            text-shadow: 0 0 40px rgba(255, 215, 0, 1);
+        }
+
+        /* 3D悬浮倒计时 */
+        .countdown-3d {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform-style: preserve-3d;
+            transform: translate(-50%, -50%) translateZ(150px) scale(0);
+            font-size: 15rem;
+            font-weight: bold;
+            color: var(--gold);
+            text-shadow: 0 0 80px var(--gold);
+            opacity: 0;
+            transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.5s ease;
+            pointer-events: none;
+        }
+
+        .countdown-3d.show {
+            opacity: 1;
+            transform: translate(-50%, -50%) translateZ(150px) scale(1);
+        }
+
+        /* 简洁按钮样式 */
+        .btn-group {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+            z-index: 20;
+        }
+        .btn {
+            background: linear-gradient(135deg, var(--btn-gold), #FFB300);
+            color: var(--crimson);
+            border: none;
+            border-radius: 50px;
+            padding: 18px 45px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(255, 193, 7, 0.4);
+            transition: all 0.3s ease;
+        }
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(255, 193, 7, 0.6);
+        }
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        .btn.stop {
+            background: linear-gradient(135deg, var(--btn-crimson), #B71C1C);
+            color: white;
+            box-shadow: 0 5px 15px rgba(211, 47, 47, 0.4);
+        }
+        .btn.stop:hover {
+            box-shadow: 0 8px 20px rgba(211, 47, 47, 0.6);
+        }
+
+        @keyframes pulse {
+            from { transform: scale(0.98); }
+            to { transform: scale(1.02); }
+        }
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        @media (max-width: 768px) {
+            .title {
+                font-size: 2rem;
+            }
+            .command-item-3d {
+                font-size: 2.5rem;
+            }
+            .countdown-3d {
+                font-size: 8rem;
+            }
+            .btn {
+                padding: 12px 30px;
+                font-size: 1.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="title">反向指令大挑战</h1>
+        <div class="mode-indicator" id="modeIndicator">当前模式：手动模式</div>
+
+        <!-- 3D舞台 -->
+        <div class="stage-3d">
+            <div class="command-wheel-3d" id="commandWheel3d"></div>
+            <div class="countdown-3d" id="countdown3d">3</div>
+        </div>
+
+        <!-- 按钮组 -->
+        <div class="btn-group">
+            <button class="btn" id="startBtn">开始旋转</button>
+            <button class="btn" id="autoBtn">AUTO</button>
+            <button class="btn stop" id="stopBtn" disabled>停止</button>
+        </div>
+    </div>
+
+    <script>
+        const commandWheel3d = document.getElementById('commandWheel3d');
+        const countdown3d = document.getElementById('countdown3d');
+        const startBtn = document.getElementById('startBtn');
+        const autoBtn = document.getElementById('autoBtn');
+        const stopBtn = document.getElementById('stopBtn');
+        const modeIndicator = document.getElementById('modeIndicator');
+
+        const commands = [
+            "举左手", "举右手", "蹲下", "站起", "抬头", "低头",
+            "向左转", "向右转", "睁眼", "闭眼", "摸左耳", "摸右耳",
+            "伸左腿", "伸右腿", "拍手", "叉腰", "微笑", "皱眉",
+            "点头", "摇头", "抬手", "放下手", "跳一下", "原地不动"
+        ];
+
+        let isAutoMode = false;
+        let currentTimeout = null;
+        let isSpinning = false;
+        let spinInterval;
+        let currentRotation = 0;
+        const radius = 600;
+        const itemAngle = 15;
+        const SPIN_DURATION = 5000; // 旋转总时长 (毫秒)
+        const SPIN_SPEED = 30;      // 极高的旋转速度
+
+        // 初始化3D转盘
+        function init3dWheel() {
+            commandWheel3d.innerHTML = '';
+            commands.forEach((cmd, index) => {
+                const div = document.createElement('div');
+                div.className = 'command-item-3d';
+                div.textContent = cmd;
+                const angle = index * itemAngle;
+                div.style.transform = `rotateX(${angle}deg) translateZ(${radius}px)`;
+                commandWheel3d.appendChild(div);
+            });
+            updateFocusedItem(0);
+        }
+
+        // 更新聚焦指令
+        function updateFocusedItem(rotation) {
+            const items = commandWheel3d.querySelectorAll('.command-item-3d');
+            items.forEach(item => item.classList.remove('focused'));
+            
+            const relativeRotation = rotation % 360;
+            const itemIndex = Math.round(relativeRotation / itemAngle) % commands.length;
+            const focusedIndex = (commands.length - itemIndex) % commands.length;
+            
+            items[focusedIndex].classList.add('focused');
+        }
+
+        // 执行游戏循环
+        function executeGameCycle() {
+            if (isSpinning) return;
+            isSpinning = true;
+            startBtn.disabled = true;
+            autoBtn.disabled = true;
+
+            // 立即开始高速旋转
+            spinInterval = setInterval(() => {
+                currentRotation += SPIN_SPEED;
+                commandWheel3d.style.transform = `translate(-50%, -50%) rotateX(${currentRotation}deg)`;
+                // 旋转时不更新聚焦，因为太快了看不清
+            }, 20);
+
+            // 设定在5秒后，立即停止并随机定位
+            setTimeout(() => {
+                clearInterval(spinInterval);
+                isSpinning = false;
+
+                // 计算一个随机的最终位置
+                const randomIndex = Math.floor(Math.random() * commands.length);
+                const finalRotation = currentRotation + (randomIndex * itemAngle) - (currentRotation % itemAngle);
+                
+                // 平滑地过渡到最终位置，创造“突然停止”的视觉效果
+                commandWheel3d.style.transition = 'transform 0.5s cubic-bezier(0.25, 0.1, 0.25, 1)';
+                commandWheel3d.style.transform = `translate(-50%, -50%) rotateX(${finalRotation}deg)`;
+                currentRotation = finalRotation;
+
+                // 更新聚焦指令
+                updateFocusedItem(currentRotation);
+
+                // 短暂停留后，启动3D倒计时
+                setTimeout(() => {
+                    start3dCountdown(3, () => {
+                        if (isAutoMode) {
+                            // 自动模式下，倒计时结束后立即开始下一轮
+                            currentTimeout = setTimeout(executeGameCycle, 100);
+                        } else {
+                            // 手动模式下，恢复按钮
+                            startBtn.disabled = false;
+                        }
+                    });
+                }, 500); // 停止后停留0.5秒
+            }, SPIN_DURATION);
+        }
+
+        // 启动3D倒计时
+        function start3dCountdown(seconds, callback) {
+            let timeLeft = seconds;
+            countdown3d.textContent = timeLeft;
+            countdown3d.classList.add('show');
+
+            const countdownInterval = setInterval(() => {
+                timeLeft--;
+                countdown3d.textContent = timeLeft;
+
+                if (timeLeft <= 0) {
+                    clearInterval(countdownInterval);
+                    countdown3d.classList.remove('show');
+                    callback();
+                }
+            }, 1000);
+        }
+
+        // 清理定时器
+        function clearAllTimers() {
+            if (currentTimeout) clearTimeout(currentTimeout);
+            if (spinInterval) clearInterval(spinInterval);
+            isSpinning = false;
+            countdown3d.classList.remove('show');
+        }
+
+        // 事件监听
+        startBtn.addEventListener('click', () => {
+            if (isAutoMode || isSpinning) return;
+            commandWheel3d.style.transition = 'none'; // 确保下次旋转是即时的
+            executeGameCycle();
+        });
+
+        autoBtn.addEventListener('click', () => {
+            if (isAutoMode) return;
+            isAutoMode = true;
+            modeIndicator.textContent = "当前模式：AUTO";
+            modeIndicator.classList.add('auto');
+            startBtn.disabled = true;
+            autoBtn.disabled = true;
+            stopBtn.disabled = false;
+            commandWheel3d.style.transition = 'none';
+            executeGameCycle();
+        });
+
+        stopBtn.addEventListener('click', () => {
+            isAutoMode = false;
+            modeIndicator.textContent = "当前模式：手动模式";
+            modeIndicator.classList.remove('auto');
+            startBtn.disabled = false;
+            autoBtn.disabled = false;
+            stopBtn.disabled = true;
+            clearAllTimers();
+        });
+
+        // 初始化
+        window.onload = init3dWheel;
+    </script>
+</body>
+</html>
