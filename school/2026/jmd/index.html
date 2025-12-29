@@ -1,0 +1,610 @@
+<!-- src/App.vue -->
+<template>
+  <div class="app-container">
+    <!-- 加载动画 -->
+    <div v-if="loading" class="loading-overlay">
+      <div class="loading-spinner"></div>
+      <p class="loading-text">加载节目单中...</p>
+    </div>
+
+    <!-- 主内容区域 -->
+    <div v-else class="main-content">
+      <!-- 头部标题 -->
+      <header class="page-header">
+        <h1 class="main-title" :style="{ '--gold': '#FFD700' }">
+          九年级六班 <span class="year">2026</span> 元旦联欢晚会
+        </h1>
+        <p class="subtitle">节目单</p>
+      </header>
+
+      <!-- 节目列表 -->
+      <main class="program-list">
+        <div 
+          v-for="(program, index) in programs" 
+          :key="index" 
+          class="program-item"
+          :data-index="index"
+          :style="{ 
+            '--gold': '#FFD700',
+            '--light-gold': '#FFF8DC',
+            '--crimson': '#8B0000',
+            '--delay': `${index * 0.1}s`
+          }"
+        >
+          <!-- 节目序号 -->
+          <div class="program-number">
+            {{ index + 1 }}
+          </div>
+
+          <!-- 节目内容 -->
+          <div class="program-content">
+            <h2 class="program-title">{{ program.name }}</h2>
+            <p class="program-performer">表演者：{{ program.performer }}</p>
+            <div class="program-description">
+              {{ program.description }}
+            </div>
+          </div>
+
+          <!-- 装饰元素 -->
+          <div class="decorative-element">
+            <i class="fas fa-star"></i>
+          </div>
+        </div>
+      </main>
+
+      <!-- 底部信息 -->
+      <footer class="page-footer">
+        <p>祝大家元旦快乐，前程似锦！</p>
+        <p class="watermark">九年级六班 | 2026元旦联欢会 | yzbjfpv.top</p>
+      </footer>
+    </div>
+  </div>
+</template>
+
+<script setup>
+import { ref, onMounted, onUnmounted } from 'vue';
+import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+// 注册GSAP插件
+gsap.registerPlugin(ScrollTrigger);
+
+// 响应式数据
+const loading = ref(true);
+const programs = ref([]);
+
+// 从txt文件加载数据
+const loadPrograms = async () => {
+  try {
+    const response = await fetch('https://yzbjfpv.top/school/2026/jm.txt');
+    const text = await response.text();
+    
+    // 解析文本数据
+    const lines = text.split('\n').filter(line => line.trim() !== '');
+    
+    programs.value = lines.map(line => {
+      const parts = line.split('=');
+      return {
+        name: parts[0]?.trim() || '未知节目',
+        performer: parts[1]?.trim() || '未知表演者',
+        description: parts[2]?.trim() || '暂无介绍'
+      };
+    });
+    
+    loading.value = false;
+    
+    // 初始化动画
+    initAnimations();
+  } catch (error) {
+    console.error('加载节目单失败:', error);
+    loading.value = false;
+  }
+};
+
+// 初始化动画
+const initAnimations = () => {
+  // 页面进入动画
+  gsap.from('.main-content', {
+    opacity: 0,
+    y: 50,
+    duration: 0.8,
+    ease: 'power3.out'
+  });
+
+  // 标题动画
+  gsap.from('.main-title', {
+    opacity: 0,
+    y: -30,
+    duration: 1,
+    ease: 'elastic.out(1, 0.3)',
+    delay: 0.2
+  });
+
+  gsap.from('.subtitle', {
+    opacity: 0,
+    scale: 0.8,
+    duration: 0.8,
+    ease: 'power2.out',
+    delay: 0.5
+  });
+
+  // 节目项进入动画
+  const programItems = document.querySelectorAll('.program-item');
+  
+  programItems.forEach((item, index) => {
+    // 初始状态
+    gsap.set(item, {
+      opacity: 0,
+      y: 100,
+      scale: 0.95
+    });
+
+    // 滚动触发动画
+    gsap.to(item, {
+      opacity: 1,
+      y: 0,
+      scale: 1,
+      duration: 0.8,
+      ease: 'power3.out',
+      delay: index * 0.1,
+      scrollTrigger: {
+        trigger: item,
+        start: 'top 80%',
+        toggleActions: 'play none none reverse',
+        once: true
+      }
+    });
+
+    // 序号动画
+    const number = item.querySelector('.program-number');
+    gsap.fromTo(number, 
+      { scale: 0, opacity: 0, rotation: -180 },
+      { 
+        scale: 1, 
+        opacity: 1, 
+        rotation: 0,
+        duration: 0.6,
+        ease: 'back.out(1.7)',
+        delay: index * 0.1 + 0.2,
+        scrollTrigger: {
+          trigger: item,
+          start: 'top 80%',
+          toggleActions: 'play none none reverse',
+          once: true
+        }
+      }
+    );
+
+    // 内容动画
+    const content = item.querySelector('.program-content');
+    gsap.from(content, {
+      opacity: 0,
+      x: 30,
+      duration: 0.7,
+      ease: 'power2.out',
+      delay: index * 0.1 + 0.3,
+      scrollTrigger: {
+        trigger: item,
+        start: 'top 80%',
+        toggleActions: 'play none none reverse',
+        once: true
+      }
+    });
+
+    // 装饰元素动画
+    const decor = item.querySelector('.decorative-element');
+    gsap.from(decor, {
+      opacity: 0,
+      scale: 0,
+      rotate: 360,
+      duration: 1,
+      ease: 'elastic.out(1, 0.5)',
+      delay: index * 0.1 + 0.4,
+      scrollTrigger: {
+        trigger: item,
+        start: 'top 80%',
+        toggleActions: 'play none none reverse',
+        once: true
+      }
+    });
+  });
+
+  // 底部信息动画
+  gsap.from('.page-footer', {
+    opacity: 0,
+    y: 30,
+    duration: 0.8,
+    ease: 'power2.out',
+    delay: 1
+  });
+
+  // 背景星光动画
+  createBackgroundStars();
+};
+
+// 创建背景星光动画
+const createBackgroundStars = () => {
+  const container = document.querySelector('.app-container');
+  const starsCount = 100;
+
+  for (let i = 0; i < starsCount; i++) {
+    const star = document.createElement('div');
+    star.className = 'background-star';
+    
+    // 随机位置和大小
+    const size = Math.random() * 3 + 1;
+    star.style.cssText = `
+      position: absolute;
+      width: ${size}px;
+      height: ${size}px;
+      background: rgba(255, 215, 0, ${Math.random() * 0.5 + 0.3});
+      border-radius: 50%;
+      top: ${Math.random() * 100}%;
+      left: ${Math.random() * 100}%;
+      opacity: ${Math.random() * 0.8 + 0.2};
+      pointer-events: none;
+      z-index: -1;
+    `;
+    
+    container.appendChild(star);
+    
+    // 星光呼吸动画
+    gsap.to(star, {
+      opacity: Math.random() * 0.5 + 0.1,
+      duration: Math.random() * 4 + 2,
+      ease: 'power1.inOut',
+      repeat: -1,
+      yoyo: true,
+      delay: Math.random() * 5
+    });
+  }
+};
+
+// 页面加载时执行
+onMounted(() => {
+  loadPrograms();
+});
+
+// 页面卸载时清理GSAP动画
+onUnmounted(() => {
+  ScrollTrigger.getAll().forEach(trigger => trigger.kill());
+});
+</script>
+
+<style>
+/* 引入字体图标 */
+@import url('https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css');
+
+/* 基础样式 */
+:root {
+  --gold: #FFD700;
+  --light-gold: #FFF8DC;
+  --bright-gold: #FFE47F;
+  --crimson: #8B0000;
+  --light-crimson: #A52A2A;
+  --dark-crimson: #5A0000;
+  --bg-main: #3a0f0f;
+  --bg-gradient: linear-gradient(180deg, #6a1a1a, #3a0f0f, #2a0a0a);
+  --glass: rgba(165, 42, 42, 0.3);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  user-select: none;
+}
+
+body {
+  font-family: "PingFang SC", "Microsoft YaHei", "华文行楷", "华文楷体", sans-serif;
+  background: var(--bg-gradient);
+  color: var(--light-gold);
+  min-height: 100vh;
+  overflow-x: hidden;
+  line-height: 1.6;
+}
+
+/* 应用容器 */
+.app-container {
+  position: relative;
+  min-height: 100vh;
+  overflow: hidden;
+}
+
+/* 加载动画 */
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: var(--bg-main);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.loading-spinner {
+  width: 60px;
+  height: 60px;
+  border: 3px solid rgba(255, 215, 0, 0.3);
+  border-top: 3px solid var(--gold);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 20px;
+}
+
+.loading-text {
+  font-size: 18px;
+  color: var(--bright-gold);
+  font-family: "华文行楷";
+  text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* 背景星光 */
+.background-star {
+  position: absolute;
+  background: rgba(255, 215, 0, 0.5);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* 主内容区域 */
+.main-content {
+  position: relative;
+  z-index: 10;
+  padding: 40px 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* 头部标题 */
+.page-header {
+  text-align: center;
+  margin-bottom: 60px;
+  padding: 20px;
+  position: relative;
+}
+
+.main-title {
+  font-family: "华文行楷";
+  font-size: clamp(2.5rem, 5vw, 4rem);
+  background: linear-gradient(180deg, #fff, var(--gold), var(--bright-gold));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  text-shadow: 0 0 20px rgba(255, 215, 0, 0.8);
+  margin-bottom: 15px;
+  position: relative;
+  display: inline-block;
+}
+
+.main-title::after {
+  content: '';
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+}
+
+.year {
+  font-size: 1.2em;
+  display: inline-block;
+  transform: translateY(-5px);
+}
+
+.subtitle {
+  font-family: "华文行楷";
+  font-size: clamp(1.5rem, 3vw, 2.5rem);
+  color: var(--bright-gold);
+  text-shadow: 0 0 15px var(--crimson);
+  margin-top: 20px;
+}
+
+/* 节目列表 */
+.program-list {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+  margin-bottom: 80px;
+}
+
+/* 节目项 */
+.program-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+  padding: 30px;
+  background: rgba(165, 42, 42, 0.15);
+  border-radius: 15px;
+  border: 1px solid rgba(255, 215, 0, 0.3);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2), 0 0 20px rgba(255, 215, 0, 0.1);
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.program-item:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.25), 0 0 30px rgba(255, 215, 0, 0.2);
+  border-color: rgba(255, 215, 0, 0.5);
+}
+
+.program-item::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.program-item:hover::before {
+  opacity: 1;
+}
+
+/* 节目序号 */
+.program-number {
+  width: 60px;
+  height: 60px;
+  background: linear-gradient(135deg, var(--gold), var(--bright-gold));
+  color: var(--crimson);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  font-weight: bold;
+  font-family: "Microsoft YaHei";
+  box-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
+  flex-shrink: 0;
+  z-index: 2;
+}
+
+/* 节目内容 */
+.program-content {
+  flex: 1;
+  z-index: 2;
+}
+
+.program-title {
+  font-family: "华文行楷";
+  font-size: clamp(1.5rem, 2.5vw, 2rem);
+  color: var(--bright-gold);
+  margin-bottom: 10px;
+  text-shadow: 0 0 10px var(--crimson);
+}
+
+.program-performer {
+  font-size: 16px;
+  color: var(--light-gold);
+  margin-bottom: 15px;
+  font-style: italic;
+  opacity: 0.9;
+}
+
+.program-description {
+  font-size: 15px;
+  color: var(--light-gold);
+  line-height: 1.8;
+  opacity: 0.85;
+  background: rgba(0, 0, 0, 0.1);
+  padding: 15px;
+  border-radius: 8px;
+  border-left: 3px solid var(--gold);
+}
+
+/* 装饰元素 */
+.decorative-element {
+  position: absolute;
+  bottom: -10px;
+  right: -10px;
+  width: 80px;
+  height: 80px;
+  background: rgba(255, 215, 0, 0.1);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
+}
+
+.decorative-element i {
+  color: var(--gold);
+  font-size: 30px;
+  opacity: 0.6;
+  transform: rotate(-15deg);
+}
+
+/* 底部信息 */
+.page-footer {
+  text-align: center;
+  padding: 30px 20px;
+  margin-top: 40px;
+  border-top: 1px solid rgba(255, 215, 0, 0.2);
+}
+
+.page-footer p {
+  font-family: "华文行楷";
+  font-size: 18px;
+  color: var(--bright-gold);
+  text-shadow: 0 0 10px var(--crimson);
+  margin-bottom: 10px;
+}
+
+.watermark {
+  font-size: 14px;
+  opacity: 0.7;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .main-content {
+    padding: 20px 10px;
+  }
+
+  .page-header {
+    margin-bottom: 40px;
+  }
+
+  .program-item {
+    flex-direction: column;
+    padding: 20px;
+    align-items: center;
+    text-align: center;
+  }
+
+  .program-number {
+    margin-bottom: 15px;
+  }
+
+  .program-description {
+    text-align: left;
+  }
+
+  .decorative-element {
+    bottom: -5px;
+    right: -5px;
+    width: 60px;
+    height: 60px;
+  }
+
+  .decorative-element i {
+    font-size: 24px;
+  }
+}
+
+@media (max-width: 480px) {
+  .main-title {
+    font-size: 2rem;
+  }
+
+  .subtitle {
+    font-size: 1.5rem;
+  }
+
+  .program-number {
+    width: 50px;
+    height: 50px;
+    font-size: 20px;
+  }
+
+  .program-title {
+    font-size: 1.5rem;
+  }
+}
+</style>
