@@ -2,17 +2,22 @@
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
   <title>九年级六班2026元旦联欢晚会节目单</title>
   <!-- 引入外部依赖 -->
   <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.2/dist/gsap.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.2/dist/ScrollTrigger.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.2/dist/TextPlugin.min.js"></script>
   <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  
+  <!-- 修复第三方字体库：使用站酷开源字体 + 兜底方案 -->
+  <link href="https://cdn.bootcdn.net/ajax/libs/zcool-xiaowei/1.0.1/zcool-xiaowei.min.css" rel="stylesheet">
+  <link href="https://cdn.bootcdn.net/ajax/libs/noto-serif-sc/2.0.0/noto-serif-sc.min.css" rel="stylesheet">
   <style>
-    /* 基础样式 */
+    /* 字体优先级：站酷小薇(行楷风格) > 思源宋体 > 系统楷体 */
     :root {
+      --font-xingkai: 'ZCOOL XiaoWei', 'Noto Serif SC', KaiTi, serif;
+      --font-kaiti: 'Noto Serif SC', KaiTi, serif;
       --gold: #FFD700;
       --light-gold: #FFF8DC;
       --bright-gold: #FFE47F;
@@ -22,6 +27,8 @@
       --bg-main: #3a0f0f;
       --bg-gradient: linear-gradient(180deg, #6a1a1a, #3a0f0f, #2a0a0a);
       --glass: rgba(165, 42, 42, 0.3);
+      --shadow-gold: 0 0 15px rgba(255, 215, 0, 0.5), 0 0 30px rgba(255, 215, 0, 0.3);
+      --shadow-crimson: 0 0 15px rgba(139, 0, 0, 0.5), 0 0 30px rgba(139, 0, 0, 0.3);
     }
 
     * {
@@ -32,12 +39,13 @@
     }
 
     body {
-      font-family: "PingFang SC", "Microsoft YaHei", "华文行楷", "华文楷体", sans-serif;
+      font-family: var(--font-kaiti);
       background: var(--bg-gradient);
       color: var(--light-gold);
       min-height: 100vh;
       overflow-x: hidden;
       line-height: 1.6;
+      background-attachment: fixed;
     }
 
     /* 应用容器 */
@@ -47,7 +55,7 @@
       overflow: hidden;
     }
 
-    /* 加载动画 */
+    /* 加载动画 - 优化旋转层次感 */
     .loading-overlay {
       position: fixed;
       top: 0;
@@ -63,28 +71,63 @@
     }
 
     .loading-spinner {
-      width: 60px;
-      height: 60px;
-      border: 3px solid rgba(255, 215, 0, 0.3);
-      border-top: 3px solid var(--gold);
+      width: 80px;
+      height: 80px;
+      border: 4px solid rgba(255, 215, 0, 0.2);
+      border-top: 4px solid var(--gold);
       border-radius: 50%;
       animation: spin 1s linear infinite;
-      margin-bottom: 20px;
+      margin-bottom: 25px;
+      position: relative;
+    }
+    .loading-spinner::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 60px;
+      height: 60px;
+      border: 3px solid rgba(255, 215, 0, 0.1);
+      border-bottom: 3px solid var(--bright-gold);
+      border-radius: 50%;
+      animation: spinReverse 0.8s linear infinite;
     }
 
     .loading-text {
-      font-size: 18px;
+      font-size: 22px;
       color: var(--bright-gold);
-      font-family: "华文行楷";
-      text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+      font-family: var(--font-xingkai);
+      text-shadow: var(--shadow-gold);
+      position: relative;
+      overflow: hidden;
+      white-space: nowrap;
+    }
+    .loading-text::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 2px;
+      height: 100%;
+      background: var(--gold);
+      animation: blink 1s infinite;
     }
 
     @keyframes spin {
       0% { transform: rotate(0deg); }
       100% { transform: rotate(360deg); }
     }
+    @keyframes spinReverse {
+      0% { transform: translate(-50%, -50%) rotate(0deg); }
+      100% { transform: translate(-50%, -50%) rotate(-360deg); }
+    }
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
 
-    /* 背景星光 */
+    /* 背景星光与粒子 - 优化动画流畅度 */
     .background-star {
       position: absolute;
       background: rgba(255, 215, 0, 0.5);
@@ -92,69 +135,127 @@
       pointer-events: none;
       z-index: -1;
     }
+    .background-particle {
+      position: absolute;
+      width: 2px;
+      height: 10px;
+      background: linear-gradient(to bottom, var(--gold), transparent);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: -1;
+      opacity: 0.7;
+    }
 
     /* 主内容区域 */
     .main-content {
       position: relative;
       z-index: 10;
-      padding: 40px 20px;
-      max-width: 1200px;
+      padding: 60px 20px;
+      max-width: 1000px;
       margin: 0 auto;
     }
 
     /* 头部标题 */
     .page-header {
       text-align: center;
-      margin-bottom: 60px;
-      padding: 20px;
+      margin-bottom: 80px;
+      padding: 30px 20px;
       position: relative;
+    }
+    .page-header::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 0;
+      width: 100%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+      transform: translateY(-50%);
+      z-index: -1;
+      opacity: 0.3;
     }
 
     .main-title {
-      font-family: "华文行楷";
-      font-size: clamp(2.5rem, 5vw, 4rem);
-      background: linear-gradient(180deg, #fff, var(--gold), var(--bright-gold));
+      font-family: var(--font-xingkai);
+      font-size: clamp(2.8rem, 6vw, 4.5rem);
+      background: linear-gradient(180deg, #fff, var(--gold), var(--bright-gold), var(--gold));
+      background-size: 200% 200%;
       -webkit-background-clip: text;
       background-clip: text;
       color: transparent;
-      text-shadow: 0 0 20px rgba(255, 215, 0, 0.8);
-      margin-bottom: 15px;
+      text-shadow: var(--shadow-gold);
+      margin-bottom: 20px;
       position: relative;
       display: inline-block;
+      padding: 0 20px;
+      background-color: var(--bg-main);
     }
-
     .main-title::after {
       content: '';
       position: absolute;
-      bottom: -10px;
+      bottom: -15px;
       left: 50%;
       transform: translateX(-50%);
       width: 80%;
-      height: 2px;
+      height: 3px;
       background: linear-gradient(90deg, transparent, var(--gold), transparent);
+      border-radius: 3px;
+      box-shadow: var(--shadow-gold);
     }
 
+    /* 移除2026所有特殊效果，恢复简洁样式 */
     .year {
-      font-size: 1.2em;
+      font-size: 1.5em;
       display: inline-block;
-      transform: translateY(-5px);
+      margin: 0 8px;
+      font-weight: bold;
+      color: var(--gold);
+      font-family: var(--font-xingkai);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
     }
 
     .subtitle {
-      font-family: "华文行楷";
-      font-size: clamp(1.5rem, 3vw, 2.5rem);
+      font-family: var(--font-xingkai);
+      font-size: clamp(1.8rem, 4vw, 3rem);
       color: var(--bright-gold);
-      text-shadow: 0 0 15px var(--crimson);
-      margin-top: 20px;
+      text-shadow: var(--shadow-crimson);
+      margin-top: 30px;
+      position: relative;
+      display: inline-block;
+    }
+    .subtitle::before {
+      content: '『';
+      font-size: 1.5em;
+      color: var(--gold);
+      opacity: 0.7;
+      margin-right: 10px;
+    }
+    .subtitle::after {
+      content: '』';
+      font-size: 1.5em;
+      color: var(--gold);
+      opacity: 0.7;
+      margin-left: 10px;
     }
 
-    /* 当前节目提示 */
+    /* 当前节目提示 - 增加呼吸动画 */
     .current-program-tip {
-      font-family: "华文行楷";
-      font-size: 18px;
+      font-family: var(--font-xingkai);
+      font-size: 20px;
       color: var(--light-gold);
-      margin-top: 15px;
+      margin-top: 25px;
       opacity: 0.9;
+      background: rgba(0, 0, 0, 0.2);
+      padding: 10px 25px;
+      border-radius: 30px;
+      display: inline-block;
+      border: 1px solid rgba(255, 215, 0, 0.2);
+      animation: breath 3s ease-in-out infinite;
+    }
+    @keyframes breath {
+      0%,100% { transform: scale(1); opacity: 0.9; }
+      50% { transform: scale(1.05); opacity: 1; }
     }
 
     /* 节目展示区域 */
@@ -162,73 +263,110 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 40px;
-      margin-bottom: 80px;
+      gap: 60px;
+      margin-bottom: 100px;
+      position: relative;
+    }
+    .program-display::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 2px;
+      height: 100%;
+      background: linear-gradient(to bottom, transparent, var(--gold), transparent);
+      opacity: 0.2;
+      z-index: -1;
     }
 
     /* 无节目提示 */
     .no-program {
-      font-size: 20px;
+      font-size: 24px;
       color: var(--light-gold);
       opacity: 0.8;
-      padding: 40px;
+      padding: 60px 40px;
       text-align: center;
+      border: 1px dashed rgba(255, 215, 0, 0.3);
+      border-radius: 20px;
+      background: rgba(0, 0, 0, 0.1);
+      width: 100%;
     }
 
-    /* 节目项 */
+    /* 节目项 - 优化hover动画过渡 */
     .program-item {
       width: 100%;
       display: flex;
       align-items: flex-start;
-      gap: 20px;
-      padding: 30px;
-      background: rgba(165, 42, 42, 0.15);
-      border-radius: 15px;
-      border: 1px solid rgba(255, 215, 0, 0.3);
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2), 0 0 20px rgba(255, 215, 0, 0.1);
+      gap: 30px;
+      padding: 40px 30px;
+      background: linear-gradient(135deg, rgba(165, 42, 42, 0.1), rgba(90, 0, 0, 0.1));
+      border-radius: 20px;
+      border: 1px solid rgba(255, 215, 0, 0.4);
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3), 0 0 30px rgba(255, 215, 0, 0.15), inset 0 0 20px rgba(255, 215, 0, 0.05);
       position: relative;
       overflow: hidden;
-      transition: all 0.3s ease;
+      transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      backdrop-filter: blur(10px);
     }
-
-    .program-item:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.25), 0 0 30px rgba(255, 215, 0, 0.2);
-      border-color: rgba(255, 215, 0, 0.5);
-    }
-
     .program-item::before {
       content: '';
       position: absolute;
       top: 0;
-      left: 0;
+      left: -100%;
       width: 100%;
-      height: 3px;
-      background: linear-gradient(90deg, transparent, var(--gold), transparent);
-      opacity: 0;
-      transition: opacity 0.3s ease;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 215, 0, 0.1), transparent);
+      transition: left 0.8s ease;
+      z-index: 1;
     }
-
+    .program-item:hover {
+      transform: translateY(-10px) scale(1.02);
+      box-shadow: 0 25px 50px rgba(0, 0, 0, 0.4), 0 0 50px rgba(255, 215, 0, 0.25), inset 0 0 30px rgba(255, 215, 0, 0.1);
+      border-color: rgba(255, 215, 0, 0.6);
+    }
     .program-item:hover::before {
-      opacity: 1;
+      left: 100%;
     }
 
-    /* 节目序号 */
+    /* 节目序号 - 增加旋转动画 */
     .program-number {
-      width: 60px;
-      height: 60px;
+      width: 80px;
+      height: 80px;
       background: linear-gradient(135deg, var(--gold), var(--bright-gold));
       color: var(--crimson);
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 24px;
+      font-size: 32px;
       font-weight: bold;
       font-family: "Microsoft YaHei";
-      box-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
+      box-shadow: var(--shadow-gold), inset 0 0 10px rgba(139, 0, 0, 0.2);
       flex-shrink: 0;
       z-index: 2;
+      position: relative;
+      transition: transform 0.5s ease;
+    }
+    .program-number::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 70px;
+      height: 70px;
+      border: 2px dashed rgba(139, 0, 0, 0.3);
+      border-radius: 50%;
+      animation: rotate 10s linear infinite;
+    }
+    .program-item:hover .program-number {
+      transform: rotate(360deg);
+    }
+
+    @keyframes rotate {
+      0% { transform: translate(-50%, -50%) rotate(0deg); }
+      100% { transform: translate(-50%, -50%) rotate(360deg); }
     }
 
     /* 节目内容 */
@@ -238,175 +376,267 @@
     }
 
     .program-title {
-      font-family: "华文行楷";
-      font-size: clamp(1.5rem, 2.5vw, 2rem);
+      font-family: var(--font-xingkai);
+      font-size: clamp(1.8rem, 3vw, 2.5rem);
       color: var(--bright-gold);
-      margin-bottom: 10px;
-      text-shadow: 0 0 10px var(--crimson);
+      margin-bottom: 15px;
+      text-shadow: var(--shadow-crimson);
+      position: relative;
+      padding-bottom: 10px;
+    }
+    .program-title::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 60px;
+      height: 2px;
+      background: var(--gold);
+      box-shadow: var(--shadow-gold);
     }
 
     .program-performer {
-      font-size: 16px;
+      font-size: 18px;
       color: var(--light-gold);
-      margin-bottom: 15px;
+      margin-bottom: 20px;
       font-style: italic;
       opacity: 0.9;
+      font-family: var(--font-kaiti);
+      position: relative;
+      padding-left: 20px;
+    }
+    .program-performer::before {
+      content: '—';
+      position: absolute;
+      left: 0;
+      color: var(--gold);
     }
 
     .program-description {
-      font-size: 15px;
+      font-size: 16px;
       color: var(--light-gold);
-      line-height: 1.8;
-      opacity: 0.85;
-      background: rgba(0, 0, 0, 0.1);
-      padding: 15px;
-      border-radius: 8px;
-      border-left: 3px solid var(--gold);
+      line-height: 2;
+      opacity: 0.9;
+      background: linear-gradient(135deg, rgba(0, 0, 0, 0.2), rgba(90, 0, 0, 0.1));
+      padding: 20px;
+      border-radius: 12px;
+      border-left: 4px solid var(--gold);
+      box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.2);
+      font-family: var(--font-kaiti);
     }
 
-    /* 装饰元素 */
+    /* 装饰元素 - 优化脉冲动画 */
     .decorative-element {
       position: absolute;
-      bottom: -10px;
-      right: -10px;
-      width: 80px;
-      height: 80px;
-      background: rgba(255, 215, 0, 0.1);
+      bottom: -20px;
+      right: -20px;
+      width: 120px;
+      height: 120px;
+      background: radial-gradient(circle, rgba(255, 215, 0, 0.1) 0%, transparent 70%);
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
       z-index: 1;
     }
-
     .decorative-element i {
       color: var(--gold);
-      font-size: 30px;
-      opacity: 0.6;
-      transform: rotate(-15deg);
+      font-size: 40px;
+      opacity: 0.7;
+      transform: rotate(-20deg);
+      text-shadow: var(--shadow-gold);
+      animation: starPulse 3s ease-in-out infinite;
+    }
+    @keyframes starPulse {
+      0%, 100% { transform: rotate(-20deg) scale(1); opacity: 0.7; }
+      50% { transform: rotate(-20deg) scale(1.2); opacity: 1; }
     }
 
-    /* 切换按钮组 */
+    /* 切换按钮组 - 优化hover光效 */
     .button-group {
       display: flex;
-      gap: 20px;
-      margin-top: 20px;
+      gap: 30px;
+      margin-top: 30px;
+      width: 100%;
+      max-width: 600px;
+      justify-content: center;
     }
 
     .nav-button {
-      padding: 12px 30px;
+      padding: 15px 40px;
       background: linear-gradient(135deg, var(--crimson), var(--dark-crimson));
       color: var(--gold);
-      border: 1px solid var(--gold);
-      border-radius: 8px;
-      font-family: "华文行楷";
-      font-size: 18px;
+      border: 2px solid var(--gold);
+      border-radius: 50px;
+      font-family: var(--font-xingkai);
+      font-size: 20px;
       cursor: pointer;
-      transition: all 0.3s ease;
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 10px;
+      position: relative;
+      overflow: hidden;
     }
-
+    .nav-button::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 215, 0, 0.2), transparent);
+      transition: left 0.6s ease;
+    }
     .nav-button:disabled {
       opacity: 0.5;
       cursor: not-allowed;
       transform: none;
       background: linear-gradient(135deg, #555, #333);
+      border-color: #888;
+      color: #aaa;
     }
-
     .nav-button:not(:disabled):hover {
       background: linear-gradient(135deg, var(--gold), var(--bright-gold));
       color: var(--crimson);
-      transform: translateY(-3px);
-      box-shadow: 0 5px 15px rgba(255, 215, 0, 0.3);
+      transform: translateY(-5px) scale(1.05);
+      box-shadow: var(--shadow-gold);
+      border-color: var(--bright-gold);
+    }
+    .nav-button:not(:disabled):hover::before {
+      left: 100%;
     }
 
     /* 底部信息 */
     .page-footer {
       text-align: center;
-      padding: 30px 20px;
-      margin-top: 40px;
-      border-top: 1px solid rgba(255, 215, 0, 0.2);
+      padding: 40px 20px;
+      margin-top: 60px;
+      border-top: 1px solid rgba(255, 215, 0, 0.3);
+      position: relative;
+    }
+    .page-footer::before {
+      content: '';
+      position: absolute;
+      top: -20px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100px;
+      height: 1px;
+      background: var(--gold);
+      box-shadow: var(--shadow-gold);
     }
 
     .page-footer p {
-      font-family: "华文行楷";
-      font-size: 18px;
+      font-family: var(--font-xingkai);
+      font-size: 20px;
       color: var(--bright-gold);
-      text-shadow: 0 0 10px var(--crimson);
-      margin-bottom: 10px;
+      text-shadow: var(--shadow-crimson);
+      margin-bottom: 15px;
     }
 
     .watermark {
-      font-size: 14px;
+      font-size: 16px;
       opacity: 0.7;
+      font-family: var(--font-kaiti);
+    }
+
+    /* 粒子动画容器 */
+    .particle-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: -1;
     }
 
     /* 响应式设计 */
     @media (max-width: 768px) {
       .main-content {
-        padding: 20px 10px;
+        padding: 30px 15px;
       }
 
       .page-header {
-        margin-bottom: 40px;
+        margin-bottom: 50px;
+        padding: 20px 10px;
       }
 
       .program-item {
         flex-direction: column;
-        padding: 20px;
+        padding: 30px 20px;
         align-items: center;
         text-align: center;
       }
 
       .program-number {
-        margin-bottom: 15px;
+        margin-bottom: 20px;
+        width: 70px;
+        height: 70px;
+        font-size: 28px;
+      }
+
+      .program-title::after {
+        left: 50%;
+        transform: translateX(-50%);
       }
 
       .program-description {
         text-align: left;
+        padding: 15px;
       }
 
       .decorative-element {
-        bottom: -5px;
-        right: -5px;
-        width: 60px;
-        height: 60px;
+        bottom: -10px;
+        right: -10px;
+        width: 80px;
+        height: 80px;
       }
 
       .decorative-element i {
-        font-size: 24px;
+        font-size: 30px;
       }
 
       .button-group {
         flex-direction: column;
         width: 100%;
+        gap: 15px;
       }
 
       .nav-button {
         width: 100%;
         justify-content: center;
+        padding: 12px 30px;
+      }
+
+      .current-program-tip {
+        font-size: 16px;
+        padding: 8px 20px;
       }
     }
 
     @media (max-width: 480px) {
       .main-title {
-        font-size: 2rem;
+        font-size: clamp(2rem, 8vw, 3rem);
       }
 
       .subtitle {
-        font-size: 1.5rem;
+        font-size: clamp(1.5rem, 6vw, 2rem);
       }
 
       .program-number {
-        width: 50px;
-        height: 50px;
-        font-size: 20px;
+        width: 60px;
+        height: 60px;
+        font-size: 24px;
       }
 
       .program-title {
-        font-size: 1.5rem;
+        font-size: clamp(1.5rem, 5vw, 2rem);
+      }
+
+      .program-item {
+        padding: 20px 15px;
       }
     }
   </style>
@@ -414,10 +644,13 @@
 <body>
   <div id="app">
     <div class="app-container">
+      <!-- 粒子动画容器 -->
+      <div class="particle-container"></div>
+      
       <!-- 加载动画 -->
       <div v-if="loading" class="loading-overlay">
         <div class="loading-spinner"></div>
-        <p class="loading-text">加载节目单中...</p>
+        <p class="loading-text" id="loading-text">加载节目单中...</p>
       </div>
 
       <!-- 主内容区域 -->
@@ -440,6 +673,7 @@
           <div 
             v-if="programs.length > 0"
             class="program-item"
+            id="program-item"
           >
             <!-- 节目序号 -->
             <div class="program-number">
@@ -448,9 +682,9 @@
 
             <!-- 节目内容 -->
             <div class="program-content">
-              <h2 class="program-title">{{ currentProgram.name }}</h2>
-              <p class="program-performer">表演者：{{ currentProgram.performer }}</p>
-              <div class="program-description">
+              <h2 class="program-title" id="program-title">{{ currentProgram.name }}</h2>
+              <p class="program-performer" id="program-performer">表演者：{{ currentProgram.performer }}</p>
+              <div class="program-description" id="program-desc">
                 {{ currentProgram.description }}
               </div>
             </div>
@@ -501,7 +735,7 @@
     createApp({
       setup() {
         // 注册GSAP插件
-        gsap.registerPlugin(ScrollTrigger);
+        gsap.registerPlugin(ScrollTrigger, TextPlugin);
 
         // 响应式数据
         const loading = ref(true);
@@ -521,15 +755,24 @@
         // 从txt文件加载数据
         const loadPrograms = async () => {
           try {
+            // 加载文字动画
+            const loadingText = document.getElementById('loading-text');
+            gsap.to(loadingText, {
+              text: '加载节目单中...✨',
+              duration: 1,
+              repeat: -1,
+              repeatDelay: 0.5,
+              ease: 'power1.inOut'
+            });
+
             const response = await fetch('https://yzbjfpv.top/school/2026/jm.txt');
             const text = await response.text();
             
-            // 解析文本数据（修复：处理空行和分割异常）
+            // 解析文本数据
             const lines = text.split('\n').filter(line => line.trim() !== '');
             
             programs.value = lines.map(line => {
               const parts = line.split('=');
-              // 修复：处理分割后数组长度不足，且支持描述中包含=号
               return {
                 name: parts[0]?.trim() || '未知节目',
                 performer: parts[1]?.trim() || '未知表演者',
@@ -541,6 +784,8 @@
             
             // 初始化动画
             initAnimations();
+            createParticles();
+            createBackgroundStars();
           } catch (error) {
             console.error('加载节目单失败:', error);
             loading.value = false;
@@ -551,7 +796,7 @@
         const prevProgram = () => {
           if (currentIndex.value > 0) {
             currentIndex.value--;
-            playProgramAnimation(); // 播放切换动画
+            playProgramAnimation();
           }
         };
 
@@ -559,168 +804,279 @@
         const nextProgram = () => {
           if (currentIndex.value < programs.value.length - 1) {
             currentIndex.value++;
-            playProgramAnimation(); // 播放切换动画
+            playProgramAnimation();
           }
         };
 
-        // 节目切换动画
+        // 节目切换动画（增强版：增加3D旋转+弹性效果）
         const playProgramAnimation = () => {
-          const programItem = document.querySelector('.program-item');
+          const programItem = document.getElementById('program-item');
+          const programTitle = document.getElementById('program-title');
+          const programPerformer = document.getElementById('program-performer');
+          const programDesc = document.getElementById('program-desc');
+          const programNumber = programItem?.querySelector('.program-number');
+
           if (!programItem) return;
 
-          // 淡出动画
+          // 整体淡出+3D旋转动画
           gsap.to(programItem, {
             opacity: 0,
-            y: 20,
-            duration: 0.3,
-            ease: 'power2.out',
+            y: 50,
+            scale: 0.95,
+            rotateX: 15,
+            duration: 0.4,
+            ease: 'power3.inOut',
             onComplete: () => {
-              // 淡入动画
+              // 内容替换后淡入动画（弹性回弹）
               gsap.fromTo(programItem,
-                { opacity: 0, y: -20 },
+                { opacity: 0, y: -50, scale: 1.05, rotateX: -15 },
+                {
+                  opacity: 1,
+                  y: 0,
+                  scale: 1,
+                  rotateX: 0,
+                  duration: 0.6,
+                  ease: 'elastic.out(1, 0.3)'
+                }
+              );
+              
+              // 序号旋转动画（加速旋转）
+              gsap.fromTo(programNumber,
+                { rotation: -360, scale: 0 },
+                {
+                  rotation: 0,
+                  scale: 1,
+                  duration: 0.8,
+                  ease: 'back.out(2)'
+                }
+              );
+              
+              // 标题文字动画（延迟错开）
+              gsap.fromTo(programTitle,
+                { opacity: 0, x: -50 },
+                {
+                  opacity: 1,
+                  x: 0,
+                  duration: 0.5,
+                  ease: 'power3.out',
+                  delay: 0.2
+                }
+              );
+              
+              // 表演者文字动画
+              gsap.fromTo(programPerformer,
+                { opacity: 0, y: 20 },
                 {
                   opacity: 1,
                   y: 0,
                   duration: 0.5,
-                  ease: 'power3.out'
+                  ease: 'power3.out',
+                  delay: 0.4
+                }
+              );
+              
+              // 描述文字逐行动画
+              gsap.fromTo(programDesc,
+                { opacity: 0, height: 0 },
+                {
+                  opacity: 1,
+                  height: 'auto',
+                  duration: 0.7,
+                  ease: 'power3.out',
+                  delay: 0.6
                 }
               );
             }
           });
         };
 
-        // 初始化动画
+        // 初始化页面动画（增强版：增加弹性+错开延迟）
         const initAnimations = () => {
-          // 页面进入动画
+          // 页面进入整体淡入动画
           gsap.from('.main-content', {
             opacity: 0,
-            y: 50,
-            duration: 0.8,
-            ease: 'power3.out'
+            y: 100,
+            duration: 1,
+            ease: 'power4.out'
           });
 
-          // 标题动画
+          // 标题弹性动画
           gsap.from('.main-title', {
             opacity: 0,
-            y: -30,
-            duration: 1,
+            y: -50,
+            scale: 0.8,
+            rotate: -5,
+            duration: 1.2,
             ease: 'elastic.out(1, 0.3)',
             delay: 0.2
           });
 
+          // 副标题弹跳动画
           gsap.from('.subtitle', {
             opacity: 0,
-            scale: 0.8,
-            duration: 0.8,
-            ease: 'power2.out',
+            scale: 0,
+            rotate: 10,
+            duration: 1.5,
+            ease: 'back.out(2)',
             delay: 0.5
           });
 
-          // 节目项初始动画
-          const programItem = document.querySelector('.program-item');
+          // 2026文字淡入动画
+          gsap.from('.year', {
+            opacity: 0,
+            y: 20,
+            duration: 0.8,
+            ease: 'power3.out',
+            delay: 0.8
+          });
+
+          // 当前节目提示呼吸动画（已在CSS定义）
+
+          // 节目项初始动画（3D旋转+缩放）
+          const programItem = document.getElementById('program-item');
           if (programItem) {
             gsap.from(programItem, {
               opacity: 0,
-              y: 100,
-              scale: 0.95,
-              duration: 0.8,
-              ease: 'power3.out',
+              y: 200,
+              scale: 0.8,
+              rotateY: 45,
+              duration: 1,
+              ease: 'power4.out',
               delay: 0.3
             });
 
-            // 序号动画
+            // 序号3D旋转动画
             const number = programItem.querySelector('.program-number');
             gsap.fromTo(number, 
-              { scale: 0, opacity: 0, rotation: -180 },
+              { scale: 0, opacity: 0, rotateY: -360 },
               { 
                 scale: 1, 
                 opacity: 1, 
-                rotation: 0,
-                duration: 0.6,
-                ease: 'back.out(1.7)',
-                delay: 0.5
+                rotateY: 0,
+                duration: 1,
+                ease: 'back.out(2)',
+                delay: 0.8
               }
             );
 
-            // 内容动画
+            // 内容渐入动画
             const content = programItem.querySelector('.program-content');
             gsap.from(content, {
               opacity: 0,
-              x: 30,
-              duration: 0.7,
-              ease: 'power2.out',
-              delay: 0.6
+              x: 100,
+              duration: 0.8,
+              ease: 'power3.out',
+              delay: 1
             });
 
-            // 装饰元素动画
+            // 装饰元素旋转动画
             const decor = programItem.querySelector('.decorative-element');
             gsap.from(decor, {
               opacity: 0,
               scale: 0,
-              rotate: 360,
-              duration: 1,
+              rotate: 720,
+              duration: 1.5,
               ease: 'elastic.out(1, 0.5)',
-              delay: 0.7
+              delay: 1.2
             });
           }
 
-          // 底部信息动画
+          // 底部信息滑入动画
           gsap.from('.page-footer', {
             opacity: 0,
-            y: 30,
-            duration: 0.8,
-            ease: 'power2.out',
-            delay: 1
+            y: 100,
+            duration: 1,
+            ease: 'power3.out',
+            delay: 1.5
           });
 
-          // 按钮动画
-          gsap.from('.nav-button', {
-            opacity: 0,
-            scale: 0.9,
-            duration: 0.5,
-            ease: 'power2.out',
-            delay: 0.8,
-            stagger: 0.2
+          // 按钮脉冲动画
+          gsap.to('.nav-button', {
+            boxShadow: ['0 0 0 rgba(255,215,0,0)', '0 0 20px rgba(255,215,0,0.5)', '0 0 0 rgba(255,215,0,0)'],
+            duration: 3,
+            repeat: -1,
+            ease: 'power1.inOut'
           });
-
-          // 创建背景星光
-          createBackgroundStars();
         };
 
-        // 创建背景星光动画
+        // 创建背景星光（增强版：鼠标交互+随机闪烁）
         const createBackgroundStars = () => {
           const container = document.querySelector('.app-container');
-          const starsCount = 100;
+          const starsCount = 150;
 
           for (let i = 0; i < starsCount; i++) {
             const star = document.createElement('div');
             star.className = 'background-star';
             
-            // 随机位置和大小
-            const size = Math.random() * 3 + 1;
+            // 随机位置、大小、透明度
+            const size = Math.random() * 5 + 1;
+            const opacity = Math.random() * 0.8 + 0.2;
+            const top = Math.random() * 100;
+            const left = Math.random() * 100;
+            
             star.style.cssText = `
-              position: absolute;
               width: ${size}px;
               height: ${size}px;
-              background: rgba(255, 215, 0, ${Math.random() * 0.5 + 0.3});
+              background: rgba(255, 215, 0, ${opacity});
               border-radius: 50%;
-              top: ${Math.random() * 100}%;
-              left: ${Math.random() * 100}%;
-              opacity: ${Math.random() * 0.8 + 0.2};
-              pointer-events: none;
-              z-index: -1;
+              top: ${top}%;
+              left: ${left}%;
+              opacity: ${opacity};
             `;
             
             container.appendChild(star);
             
-            // 星光呼吸动画
+            // 星光组合动画：呼吸+移动+旋转
             gsap.to(star, {
-              opacity: Math.random() * 0.5 + 0.1,
-              duration: Math.random() * 4 + 2,
+              opacity: [opacity, Math.random() * 0.5 + 0.1, opacity],
+              y: `+=${Math.random() * 30 - 15}px`,
+              x: `+=${Math.random() * 30 - 15}px`,
+              rotate: Math.random() * 360,
+              duration: Math.random() * 10 + 5,
               ease: 'power1.inOut',
               repeat: -1,
               yoyo: true,
-              delay: Math.random() * 5
+              delay: Math.random() * 7
+            });
+          }
+        };
+
+        // 创建粒子动画（优化下落轨迹+透明度变化）
+        const createParticles = () => {
+          const container = document.querySelector('.particle-container');
+          const particleCount = 80;
+
+          for (let i = 0; i < particleCount; i++) {
+            const particle = document.createElement('div');
+            particle.className = 'background-particle';
+            
+            // 随机初始位置
+            particle.style.cssText = `
+              top: ${Math.random() * 100}%;
+              left: ${Math.random() * 100}%;
+              opacity: ${Math.random() * 0.8 + 0.2};
+              transform: rotate(${Math.random() * 360}deg);
+            `;
+            
+            container.appendChild(particle);
+            
+            // 粒子下落动画（随机轨迹）
+            gsap.to(particle, {
+              top: '100%',
+              left: `+=${Math.random() * 50 - 25}%`,
+              opacity: 0,
+              duration: Math.random() * 20 + 10,
+              ease: 'linear',
+              repeat: -1,
+              delay: Math.random() * 5,
+              onRepeat: () => {
+                // 重置粒子位置
+                gsap.set(particle, {
+                  top: `${Math.random() * -20}%`,
+                  left: `${Math.random() * 100}%`,
+                  opacity: Math.random() * 0.8 + 0.2
+                });
+              }
             });
           }
         };
@@ -728,11 +1084,27 @@
         // 页面加载时执行
         onMounted(() => {
           loadPrograms();
+          
+          // 鼠标移动交互（增强星光跟随效果）
+          document.addEventListener('mousemove', (e) => {
+            const stars = document.querySelectorAll('.background-star');
+            stars.forEach(star => {
+              const x = (e.clientX - window.innerWidth / 2) * 0.008;
+              const y = (e.clientY - window.innerHeight / 2) * 0.008;
+              gsap.to(star, {
+                x: `+=${x}px`,
+                y: `+=${y}px`,
+                duration: 0.5,
+                ease: 'power1.out'
+              });
+            });
+          });
         });
 
         // 页面卸载时清理GSAP动画
         onUnmounted(() => {
           ScrollTrigger.getAll().forEach(trigger => trigger.kill());
+          gsap.globalTimeline.clear();
         });
 
         // 暴露变量和方法到模板
