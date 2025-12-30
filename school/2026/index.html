@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>九年级六班|2026元旦联欢会|Flyz官方网站</title>
-    <!-- 移除particles.js CDN引入 -->
     <link href="https://cdn.bootcdn.net/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
     <link href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
@@ -16,9 +15,8 @@
             --light-crimson: #A52A2A;
             --dark-crimson: #5A0000;
             --glass: rgba(255, 255, 255, 0.2);
-            /* 核心修改：泛红背景替换原深色暖棕 */
-            --bg-main: #3a0f0f; /* 暗红底色（泛红） */
-            --bg-gradient: linear-gradient(180deg, #6a1a1a, #3a0f0f, #2a0a0a); /* 绯红渐变（从上到下由深到浅，保持质感不压抑） */
+            --bg-main: #3a0f0f;
+            --bg-gradient: linear-gradient(180deg, #6a1a1a, #3a0f0f, #2a0a0a);
         }
 
         * {
@@ -37,20 +35,17 @@
             height: 100vh;
         }
 
-        /* ========== 画布与视觉层（移除烟花相关，仅保留暗角） ========== */
         #stage-canvas {
-            display: none; /* 隐藏无用画布（原烟花画布） */
+            display: none;
         }
         .vignette {
             position: fixed;
             inset: 0;
             z-index: 2;
             pointer-events: none;
-            /* 泛红暗角，替换原纯黑暗角 */
             background: radial-gradient(circle at center, transparent 60%, rgba(90, 10, 10, 0.2) 100%);
         }
 
-        /* ========== 开屏动画（保留风格，亮度不变） ========== */
         .splash-screen {
             position: fixed;
             top: 0;
@@ -135,7 +130,6 @@
         @keyframes progressFill { to { width: 100%; } }
         @keyframes shimmer { to { background-position: 200% 0; } }
 
-        /* ========== 初始设置层（泛红背景优化） ========== */
         #setup-layer {
             position: fixed;
             inset: 0;
@@ -201,7 +195,6 @@
             background: var(--bright-gold);
         }
 
-        /* ========== 舞台主界面（泛红背景优化） ========== */
         .hero {
             position: absolute;
             top: 45%;
@@ -257,13 +250,12 @@
             to { transform: scale(1); opacity: 1; }
         }
 
-        /* ========== MV播放系统（泛红背景优化，移除金沙粒子） ========== */
         .video-container {
             position: fixed;
             inset: 0;
             z-index: 50;
             display: none;
-            background: linear-gradient(180deg, #2a0a0a, #3a0f0f); /* 泛红背景替换原深黑 */
+            background: linear-gradient(180deg, #2a0a0a, #3a0f0f);
         }
         #video-player {
             width: 100%;
@@ -272,7 +264,6 @@
             box-shadow: 0 0 100px rgba(255,215,0,0.3);
         }
 
-        /* 自定义播放器控制栏（泛红背景优化） */
         .video-ui {
             position: absolute;
             bottom: 50px;
@@ -282,7 +273,7 @@
             display: flex;
             align-items: center;
             gap: 20px;
-            background: rgba(58, 15, 15, 0.6); /* 泛红半透明替换原纯黑 */
+            background: rgba(58, 15, 15, 0.6);
             backdrop-filter: blur(15px);
             padding: 15px 30px;
             border-radius: 50px;
@@ -294,7 +285,6 @@
             opacity: 1;
         }
 
-        /* 播放器按钮样式 */
         .control-btn {
             background: rgba(255,255,255,0.25);
             border: 1px solid rgba(255,215,0,0.7);
@@ -322,7 +312,6 @@
             color: #000;
         }
 
-        /* 进度条样式 */
         .progress-container {
             flex: 1;
             height: 8px;
@@ -358,10 +347,9 @@
             font-size: 16px;
             min-width: 90px;
             text-align: center;
-            text-shadow: 0 0 4px rgba(58, 15, 15, 0.3); /* 泛红阴影替换原纯黑 */
+            text-shadow: 0 0 4px rgba(58, 15, 15, 0.3);
         }
 
-        /* 2D卡片（移除粒子相关，保留纯样式） */
         .watermark-fixed {
             position: absolute;
             bottom: 40px;
@@ -393,9 +381,9 @@
             padding: 4px 8px;
             -webkit-backface-visibility: hidden;
             backface-visibility: hidden;
-            background: rgba(58, 15, 15, 0.4); /* 泛红半透明替换原纯黑 */
+            background: rgba(58, 15, 15, 0.4);
             border: 1px solid var(--bright-gold);
-            box-shadow: 0 0 12px rgba(255,215,0,0.9);
+            box-shadow: 0 0 12px rgba(255,215,0,0.8);
             overflow: hidden;
             position: relative;
         }
@@ -525,13 +513,12 @@
             100% { -webkit-transform: rotate(-0.3deg); transform: rotate(-0.3deg); }
         }
 
-        /* 缩小版音量提示（泛红背景优化） */
         .volume-toast {
             position: fixed;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            background: rgba(58, 15, 15, 0.6); /* 泛红半透明替换原纯黑 */
+            background: rgba(58, 15, 15, 0.6);
             color: #fff;
             padding: 15px 25px;
             border-radius: 12px;
@@ -558,13 +545,12 @@
             opacity: 1;
         }
 
-        /* ========== 底部Dock栏（保留、删除烟花按钮、优化样式） ========== */
         .dock {
             position: fixed;
             bottom: 30px;
             left: 50%;
             transform: translateX(-50%);
-            z-index: 100; /* 最高层级之一，确保始终可见 */
+            z-index: 100;
             display: flex;
             gap: 25px;
             padding: 15px 40px;
@@ -593,11 +579,10 @@
             opacity: 0.8;
         }
 
-        /* ========== 新增：嵌入容器样式（PPT/随机抽人） ========== */
         #embed-container {
             position: fixed;
             inset: 0;
-            z-index: 90; /* 低于dock栏，确保dock栏可见 */
+            z-index: 90;
             display: none;
             background: #000;
         }
@@ -611,7 +596,7 @@
             position: fixed;
             top: 20px;
             right: 20px;
-            z-index: 95; /* 高于嵌入容器，低于dock栏 */
+            z-index: 95;
             background: var(--light-crimson);
             color: var(--gold);
             border: 2px solid var(--bright-gold);
@@ -633,9 +618,60 @@
             box-shadow: 0 0 30px rgba(255,215,0,0.8);
         }
 
-        /* ========== 隐藏文件输入 ========== */
         #mv-upload {
             display: none;
+        }
+
+        /* ========== 新增：随机抽人弹窗样式 ========== */
+        #random-person-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(5px);
+            z-index: 200;
+            display: none;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            background: var(--light-crimson);
+            padding: 40px;
+            border-radius: 20px;
+            border: 2px solid var(--bright-gold);
+            text-align: center;
+            box-shadow: 0 0 50px rgba(255, 215, 0, 0.5);
+        }
+        .modal-title {
+            font-family: "华文行楷";
+            font-size: 2rem;
+            color: var(--light-gold);
+            margin-bottom: 20px;
+            text-shadow: 0 0 10px var(--bright-gold);
+        }
+        .modal-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+        }
+        .modal-btn {
+            background: var(--gold);
+            color: var(--crimson);
+            padding: 15px 30px;
+            border: none;
+            border-radius: 50px;
+            font-weight: 900;
+            cursor: pointer;
+            font-size: 1rem;
+            box-shadow: 0 0 15px var(--bright-gold);
+            transition: 0.3s;
+        }
+        .modal-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 25px var(--bright-gold);
+            background: var(--bright-gold);
         }
     </style>
 </head>
@@ -674,7 +710,7 @@
         </div>
     </div>
 
-    <!-- 画布与暗角层（隐藏烟花画布，保留暗角） -->
+    <!-- 画布与暗角层 -->
     <canvas id="stage-canvas"></canvas>
     <div class="vignette"></div>
 
@@ -698,26 +734,26 @@
         <div class="sub-title" id="sub-title">九年级六班 · 龙腾四海</div>
     </div>
 
-    <!-- MV播放容器（移除金沙粒子DOM） -->
-    <div class="video-container" id="mv-system">
-        <video id="video-player" playsinline></video>
-        
-        <!-- 2D卡片（移除金沙容器） -->
-        <div class="watermark-fixed">
-            <div class="watermark-3d-container">
-                <div class="watermark-card watermark-card-front">
-                    <div class="watermark-text">
-                        <span class="wm-main">九年级六班|2026元旦联欢会</span>
-                    </div>
+    <!-- 全局右下角卡片 -->
+    <div class="watermark-fixed" id="global-watermark">
+        <div class="watermark-3d-container">
+            <div class="watermark-card watermark-card-front">
+                <div class="watermark-text">
+                    <span class="wm-main">九年级六班|2026元旦联欢会</span>
                 </div>
-                <div class="watermark-card watermark-card-back">
-                    <div class="watermark-text">
-                        <span class="wm-flyz">yzbjfpv.top</span>
-                    </div>
+            </div>
+            <div class="watermark-card watermark-card-back">
+                <div class="watermark-text">
+                    <span class="wm-flyz">yzbjfpv.top</span>
                 </div>
             </div>
         </div>
+    </div>
 
+    <!-- MV播放容器 -->
+    <div class="video-container" id="mv-system">
+        <video id="video-player" playsinline></video>
+        
         <!-- 音量提示框 -->
         <div class="volume-toast" id="volumeToast">
             <span class="main-text">音量: 100%</span>
@@ -746,16 +782,28 @@
         </div>
     </div>
 
-    <!-- 新增：嵌入容器（PPT/随机抽人） -->
+    <!-- 新增：随机抽人弹窗 -->
+    <div id="random-person-modal">
+        <div class="modal-content animate__animated animate__fadeIn">
+            <h2 class="modal-title">选择抽人模式</h2>
+            <div class="modal-buttons">
+                <button class="modal-btn" onclick="openIframe('https://yzbjfpv.top/tools/chou')">原神|随机抽人</button>
+                <button class="modal-btn" onclick="openIframe('https://yzbjfpv.top/school/2026/ys')">卡牌|随机抽人</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 嵌入容器 (用于PPT, 随机抽人, 反向挑战) -->
     <div id="embed-container">
         <iframe id="ppt-iframe" class="embed-iframe" src="" allowfullscreen></iframe>
         <iframe id="random-iframe" class="embed-iframe" src="" allowfullscreen style="display: none;"></iframe>
+        <iframe id="reverse-iframe" class="embed-iframe" src="" allowfullscreen style="display: none;"></iframe>
     </div>
     <div id="exit-embed" onclick="exitEmbed()">
         <i class="fas fa-times"></i>
     </div>
 
-    <!-- 底部Dock栏（删除烟花按钮、保留其余、修正PPT链接） -->
+    <!-- 底部Dock栏 -->
     <div class="dock">
         <div class="dock-item" onclick="toggleMusic()">
             <i class="fas fa-music"></i><span>音乐</span>
@@ -766,13 +814,14 @@
         <div class="dock-item" onclick="manualStart()">
             <i class="fas fa-rocket"></i><span>开场</span>
         </div>
-        <!-- 游戏PPT（修正链接：2025→2026，改为嵌入） -->
         <div class="dock-item" onclick="openPPT()">
             <i class="fas fa-file-powerpoint"></i><span>游戏PPT</span>
         </div>
-        <!-- 随机抽人（改为嵌入，保留功能） -->
-        <div class="dock-item" onclick="openRandomPerson()">
+        <div class="dock-item" onclick="openRandomPersonMenu()">
             <i class="fas fa-random"></i><span>随机抽人</span>
+        </div>
+        <div class="dock-item" onclick="openReverseChallenge()">
+            <i class="fas fa-infinity"></i><span>反向挑战</span>
         </div>
     </div>
 
@@ -781,20 +830,17 @@
     <audio id="bg-music" loop src="https://yzbjfpv.top/school/2026/music/start.mp3">
 
     <script>
-        // ========== 核心逻辑（删除所有烟花相关代码、新增嵌入逻辑） ==========
         let countdownTimer = null;
         let isLaunched = false;
         let targetTime;
         const bgMusic = document.getElementById('bg-music');
 
-        // 系统核心逻辑（移除烟花相关初始化）
         function launchSystem() {
             if(isLaunched) return;
             const val = document.getElementById('target-time').value;
             if(!val) return alert("请设置联欢会开启时间！");
             targetTime = new Date(val);
             
-            // 时间校验
             if(targetTime <= new Date()) {
                 manualStart();
             } else {
@@ -806,7 +852,6 @@
             isLaunched = true;
         }
 
-        // 倒计时更新
         function updateCountdown() {
             const diff = targetTime - new Date();
             if(diff <= 0) { 
@@ -821,7 +866,6 @@
             document.getElementById('s').innerText = s.toString().padStart(2,'0');
         }
 
-        // 手动开场（删除烟花调用）
         function manualStart() {
             clearInterval(countdownTimer);
             document.getElementById('timer-ui').style.display = 'none';
@@ -830,60 +874,60 @@
             bgMusic.play().catch(err => console.log("背景音乐播放失败:", err));
         }
 
-        // 背景音乐切换
         function toggleMusic() {
             bgMusic.paused ? bgMusic.play().catch(err => console.log("背景音乐播放失败:", err)) : bgMusic.pause();
         }
 
-        // ========== 游戏PPT（修正链接：2025→2026，实现嵌入显示） ==========
         function openPPT() {
-            // 隐藏原页面核心内容
-            document.getElementById('main-hero').style.display = 'none';
-            document.getElementById('mv-system').style.display = 'none';
-            // 显示嵌入容器和退出按钮
-            document.getElementById('embed-container').style.display = 'block';
-            document.getElementById('exit-embed').style.display = 'flex';
-            // 显示PPT iframe，隐藏随机抽人iframe
+            document.getElementById('ppt-iframe').src = 'https://yzbjfpv.top/school/2026/zxy';
             document.getElementById('ppt-iframe').style.display = 'block';
             document.getElementById('random-iframe').style.display = 'none';
-            // 设置PPT src（修正：2025→2026）
-            document.getElementById('ppt-iframe').src = 'https://yzbjfpv.top/school/2026/zxy';
-            // 暂停背景音乐
-            bgMusic.pause();
+            document.getElementById('reverse-iframe').style.display = 'none';
+            showEmbedContainer();
         }
 
-        // ========== 随机抽人（实现嵌入显示，保留原链接） ==========
-        function openRandomPerson() {
-            // 隐藏原页面核心内容
-            document.getElementById('main-hero').style.display = 'none';
-            document.getElementById('mv-system').style.display = 'none';
-            // 显示嵌入容器和退出按钮
-            document.getElementById('embed-container').style.display = 'block';
-            document.getElementById('exit-embed').style.display = 'flex';
-            // 显示随机抽人iframe，隐藏PPT iframe
+        function openRandomPersonMenu() {
+            document.getElementById('random-person-modal').style.display = 'flex';
+        }
+
+        function openReverseChallenge() {
+            document.getElementById('reverse-iframe').src = 'https://yzbjfpv.top/school/2026/fxzldtz';
+            document.getElementById('ppt-iframe').style.display = 'none';
+            document.getElementById('random-iframe').style.display = 'none';
+            document.getElementById('reverse-iframe').style.display = 'block';
+            showEmbedContainer();
+        }
+        
+        function openIframe(url) {
+            // 关闭弹窗
+            document.getElementById('random-person-modal').style.display = 'none';
+            // 准备并显示嵌入容器
+            document.getElementById('random-iframe').src = url;
             document.getElementById('ppt-iframe').style.display = 'none';
             document.getElementById('random-iframe').style.display = 'block';
-            // 设置随机抽人src
-            document.getElementById('random-iframe').src = 'https://yzbjfpv.top/tools/chou';
-            // 暂停背景音乐
+            document.getElementById('reverse-iframe').style.display = 'none';
+            showEmbedContainer();
+        }
+
+        function showEmbedContainer() {
+            document.getElementById('main-hero').style.display = 'none';
+            document.getElementById('global-watermark').style.display = 'none'; // 隐藏全局水印
+            document.getElementById('embed-container').style.display = 'block';
+            document.getElementById('exit-embed').style.display = 'flex';
             bgMusic.pause();
         }
 
-        // ========== 新增：退出嵌入（返回原页面） ==========
         function exitEmbed() {
-            // 隐藏嵌入容器和退出按钮
             document.getElementById('embed-container').style.display = 'none';
             document.getElementById('exit-embed').style.display = 'none';
-            // 恢复原页面核心内容
             document.getElementById('main-hero').style.display = 'block';
-            // 清空iframe src（释放资源）
+            document.getElementById('global-watermark').style.display = 'block'; // 恢复全局水印
             document.getElementById('ppt-iframe').src = '';
             document.getElementById('random-iframe').src = '';
-            // 恢复背景音乐播放
+            document.getElementById('reverse-iframe').src = '';
             bgMusic.play().catch(err => console.log("背景音乐播放失败:", err));
         }
 
-        // ========== MV播放逻辑（保留原有，删除烟花相关） ==========
         const video = document.getElementById('video-player');
         const playPauseBtn = document.getElementById('playPauseBtn');
         const loopBtn = document.getElementById('loopBtn');
@@ -893,6 +937,7 @@
         const fullscreenBtn = document.getElementById('fullscreenBtn');
         const volumeToast = document.getElementById('volumeToast');
         const splashMv = document.getElementById('splash-mv');
+        const globalWatermark = document.getElementById('global-watermark');
 
         let isLoop = false;
         let volumeTimer = null;
@@ -901,14 +946,12 @@
         const LONG_PRESS_INTERVAL = 30;
         let volumeSmoothing = false;
 
-        // 触发MV功能
         function triggerApp(type) {
             if(type === 'mv') {
                 document.getElementById('mv-upload').click();
             }
         }
 
-        // 处理MV文件选择
         function handleMVFile(input) {
             const file = input.files[0];
             if(!file) return;
@@ -923,14 +966,13 @@
             setTimeout(() => {
                 const mvSystem = document.getElementById('mv-system');
                 mvSystem.style.display = 'block';
+                globalWatermark.style.display = 'none'; // 进入MV时隐藏全局水印
                 video.src = videoUrl;
                 video.load();
                 
-                // 初始化音量
                 video.volume = 1;
                 video.muted = false;
                 
-                // 加载完成回调
                 video.addEventListener('loadedmetadata', () => {
                     updateTimeDisplay();
                     video.play().then(() => updatePlayPauseIcon())
@@ -940,7 +982,6 @@
                     });
                 });
                 
-                // 播放进度更新
                 video.addEventListener('timeupdate', () => {
                     const progress = (video.currentTime / video.duration) * 100;
                     videoProgress.style.width = `${progress}%`;
@@ -948,7 +989,6 @@
                     updateTimeDisplay();
                 });
                 
-                // 自动全屏尝试
                 video.addEventListener('canplay', () => {
                     try {
                         if (video.requestFullscreen) video.requestFullscreen();
@@ -961,27 +1001,23 @@
             }, 3000);
         }
 
-        // 播放/暂停切换
         function togglePlay() {
             video.paused ? video.play() : video.pause();
             updatePlayPauseIcon();
         }
 
-        // 更新播放图标
         function updatePlayPauseIcon() {
             const icon = playPauseBtn.querySelector('i');
             icon.classList.toggle('fa-play', video.paused);
             icon.classList.toggle('fa-pause', !video.paused);
         }
 
-        // 循环播放切换
         function toggleLoop() {
             isLoop = !isLoop;
             loopBtn.classList.toggle('active', isLoop);
             video.loop = isLoop;
         }
 
-        // 进度条跳转
         function seekVideo(event) {
             if(!video.duration) return;
             const progressBar = event.currentTarget;
@@ -991,7 +1027,6 @@
             video.currentTime = ratio * video.duration;
         }
 
-        // 全屏切换
         function toggleFullscreen() {
             if (!document.fullscreenElement) {
                 if (video.requestFullscreen) video.requestFullscreen();
@@ -1006,14 +1041,13 @@
             }
         }
 
-        // 退出MV播放
         function exitMV() {
             video.pause();
             const mvSystem = document.getElementById('mv-system');
             mvSystem.style.display = 'none';
+            globalWatermark.style.display = 'block'; // 退出MV时恢复全局水印
             bgMusic.play();
             
-            // 释放资源
             URL.revokeObjectURL(video.src);
             video.src = '';
             videoProgress.style.width = '0%';
@@ -1025,7 +1059,6 @@
             video.loop = false;
         }
 
-        // 时间格式化
         function formatTime(seconds) {
             if (isNaN(seconds)) return '00:00';
             const mins = Math.floor(seconds / 60);
@@ -1033,14 +1066,12 @@
             return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
         }
 
-        // 更新时间显示
         function updateTimeDisplay() {
             const current = formatTime(video.currentTime);
             const duration = formatTime(video.duration);
             timeDisplay.textContent = `${current} / ${duration}`;
         }
 
-        // 音量控制（丝滑调节）
         function adjustVolume(change) {
             if (volumeSmoothing) return;
             volumeSmoothing = true;
@@ -1057,7 +1088,6 @@
             }, 5);
         }
 
-        // 显示音量提示
         function showVolumeToast(volumePercent) {
             volumeToast.querySelector('.main-text').textContent = `音量: ${volumePercent}%`;
             volumeToast.classList.add('show');
@@ -1068,7 +1098,6 @@
             }, 1000);
         }
 
-        // 键盘音量控制
         document.addEventListener('keydown', (e) => {
             if (isKeyDown) return;
             isKeyDown = true;
@@ -1097,7 +1126,6 @@
             volumeTimer = null;
         });
 
-        // 全屏状态监听
         document.addEventListener('fullscreenchange', updateFullscreenIcon);
         document.addEventListener('webkitfullscreenchange', updateFullscreenIcon);
         document.addEventListener('msfullscreenchange', updateFullscreenIcon);
