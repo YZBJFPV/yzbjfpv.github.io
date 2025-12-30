@@ -793,11 +793,12 @@
         </div>
     </div>
     
-    <!-- 嵌入容器 (用于PPT, 随机抽人, 反向挑战) -->
+    <!-- 嵌入容器 (用于PPT, 随机抽人, 反向挑战, 节目单) -->
     <div id="embed-container">
         <iframe id="ppt-iframe" class="embed-iframe" src="" allowfullscreen></iframe>
         <iframe id="random-iframe" class="embed-iframe" src="" allowfullscreen style="display: none;"></iframe>
         <iframe id="reverse-iframe" class="embed-iframe" src="" allowfullscreen style="display: none;"></iframe>
+        <iframe id="jmd-iframe" class="embed-iframe" src="" allowfullscreen style="display: none;"></iframe> <!-- 新增节目单iframe -->
     </div>
     <div id="exit-embed" onclick="exitEmbed()">
         <i class="fas fa-times"></i>
@@ -822,6 +823,10 @@
         </div>
         <div class="dock-item" onclick="openReverseChallenge()">
             <i class="fas fa-infinity"></i><span>反向挑战</span>
+        </div>
+        <!-- 新增节目单dock项 -->
+        <div class="dock-item" onclick="openProgramList()">
+            <i class="fas fa-list-alt"></i><span>节目单</span>
         </div>
     </div>
 
@@ -883,6 +888,7 @@
             document.getElementById('ppt-iframe').style.display = 'block';
             document.getElementById('random-iframe').style.display = 'none';
             document.getElementById('reverse-iframe').style.display = 'none';
+            document.getElementById('jmd-iframe').style.display = 'none'; // 隐藏节目单iframe
             showEmbedContainer();
         }
 
@@ -894,7 +900,18 @@
             document.getElementById('reverse-iframe').src = 'https://yzbjfpv.top/school/2026/fxzldtz';
             document.getElementById('ppt-iframe').style.display = 'none';
             document.getElementById('random-iframe').style.display = 'none';
+            document.getElementById('jmd-iframe').style.display = 'none'; // 隐藏节目单iframe
             document.getElementById('reverse-iframe').style.display = 'block';
+            showEmbedContainer();
+        }
+
+        // 新增：打开节目单方法
+        function openProgramList() {
+            document.getElementById('jmd-iframe').src = 'https://yzbjfpv.top/school/2026/jmd';
+            document.getElementById('ppt-iframe').style.display = 'none';
+            document.getElementById('random-iframe').style.display = 'none';
+            document.getElementById('reverse-iframe').style.display = 'none';
+            document.getElementById('jmd-iframe').style.display = 'block';
             showEmbedContainer();
         }
         
@@ -906,6 +923,7 @@
             document.getElementById('ppt-iframe').style.display = 'none';
             document.getElementById('random-iframe').style.display = 'block';
             document.getElementById('reverse-iframe').style.display = 'none';
+            document.getElementById('jmd-iframe').style.display = 'none'; // 隐藏节目单iframe
             showEmbedContainer();
         }
 
@@ -925,6 +943,7 @@
             document.getElementById('ppt-iframe').src = '';
             document.getElementById('random-iframe').src = '';
             document.getElementById('reverse-iframe').src = '';
+            document.getElementById('jmd-iframe').src = ''; // 清空节目单iframe地址
             bgMusic.play().catch(err => console.log("背景音乐播放失败:", err));
         }
 
