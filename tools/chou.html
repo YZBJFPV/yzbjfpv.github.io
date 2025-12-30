@@ -3,24 +3,177 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>随机抽人</title>
+    
+    <!-- 引入 Font Awesome 图标库，水印样式依赖于此 -->
+    <link href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+
     <style>
-        /* 重置默认样式，确保iframe全屏无间隙 */
-        html, body {
+        /* --- 基础样式 --- */
+        * {
             margin: 0;
             padding: 0;
-            height: 100%;
+            box-sizing: border-box;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+        body {
+            height: 100vh;
             overflow: hidden; /* 隐藏滚动条，避免双滚动条问题 */
         }
         iframe {
             width: 100%;
             height: 100%;
             border: none; /* 移除iframe边框 */
+            position: absolute; /* 绝对定位，以便与水印层叠 */
+            top: 0;
+            left: 0;
+            z-index: 1; /* 确保iframe在水印下方 */
+        }
+
+        /* ========== 以下是同款水印的完整样式 ========== */
+
+        /* 水印固定位置容器 */
+        .watermark-fixed {
+            position: fixed;
+            bottom: 40px;
+            right: 20px;
+            pointer-events: none; /* 关键：让鼠标事件穿透水印，不影响iframe的操作 */
+            z-index: 10; /* 确保水印在iframe之上 */
+            width: 240px;
+            height: 45px;
+        }
+
+        /* 3D翻转和缩放动画容器 */
+        .watermark-3d-container {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            animation: rotate-card-2d 10s ease-in-out infinite, scale-pulse 4s ease-in-out infinite;
+            transform-style: preserve-3d; /* 启用3D空间 */
+            perspective: 1000px; /* 设置透视效果 */
+        }
+
+        /* 卡片基础样式 */
+        .watermark-card {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border-radius: 12px 2px 12px 2px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 4px 8px;
+            backface-visibility: hidden; /* 隐藏背面 */
+            border: 1px solid var(--bright-gold);
+            box-shadow: 0 0 12px rgba(255,215,0,0.8);
+            overflow: hidden;
+        }
+        
+        /* 定义颜色变量 */
+        :root {
+            --gold: #FFD700;
+            --light-gold: #FFF8DC;
+            --bright-gold: #FFE47F;
+            --crimson: #8B0000;
+            --light-crimson: #A52A2A;
+            --dark-crimson: #5A0000;
+        }
+
+        /* 卡片正面 */
+        .watermark-card-front {
+            background: linear-gradient(135deg, rgba(180, 120, 0, 0.8), rgba(255, 215, 0, 0.6));
+        }
+
+        /* 卡片背面 */
+        .watermark-card-back {
+            background: linear-gradient(135deg, rgba(255, 170, 0, 0.8), rgba(255, 215, 0, 0.6));
+            transform: rotateY(180deg);
+        }
+
+        /* 卡片上的文字 */
+        .watermark-text {
+            font-family: "华文行楷", "STKaiti", "KaiTi", "PingFang SC", sans-serif;
+            text-align: center;
+            width: 100%;
+            position: relative;
+            z-index: 3;
+        }
+
+        /* 正面文字 */
+        .wm-main {
+            font-size: 16px;
+            font-weight: 600;
+            background: linear-gradient(120deg, #ffd700, #fff8dc, #ffd700, #fff8dc, #ffd700);
+            background-size: 400% 100%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            line-height: 1.2;
+            display: block;
+            animation: gold-text-shimmer 8s ease-in-out infinite;
+        }
+
+        /* 背面文字 */
+        .wm-flyz {
+            font-size: 12px;
+            font-weight: 600;
+            background: linear-gradient(120deg, #fff8dc, #ffd700, #fff8dc, #ffd700, #fff8dc);
+            background-size: 400% 100%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            line-height: 1.2;
+            display: block;
+            animation: gold-text-shimmer 8s ease-in-out infinite, gold-text-shake 6s ease-in-out infinite;
+        }
+
+        /* --- 水印相关动画 --- */
+        @keyframes rotate-card-2d {
+            0%, 10% { transform: rotateY(0deg); }
+            20%, 50% { transform: rotateY(90deg); }
+            60%, 70% { transform: rotateY(180deg); }
+            80%, 90% { transform: rotateY(270deg); }
+            100% { transform: rotateY(360deg); }
+        }
+
+        @keyframes scale-pulse {
+            0%, 100% { transform: scale(0.98); }
+            50% { transform: scale(1.02); }
+        }
+
+        @keyframes gold-text-shimmer {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        @keyframes gold-text-shake {
+            0%, 100% { transform: rotate(-0.3deg); }
+            50% { transform: rotate(0.3deg); }
         }
     </style>
-    <title>随机抽人</title>
 </head>
 <body>
-    <!-- 仅嵌入目标网址，无任何额外元素 -->
+    <!-- 主内容 iframe -->
     <iframe src="https://chou.akiker.top/"></iframe>
+
+    <!-- 右下角同款水印 HTML 结构 -->
+    <div class="watermark-fixed" id="global-watermark">
+        <div class="watermark-3d-container">
+            <div class="watermark-card watermark-card-front">
+                <div class="watermark-text">
+                    <span class="wm-main">九年级六班|2026元旦联欢会</span>
+                </div>
+            </div>
+            <div class="watermark-card watermark-card-back">
+                <div class="watermark-text">
+                    <span class="wm-flyz">yzbjfpv.top</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
 </body>
 </html>
