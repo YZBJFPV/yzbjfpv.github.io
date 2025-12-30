@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>九年级六班|2026元旦联欢会|Flyz官方网站</title>
+    <link href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --gold: #FFD700;
+            --light-gold: #FFF8DC;
+            --bright-gold: #FFE47F;
+            --crimson: #8B0000;
+            --light-crimson: #A52A2A;
+            --dark-crimson: #2a0a0a;
+            --bg-base: #3a0f0f;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: "华文行楷", "PingFang SC", "Microsoft YaHei", sans-serif;
+            background-color: var(--bg-base);
+            color: var(--light-gold);
+            height: 100vh;
+            overflow: hidden; /* 禁止滚动，保证全屏效果 */
+            position: relative;
+        }
+
+        /* Canvas 背景层 - 性能拉满 */
+        #bg-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        /* 背景光晕层 - 增加氛围感 */
+        .ambient-glow {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 50% 30%, rgba(139, 0, 0, 0.4), transparent 70%),
+                        radial-gradient(circle at 90% 90%, rgba(255, 215, 0, 0.1), transparent 50%);
+            z-index: 1;
+            animation: breathe-bg 10s ease-in-out infinite alternate;
+        }
+
+        @keyframes breathe-bg {
+            0% { opacity: 0.6; transform: scale(1); }
+            100% { opacity: 1; transform: scale(1.05); }
+        }
+
+        /* 主内容容器 - 布局调整 */
+        .main-container {
+            position: relative;
+            z-index: 10;
+            width: 100%;
+            /* 关键修改：高度限制在顶部 65%，留出底部 35% */
+            height: 65vh; 
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end; /* 内容靠下，但整体在65%区域内，视觉上偏中上 */
+            align-items: center;
+            padding: 20px;
+            padding-bottom: 40px; /* 微调内部间距 */
+        }
+
+        /* 隐形输入框 - 节目/音乐名 */
+        .hidden-input-title {
+            width: 90%;
+            max-width: 900px;
+            background: transparent;
+            border: none;
+            outline: none;
+            font-family: "华文行楷", sans-serif;
+            font-size: clamp(3.5rem, 9vw, 7rem); /* 字体稍微调整 */
+            color: var(--bright-gold);
+            text-align: center;
+            /* 增强光影效果 */
+            text-shadow: 0 0 10px rgba(139, 0, 0, 0.8), 0 0 30px rgba(255, 215, 0, 0.4);
+            margin-bottom: 30px;
+            padding: 10px;
+            caret-color: var(--gold);
+            transition: all 0.3s ease;
+        }
+        .hidden-input-title::placeholder {
+            color: rgba(255, 248, 220, 0.15);
+            text-shadow: none;
+        }
+        .hidden-input-title:focus {
+            transform: scale(1.02);
+            text-shadow: 0 0 20px rgba(255, 215, 0, 0.8);
+        }
+
+        /* 隐形输入框 - 表演者 */
+        .hidden-input-performer {
+            width: 90%;
+            max-width: 600px;
+            background: transparent;
+            border: none;
+            outline: none;
+            font-family: "华文行楷", sans-serif;
+            font-size: clamp(1.8rem, 4vw, 3.5rem);
+            color: var(--light-gold);
+            text-align: center;
+            text-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            padding: 10px;
+            caret-color: var(--light-gold);
+            opacity: 0.9;
+        }
+        .hidden-input-performer::placeholder {
+            color: rgba(255, 248, 220, 0.15);
+        }
+
+        /* 底部留白区域示意 (不可见，仅占位逻辑) */
+        /* 下方 35% 没有任何交互元素，只有背景和水印 */
+
+        /* 右下角同款3D卡片 - 保持原样 */
+        .watermark-fixed {
+            position: fixed;
+            bottom: 40px;
+            right: 20px;
+            pointer-events: none;
+            z-index: 15;
+            width: 240px;
+            height: 45px;
+        }
+        .watermark-3d-container {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            animation: rotate-card-2d 10s ease-in-out infinite, scale-pulse 4s ease-in-out infinite;
+            transform-style: preserve-3d; /* 修正 3d 属性 */
+            z-index: 2;
+        }
+        .watermark-card {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border-radius: 12px 2px 12px 2px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 4px 8px;
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+            background: rgba(58, 15, 15, 0.6); /* 加深背景增加对比度 */
+            border: 1px solid var(--bright-gold);
+            box-shadow: 0 0 15px rgba(255,215,0,0.4);
+            overflow: hidden;
+        }
+        .watermark-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,210,0.6), transparent);
+            z-index: 1;
+            animation: card-light-shimmer 3s ease-in-out infinite; /* 让光效一直动 */
+        }
+        .watermark-card-front {
+            background: linear-gradient(135deg, rgba(100, 20, 20, 0.9), rgba(180, 120, 0, 0.6));
+            transform: rotateY(0deg);
+        }
+        .watermark-card-back {
+            background: linear-gradient(135deg, rgba(180, 50, 0, 0.9), rgba(255, 170, 0, 0.6));
+            transform: rotateY(180deg);
+        }
+        .watermark-text {
+            font-family: "华文行楷", sans-serif;
+            text-align: center;
+            width: 100%;
+            position: relative;
+            z-index: 3;
+        }
+        .wm-main {
+            font-size: 16px;
+            font-weight: 600;
+            background: linear-gradient(120deg, #ffd700, #fff8dc, #ffd700);
+            background-size: 400% 100%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            line-height: 1.2;
+            display: block;
+            animation: gold-text-shimmer 4s linear infinite;
+        }
+        .wm-flyz {
+            font-size: 14px; /* 稍微调大 */
+            font-weight: 600;
+            background: linear-gradient(120deg, #fff8dc, #ffd700, #fff8dc);
+            background-size: 400% 100%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            line-height: 1.2;
+            display: block;
+            animation: gold-text-shimmer 4s linear infinite;
+        }
+
+        /* 动画定义 */
+        @keyframes rotate-card-2d {
+            0%, 20% { transform: rotateY(0deg); }
+            25%, 45% { transform: rotateY(90deg); } /* 停留更久 */
+            50%, 70% { transform: rotateY(180deg); }
+            75%, 95% { transform: rotateY(270deg); }
+            100% { transform: rotateY(360deg); }
+        }
+        @keyframes scale-pulse {
+            0% { transform: scale(0.95); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(0.95); }
+        }
+        @keyframes card-light-shimmer {
+            0% { left: -100%; }
+            40%, 100% { left: 100%; }
+        }
+        @keyframes gold-text-shimmer {
+            0% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        @media (max-width: 768px) {
+            .hidden-input-title { font-size: clamp(2.5rem, 10vw, 5rem); }
+            .hidden-input-performer { font-size: clamp(1.5rem, 5vw, 2.5rem); }
+            .watermark-fixed { width: 180px; height: 35px; bottom: 30px; right: 15px;}
+            .wm-main { font-size: 12px; }
+            .wm-flyz { font-size: 11px; }
+        }
+    </style>
+</head>
+<body>
+    <canvas id="bg-canvas"></canvas>
+    
+    <div class="ambient-glow"></div>
+
+    <div class="main-container">
+        <input 
+            type="text" 
+            class="hidden-input-title" 
+            placeholder="输入节目/音乐名"
+            autocomplete="off"
+        >
+        <input 
+            type="text" 
+            class="hidden-input-performer" 
+            placeholder="输入表演者"
+            autocomplete="off"
+        >
+    </div>
+
+    <div class="watermark-fixed" id="global-watermark">
+        <div class="watermark-3d-container">
+            <div class="watermark-card watermark-card-front">
+                <div class="watermark-text">
+                    <span class="wm-main">九年级六班|2026元旦联欢会</span>
+                </div>
+            </div>
+            <div class="watermark-card watermark-card-back">
+                <div class="watermark-text">
+                    <span class="wm-flyz">Flyz远征飞</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        /**
+         * 2026元旦流金粒子系统
+         * Max Performance: 使用 Canvas API 替代 DOM 动画
+         */
+        const canvas = document.getElementById('bg-canvas');
+        const ctx = canvas.getContext('2d');
+        
+        let width, height;
+        let particles = [];
+        // 粒子配置
+        const particleCount = 120; // 粒子数量
+        const colors = ['#FFD700', '#FFF8DC', '#FFE47F', '#A52A2A']; // 金色系 + 深红点缀
+        
+        // 鼠标交互
+        let mouseX = 0;
+        let mouseY = 0;
+
+        // 初始化画布尺寸
+        function resize() {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+        }
+        
+        // 粒子类
+        class Particle {
+            constructor() {
+                this.reset(true);
+            }
+
+            reset(initial = false) {
+                this.x = Math.random() * width;
+                this.y = initial ? Math.random() * height : height + 10;
+                this.size = Math.random() * 3 + 1; // 粒子大小
+                this.speedY = Math.random() * 1 + 0.2; // 上浮速度
+                this.speedX = Math.random() * 0.6 - 0.3; // 横向漂移
+                this.color = colors[Math.floor(Math.random() * colors.length)];
+                this.opacity = Math.random() * 0.5 + 0.1;
+                this.fadeSpeed = Math.random() * 0.005 + 0.002;
+                this.fadeDir = 1; // 1变亮, -1变暗
+                this.rotation = Math.random() * Math.PI * 2;
+                this.rotationSpeed = Math.random() * 0.02 - 0.01;
+            }
+
+            update() {
+                // 向上移动
+                this.y -= this.speedY;
+                this.x += this.speedX;
+                this.rotation += this.rotationSpeed;
+
+                // 鼠标互动（简单的斥力效果）
+                /* 如果你想开启鼠标排斥效果，取消注释以下代码
+                const dx = this.x - mouseX;
+                const dy = this.y - mouseY;
+                const distance = Math.sqrt(dx*dx + dy*dy);
+                if (distance < 100) {
+                    this.x += dx * 0.02;
+                    this.y += dy * 0.02;
+                }
+                */
+
+                // 闪烁效果
+                this.opacity += this.fadeSpeed * this.fadeDir;
+                if (this.opacity >= 0.8 || this.opacity <= 0.1) {
+                    this.fadeDir *= -1;
+                }
+
+                // 边界检查
+                if (this.y < -10) {
+                    this.reset();
+                }
+            }
+
+            draw() {
+                ctx.save();
+                ctx.translate(this.x, this.y);
+                ctx.rotate(this.rotation);
+                ctx.globalAlpha = this.opacity;
+                ctx.fillStyle = this.color;
+                
+                // 绘制菱形或圆形
+                if (Math.random() > 0.5) {
+                    ctx.beginPath();
+                    ctx.arc(0, 0, this.size, 0, Math.PI * 2);
+                    ctx.fill();
+                } else {
+                    // 绘制微小的菱形金箔
+                    ctx.beginPath();
+                    ctx.moveTo(0, -this.size);
+                    ctx.lineTo(this.size, 0);
+                    ctx.lineTo(0, this.size);
+                    ctx.lineTo(-this.size, 0);
+                    ctx.closePath();
+                    ctx.fill();
+                }
+                
+                // 偶尔添加光晕
+                if (this.opacity > 0.6) {
+                    ctx.shadowBlur = 10;
+                    ctx.shadowColor = this.color;
+                }
+                
+                ctx.restore();
+            }
+        }
+
+        function initParticles() {
+            particles = [];
+            for (let i = 0; i < particleCount; i++) {
+                particles.push(new Particle());
+            }
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, width, height);
+            
+            // 绘制
+            particles.forEach(p => {
+                p.update();
+                p.draw();
+            });
+
+            requestAnimationFrame(animate);
+        }
+
+        // 监听
+        window.addEventListener('resize', resize);
+        window.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+        });
+
+        // 启动
+        resize();
+        initParticles();
+        animate();
+    </script>
+</body>
+</html>
