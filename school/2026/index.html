@@ -144,7 +144,7 @@
             background: var(--light-crimson);
             padding: 50px;
             border-radius: 30px;
-            border: 2px solid var(--bright-gold);
+            border: 2px solid var(--gold);
             text-align: center;
             box-shadow: 0 0 50px rgba(255,215,0,0.5);
         }
@@ -207,7 +207,7 @@
         .main-title {
             font-family: "华文行楷";
             font-size: 8vw;
-            background: linear-gradient(180deg, #fff, #ffd700, #ffE47F);
+            background: linear-gradient(120deg, #ffd700, #ffE47F);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
@@ -264,6 +264,7 @@
             box-shadow: 0 0 100px rgba(255,215,0,0.3);
         }
 
+        /* 控制栏自动隐藏样式 - 核心修改 */
         .video-ui {
             position: absolute;
             bottom: 50px;
@@ -279,10 +280,13 @@
             border-radius: 50px;
             border: 1px solid var(--bright-gold);
             opacity: 0;
-            transition: 0.5s;
+            transition: opacity 0.5s ease;
+            pointer-events: none;
+            z-index: 51;
         }
         .video-container:hover .video-ui {
             opacity: 1;
+            pointer-events: auto;
         }
 
         .control-btn {
@@ -350,12 +354,13 @@
             text-shadow: 0 0 4px rgba(58, 15, 15, 0.3);
         }
 
+        /* 右下角卡片 - 提升层级，确保MV播放时显示 */
         .watermark-fixed {
-            position: absolute;
+            position: fixed;
             bottom: 40px;
             right: 20px;
             pointer-events: none;
-            z-index: 15;
+            z-index: 9999;
             width: 240px;
             height: 45px;
         }
@@ -364,8 +369,7 @@
             height: 100%;
             position: relative;
             animation: rotate-card-2d 10s ease-in-out infinite, scale-pulse 4s ease-in-out infinite;
-            -webkit-transform-style: flat;
-            transform-style: flat;
+            transform-style: preserve-3d;
             z-index: 2;
         }
         .watermark-card {
@@ -379,13 +383,12 @@
             align-items: center;
             justify-content: center;
             padding: 4px 8px;
-            -webkit-backface-visibility: hidden;
             backface-visibility: hidden;
-            background: rgba(58, 15, 15, 0.4);
+            -webkit-backface-visibility: hidden;
+            background: rgba(58, 15, 15, 0.6);
             border: 1px solid var(--bright-gold);
-            box-shadow: 0 0 12px rgba(255,215,0,0.8);
+            box-shadow: 0 0 15px rgba(255,215,0,0.4);
             overflow: hidden;
-            position: relative;
         }
         .watermark-card::before {
             content: "";
@@ -394,73 +397,20 @@
             left: -100%;
             width: 100%;
             height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,210,0.5), transparent);
+            background: linear-gradient(90deg, transparent, rgba(255,255,210,0.6), transparent);
             z-index: 1;
-            animation: card-light-shimmer 2s ease-in-out infinite paused;
-            -webkit-animation: card-light-shimmer 2s ease-in-out infinite paused;
+            animation: card-light-shimmer 3s ease-in-out infinite;
         }
         .watermark-card-front {
-            background: linear-gradient(135deg, rgba(180, 120, 0, 0.8), rgba(255, 215, 0, 0.6));
-        }
-        .watermark-3d-container:hover .watermark-card-front::before {
-            -webkit-animation-play-state: running;
-            animation-play-state: running;
+            background: linear-gradient(135deg, rgba(139, 20, 20, 0.9), rgba(180, 120, 0, 0.6));
+            transform: rotateY(0deg);
         }
         .watermark-card-back {
-            background: linear-gradient(135deg, rgba(255, 170, 0, 0.8), rgba(255, 215, 0, 0.6));
-            -webkit-transform: rotateY(180deg);
+            background: linear-gradient(135deg, rgba(180, 50, 0, 0.9), rgba(255, 170, 0, 0.6));
             transform: rotateY(180deg);
         }
-        .watermark-3d-container:hover .watermark-card-back::before {
-            -webkit-animation-play-state: running;
-            animation-play-state: running;
-        }
-        @-webkit-keyframes rotate-card-2d {
-            0% { -webkit-transform: rotateY(0deg); transform: rotateY(0deg); }
-            10% { -webkit-transform: rotateY(0deg); transform: rotateY(0deg); }
-            20% { -webkit-transform: rotateY(90deg); transform: rotateY(90deg); }
-            30% { -webkit-transform: rotateY(90deg); transform: rotateY(90deg); }
-            50% { -webkit-transform: rotateY(90deg); transform: rotateY(90deg); }
-            60% { -webkit-transform: rotateY(180deg); transform: rotateY(180deg); }
-            70% { -webkit-transform: rotateY(180deg); transform: rotateY(180deg); }
-            80% { -webkit-transform: rotateY(270deg); transform: rotateY(270deg); }
-            90% { -webkit-transform: rotateY(270deg); transform: rotateY(270deg); }
-            100% { -webkit-transform: rotateY(360deg); transform: rotateY(360deg); }
-        }
-        @keyframes rotate-card-2d {
-            0% { -webkit-transform: rotateY(0deg); transform: rotateY(0deg); }
-            10% { -webkit-transform: rotateY(0deg); transform: rotateY(0deg); }
-            20% { -webkit-transform: rotateY(90deg); transform: rotateY(90deg); }
-            30% { -webkit-transform: rotateY(90deg); transform: rotateY(90deg); }
-            50% { -webkit-transform: rotateY(90deg); transform: rotateY(90deg); }
-            60% { -webkit-transform: rotateY(180deg); transform: rotateY(180deg); }
-            70% { -webkit-transform: rotateY(180deg); transform: rotateY(180deg); }
-            80% { -webkit-transform: rotateY(270deg); transform: rotateY(270deg); }
-            90% { -webkit-transform: rotateY(270deg); transform: rotateY(270deg); }
-            100% { -webkit-transform: rotateY(360deg); transform: rotateY(360deg); }
-        }
-        @-webkit-keyframes scale-pulse {
-            0% { -webkit-transform: scale(0.98); transform: scale(0.98); }
-            50% { -webkit-transform: scale(1.02); transform: scale(1.02); }
-            100% { -webkit-transform: scale(0.98); transform: scale(0.98); }
-        }
-        @keyframes scale-pulse {
-            0% { -webkit-transform: scale(0.98); transform: scale(0.98); }
-            50% { -webkit-transform: scale(1.02); transform: scale(1.02); }
-            100% { -webkit-transform: scale(0.98); transform: scale(0.98); }
-        }
-        @-webkit-keyframes card-light-shimmer {
-            0% { left: -100%; }
-            50% { left: 100%; }
-            100% { left: 100%; }
-        }
-        @keyframes card-light-shimmer {
-            0% { left: -100%; }
-            50% { left: 100%; }
-            100% { left: 100%; }
-        }
         .watermark-text {
-            font-family: "华文行楷", "方正楷体", "PingFang SC", sans-serif;
+            font-family: "华文行楷", sans-serif;
             text-align: center;
             width: 100%;
             position: relative;
@@ -469,48 +419,47 @@
         .wm-main {
             font-size: 16px;
             font-weight: 600;
-            background: linear-gradient(120deg, #ffd700, #fff8dc, #ffd700, #fff8dc, #ffd700);
+            background: linear-gradient(120deg, #ffd700, #fff8dc, #ffd700);
             background-size: 400% 100%;
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
             line-height: 1.2;
             display: block;
-            -webkit-animation: gold-text-shimmer 8s ease-in-out infinite;
-            animation: gold-text-shimmer 8s ease-in-out infinite;
+            animation: gold-text-shimmer 4s linear infinite;
         }
         .wm-flyz {
-            font-size: 12px;
+            font-size: 14px;
             font-weight: 600;
-            background: linear-gradient(120deg, #fff8dc, #ffd700, #fff8dc, #ffd700, #fff8dc);
+            background: linear-gradient(120deg, #fff8dc, #ffd700, #fff8dc);
             background-size: 400% 100%;
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
             line-height: 1.2;
             display: block;
-            -webkit-animation: gold-text-shimmer 8s ease-in-out infinite, gold-text-shake 6s ease-in-out infinite;
-            animation: gold-text-shimmer 8s ease-in-out infinite, gold-text-shake 6s ease-in-out infinite;
+            animation: gold-text-shimmer 4s linear infinite;
         }
-        @-webkit-keyframes gold-text-shimmer {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
+
+        @keyframes rotate-card-2d {
+            0%, 20% { transform: rotateY(0deg); }
+            25%, 45% { transform: rotateY(90deg); }
+            50%, 70% { transform: rotateY(180deg); }
+            75%, 95% { transform: rotateY(270deg); }
+            100% { transform: rotateY(360deg); }
+        }
+        @keyframes scale-pulse {
+            0% { transform: scale(0.95); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(0.95); }
+        }
+        @keyframes card-light-shimmer {
+            0% { left: -100%; }
+            40%, 100% { left: 100%; }
         }
         @keyframes gold-text-shimmer {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
+            0% { background-position: 100% 50%; }
             100% { background-position: 0% 50%; }
-        }
-        @-webkit-keyframes gold-text-shake {
-            0% { -webkit-transform: rotate(-0.3deg); transform: rotate(-0.3deg); }
-            50% { -webkit-transform: rotate(0.3deg); transform: rotate(0.3deg); }
-            100% { -webkit-transform: rotate(-0.3deg); transform: rotate(-0.3deg); }
-        }
-        @keyframes gold-text-shake {
-            0% { -webkit-transform: rotate(-0.3deg); transform: rotate(-0.3deg); }
-            50% { -webkit-transform: rotate(0.3deg); transform: rotate(0.3deg); }
-            100% { -webkit-transform: rotate(-0.3deg); transform: rotate(-0.3deg); }
         }
 
         .volume-toast {
@@ -589,8 +538,6 @@
         .embed-iframe {
             width: 100%;
             height: 100%;
-            border: none;
-            outline: none;
         }
         #exit-embed {
             position: fixed;
@@ -673,6 +620,13 @@
             box-shadow: 0 0 25px var(--bright-gold);
             background: var(--bright-gold);
         }
+
+        /* 适配移动端 */
+        @media (max-width: 768px) {
+            .watermark-fixed { width: 180px; height: 35px; bottom: 30px; right: 15px;}
+            .wm-main { font-size: 12px; }
+            .wm-flyz { font-size: 11px; }
+        }
     </style>
 </head>
 <body>
@@ -731,10 +685,10 @@
                 <span class="time-text">秒</span>
             </div>
         </div>
-        <div class="sub-title" id="sub-title">九年级六班 · 龙腾四海</div>
+        <div class="sub-title" id="sub-title">九年级六班 · 马到成功</div>
     </div>
 
-    <!-- 全局右下角卡片 -->
+    <!-- 全局右下角卡片 - 核心修改：删除隐藏逻辑 -->
     <div class="watermark-fixed" id="global-watermark">
         <div class="watermark-3d-container">
             <div class="watermark-card watermark-card-front">
@@ -744,7 +698,7 @@
             </div>
             <div class="watermark-card watermark-card-back">
                 <div class="watermark-text">
-                    <span class="wm-flyz">yzbjfpv.top</span>
+                    <span class="wm-flyz">Flyz远征飞</span>
                 </div>
             </div>
         </div>
@@ -798,14 +752,14 @@
         <iframe id="ppt-iframe" class="embed-iframe" src="" allowfullscreen></iframe>
         <iframe id="random-iframe" class="embed-iframe" src="" allowfullscreen style="display: none;"></iframe>
         <iframe id="reverse-iframe" class="embed-iframe" src="" allowfullscreen style="display: none;"></iframe>
-        <iframe id="jmd-iframe" class="embed-iframe" src="" allowfullscreen style="display: none;"></iframe> <!-- 新增节目单iframe -->
+        <iframe id="jmd-iframe" class="embed-iframe" src="" allowfullscreen style="display: none;"></iframe>
     </div>
     <div id="exit-embed" onclick="exitEmbed()">
         <i class="fas fa-times"></i>
     </div>
 
     <!-- 底部Dock栏 -->
-    <div class="dock">
+    <div class="dock" id="dock-bar">
         <div class="dock-item" onclick="toggleMusic()">
             <i class="fas fa-music"></i><span>音乐</span>
         </div>
@@ -824,7 +778,6 @@
         <div class="dock-item" onclick="openReverseChallenge()">
             <i class="fas fa-infinity"></i><span>反向挑战</span>
         </div>
-        <!-- 新增节目单dock项 -->
         <div class="dock-item" onclick="openProgramList()">
             <i class="fas fa-list-alt"></i><span>节目单</span>
         </div>
@@ -839,6 +792,7 @@
         let isLaunched = false;
         let targetTime;
         const bgMusic = document.getElementById('bg-music');
+        const dockBar = document.getElementById('dock-bar');
 
         function launchSystem() {
             if(isLaunched) return;
@@ -873,7 +827,6 @@
 
         function manualStart() {
             clearInterval(countdownTimer);
-            document.getElementById('timer-ui').style.display = 'none';
             document.getElementById('sub-title').style.display = 'block';
             document.getElementById('display-title').classList.add('animate__animated', 'animate__pulse');
             bgMusic.play().catch(err => console.log("背景音乐播放失败:", err));
@@ -888,7 +841,7 @@
             document.getElementById('ppt-iframe').style.display = 'block';
             document.getElementById('random-iframe').style.display = 'none';
             document.getElementById('reverse-iframe').style.display = 'none';
-            document.getElementById('jmd-iframe').style.display = 'none'; // 隐藏节目单iframe
+            document.getElementById('jmd-iframe').style.display = 'none';
             showEmbedContainer();
         }
 
@@ -900,12 +853,11 @@
             document.getElementById('reverse-iframe').src = 'https://yzbjfpv.top/school/2026/fxzldtz';
             document.getElementById('ppt-iframe').style.display = 'none';
             document.getElementById('random-iframe').style.display = 'none';
-            document.getElementById('jmd-iframe').style.display = 'none'; // 隐藏节目单iframe
+            document.getElementById('jmd-iframe').style.display = 'none';
             document.getElementById('reverse-iframe').style.display = 'block';
             showEmbedContainer();
         }
 
-        // 新增：打开节目单方法
         function openProgramList() {
             document.getElementById('jmd-iframe').src = 'https://yzbjfpv.top/school/2026/jmd';
             document.getElementById('ppt-iframe').style.display = 'none';
@@ -916,35 +868,32 @@
         }
         
         function openIframe(url) {
-            // 关闭弹窗
             document.getElementById('random-person-modal').style.display = 'none';
-            // 准备并显示嵌入容器
             document.getElementById('random-iframe').src = url;
-            document.getElementById('ppt-iframe').style.display = 'none';
             document.getElementById('random-iframe').style.display = 'block';
             document.getElementById('reverse-iframe').style.display = 'none';
-            document.getElementById('jmd-iframe').style.display = 'none'; // 隐藏节目单iframe
+            document.getElementById('jmd-iframe').style.display = 'none';
             showEmbedContainer();
         }
 
         function showEmbedContainer() {
             document.getElementById('main-hero').style.display = 'none';
-            document.getElementById('global-watermark').style.display = 'none'; // 隐藏全局水印
             document.getElementById('embed-container').style.display = 'block';
             document.getElementById('exit-embed').style.display = 'flex';
             bgMusic.pause();
+            dockBar.style.display = 'none';
         }
 
         function exitEmbed() {
             document.getElementById('embed-container').style.display = 'none';
             document.getElementById('exit-embed').style.display = 'none';
             document.getElementById('main-hero').style.display = 'block';
-            document.getElementById('global-watermark').style.display = 'block'; // 恢复全局水印
             document.getElementById('ppt-iframe').src = '';
             document.getElementById('random-iframe').src = '';
             document.getElementById('reverse-iframe').src = '';
-            document.getElementById('jmd-iframe').src = ''; // 清空节目单iframe地址
+            document.getElementById('jmd-iframe').src = '';
             bgMusic.play().catch(err => console.log("背景音乐播放失败:", err));
+            dockBar.style.display = 'flex';
         }
 
         const video = document.getElementById('video-player');
@@ -985,7 +934,7 @@
             setTimeout(() => {
                 const mvSystem = document.getElementById('mv-system');
                 mvSystem.style.display = 'block';
-                globalWatermark.style.display = 'none'; // 进入MV时隐藏全局水印
+                // 核心修改：删除隐藏卡片的代码
                 video.src = videoUrl;
                 video.load();
                 
@@ -1007,16 +956,8 @@
                     progressHandle.style.left = `${progress}%`;
                     updateTimeDisplay();
                 });
-                
-                video.addEventListener('canplay', () => {
-                    try {
-                        if (video.requestFullscreen) video.requestFullscreen();
-                        else if (video.webkitRequestFullscreen) video.webkitRequestFullscreen();
-                        else if (video.msRequestFullscreen) video.msRequestFullscreen();
-                    } catch (err) {
-                        console.log('自动全屏失败，可手动点击全屏按钮');
-                    }
-                });
+
+                dockBar.style.display = 'none';
             }, 3000);
         }
 
@@ -1064,7 +1005,8 @@
             video.pause();
             const mvSystem = document.getElementById('mv-system');
             mvSystem.style.display = 'none';
-            globalWatermark.style.display = 'block'; // 退出MV时恢复全局水印
+            // 核心修改：删除隐藏卡片的代码
+            dockBar.style.display = 'flex';
             bgMusic.play();
             
             URL.revokeObjectURL(video.src);
@@ -1145,10 +1087,6 @@
             volumeTimer = null;
         });
 
-        document.addEventListener('fullscreenchange', updateFullscreenIcon);
-        document.addEventListener('webkitfullscreenchange', updateFullscreenIcon);
-        document.addEventListener('msfullscreenchange', updateFullscreenIcon);
-
         function updateFullscreenIcon() {
             const icon = fullscreenBtn.querySelector('i');
             if (document.fullscreenElement) {
@@ -1157,6 +1095,10 @@
                 icon.classList.replace('fa-compress', 'fa-expand');
             }
         }
+
+        document.addEventListener('fullscreenchange', updateFullscreenIcon);
+        document.addEventListener('webkitfullscreenchange', updateFullscreenIcon);
+        document.addEventListener('msfullscreenchange', updateFullscreenIcon);
     </script>
 </body>
 </html>
