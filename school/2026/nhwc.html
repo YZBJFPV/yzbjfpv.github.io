@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>九年级六班 | 元旦晚会·诗词你画我猜 | Flyz远征飞官网</title>
+    <link href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --gold: #FFD700;
+            --light-gold: #FFF8DC;
+            --bright-gold: #FFE47F;
+            --crimson: #8B0000;
+            --light-crimson: #A52A2A;
+            --bg-gradient: linear-gradient(180deg, #6a1a1a, #3a0f0f, #2a0a0a);
+            --glass: rgba(165, 42, 42, 0.3);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; }
+        body {
+            font-family: "华文行楷","Microsoft YaHei",sans-serif;
+            background: var(--bg-gradient);
+            color: var(--light-gold);
+            height: 100vh; overflow: hidden;
+            display: flex; align-items: center; justify-content: center;
+        }
+        /* 主容器 - 玻璃拟态+金色边框 */
+        .main-container {
+            width: 90vw; height: 85vh;
+            border-radius: 20px; border: 2px solid var(--bright-gold);
+            box-shadow: 0 0 80px rgba(255,215,0,0.4), inset 0 0 40px rgba(165,42,42,0.2);
+            backdrop-filter: blur(10px); background: var(--glass);
+            display: flex;
+            position: relative;
+        }
+        /* 左右分区 */
+        .poem-area {
+            flex: 1; height: 100%;
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            padding: 2vw; cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .poem-area:active {
+            background: rgba(255,215,0,0.08);
+            box-shadow: inset 0 0 50px rgba(255,215,0,0.15);
+        }
+        /* 中间金色分割线 */
+        .split-line {
+            width: 4px; height: 80%;
+            margin: auto 0;
+            background: linear-gradient(180deg, transparent, var(--bright-gold), var(--gold), transparent);
+            box-shadow: 0 0 20px rgba(255,215,0,0.6);
+        }
+        /* 分区标题 - 金色渐变+呼吸动画 */
+        .area-title {
+            font-size: 3.5vw;
+            background: linear-gradient(180deg, #fff, #ffd700, #ffE47F);
+            -webkit-background-clip: text; background-clip: text; color: transparent;
+            text-shadow: 0 0 20px rgba(255,215,0,0.8);
+            margin-bottom: 4vw; animation: breathe 4s infinite alternate;
+        }
+        /* 诗句展示框 */
+        .poem-box {
+            font-size: 2.5vw; color: var(--bright-gold);
+            text-align: center; line-height: 1.8;
+            max-width: 90%; padding: 2vw 3vw;
+            text-shadow: 0 0 15px var(--crimson), 0 0 30px rgba(255,215,0,0.7);
+            border-radius: 15px; border: 1px solid rgba(255,215,0,0.5);
+            background: rgba(255,255,255,0.05);
+        }
+        /* 加载样式 */
+        .loading { font-size: 2vw; opacity: 0.8; text-shadow: none; }
+        /* 底部水印 */
+        .ppt-watermark {
+            position: absolute; bottom: 20px; right: 20px;
+            font-family: "华文行楷"; font-size: 1.2vw; color: var(--bright-gold);
+            opacity: 0.7; text-shadow: 0 0 5px var(--crimson);
+        }
+        /* 呼吸动画 */
+        @keyframes breathe {
+            from { transform: scale(0.98); opacity: 0.9; }
+            to { transform: scale(1); opacity: 1; }
+        }
+        /* 响应式适配 */
+        @media (max-width:768px) {
+            .area-title { font-size: 6vw; margin-bottom: 6vw; }
+            .poem-box { font-size: 3.5vw; padding: 3vw; }
+            .loading { font-size: 3vw; }
+            .ppt-watermark { font-size: 2vw; }
+        }
+    </style>
+</head>
+<body>
+    <div class="main-container">
+        <!-- 左侧区域 -->
+        <div class="poem-area" id="leftArea">
+            <div class="area-title">左</div>
+            <div class="poem-box loading" id="leftPoem">加载中...</div>
+        </div>
+        <!-- 中间分割线 -->
+        <div class="split-line"></div>
+        <!-- 右侧区域 -->
+        <div class="poem-area" id="rightArea">
+            <div class="area-title">右</div>
+            <div class="poem-box loading" id="rightPoem">加载中...</div>
+        </div>
+        <!-- 水印 -->
+        <div class="ppt-watermark">九年级六班 | 2026元旦联欢会 | yzbjfpv.top</div>
+    </div>
+
+    <script>
+        // ========== 1. 内置诗词库（小学至初三全覆盖，带题目+诗句，共120句） ==========
+        const poemList = [
+            "《咏鹅》- 鹅，鹅，鹅，曲项向天歌",
+            "《静夜思》- 床前明月光，疑是地上霜",
+            "《春晓》- 春眠不觉晓，处处闻啼鸟",
+            "《村居》- 草长莺飞二月天，拂堤杨柳醉春烟",
+            "《所见》- 牧童骑黄牛，歌声振林樾",
+            "《小池》- 泉眼无声惜细流，树阴照水爱晴柔",
+            "《江雪》- 千山鸟飞绝，万径人踪灭",
+            "《梅花》- 墙角数枝梅，凌寒独自开",
+            "《登鹳雀楼》- 白日依山尽，黄河入海流",
+            "《望庐山瀑布》- 飞流直下三千尺，疑是银河落九天",
+            "《赠汪伦》- 桃花潭水深千尺，不及汪伦送我情",
+            "《回乡偶书》- 少小离家老大回，乡音无改鬓毛衰",
+            "《赋得古原草送别》- 野火烧不尽，春风吹又生",
+            "《宿新市徐公店》- 儿童急走追黄蝶，飞入菜花无处寻",
+            "《望天门山》- 天门中断楚江开，碧水东流至此回",
+            "《饮湖上初晴后雨》- 欲把西湖比西子，淡妆浓抹总相宜",
+            "《题西林壁》- 不识庐山真面目，只缘身在此山中",
+            "《夏日绝句》- 生当作人杰，死亦为鬼雄",
+            "《示儿》- 死去元知万事空，但悲不见九州同",
+            "《秋夜将晓出篱门迎凉有感》- 三万里河东入海，五千仞岳上摩天",
+            "《四时田园杂兴》- 昼出耘田夜绩麻，村庄儿女各当家",
+            "《稚子弄冰》- 稚子金盆脱晓冰，彩丝穿取当银钲",
+            "《村晚》- 牧童归去横牛背，短笛无腔信口吹",
+            "《游子吟》- 慈母手中线，游子身上衣",
+            "《江畔独步寻花》- 黄四娘家花满蹊，千朵万朵压枝低",
+            "《蜂》- 采得百花成蜜后，为谁辛苦为谁甜",
+            "《独坐敬亭山》- 相看两不厌，只有敬亭山",
+            "《芙蓉楼送辛渐》- 洛阳亲友如相问，一片冰心在玉壶",
+            "《塞下曲》- 欲将轻骑逐，大雪满弓刀",
+            "《墨梅》- 不要人夸好颜色，只留清气满乾坤",
+            "《竹石》- 千磨万击还坚劲，任尔东西南北风",
+            "《石灰吟》- 粉骨碎身浑不怕，要留清白在人间",
+            "《己亥杂诗》- 我劝天公重抖擞，不拘一格降人材",
+            "《山居秋暝》- 明月松间照，清泉石上流",
+            "《枫桥夜泊》- 月落乌啼霜满天，江枫渔火对愁眠",
+            "《长相思》- 山一程，水一程，身向榆关那畔行",
+            "《渔歌子》- 西塞山前白鹭飞，桃花流水鳜鱼肥",
+            "《观书有感》- 问渠那得清如许？为有源头活水来",
+            "《题临安邸》- 暖风熏得游人醉，直把杭州作汴州",
+            "《游园不值》- 春色满园关不住，一枝红杏出墙来",
+            "《乡村四月》- 乡村四月闲人少，才了蚕桑又插田",
+            "《六月二十七日望湖楼醉书》- 黑云翻墨未遮山，白雨跳珠乱入船",
+            "《西江月·夜行黄沙道中》- 明月别枝惊鹊，清风半夜鸣蝉",
+            "《浪淘沙》- 九曲黄河万里沙，浪淘风簸自天涯",
+            "《江南春》- 南朝四百八十寺，多少楼台烟雨中",
+            "《春日》- 等闲识得东风面，万紫千红总是春",
+            "《乞巧》- 家家乞巧望秋月，穿尽红丝几万条",
+            "《嫦娥》- 嫦娥应悔偷灵药，碧海青天夜夜心",
+            "《凉州词》- 葡萄美酒夜光杯，欲饮琵琶马上催",
+            "《出塞》- 秦时明月汉时关，万里长征人未还",
+            "《鹿柴》- 空山不见人，但闻人语响",
+            "《送元二使安西》- 劝君更尽一杯酒，西出阳关无故人",
+            "《九月九日忆山东兄弟》- 独在异乡为异客，每逢佳节倍思亲",
+            "《竹里馆》- 独坐幽篁里，弹琴复长啸",
+            "《春夜洛城闻笛》- 此夜曲中闻折柳，何人不起故园情",
+            "《逢入京使》- 马上相逢无纸笔，凭君传语报平安",
+            "《晚春》- 草树知春不久归，百般红紫斗芳菲",
+            "《登飞来峰》- 不畏浮云遮望眼，自缘身在最高层",
+            "《游山西村》- 山重水复疑无路，柳暗花明又一村",
+            "《泊秦淮》- 烟笼寒水月笼沙，夜泊秦淮近酒家",
+            "《贾生》- 可怜夜半虚前席，不问苍生问鬼神",
+            "《过松源晨炊漆公店》- 政入万山围子里，一山放出一山拦",
+            "《约客》- 黄梅时节家家雨，青草池塘处处蛙",
+            "《木兰诗》- 朔气传金柝，寒光照铁衣",
+            "《陋室铭》- 山不在高，有仙则名；水不在深，有龙则灵",
+            "《爱莲说》- 出淤泥而不染，濯清涟而不妖",
+            "《观沧海》- 东临碣石，以观沧海。水何澹澹，山岛竦峙",
+            "《次北固山下》- 潮平两岸阔，风正一帆悬",
+            "《钱塘湖春行》- 几处早莺争暖树，谁家新燕啄春泥",
+            "《天净沙·秋思》- 枯藤老树昏鸦，小桥流水人家",
+            "《使至塞上》- 大漠孤烟直，长河落日圆",
+            "《渡荆门送别》- 山随平野尽，江入大荒流",
+            "《黄鹤楼》- 昔人已乘黄鹤去，此地空余黄鹤楼",
+            "《送友人》- 浮云游子意，落日故人情",
+            "《秋词》- 晴空一鹤排云上，便引诗情到碧霄",
+            "《夜雨寄北》- 何当共剪西窗烛，却话巴山夜雨时",
+            "《无题》- 春蚕到死丝方尽，蜡炬成灰泪始干",
+            "《相见欢》- 无言独上西楼，月如钩。寂寞梧桐深院锁清秋",
+            "《渔家傲·秋思》- 塞下秋来风景异，衡阳雁去无留意",
+            "《破阵子·为陈同甫赋壮词以寄之》- 醉里挑灯看剑，梦回吹角连营",
+            "《满江红》- 怒发冲冠，凭栏处、潇潇雨歇",
+            "《黄鹤楼送孟浩然之广陵》- 故人西辞黄鹤楼，烟花三月下扬州",
+            "《早发白帝城》- 朝辞白帝彩云间，千里江陵一日还",
+            "《望洞庭》- 遥望洞庭山水翠，白银盘里一青螺",
+            "《忆江南》- 日出江花红胜火，春来江水绿如蓝",
+            "《凉州词》- 黄河远上白云间，一片孤城万仞山",
+            "《别董大》- 莫愁前路无知己，天下谁人不识君",
+            "《春雪》- 白雪却嫌春色晚，故穿庭树作飞花",
+            "《早春呈水部张十八员外》- 天街小雨润如酥，草色遥看近却无",
+            "《登楼》- 锦江春色来天地，玉垒浮云变古今",
+            "《望岳》- 会当凌绝顶，一览众山小",
+            "《春望》- 国破山河在，城春草木深",
+            "《石壕吏》- 吏呼一何怒，妇啼一何苦",
+            "《茅屋为秋风所破歌》- 安得广厦千万间，大庇天下寒士俱欢颜",
+            "《卖炭翁》- 满面尘灰烟火色，两鬓苍苍十指黑",
+            "《酬乐天扬州初逢席上见赠》- 沉舟侧畔千帆过，病树前头万木春",
+            "《观刈麦》- 足蒸暑土气，背灼炎天光",
+            "《钱塘湖春行》- 乱花渐欲迷人眼，浅草才能没马蹄",
+            "《雁门太守行》- 黑云压城城欲摧，甲光向日金鳞开",
+            "《赤壁》- 东风不与周郎便，铜雀春深锁二乔",
+            "《泊秦淮》- 商女不知亡国恨，隔江犹唱后庭花",
+            "《夜雨寄北》- 君问归期未有期，巴山夜雨涨秋池",
+            "《无题》- 相见时难别亦难，东风无力百花残",
+            "《相见欢》- 剪不断，理还乱，是离愁。别是一般滋味在心头",
+            "《渔家傲》- 天接云涛连晓雾，星河欲转千帆舞",
+            "《浣溪沙》- 无可奈何花落去，似曾相识燕归来",
+            "《登飞来峰》- 飞来山上千寻塔，闻说鸡鸣见日升",
+            "《江城子·密州出猎》- 会挽雕弓如满月，西北望，射天狼",
+            "《水调歌头》- 但愿人长久，千里共婵娟",
+            "《游山西村》- 莫笑农家腊酒浑，丰年留客足鸡豚",
+            "《破阵子》- 马作的卢飞快，弓如霹雳弦惊",
+            "《过零丁洋》- 人生自古谁无死？留取丹心照汗青",
+            "《天净沙·秋思》- 夕阳西下，断肠人在天涯",
+            "《山坡羊·潼关怀古》- 兴，百姓苦；亡，百姓苦",
+            "《己亥杂诗》- 落红不是无情物，化作春泥更护花",
+            "《送杜少府之任蜀州》- 海内存知己，天涯若比邻",
+            "《登幽州台歌》- 念天地之悠悠，独怆然而涕下",
+            "《闻王昌龄左迁龙标遥有此寄》- 我寄愁心与明月，随君直到夜郎西",
+            "《行路难》- 长风破浪会有时，直挂云帆济沧海",
+            "《茅屋为秋风所破歌》- 八月秋高风怒号，卷我屋上三重茅",
+            "《白雪歌送武判官归京》- 忽如一夜春风来，千树万树梨花开",
+            "《送东阳马生序》- 天大寒，砚冰坚，手指不可屈伸",
+            "《岳阳楼记》- 先天下之忧而忧，后天下之乐而乐",
+            "《醉翁亭记》- 醉翁之意不在酒，在乎山水之间也",
+            "《爱莲说》- 中通外直，不蔓不枝，香远益清",
+            "《记承天寺夜游》- 庭下如积水空明，水中藻、荇交横",
+            "《送东阳马生序》- 以中有足乐者，不知口体之奉不若人也",
+            "《出师表》- 亲贤臣，远小人，此先汉所以兴隆也",
+            "《桃花源记》- 芳草鲜美，落英缤纷",
+            "《三峡》- 重岩叠嶂，隐天蔽日，自非亭午夜分，不见曦月",
+            "《答谢中书书》- 高峰入云，清流见底。两岸石壁，五色交辉"
+        ];
+
+        // ========== 2. 全局变量 ==========
+        let leftUsed = []; // 左侧已用索引
+        let rightUsed = []; // 右侧已用索引
+        const leftArea = document.getElementById('leftArea');
+        const rightArea = document.getElementById('rightArea');
+        const leftPoem = document.getElementById('leftPoem');
+        const rightPoem = document.getElementById('rightPoem');
+
+        // ========== 3. 随机抽取诗句（乱序+防重复） ==========
+        function getRandomPoem(side) {
+            let usedArr = side === 'left' ? leftUsed : rightUsed;
+            // 全部用完则重置
+            if (usedArr.length >= poemList.length) usedArr = [];
+            // 筛选未使用的索引
+            let available = [];
+            for(let i=0; i<poemList.length; i++){
+                if(!usedArr.includes(i)) available.push(i);
+            }
+            // 随机选一个
+            const randomIdx = available[Math.floor(Math.random() * available.length)];
+            const randomPoem = poemList[randomIdx];
+            // 更新页面和已用列表
+            if(side === 'left'){
+                leftPoem.textContent = randomPoem;
+                leftUsed.push(randomIdx);
+            } else {
+                rightPoem.textContent = randomPoem;
+                rightUsed.push(randomIdx);
+            }
+        }
+
+        // ========== 4. 绑定点击事件 ==========
+        leftArea.addEventListener('click', () => {
+            getRandomPoem('left');
+            leftPoem.classList.remove('loading');
+        });
+        rightArea.addEventListener('click', () => {
+            getRandomPoem('right');
+            rightPoem.classList.remove('loading');
+        });
+
+        // ========== 5. 初始化 ==========
+        window.onload = () => {
+            getRandomPoem('left');
+            getRandomPoem('right');
+            leftPoem.classList.remove('loading');
+            rightPoem.classList.remove('loading');
+        };
+    </script>
+</body>
+</html>
