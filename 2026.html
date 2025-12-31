@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>李YZ祝你2026元旦快乐</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@700;900&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    :root {
+      --red: #C8102E;
+      --red-dark: #A0081F;
+      --gold: #FFD700;
+      --gold-light: #FFF1C8;
+    }
+
+    body {
+      font-family: 'Noto Sans SC', sans-serif;
+      background: linear-gradient(135deg, var(--red), var(--red-dark), var(--red));
+      background-size: 400% 400%;
+      animation: bgFlow 8s ease-in-out infinite;
+      overflow: hidden;
+    }
+
+    @keyframes bgFlow {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    .title {
+      text-shadow: 0 0 10px var(--gold), 0 0 25px var(--gold-light), 0 0 40px var(--gold-light);
+      background: linear-gradient(180deg, var(--gold) 0%, var(--gold-light) 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .yz {
+      letter-spacing: 2px;
+      text-shadow: 0 0 8px rgba(255,215,0,.65);
+    }
+
+    .bullet {
+      position: absolute;
+      white-space: nowrap;
+      background: linear-gradient(90deg, var(--gold), var(--gold-light));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      text-shadow: 0 0 6px rgba(255,215,0,.55);
+      opacity: 0;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col items-center justify-center p-4">
+  <div class="relative z-10 text-center">
+    <h1 class="title font-black text-[clamp(2.8rem,10vw,5.5rem)] leading-tight">
+      2026 元旦快乐
+    </h1>
+    <div class="mt-6 text-[clamp(1.2rem,4vw,2.2rem)] font-bold text-white yz">
+      YZ 祝你元旦快乐
+    </div>
+  </div>
+
+  <div id="bullets" class="fixed inset-0 pointer-events-none z-0"></div>
+
+  <script>
+    const blessings = [
+      "元旦快乐","新年快乐","万事如意","心想事成","平安喜乐","身体健康","阖家幸福","财源广进","福星高照","好运连连",
+      "吉祥如意","岁岁平安","年年有余","恭喜发财","事业顺利","学业进步","步步高升","前程似锦","一帆风顺","鹏程万里",
+      "龙马精神","春风得意","喜气洋洋","笑口常开","好运常在","福气满满","鸿运当头","金玉满堂","招财进宝","富贵吉祥",
+      "万事胜意","大吉大利","六六大顺","八方来财","九九同心","十全十美","百福并臻","千祥云集","万事如意","四季平安",
+      "五福临门","七星高照","八方鸿运","久久安康","十分美满","百事可乐","千事顺心","万事如意","天天好运","日日开心",
+      "好事成双","好运连连","财运亨通","福气盈门","鸿运高照","瑞气盈门","喜气盈门","吉祥满堂","如意安康","幸福安康",
+      "健康长寿","平安顺遂","顺遂如意","顺心顺意","顺风顺水","顺风满帆","顺顺利利","蒸蒸日上","欣欣向荣","兴旺发达",
+      "金玉良缘","珠联璧合","天作之合","百年好合","永结同心","早生贵子","家庭美满","团圆幸福","和和美美","甜甜蜜蜜",
+      "福如东海","寿比南山","松鹤长春","鹤发童颜","精神矍铄","福寿安康","福寿双全","福寿绵长","长乐未央","安宁喜乐",
+      "学业有成","金榜题名","才思敏捷","下笔有神","逢考必过","旗开得胜","步步高升","名列前茅","出类拔萃","前程无量"
+    ];
+
+    const container = document.getElementById('bullets');
+    const count = 120;
+    const width = window.innerWidth;
+    const height = window.innerHeight;
+
+    function createBullet(text, i) {
+      const el = document.createElement('div');
+      el.className = 'bullet';
+      el.textContent = text;
+
+      // 随机位置（遍布全屏）
+      const top = Math.random() * height;
+      const left = Math.random() * width;
+
+      // 随机大小
+      const size = 12 + Math.random() * 6;
+      el.style.fontSize = `${size}px`;
+
+      // 随机速度与方向
+      const dir = Math.random() > 0.5 ? 1 : -1;
+      const speed = 20 + Math.random() * 45; // 秒
+      const delay = Math.random() * 10;
+
+      // 入场/退场透明度曲线
+      el.style.animation = `
+        move ${speed}s linear ${delay}s infinite,
+        fade 0.6s ease ${delay}s forwards,
+        fadeOut 0.6s ease ${delay + speed - 0.6}s forwards
+      `;
+
+      // 起始位置（左侧外或右侧外）
+      const startX = dir > 0 ? -200 : width + 200;
+      el.style.left = `${startX}px`;
+      el.style.top = `${top}px`;
+
+      // 目标位置（贯穿屏幕）
+      const endX = dir > 0 ? width + 200 : -200;
+      el.style.setProperty('--endX', `${endX}px`);
+      el.style.setProperty('--startX', `${startX}px`);
+
+      container.appendChild(el);
+    }
+
+    // 样式注入
+    const style = document.createElement('style');
+    style.textContent = `
+      @keyframes move {
+        0% { transform: translateX(0); }
+        100% { transform: translateX(calc(var(--endX) - var(--startX))); }
+      }
+      @keyframes fade {
+        0% { opacity: 0; }
+        100% { opacity: 0.9; }
+      }
+      @keyframes fadeOut {
+        0% { opacity: 0.9; }
+        100% { opacity: 0; }
+      }
+    `;
+    document.head.appendChild(style);
+
+    // 生成弹幕：循环使用祝福词，确保数量足够
+    for (let i = 0; i < count; i++) {
+      const text = blessings[i % blessings.length];
+      createBullet(text, i);
+    }
+  </script>
+</body>
+</html>
