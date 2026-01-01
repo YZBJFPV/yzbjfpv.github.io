@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="zh-CN" id="html-lang">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2026元旦特别版｜Flyz远征飞</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <!-- Tailwind 配置 -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#D62828', // 科技红主色
+                        secondary: '#F77F00',
+                        gold: '#FFD700', // 标准金色
+                        light: '#FFFFFF',
+                        dark: '#2B2D42'
+                    },
+                    fontFamily: {
+                        inter: ['Inter', 'system-ui', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .content-auto { content-visibility: auto; }
+            .dock-item { transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); }
+            .dock-item:hover { transform: translateY(-8px) scale(1.1); }
+            .dock-item:active { transform: translateY(-2px) scale(1.05); }
+            .text-shadow-glow { text-shadow: 0 0 12px rgba(255, 215, 0, 0.9); }
+            .card-hover { transition: all 0.4s ease; }
+            .card-hover:hover { box-shadow: 0 15px 30px rgba(214, 40, 40, 0.2); transform: translateY(-3px); }
+            .bg-grid {
+                background-image: linear-gradient(rgba(214, 40, 40, 0.1) 1px, transparent 1px),
+                                linear-gradient(90deg, rgba(214, 40, 40, 0.1) 1px, transparent 1px);
+                background-size: 20px 20px;
+            }
+            .bg-sand-gold {
+                background-image: url('https://picsum.photos/id/152/1000/200'); /* 金沙纹理图 */
+                background-size: cover;
+                background-position: center;
+            }
+        }
+    </style>
+    <style>
+        body { overflow-x: hidden; background-color: #FFF8F8; }
+        /* 科技红网格背景 + 粒子叠加 */
+        #bg-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -2; background-color: #D62828; opacity: 0.9; }
+        #grid-layer { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; background-size: 20px 20px; opacity: 0.2; }
+        #particles-js { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; opacity: 0.6; }
+        
+        /* 顶部元旦横幅 */
+        .newyear-banner { animation: bannerScroll 25s linear infinite; white-space: nowrap; }
+        @keyframes bannerScroll { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
+        
+        /* 金沙Dock栏样式 */
+        .dock-container { 
+            backdrop-filter: blur(12px); 
+            background-color: rgba(255, 215, 0, 0.85);
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.6);
+        }
+        .dock-item span { color: #8B6508; } /* 暗金色文字 */
+        
+        /* 优化版联系方式弹窗 */
+        .contact-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 100; display: flex; align-items: center; justify-content: center; opacity: 0; visibility: hidden; transition: all 0.3s ease; }
+        .contact-modal.active { opacity: 1; visibility: visible; }
+        .modal-content { 
+            background: linear-gradient(135deg, #fff, #FFF8DC);
+            padding: 30px; 
+            border-radius: 16px; 
+            text-align: center; 
+            transform: translateY(-20px) scale(0.95); 
+            transition: all 0.3s ease; 
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2); 
+            min-width: 280px;
+            border: 2px solid #FFD700;
+        }
+        .contact-modal.active .modal-content { transform: translateY(0) scale(1); }
+    </style>
+</head>
+<body class="font-inter text-dark">
+    <!-- 科技红背景层 + 网格层 + 粒子层 -->
+    <div id="bg-container"></div>
+    <div id="grid-layer" class="bg-grid"></div>
+    <div id="particles-js"></div>
+
+    <!-- 优化版联系方式弹窗 -->
+    <div id="contact-modal" class="contact-modal">
+        <div class="modal-content">
+            <h3 class="text-xl font-bold mb-6 text-primary border-b pb-3 border-gold/30">Flyz远征飞官方联系方式</h3>
+            <!-- 微信 -->
+            <div class="mb-6 p-4 bg-gray-50 rounded-lg">
+                <i class="fa fa-weixin text-green-500 text-5xl mb-2"></i>
+                <p class="text-lg font-medium text-dark">官方微信</p>
+                <p class="text-2xl font-mono bg-gold/10 py-2 px-4 rounded inline-block mt-1">YGWFK2024</p>
+            </div>
+            <!-- B站 -->
+            <div class="mb-6 p-4 bg-gray-50 rounded-lg">
+                <i class="fa fa-play-circle text-pink-500 text-5xl mb-2"></i>
+                <p class="text-lg font-medium text-dark">哔哩哔哩官方账号</p>
+                <a href="https://b23.tv/JXuI9QA" target="_blank" class="text-primary hover:text-primary/80 transition-colors underline mt-1 inline-block">Flyz远征飞</a>
+            </div>
+            <button class="modal-close bg-primary text-white py-2 px-8 rounded-md hover:bg-primary/90 transition-colors click-scale">关闭</button>
+        </div>
+    </div>
+
+    <!-- 顶部元旦横幅 -->
+    <div class="bg-primary py-2 overflow-hidden h-10 flex items-center">
+        <div class="newyear-banner text-white font-bold text-lg px-4">
+            🎉 2026元旦快乐｜Flyz远征飞祝您新年大吉 航模飞行顺利 🎉
+        </div>
+    </div>
+
+    <!-- 金沙背景Dock导航栏 -->
+    <header class="fixed bottom-8 left-0 right-0 z-50 flex justify-center">
+        <div class="dock-container rounded-full shadow-xl px-4 py-3 flex gap-2 md:gap-4 max-w-3xl bg-sand-gold">
+            <!-- Logo -->
+            <a href="https://yzbjfpv.top/20250709.html" class="dock-item flex flex-col items-center justify-center p-2 md:p-3">
+                <img src="https://img520.com/UIGuUV.jpeg" alt="Flyz远征飞Logo" class="h-8 md:h-10 w-auto rounded-full object-contain" onerror="this.src='https://picsum.photos/40/40'">
+                <span class="text-xs md:text-sm mt-1 font-medium">首页</span>
+            </a>
+            <!-- 导航项 -->
+            <a href="http://yzflight.xyz" class="dock-item flex flex-col items-center justify-center p-2 md:p-3">
+                <i class="fa fa-download text-dark text-xl md:text-2xl"></i>
+                <span class="text-xs md:text-sm mt-1 font-medium">下载中心</span>
+            </a>
+            <a href="https://shop500685313.taobao.com/" class="dock-item flex flex-col items-center justify-center p-2 md:p-3">
+                <i class="fa fa-shopping-bag text-dark text-xl md:text-2xl"></i>
+                <span class="text-xs md:text-sm mt-1 font-medium">严选商城</span>
+            </a>
+            <a href="https://yzbjfpv.top/flyz/202510/维修专区.html" class="dock-item flex flex-col items-center justify-center p-2 md:p-3">
+                <i class="fa fa-wrench text-dark text-xl md:text-2xl"></i>
+                <span class="text-xs md:text-sm mt-1 font-medium">维修专区</span>
+            </a>
+            <!-- 联系方式入口 -->
+            <button id="contact-btn" class="dock-item flex flex-col items-center justify-center p-2 md:p-3">
+                <i class="fa fa-user-plus text-dark text-xl md:text-2xl"></i>
+                <span class="text-xs md:text-sm mt-1 font-medium">联系方式</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- 主体内容 -->
+    <main class="pt-12 pb-40 relative z-10">
+        <!-- 元旦标题 -->
+        <div class="text-center py-10 px-4">
+            <h1 class="text-[clamp(2rem,6vw,3.5rem)] font-black mb-4">
+                <span class="text-light text-shadow-glow">Flyz远征飞</span>
+                <span class="text-gold text-shadow-glow">2026元旦特别版</span>
+            </h1>
+            <p class="text-lg md:text-xl text-light/90 max-w-2xl mx-auto">为模友而生，新年新装备，飞行更畅快</p>
+        </div>
+
+        <!-- 可操控B站视频播放器 -->
+        <div class="px-4 md:px-6 mb-16">
+            <div class="max-w-4xl mx-auto rounded-2xl overflow-hidden shadow-lg card-hover bg-white">
+                <!-- 启用B站播放器控件，移除autoplay -->
+                <iframe 
+                    src="https://player.bilibili.com/player.html?bvid=BV1MWjgzvEED&autoplay=0&dm=1&controls=1&showinfo=1" 
+                    style="width: 100%; aspect-ratio: 16/9; border: none;" 
+                    allowfullscreen
+                    allow="autoplay; fullscreen; encrypted-media; picture-in-picture"
+                ></iframe>
+                <div class="p-4 text-center">
+                    <h3 class="font-bold text-lg text-primary">联名FPV远航电池</h3>
+                    <p class="text-gray-600 text-sm">性能强劲，适配各类航模，详情见上方视频介绍</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 网站定制案例 -->
+        <div class="container mx-auto px-4 md:px-6 mb-16">
+            <h2 class="text-center mb-8 text-[clamp(1.3rem,3vw,1.8rem)] font-bold text-light">
+                🖥️ 定制网站案例
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+                <!-- 案例1 -->
+                <a href="https://www.wanshizan.com.cn/dudurc" target="_blank" class="bg-white rounded-xl p-4 shadow-md card-hover flex items-center gap-4">
+                    <div class="w-12 h-12 bg-primary text-white rounded-full flex items-center justify-center flex-shrink-0">
+                        <i class="fa fa-battery-full text-xl"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-dark">嘟嘟电池官网</h4>
+                        <p class="text-sm text-gray-500">专业电池品牌展示平台</p>
+                    </div>
+                </a>
+                <!-- 案例2 -->
+                <a href="https://www.wanshizan.com.cn" target="_blank" class="bg-white rounded-xl p-4 shadow-md card-hover flex items-center gap-4">
+                    <div class="w-12 h-12 bg-secondary text-white rounded-full flex items-center justify-center flex-shrink-0">
+                        <i class="fa fa-cogs text-xl"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-dark">康易安科技官网</h4>
+                        <p class="text-sm text-gray-500">科技企业综合展示平台</p>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </main>
+
+    <!-- 红色半透明隐形页脚 -->
+    <footer class="bg-primary/20 backdrop-blur-sm py-6 relative z-10 border-t border-primary/10">
+        <div class="container mx-auto px-4 text-center">
+            <img src="https://img520.com/UIGuUV.jpeg" alt="Flyz远征飞Logo" class="h-8 w-auto rounded-full mx-auto mb-3 opacity-60" onerror="this.src='https://picsum.photos/48/48'">
+            <p class="text-light/50 text-sm mb-1">© 2026 Flyz远征飞官方网站 | 元旦特别版</p>
+            <p class="text-light/40 text-xs">我们的口号是：为方便模友而生</p>
+        </div>
+    </footer>
+
+    <!-- 核心JS逻辑 -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // 粒子效果配置
+            particlesJS('particles-js', {
+                particles: {
+                    number: { value: 60, density: { enable: true, value_area: 800 } },
+                    color: { value: ["#FFFFFF", "#FFD700", "#F77F00"] },
+                    shape: { type: ["circle", "star"] },
+                    opacity: { value: 0.5, anim: { enable: true, speed: 1 } },
+                    size: { value: 3, anim: { enable: true, speed: 2 } },
+                    line_linked: { enable: true, distance: 120, color: "#FFFFFF", opacity: 0.2 },
+                    move: { enable: true, speed: 1, direction: "none", random: true, attract: { enable: true } }
+                },
+                interactivity: {
+                    detect_on: "canvas",
+                    events: { onhover: { enable: true, mode: "grab" }, onclick: { enable: true, mode: "push" } }
+                },
+                retina_detect: true
+            });
+
+            // 联系方式弹窗控制
+            const contactModal = document.getElementById('contact-modal');
+            const contactBtn = document.getElementById('contact-btn');
+            const modalClose = document.querySelector('.modal-close');
+            
+            contactBtn.addEventListener('click', () => {
+                contactModal.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            });
+
+            function closeModal() {
+                contactModal.classList.remove('active');
+                document.body.style.overflow = '';
+            }
+            modalClose.addEventListener('click', closeModal);
+            contactModal.addEventListener('click', (e) => e.target === contactModal && closeModal());
+
+            // 按钮点击缩放效果
+            document.querySelectorAll('.click-scale').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    this.classList.add('scale-95');
+                    setTimeout(() => this.classList.remove('scale-95'), 200);
+                });
+            });
+        });
+    </script>
+</body>
+</html>
