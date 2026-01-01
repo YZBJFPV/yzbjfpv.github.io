@@ -40,10 +40,25 @@
                                 linear-gradient(90deg, rgba(214, 40, 40, 0.1) 1px, transparent 1px);
                 background-size: 20px 20px;
             }
+            /* 绿色系风景背景 - 高速图库 */
             .bg-sand-gold {
-                background-image: url('https://picsum.photos/id/152/1000/200'); /* 金沙纹理图 */
+                background-image: url('https://picsum.photos/id/119/1000/200'); /* 绿色森林风景图，高速加载 */
                 background-size: cover;
                 background-position: center;
+            }
+            /* Dock栏文字特效 */
+            .dock-text {
+                background: linear-gradient(120deg, #8B6508, #FFD700, #8B6508);
+                background-size: 200% 200%;
+                -webkit-background-clip: text;
+                background-clip: text;
+                color: transparent;
+                animation: goldShine 3s ease-in-out infinite;
+                font-weight: 600;
+            }
+            @keyframes goldShine {
+                0%, 100% { background-position: 0% 50%; }
+                50% { background-position: 100% 50%; }
             }
         }
     </style>
@@ -58,13 +73,12 @@
         .newyear-banner { animation: bannerScroll 25s linear infinite; white-space: nowrap; }
         @keyframes bannerScroll { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
         
-        /* 金沙Dock栏样式 */
+        /* 金沙Dock栏样式 - 增强阴影亮度 */
         .dock-container { 
             backdrop-filter: blur(12px); 
             background-color: rgba(255, 215, 0, 0.85);
-            box-shadow: 0 0 20px rgba(255, 215, 0, 0.6);
+            box-shadow: 0 0 30px 5px rgba(255, 215, 0, 0.8); /* 阴影更亮更宽 */
         }
-        .dock-item span { color: #8B6508; } /* 暗金色文字 */
         
         /* 优化版联系方式弹窗 */
         .contact-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 100; display: flex; align-items: center; justify-content: center; opacity: 0; visibility: hidden; transition: all 0.3s ease; }
@@ -116,31 +130,31 @@
         </div>
     </div>
 
-    <!-- 金沙背景Dock导航栏 -->
-    <header class="fixed bottom-8 left-0 right-0 z-50 flex justify-center">
+    <!-- 绿色风景背景Dock导航栏 - 向上移动版 -->
+    <header class="fixed bottom-20 left-0 right-0 z-50 flex justify-center">
         <div class="dock-container rounded-full shadow-xl px-4 py-3 flex gap-2 md:gap-4 max-w-3xl bg-sand-gold">
             <!-- Logo -->
             <a href="https://yzbjfpv.top/20250709.html" class="dock-item flex flex-col items-center justify-center p-2 md:p-3">
                 <img src="https://img520.com/UIGuUV.jpeg" alt="Flyz远征飞Logo" class="h-8 md:h-10 w-auto rounded-full object-contain" onerror="this.src='https://picsum.photos/40/40'">
-                <span class="text-xs md:text-sm mt-1 font-medium">首页</span>
+                <span class="text-xs md:text-sm mt-1 dock-text">首页</span>
             </a>
             <!-- 导航项 -->
             <a href="http://yzflight.xyz" class="dock-item flex flex-col items-center justify-center p-2 md:p-3">
                 <i class="fa fa-download text-dark text-xl md:text-2xl"></i>
-                <span class="text-xs md:text-sm mt-1 font-medium">下载中心</span>
+                <span class="text-xs md:text-sm mt-1 dock-text">下载中心</span>
             </a>
             <a href="https://shop500685313.taobao.com/" class="dock-item flex flex-col items-center justify-center p-2 md:p-3">
                 <i class="fa fa-shopping-bag text-dark text-xl md:text-2xl"></i>
-                <span class="text-xs md:text-sm mt-1 font-medium">严选商城</span>
+                <span class="text-xs md:text-sm mt-1 dock-text">严选商城</span>
             </a>
             <a href="https://yzbjfpv.top/flyz/202510/维修专区.html" class="dock-item flex flex-col items-center justify-center p-2 md:p-3">
                 <i class="fa fa-wrench text-dark text-xl md:text-2xl"></i>
-                <span class="text-xs md:text-sm mt-1 font-medium">维修专区</span>
+                <span class="text-xs md:text-sm mt-1 dock-text">维修专区</span>
             </a>
             <!-- 联系方式入口 -->
             <button id="contact-btn" class="dock-item flex flex-col items-center justify-center p-2 md:p-3">
                 <i class="fa fa-user-plus text-dark text-xl md:text-2xl"></i>
-                <span class="text-xs md:text-sm mt-1 font-medium">联系方式</span>
+                <span class="text-xs md:text-sm mt-1 dock-text">联系方式</span>
             </button>
         </div>
     </header>
@@ -159,7 +173,6 @@
         <!-- 可操控B站视频播放器 -->
         <div class="px-4 md:px-6 mb-16">
             <div class="max-w-4xl mx-auto rounded-2xl overflow-hidden shadow-lg card-hover bg-white">
-                <!-- 启用B站播放器控件，移除autoplay -->
                 <iframe 
                     src="https://player.bilibili.com/player.html?bvid=BV1MWjgzvEED&autoplay=0&dm=1&controls=1&showinfo=1" 
                     style="width: 100%; aspect-ratio: 16/9; border: none;" 
