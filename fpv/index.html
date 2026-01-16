@@ -3,43 +3,347 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-  <meta name="referrer" content="no-referrer" />
-  <meta name="robots" content="noindex, nofollow" />
-  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
-  <meta http-equiv="Pragma" content="no-cache" />
-  <meta http-equiv="Expires" content="0" />
 
-  <!-- 关键：防止微信识别 iframe 内容 -->
-  <meta name="WeChat-Validate" content="none" />
-  <meta name="format-detection" content="telephone=no" />
-  <meta http-equiv="Content-Security-Policy" content="default-src * data: blob: 'unsafe-inline' 'unsafe-eval'; frame-src *; img-src * data:; script-src * 'unsafe-inline' 'unsafe-eval'; style-src * 'unsafe-inline';" />
+  <meta http-equiv="X-Content-Type-Options" content="nosniff">
+  <meta http-equiv="X-XSS-Protection" content="1; mode=block">
+  <meta name="referrer" content="no-referrer">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.tailwindcss https://cdn.jsdelivr.net https://busuanzi.ibruce.info; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; img-src 'self' https://i.ooxx.ooo data:; frame-src 'self' https://917813.com.cn; font-src https://cdn.jsdelivr.net;">
 
-  <title>备用通道｜2026线上FPV竞速赛赛事官网｜Flyz远征飞</title>
+  <title>赛事中心｜2026线上FPV竞速赛</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
 
   <style>
-    * { margin: 0; padding: 0; border: 0; }
-    html, body { width: 100%; height: 100%; overflow: hidden; }
+    :root {
+      --primary: #00ffff;
+      --secondary: #66ccff;
+      --dark: #050b14;
+      --overlay: rgba(0, 15, 30, 0.85);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: "Inter", "Consolas", "Monaco", monospace;
+      height: 100vh;
+      overflow: hidden;
+      background: radial-gradient(circle at center, rgba(0, 100, 150, 0.2), var(--dark) 70%),
+                  linear-gradient(180deg, rgba(0,0,0,0.95), var(--dark));
+      color: #fff;
+    }
+
+    /* Splash Screen */
+    .splash {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      background: var(--overlay);
+      backdrop-filter: blur(6px);
+      opacity: 1;
+      transition: opacity 0.6s ease;
+    }
+
+    .splash.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .splash-logo {
+      width: 100px;
+      height: 100px;
+      border-radius: 16px;
+      box-shadow: 0 0 30px rgba(0, 255, 255, 0.6);
+      margin-bottom: 20px;
+      border: 1px solid rgba(0, 255, 255, 0.3);
+    }
+
+    .splash-title {
+      font-size: 2.2rem;
+      font-weight: 700;
+      color: var(--primary);
+      text-shadow: 0 0 12px rgba(0, 255, 255, 0.5);
+      margin-bottom: 12px;
+      letter-spacing: 0.5px;
+    }
+
+    .splash-notice {
+      font-size: 1rem;
+      color: var(--secondary);
+      margin-top: 10px;
+      opacity: 0;
+      transition: opacity 0.4s ease;
+    }
+
+    .splash-notice.show {
+      opacity: 1;
+    }
+
+    /* 开屏页访问量显示样式 */
+    .splash-visitor-count {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      font-size: 12px;
+      color: var(--secondary);
+      text-shadow: 0 0 8px rgba(102, 204, 255, 0.4);
+      opacity: 0;
+      transition: opacity 0.4s ease;
+    }
+
+    .splash-visitor-count.show {
+      opacity: 1;
+    }
+
+    /* Pages */
+    #pages {
+      position: fixed;
+      inset: 0;
+      z-index: 10;
+      display: none;
+    }
+
+    #pages.active {
+      display: block;
+    }
+
+    .iframe-wrap {
+      width: 100%;
+      height: 100%;
+      position: relative;
+    }
+
     iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
+    /* Iframe Loader */
+    .iframe-loader {
       position: absolute;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      border: none;
-      background: #000;
+      background: var(--overlay);
+      z-index: 4;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .iframe-loader-logo {
+      width: 70px;
+      height: 70px;
+      border-radius: 12px;
+      box-shadow: 0 0 20px rgba(0, 255, 255, 0.6);
+      margin-bottom: 12px;
+    }
+
+    .iframe-loader-title {
+      font-size: 1.5rem;
+      color: var(--primary);
+      text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+      margin-bottom: 8px;
+    }
+
+    .iframe-loader-text {
+      font-size: 1rem;
+      color: var(--secondary);
+    }
+
+    /* 纯文字导航栏（无图标） */
+    #dock {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 52px;
+      background: rgba(255, 255, 255, 0.06);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border-top: 1px solid rgba(255, 255, 255, 0.12);
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      z-index: 20;
+    }
+
+    .dock-item {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 14px;
+      color: rgba(255, 255, 255, 0.7);
+      width: 100%;
+      height: 100%;
+      transition: all 0.2s ease;
+      cursor: pointer;
+    }
+
+    .dock-item.active {
+      color: var(--primary);
+      background: rgba(0, 255, 255, 0.08);
+      border-bottom: 2px solid var(--primary);
+    }
+
+    .dock-item:hover {
+      color: var(--secondary);
+      background: rgba(0, 255, 255, 0.05);
     }
   </style>
 </head>
 
 <body>
 
-  <!-- 全屏 iframe -->
-  <iframe 
-    src="https://917813.com.cn" 
-    allow="geolocation *; microphone *; camera *; midi *; encrypted-media *; autoplay *; fullscreen *"
-    allowfullscreen
-    sandbox="allow-forms allow-scripts allow-same-origin allow-popups allow-top-navigation-by-user-activation"
-  ></iframe>
+  <div class="splash" id="splash">
+    <!-- 开屏页访问量显示（新增） -->
+    <div class="splash-visitor-count" id="splashVisitorCount">
+      自2026.01.17起访问量：<span id="start_20260117_visitors">0</span>
+    </div>
+
+    <img src="https://i.ooxx.ooo/i/N2ZlN.jpg" alt="Flyz Logo" class="splash-logo">
+    <div class="splash-title">Flyz Safety Unit</div>
+    <div class="splash-notice" id="notice1">已连接服务器</div>
+    <div class="splash-notice" id="notice2">已启用安全系统20260116版</div>
+  </div>
+
+  <div id="pages">
+    <div class="iframe-wrap">
+      <div class="iframe-loader" id="iframeLoader">
+        <img src="https://i.ooxx.ooo/i/N2ZlN.jpg" alt="Flyz Logo" class="iframe-loader-logo">
+        <div class="iframe-loader-title">Flyz Safety Unit</div>
+        <div class="iframe-loader-text">正在保障加载安全</div>
+      </div>
+      <iframe src="https://917813.com.cn/fpv/gg" id="main-iframe"></iframe>
+    </div>
+  </div>
+
+  <!-- 纯文字导航栏 -->
+  <div id="dock">
+    <div class="dock-item" data-target="home">首页</div>
+    <div class="dock-item active" data-target="gg">公告</div>
+    <div class="dock-item" data-target="xs">选手</div>
+    <div class="dock-item" data-target="cs">初赛</div>
+    <div class="dock-item" data-target="zz">赞助</div>
+    <div class="dock-item" data-target="hq">后勤</div>
+  </div>
+
+  <!-- 不蒜子统计脚本（新增） -->
+  <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  <script>
+    const iframeLoader = document.getElementById("iframeLoader");
+    const splashVisitorCount = document.getElementById("splashVisitorCount");
+
+    // 开屏动画提示 + 访问量显示（同步动画节奏）
+    setTimeout(() => {
+      document.getElementById("notice1").classList.add("show");
+    }, 500);
+
+    setTimeout(() => {
+      document.getElementById("notice2").classList.add("show");
+      // 访问量和第二个提示同步显示
+      splashVisitorCount.classList.add("show");
+      // 初始化访问量统计
+      initVisitorCount();
+    }, 1500);
+
+    // 直接进入主页面（无IP检测）
+    setTimeout(() => {
+      document.getElementById("splash").classList.add("hidden");
+      document.getElementById("pages").classList.add("active");
+    }, 3000);
+
+    // 访问量统计核心逻辑（新增）
+    function initVisitorCount() {
+      // 监听不蒜子加载完成
+      if (window.busuanzi) {
+        calculate2026Count();
+      } else {
+        document.addEventListener('busuanzi:loaded', calculate2026Count);
+      }
+    }
+
+    function calculate2026Count() {
+      // 统计起始日期：2026年1月17日 00:00
+      const startDate = new Date('2026-01-17').getTime();
+      let customCount = 0;
+
+      // 获取不蒜子按天存储的访问记录，累加起始日后的所有访问量
+      const history = busuanzi.getHistory();
+      Object.keys(history).forEach(dateStr => {
+        const dateTime = new Date(dateStr).getTime();
+        if (dateTime >= startDate) {
+          customCount += history[dateStr]; // 按IP去重，同一IP当天仅算1次
+        }
+      });
+
+      // 显示到开屏页
+      document.getElementById("start_20260117_visitors").textContent = customCount;
+    }
+
+    // iframe加载逻辑
+    const iframe = document.getElementById("main-iframe");
+    let iframeLoaded = false;
+
+    iframe.onload = () => {
+      iframeLoaded = true;
+      iframeLoader.style.display = "none";
+    };
+
+    // 最大等待时间 10 秒
+    setTimeout(() => {
+      if (!iframeLoaded) {
+        iframeLoader.style.display = "none";
+      }
+    }, 10000);
+
+    // 导航栏切换逻辑
+    const pages = ["home", "gg", "xs", "cs", "zz", "hq"];
+    const iframeUrls = {
+      home: "https://917813.com.cn/fpv/index",
+      gg: "https://917813.com.cn/fpv/gg",
+      xs: "https://917813.com.cn/fpv/xs",
+      cs: "https://917813.com.cn/fpv/cs",
+      zz: "https://917813.com.cn/fpv/zz",
+      hq: "https://917813.com.cn/fpv/hq"
+    };
+
+    let currentPage = 1;
+
+    function setActivePage(index) {
+      currentPage = index;
+      const target = pages[index];
+
+      // 切换激活状态
+      document.querySelectorAll(".dock-item").forEach(item => item.classList.remove("active"));
+      document.querySelector(`.dock-item[data-target="${target}"]`).classList.add("active");
+
+      // 加载对应iframe
+      iframeLoader.style.display = "flex";
+      iframeLoaded = false;
+      iframe.src = iframeUrls[target];
+    }
+
+    // 绑定导航点击事件
+    document.querySelectorAll(".dock-item").forEach(item => {
+      item.addEventListener("click", () => {
+        const target = item.dataset.target;
+        const index = pages.indexOf(target);
+        setActivePage(index);
+      });
+    });
+  </script>
 
 </body>
 </html>
