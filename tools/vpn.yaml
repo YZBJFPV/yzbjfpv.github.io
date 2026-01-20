@@ -9,7 +9,7 @@ proxies:
     type: ss
     server: 104.244.90.2
     port: 20021
-    cipher: auth_chain_a
+    cipher: none
     password: "yunfeng1979"
     udp: true
 
