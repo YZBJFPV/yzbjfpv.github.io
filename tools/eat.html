@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>张茹涵是老吃家</title>
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+    body {
+        font-family: -apple-system, sans-serif;
+        background: #f5f5f5;
+        width: 100%;
+        max-width: 450px;
+        margin: 0 auto;
+        position: relative;
+    }
+
+    /* 导航栏 */
+    .nav-bar {
+        width: 100%;
+        height: 60px;
+        background: white;
+        border-bottom: 1px solid #eee;
+        position: relative;
+    }
+    .nav-bar .back {
+        position: absolute;
+        left: 16px;
+        top: 20px;
+        font-size: 20px;
+    }
+    .nav-bar .title {
+        position: absolute;
+        left: 50%;
+        top: 20px;
+        transform: translateX(-50%);
+        font-size: 18px;
+        font-weight: 600;
+    }
+    .nav-bar .menu {
+        position: absolute;
+        right: 16px;
+        top: 20px;
+        font-size: 20px;
+    }
+
+    /* 报到中 */
+    .status-bar {
+        width: calc(100% - 32px);
+        height: 40px;
+        background: #fdecea;
+        border: 1px solid #a65d3f;
+        border-radius: 4px;
+        margin: 16px;
+        position: relative;
+    }
+    .status-bar .text {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        color: #e63946;
+        font-size: 16px;
+    }
+
+    /* 排队号码区域 */
+    .queue-number {
+        width: calc(100% - 32px);
+        height: 220px;
+        background: #f5e7c8;
+        border-radius: 8px;
+        margin: 0 16px 16px 16px;
+        position: relative;
+        overflow: hidden;
+    }
+    .queue-number .bg {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+    .queue-number .label {
+        position: absolute;
+        left: 50%;
+        top: 40px;
+        transform: translateX(-50%);
+        font-size: 14px;
+        color: #666;
+        z-index: 1;
+    }
+    .queue-number .number {
+        position: absolute;
+        left: 50%;
+        top: 80px;
+        transform: translateX(-50%);
+        font-size: 72px;
+        font-weight: bold;
+        color: white;
+        z-index: 1;
+    }
+    .queue-number .number input {
+        width: 120px;
+        text-align: center;
+        font-size: 72px;
+        font-weight: bold;
+        color: white;
+        background: transparent;
+        border: none;
+    }
+    .queue-number .time {
+        position: absolute;
+        left: 50%;
+        top: 170px;
+        transform: translateX(-50%);
+        font-size: 12px;
+        color: #666;
+        z-index: 1;
+    }
+    .queue-number .upload {
+        position: absolute;
+        right: 10px;
+        bottom: 10px;
+        z-index: 1;
+        font-size: 12px;
+        color: white;
+        background: rgba(0,0,0,0.5);
+        padding: 4px 8px;
+        border-radius: 4px;
+    }
+    #bg-input {
+        display: none;
+    }
+
+    /* 店铺信息 */
+    .store-info {
+        width: calc(100% - 32px);
+        height: 100px;
+        background: white;
+        border-radius: 8px;
+        margin: 0 16px 16px 16px;
+        position: relative;
+    }
+    .store-info .name {
+        position: absolute;
+        left: 16px;
+        top: 16px;
+        font-size: 18px;
+    }
+    .store-info .name input {
+        width: 260px;
+        font-size: 18px;
+        border: none;
+    }
+    .store-info .address {
+        position: absolute;
+        left: 16px;
+        top: 46px;
+        font-size: 14px;
+        color: #999;
+        width: 260px;
+    }
+    .store-info .address input {
+        width: 100%;
+        font-size: 14px;
+        color: #999;
+        border: none;
+    }
+    .store-info .map {
+        position: absolute;
+        right: 16px;
+        top: 30px;
+        background: #e63946;
+        color: white;
+        border: none;
+        padding: 6px 12px;
+        border-radius: 4px;
+    }
+
+    /* 签到提醒 */
+    .sign-remind {
+        width: calc(100% - 32px);
+        height: 60px;
+        background: #fff7e6;
+        border-radius: 8px;
+        margin: 0 16px 16px 16px;
+        position: relative;
+    }
+    .sign-remind .text {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 16px;
+    }
+    .sign-remind .text strong {
+        color: #e63946;
+    }
+
+    /* 订单信息 */
+    .order-info {
+        width: calc(100% - 32px);
+        height: 140px;
+        background: white;
+        border-radius: 8px;
+        margin: 0 16px 16px 16px;
+        position: relative;
+    }
+    .order-info .row {
+        position: absolute;
+        left: 16px;
+        width: calc(100% - 32px);
+        height: 30px;
+        line-height: 30px;
+    }
+    .order-info .row1 { top: 16px; }
+    .order-info .row2 { top: 56px; }
+    .order-info .row3 { top: 96px; }
+
+    .order-info .label {
+        position: absolute;
+        left: 0;
+        color: #e63946;
+        width: 80px;
+    }
+    .order-info .value {
+        position: absolute;
+        right: 0;
+        width: calc(100% - 90px);
+        text-align: right;
+    }
+    .order-info input {
+        border: none;
+        text-align: right;
+        font-size: 16px;
+        width: 100%;
+    }
+    .order-info .value .short {
+        width: 30px;
+    }
+
+    /* 进度 */
+    .progress-info {
+        width: calc(100% - 32px);
+        height: 100px;
+        background: white;
+        border-radius: 8px;
+        margin: 0 16px 16px 16px;
+        position: relative;
+    }
+    .progress-info .title {
+        position: absolute;
+        left: 16px;
+        top: 16px;
+        font-size: 16px;
+    }
+    .progress-info .sub {
+        position: absolute;
+        left: 16px;
+        top: 42px;
+        font-size: 12px;
+        color: #999;
+    }
+    .progress-info .numbers {
+        position: absolute;
+        left: 16px;
+        top: 66px;
+        display: flex;
+        gap: 24px;
+    }
+    .progress-info .numbers input {
+        width: 30px;
+        border: none;
+        text-align: center;
+    }
+</style>
+</head>
+<body>
+
+<!-- 导航栏 -->
+<div class="nav-bar">
+    <div class="back">←</div>
+    <div class="title">取号成功</div>
+    <div class="menu">··· ◯</div>
+</div>
+
+<!-- 报到中 -->
+<div class="status-bar">
+    <div class="text">报到中</div>
+</div>
+
+<!-- 排队号码 -->
+<div class="queue-number">
+    <img id="bg" class="bg" src="https://img1.baidu.com/it/u=1234567890,1234567890&fm=253&fmt=auto?w=450&h=220" />
+    <div class="label">排队号码</div>
+    <div class="number">
+        <input type="text" value="469" onclick="this.select()">
+    </div>
+    <div class="time">现在时刻：<span id="current-time"></span></div>
+    <label class="upload" for="bg-input">更换背景</label>
+    <input type="file" id="bg-input" accept="image/*" style="display:none" onchange="changeBg(event)">
+</div>
+
+<!-- 店铺信息 -->
+<div class="store-info">
+    <div class="name">
+        <input type="text" value="北京世纪金源店" onclick="this.select()">
+    </div>
+    <div class="address">
+        <input type="text" value="远大路1号北京世纪金源购物中心西区5层（E18号直梯附近）" onclick="this.select()">
+    </div>
+    <button class="map">地图</button>
+</div>
+
+<!-- 签到提醒 -->
+<div class="sign-remind">
+    <div class="text">到门店后 请务必 <strong>签到！</strong></div>
+</div>
+
+<!-- 订单信息 -->
+<div class="order-info">
+    <div class="row row1">
+        <div class="label">有效日期</div>
+        <div class="value"><input type="text" value="2026年01月21日" onclick="this.select()"></div>
+    </div>
+    <div class="row row2">
+        <div class="label">用餐人数</div>
+        <div class="value">
+            成人 <input class="short" type="text" value="2" onclick="this.select()">
+            儿童 <input class="short" type="text" value="0" onclick="this.select()">
+        </div>
+    </div>
+    <div class="row row3">
+        <div class="label">座位类型</div>
+        <div class="value"><input type="text" value="卡座" onclick="this.select()"></div>
+    </div>
+</div>
+
+<!-- 进度 -->
+<div class="progress-info">
+    <div class="title">即将带位号码</div>
+    <div class="sub">排队取号</div>
+    <div class="numbers">
+        <span>① <input type="text" value="082" onclick="this.select()"></span>
+        <span>② <input type="text" value="083" onclick="this.select()"></span>
+        <span>③ <input type="text" value="084" onclick="this.select()"></span>
+    </div>
+</div>
+
+<script>
+// 更新时间
+function updateTime() {
+    const now = new Date();
+    document.getElementById('current-time').textContent = now.toTimeString().split(' ')[0];
+}
+setInterval(updateTime, 1000);
+updateTime();
+
+// 更换背景
+function changeBg(e) {
+    const file = e.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(event) {
+            document.getElementById('bg').src = event.target.result;
+        };
+        reader.readAsDataURL(file);
+    }
+}
+</script>
+
+</body>
+</html>
