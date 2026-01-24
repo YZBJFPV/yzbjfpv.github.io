@@ -7,13 +7,11 @@
   <style>
     :root {
       --c-primary: #00ccff;
-      --c-primary-20: rgba(0, 204, 255, 0.2);
       --c-primary-10: rgba(0, 204, 255, 0.1);
       --c-dark: #000511;
       --c-card: rgba(0, 20, 40, 0.65);
-      --border: 1px solid var(--c-primary-20);
+      --border: 1px solid rgba(0, 204, 255, 0.2);
       --radius: 12px;
-      --gap: 16px;
       --shadow: 0 12px 28px rgba(0, 20, 40, 0.6);
     }
 
@@ -24,7 +22,6 @@
       background: var(--c-dark);
       color: #fff;
       font-family: -apple-system, "Microsoft YaHei", Arial, sans-serif;
-      line-height: 1.5;
       scroll-behavior: smooth;
     }
 
@@ -49,7 +46,7 @@
       padding: 24px;
     }
 
-    /* Logo & Header */
+    /* Logo */
     .header {
       display: flex;
       align-items: center;
@@ -61,7 +58,7 @@
       height: 56px;
       border-radius: 8px;
       overflow: hidden;
-      box-shadow: 0 0 16px var(--c-primary-20);
+      box-shadow: 0 0 16px rgba(0, 204, 255, 0.2);
     }
     .logo img { width: 100%; height: 100%; object-fit: cover; }
     .site-info .url {
@@ -75,7 +72,7 @@
       opacity: 0.8;
     }
 
-    /* 流程式标题 */
+    /* 流程标题 */
     .process-title {
       position: sticky;
       top: 0;
@@ -105,7 +102,7 @@
       border: var(--border);
       border-radius: var(--radius);
       padding: 20px;
-      margin-bottom: var(--gap);
+      margin-bottom: 16px;
       box-shadow: var(--shadow);
     }
     .step h2 {
@@ -132,6 +129,20 @@
     .step p {
       margin: 0 0 12px;
       color: #c0e8ff;
+    }
+
+    /* iframe */
+    .iframe-container {
+      width: 100%;
+      height: 80vh;
+      border-radius: 8px;
+      overflow: hidden;
+      border: var(--border);
+    }
+    iframe {
+      width: 100%;
+      height: 100%;
+      border: 0;
     }
 
     /* 微信 */
@@ -176,43 +187,7 @@
       cursor: not-allowed;
     }
 
-    /* iframe 容器（最大兼容） */
-    .iframe-container {
-      position: relative;
-      width: 100%;
-      height: 80vh;
-      border-radius: 8px;
-      overflow: hidden;
-      border: var(--border);
-      background: rgba(0, 10, 30, 0.4);
-    }
-    iframe {
-      width: 100%;
-      height: 100%;
-      border: 0;
-    }
-    .iframe-fallback {
-      position: absolute;
-      inset: 0;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 24px;
-      text-align: center;
-      color: #a0d8ff;
-    }
-    .iframe-fallback a {
-      margin-top: 12px;
-      padding: 8px 16px;
-      background: linear-gradient(90deg, #00aaff, #00e5ff);
-      border-radius: 6px;
-      color: #000511;
-      font-weight: 600;
-      text-decoration: none;
-    }
-
-    /* 底部跳转按钮 */
+    /* 底部按钮 */
     .footer-actions {
       margin-top: 32px;
       padding-top: 20px;
@@ -234,7 +209,7 @@
     }
     .btn:hover {
       background: rgba(0, 40, 80, 0.8);
-      box-shadow: 0 0 20px var(--c-primary-20);
+      box-shadow: 0 0 20px rgba(0, 204, 255, 0.2);
     }
 
     /* Toast */
@@ -261,7 +236,7 @@
   <div class="grid"></div>
 
   <div class="container">
-    <!-- Header/Logo -->
+    <!-- Header -->
     <div class="header">
       <div class="logo">
         <img src="https://img520.com/UIGuUV.jpeg" alt="Flyz远征飞" />
@@ -272,7 +247,7 @@
       </div>
     </div>
 
-    <!-- 流程标题（吸顶） -->
+    <!-- 流程标题 -->
     <div class="process-title">
       <h1>2026 全国线上 FPV 赛事 · 选手报名</h1>
       <p>请按流程向下滚动完成报名</p>
@@ -281,20 +256,13 @@
     <!-- Step 1: 问卷星嵌入 -->
     <div class="step" data-step="1">
       <h2>填写报名问卷</h2>
-      <p>请完整填写以下表单（如无法加载，请点击“备用入口”打开）。</p>
+      <p>请完整填写以下表单。</p>
 
       <div class="iframe-container">
         <iframe
-          id="wjx-iframe"
           src="https://www.wjx.top/vm/QvVrAbf.aspx"
-          allow="geolocation *; microphone *; camera *; midi *; encrypted-media *"
-          sandbox="allow-forms allow-modals allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts allow-top-navigation-by-user-activation"
+          allow="geolocation; microphone; camera; midi; encrypted-media"
         ></iframe>
-
-        <div id="wjx-fallback" class="iframe-fallback" style="display:none;">
-          <p>当前浏览器无法直接嵌入问卷</p>
-          <a href="https://www.wjx.top/vm/QvVrAbf.aspx" target="_blank" rel="noopener noreferrer">点击打开问卷（备用入口）</a>
-        </div>
       </div>
     </div>
 
@@ -319,7 +287,7 @@
       </div>
     </div>
 
-    <!-- Step 3: 跳转官网 -->
+    <!-- 底部跳转按钮 -->
     <div class="footer-actions">
       <a href="https://917813.com.cn" target="_blank" class="btn">跳转赛事官网（查看详情/规则/奖励）</a>
     </div>
@@ -328,7 +296,6 @@
   <div id="toast" class="toast">已复制</div>
 
   <script>
-    // 复制
     function copyToClipboard(text) {
       navigator.clipboard.writeText(text).then(() => {
         const t = document.getElementById('toast');
@@ -336,28 +303,6 @@
         setTimeout(() => t.classList.remove('show'), 1500);
       });
     }
-
-    // iframe 加载失败降级（最大兼容）
-    (function() {
-      const iframe = document.getElementById('wjx-iframe');
-      const fallback = document.getElementById('wjx-fallback');
-
-      // 方式1：onerror（部分浏览器/情况触发）
-      iframe.onerror = () => fallback.style.display = 'flex';
-
-      // 方式2：定时检查（更通用）
-      setTimeout(() => {
-        try {
-          // 若能访问 contentDocument 且为空/异常，通常说明被拦截或加载失败
-          const doc = iframe.contentDocument || iframe.contentWindow.document;
-          if (!doc || doc.body.innerText.trim() === '' || doc.title === '') {
-            throw new Error('empty');
-          }
-        } catch (e) {
-          fallback.style.display = 'flex';
-        }
-      }, 6000); // 6秒后检查
-    })();
   </script>
 </body>
 </html>
