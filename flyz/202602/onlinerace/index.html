@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="format-detection" content="telephone=no, email=no" />
+  <meta http-equiv="Content-Security-Policy" content="default-src * 'unsafe-inline' 'unsafe-eval';frame-src https://cdn.917813.com.cn https://917813fpv-github-io.pages.dev https://917813.github.io https://917813.com.cn;img-src * data:;script-src * 'unsafe-inline' 'unsafe-eval';style-src * 'unsafe-inline';connect-src *;object-src 'none';">
+  <title>2026线上FPV竞速赛-Flyz远征飞魄客杯</title>
+  <style>
+    * {margin:0;padding:0;box-sizing:border-box;transform:translateZ(0);-webkit-transform:translateZ(0);}
+    html,body {font-family:"PingFang SC","Hiragino Sans GB","Microsoft YaHei",Consolas;background:#000;color:#fff;min-height:100vh;overflow-x:hidden;}
+    :root {--primary:#00ffff;--secondary:#87CEFA;--danger:#ff3d00;--glow:0 0 15px var(--primary),0 0 30px rgba(0,255,255,0.5);--glow-danger:0 0 15px var(--danger),0 0 30px rgba(255,61,0,0.5);--glass:rgba(255,255,255,0.08);--glass-border:rgba(0,255,255,0.3);}
+    /* 开屏动画 */
+    #splash-screen {position:fixed;inset:0;z-index:9999;background:#000;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:0 24px;transition:opacity 0.5s ease;}
+    .splash-logo {width:140px;height:140px;border-radius:24px;border:2px solid var(--primary);box-shadow:var(--glow);margin-bottom:48px;transform:translateY(-800px);animation:logoDown 1s cubic-bezier(0.22,1,0.36,1) forwards;}
+    .splash-logo img {width:100%;height:100%;object-fit:cover;border-radius:22px;}
+    .splash-main-title {font-size:2.8rem;font-weight:900;color:var(--primary);text-shadow:var(--glow);letter-spacing:2px;margin-bottom:24px;transform:translateY(800px);animation:textUp 1s cubic-bezier(0.22,1,0.36,1) forwards 0.2s;}
+    .splash-url {font-size:1.4rem;font-weight:700;color:var(--secondary);letter-spacing:2px;padding:6px 18px;border-radius:10px;background:var(--glass);border:1px solid rgba(135,206,250,0.2);transform:translateY(800px);animation:textUp 1s cubic-bezier(0.22,1,0.36,1) forwards 0.4s;}
+    @keyframes logoDown {0%{transform:translateY(-800px);opacity:0;}100%{transform:translateY(0);opacity:1;}}
+    @keyframes textUp {0%{transform:translateY(800px);opacity:0;}100%{transform:translateY(0);opacity:1;}}
+    /* 页面容器 */
+    #pages {position:relative;z-index:10;min-height:calc(100vh - 58px);display:none;background:#050505;}
+    .page-container {display:none;width:100%;min-height:100%;position:relative;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);transition:backdrop-filter 0s linear;}
+    .page-container.active {display:block;}
+    .page-container.loaded {backdrop-filter:blur(0);-webkit-backdrop-filter:blur(0);}
+    /* 加载中 */
+    .page-loading {position:absolute;inset:0;z-index:5;background:rgba(5,5,5,0.8);display:flex;flex-direction:column;justify-content:center;align-items:center;gap:20px;}
+    .loading-spinner {width:60px;height:60px;border:4px solid rgba(0,255,255,0.2);border-top:4px solid var(--primary);border-radius:50%;animation:spin 1.2s linear infinite;box-shadow:0 0 10px rgba(0,255,255,0.2);}
+    .loading-text {font-size:1.1rem;color:var(--secondary);letter-spacing:1px;}
+    @keyframes spin {0%{transform:rotate(0deg);}100%{transform:rotate(360deg);}}
+    .page-container.loaded .page-loading {display:none;}
+    iframe {position:relative;z-index:10;width:100%;min-height:calc(100vh - 58px);border:none;background:transparent;display:block;}
+    /* 底部导航 */
+    #dock {position:fixed;bottom:0;left:0;right:0;height:58px;z-index:20;border-radius:20px 20px 0 0;display:flex;justify-content:space-around;align-items:center;padding:0 8px;background:var(--glass);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);border-top:1px solid var(--glass-border);box-shadow:0 -2px 8px rgba(0,0,0,0.2);}
+    .dock-item {width:100%;height:100%;display:flex;justify-content:center;align-items:center;font-size:15px;font-weight:600;letter-spacing:1px;color:#fff;cursor:pointer;border-bottom:3px solid transparent;transition:all 0.3s ease;}
+    .dock-item:hover {color:var(--secondary);text-shadow:0 0 8px rgba(135,206,250,0.4);}
+    .dock-item.active {color:var(--primary);text-shadow:var(--glow);border-bottom:3px solid var(--primary);background:rgba(0,255,255,0.06);}
+    /* 安全警告通用样式 */
+    .alert {position:fixed;inset:0;z-index:99999;background:rgba(0,0,0,0.95);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);display:none;flex-direction:column;justify-content:center;align-items:center;padding:20px;text-align:center;animation:alertFade 0.5s ease forwards;}
+    .alert.active {display:flex;}
+    .alert-logo {width:80px;height:80px;border-radius:16px;border:2px solid var(--primary);box-shadow:var(--glow);margin-bottom:24px;overflow:hidden;}
+    .alert-logo img {width:100%;height:100%;object-fit:cover;border-radius:14px;}
+    .alert-title {font-size:2rem;font-weight:900;margin-bottom:16px;letter-spacing:1px;}
+    .alert-desc {font-size:1rem;line-height:1.8;color:#eee;margin-bottom:32px;max-width:500px;padding:0 10px;}
+    .alert-btn {padding:12px 40px;border-radius:10px;border:none;font-size:1.1rem;font-weight:700;cursor:pointer;transition:all 0.3s ease;box-shadow:0 4px 15px rgba(0,0,0,0.2);}
+    .alert-btn:hover {transform:translateY(-3px);box-shadow:0 8px 20px rgba(0,0,0,0.3);}
+    /* HTTPS警告 */
+    #https-alert .alert-title {color:var(--danger);text-shadow:var(--glow-danger);}
+    #https-alert .alert-logo {border-color:var(--danger);box-shadow:var(--glow-danger);}
+    #https-alert .alert-btn {background:linear-gradient(90deg,var(--primary),var(--secondary));color:#000;}
+    /* iframe域名警告 */
+    #iframe-alert .alert-title {color:var(--danger);text-shadow:var(--glow-danger);}
+    #iframe-alert .alert-logo {border-color:var(--danger);box-shadow:var(--glow-danger);}
+    #iframe-alert .alert-btn {background:linear-gradient(90deg,var(--primary),var(--secondary));color:#000;}
+    @keyframes alertFade {0%{opacity:0;}100%{opacity:1;}}
+  </style>
+</head>
+<body>
+  <!-- HTTPS安全警告 -->
+  <div id="https-alert" class="alert">
+    <div class="alert-logo"><img src="logo.JPG" alt="Flyz远征飞"></div>
+    <div class="alert-title">安全警告 - 非加密传输</div>
+    <div class="alert-desc">本页面仅支持HTTPS加密协议访问，当前为非加密连接，存在数据泄露、页面被篡改的安全风险，请通过官方HTTPS域名重新访问，保障你的访问安全和赛事信息真实。</div>
+    <button class="alert-btn" onclick="window.location.href='https://cdn.917813.com.cn'">立即跳转官方HTTPS地址</button>
+  </div>
+
+  <!-- iframe域名校验警告 -->
+  <div id="iframe-alert" class="alert">
+    <div class="alert-logo"><img src="logo.JPG" alt="Flyz远征飞"></div>
+    <div class="alert-title">安全警告 - 域名校验失败</div>
+    <div class="alert-desc">当前内嵌页面非官方信任域名，可能为钓鱼或篡改页面，存在赛事信息伪造、数据提交风险，已禁止加载。请刷新页面或通过官方域名访问，谨防诈骗。</div>
+    <button class="alert-btn" onclick="location.reload()">刷新页面重试</button>
+  </div>
+
+  <!-- 开屏动画 -->
+  <div id="splash-screen">
+    <div class="splash-logo"><img src="https://cdn.917813.com.cn/logo.JPG" alt="Flyz远征飞"></div>
+    <div class="splash-main-title">2026线上FPV竞速赛</div>
+    <div class="splash-url">cdn.917813.com.cn</div>
+  </div>
+
+  <!-- 页面容器 -->
+  <div id="pages">
+    <div class="page-container active" data-target="home">
+      <div class="page-loading"><div class="loading-spinner"></div><div class="loading-text">页面加载中</div></div>
+      <iframe src="https://cdn.917813.com.cn/fpv/2026onlinerace/bm/index.html" title="home" onload="checkIframeDomain(this)"></iframe>
+    </div>
+    <div class="page-container" data-target="gg">
+      <div class="page-loading"><div class="loading-spinner"></div><div class="loading-text">页面加载中</div></div>
+      <iframe src="https://cdn.917813.com.cn/fpv/2026onlinerace/gg/index.html" title="gg" onload="checkIframeDomain(this)"></iframe>
+    </div>
+    <div class="page-container" data-target="xs">
+      <div class="page-loading"><div class="loading-spinner"></div><div class="loading-text">页面加载中</div></div>
+      <iframe src="https://cdn.917813.com.cn/fpv/2026onlinerace/xs/index.html" title="xs" onload="checkIframeDomain(this)"></iframe>
+    </div>
+    <div class="page-container" data-target="cs">
+      <div class="page-loading"><div class="loading-spinner"></div><div class="loading-text">页面加载中</div></div>
+      <iframe src="https://cdn.917813.com.cn/fpv/2026onlinerace/cs/index.html" title="cs" onload="checkIframeDomain(this)"></iframe>
+    </div>
+    <div class="page-container" data-target="zz">
+      <div class="page-loading"><div class="loading-spinner"></div><div class="loading-text">页面加载中</div></div>
+      <iframe src="https://cdn.917813.com.cn/fpv/2026onlinerace/zz/index.html" title="zz" onload="checkIframeDomain(this)"></iframe>
+    </div>
+    <div class="page-container" data-target="hq">
+      <div class="page-loading"><div class="loading-spinner"></div><div class="loading-text">页面加载中</div></div>
+      <iframe src="https://cdn.917813.com.cn/fpv/2026onlinerace/hq/index.html" title="hq" onload="checkIframeDomain(this)"></iframe>
+    </div>
+  </div>
+
+  <!-- 底部导航 -->
+  <div id="dock">
+    <div class="dock-item active" data-target="home">【报名】</div>
+    <div class="dock-item" data-target="gg">公告</div>
+    <div class="dock-item" data-target="xs">选手</div>
+    <div class="dock-item" data-target="cs">奖品</div>
+    <div class="dock-item" data-target="zz">赞助</div>
+    <div class="dock-item" data-target="hq">后勤</div>
+  </div>
+
+  <script>
+    const el = {
+      splash: document.getElementById('splash-screen'),
+      pages: document.getElementById('pages'),
+      httpsAlert: document.getElementById('https-alert'),
+      iframeAlert: document.getElementById('iframe-alert'),
+      dockItems: document.querySelectorAll('.dock-item'),
+      pageContainers: document.querySelectorAll('.page-container'),
+      iframes: document.querySelectorAll('iframe')
+    };
+    const SPLASH_TIME = 3000;
+    const TRUSTED_DOMAINS = ['cdn.917813.com.cn', '917813.com.cn', '917813fpv-github-io.pages.dev', '917813.github.io'];
+
+    // HTTPS校验
+    const checkHttps = () => {
+      const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+      if (!isLocal && window.location.protocol !== 'https:') {
+        el.httpsAlert.classList.add('active');
+        el.splash.style.display = 'none';
+      } else {
+        preloadAllIframes();
+        setTimeout(() => {
+          el.splash.style.opacity = 0;
+          el.splash.style.pointerEvents = 'none';
+          el.pages.style.display = 'block';
+        }, SPLASH_TIME);
+      }
+    };
+
+    // 开屏预加载所有iframe
+    const preloadAllIframes = () => {
+      el.iframes.forEach(iframe => {iframe.src = iframe.src;});
+    };
+
+    // iframe域名校验
+    const checkIframeDomain = (iframe) => {
+      try {
+        const host = new URL(iframe.src).hostname;
+        if (TRUSTED_DOMAINS.includes(host)) {
+          iframe.parentElement.classList.add('loaded');
+        } else {
+          el.iframeAlert.classList.add('active');
+        }
+      } catch (e) {
+        el.iframeAlert.classList.add('active');
+      }
+    };
+
+    // 切页逻辑
+    const switchPage = (target) => {
+      el.dockItems.forEach(item => item.classList.remove('active'));
+      el.pageContainers.forEach(cont => cont.classList.remove('active', 'loaded'));
+      document.querySelector(`.dock-item[data-target="${target}"]`).classList.add('active');
+      const tarPage = document.querySelector(`.page-container[data-target="${target}"]`);
+      tarPage.classList.add('active');
+      tarPage.querySelector('iframe').src = tarPage.querySelector('iframe').src;
+    };
+
+    // 绑定事件
+    document.addEventListener("DOMContentLoaded", () => {
+      checkHttps();
+      el.dockItems.forEach(item => item.addEventListener('click', () => switchPage(item.dataset.target)));
+    });
+  </script>
+</body>
+</html>
