@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>FlyzLive直播｜2026线上FPV竞速赛｜Flyz•魄客杯</title>
+    <script src="https://cdn.bootcdn.net/ajax/libs/video.js/8.6.1/video.min.js"></script>
+    <link href="https://cdn.bootcdn.net/ajax/libs/video.js/8.6.1/video-js.min.css" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: #000; overflow: hidden; font-family: sans-serif; }
+
+        /* 1. 开屏动画：2秒后自动消失，无多余元素 */
+        #splash {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            background: #000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            opacity: 1;
+            transition: opacity 0.8s ease-out;
+            pointer-events: none;
+        }
+        .splash-text {
+            font-size: clamp(2rem, 8vw, 4rem);
+            font-weight: 700;
+            background: linear-gradient(45deg, #39ff14, #00ccff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* 2. 直播容器：全屏铺满，横竖屏适配 */
+        #player-container {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            display: none; /* 开屏结束后显示 */
+        }
+        #live-player {
+            width: 100%; height: 100%;
+            object-fit: contain; /* 竖屏自动加黑边，横屏满屏 */
+        }
+
+        /* 3. 右上角水印：开屏同款渐变，小尺寸精致版 */
+        .watermark {
+            position: absolute;
+            top: 15px; right: 15px;
+            font-size: clamp(1rem, 3vw, 1.5rem);
+            font-weight: 700;
+            background: linear-gradient(45deg, #39ff14, #00ccff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            pointer-events: none;
+            z-index: 10;
+            opacity: 0.8;
+        }
+
+        /* 4. 横竖屏提示：简洁文字，无emoji */
+        .orientation-hint {
+            position: absolute;
+            bottom: 15px; left: 50%;
+            transform: translateX(-50%);
+            color: #ccc;
+            font-size: 14px;
+            z-index: 20;
+            text-shadow: 0 0 3px #000;
+        }
+
+        /* 5. 自定义全屏按钮：确保可见，样式统一 */
+        .vjs-fullscreen-control {
+            display: flex !important;
+            align-items: center;
+            justify-content: center;
+            width: 40px !important;
+            height: 40px !important;
+        }
+    </style>
+</head>
+<body>
+    <!-- 开屏动画 -->
+    <div id="splash">
+        <div class="splash-text">欢迎访问 FlyzLive 直播平台</div>
+    </div>
+
+    <!-- 直播主容器 -->
+    <div id="player-container">
+        <!-- 右上角水印 -->
+        <div class="watermark">FlyzLive</div>
+        <!-- 播放器 -->
+        <video-js id="live-player" class="vjs-big-play-centered" controls autoplay playsinline></video-js>
+        <!-- 横竖屏提示 -->
+        <div class="orientation-hint">手机横屏观看体验更佳，竖屏可正常观看</div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const splash = document.getElementById('splash');
+            const playerContainer = document.getElementById('player-container');
+            const player = videojs('live-player', {
+                autoplay: true,
+                controls: true,
+                fluid: true,
+                fill: true,
+                controlBar: {
+                    fullscreenToggle: true, // 强制显示全屏按钮
+                    volumePanel: false, // 隐藏音量（纯直播极简）
+                    playToggle: false,
+                    progressControl: false,
+                    remainingTimeDisplay: false
+                }
+            });
+
+            // 1. 开屏动画逻辑：2秒后隐藏，显示直播
+            setTimeout(() => {
+                splash.style.opacity = 0;
+                setTimeout(() => {
+                    splash.style.display = 'none';
+                    playerContainer.style.display = 'block';
+                }, 800); // 匹配CSS过渡时间
+            }, 2000); // 开屏显示2秒
+
+            // 2. 配置直播源（严格匹配你的推流地址）
+            player.src({
+                src: 'rtmp://47.104.206.20:9178/live/9178',
+                type: 'rtmp/flv'
+            });
+
+            // 3. 横竖屏提示自适应
+            function updateOrientationHint() {
+                const hint = document.querySelector('.orientation-hint');
+                if (window.innerHeight > window.innerWidth) {
+                    hint.textContent = '竖屏观看中，横屏体验更佳';
+                } else {
+                    hint.textContent = '横屏观看体验最佳';
+                }
+            }
+            window.addEventListener('resize', updateOrientationHint);
+            updateOrientationHint(); // 初始化提示
+        });
+    </script>
+</body>
+</html>
