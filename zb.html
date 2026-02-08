@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>直播｜2026线上FPV竞速赛</title>
+    <!-- 国内CDN - Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#0066FF',
+                    },
+                }
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            /* 开屏砸落回弹动画 */
+            .animate-drop-bounce {
+                animation: dropBounce 1.2s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+            }
+            @keyframes dropBounce {
+                0% { opacity: 0; transform: translateY(-50px) scale(0.9); }
+                60% { opacity: 1; transform: translateY(10px) scale(1.05); }
+                80% { transform: translateY(-5px) scale(0.98); }
+                100% { opacity: 1; transform: translateY(0) scale(1); }
+            }
+            /* 弹窗进入动画 */
+            .animate-modal-in {
+                animation: modalIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            }
+            @keyframes modalIn {
+                0% { opacity: 0; transform: scale(0.95) translateY(10px); }
+                100% { opacity: 1; transform: scale(1) translateY(0); }
+            }
+        }
+    </style>
+</head>
+<body class="bg-white font-sans overflow-x-hidden">
+
+    <!-- 1. 开屏动画 -->
+    <div id="splash" class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-white">
+        <div class="text-center">
+            <span class="block text-[10rem] font-black text-primary animate-drop-bounce opacity-0" style="animation-delay: 100ms;">Flyz</span>
+            <span class="block text-[10rem] font-black text-gray-800 animate-drop-bounce opacity-0" style="animation-delay: 300ms;">Live</span>
+        </div>
+        <p class="mt-4 text-2xl text-gray-500 animate-drop-bounce opacity-0" style="animation-delay: 500ms;">Flyz智能推流系统</p>
+    </div>
+
+    <!-- 2. 顶部导航 -->
+    <header id="navbar" class="fixed top-0 left-0 right-0 h-16 bg-white border-b border-gray-200 flex items-center px-6 z-40 hidden">
+        <div class="container mx-auto flex justify-between items-center">
+            <h1 class="text-2xl font-bold text-primary">Flyz Live</h1>
+            <p class="text-sm text-gray-500">2026线上FPV竞速赛</p>
+        </div>
+    </header>
+
+    <!-- 3. 主页面 -->
+    <main id="main-page" class="pt-24 hidden">
+        <div class="container mx-auto max-w-md px-4">
+            <h2 class="text-3xl font-bold text-center mb-12">选择你的设备系统</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- iOS 卡片 -->
+                <div class="border border-gray-200 rounded-2xl p-8 text-center hover:shadow-lg transition-all">
+                    <div class="text-6xl font-bold mb-4">iOS</div>
+                    <p class="text-gray-500 mb-6">点击查看详细引导</p>
+                    <button id="ios-btn" class="w-full bg-primary text-white rounded-lg py-3 font-medium">查看引导</button>
+                </div>
+                <!-- Android 卡片 (中文) -->
+                <div class="border border-gray-200 rounded-2xl p-8 text-center">
+                    <div class="text-6xl font-bold mb-4 text-gray-400">安卓</div>
+                    <p class="text-gray-400 mb-6">版本尚在开发中</p>
+                    <button id="android-btn" class="w-full bg-gray-200 text-gray-500 rounded-lg py-3 font-medium cursor-not-allowed">敬请期待</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- 4. iOS 引导弹窗 (核心修复：独立复制按钮) -->
+    <div id="ios-modal" class="fixed inset-0 bg-black/50 z-50 hidden items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-md w-full shadow-2xl animate-modal-in opacity-0 scale-95">
+            <h3 class="text-2xl font-bold text-primary p-6 border-b border-gray-100">iOS 观看引导</h3>
+            <div class="p-6">
+                <ol class="space-y-4">
+                    <li class="flex items-start">
+                        <span class="bg-primary text-white w-6 h-6 rounded-full flex items-center justify-center mr-3 mt-0.5">1</span>
+                        <div>
+                            <a href="https://apps.apple.com/cn/app/%E5%8D%B3%E5%88%BB%E6%92%AD%E6%94%BE%E5%99%A8/id1504059748" target="_blank" class="text-primary underline font-medium">点我下载App</a>
+                            <p class="text-xs text-gray-500 mt-1">跳转至App Store</p>
+                        </div>
+                    </li>
+                    <li class="flex items-start">
+                        <span class="bg-primary text-white w-6 h-6 rounded-full flex items-center justify-center mr-3 mt-0.5">2</span>
+                        <p>进入App点击右上角 <span class="bg-primary/10 text-primary px-2 rounded font-bold">+</span>，选择“创建在线媒体”</p>
+                    </li>
+                    <li class="flex items-start">
+                        <span class="bg-primary text-white w-6 h-6 rounded-full flex items-center justify-center mr-3 mt-0.5">3</span>
+                        <div class="w-full">
+                            <p>粘贴下方流媒体地址：</p>
+                            <!-- 修复点：独立的按钮样式，不再是文字 -->
+                            <div class="mt-2 flex flex-col sm:flex-row gap-2">
+                                <code class="bg-gray-100 rounded-lg p-3 flex-1 font-mono text-sm break-all">rtmp://47.104.206.20:9178/live/9178</code>
+                                <button id="copy-btn" class="bg-primary text-white rounded-lg px-4 py-3 font-medium hover:bg-primary/90 transition-colors">
+                                    点我复制
+                                </button>
+                            </div>
+                            <p class="text-xs text-gray-500 mt-2">* 流媒体名称可不用填写</p>
+                        </div>
+                    </li>
+                </ol>
+                <button id="close-modal" class="mt-6 w-full bg-primary text-white rounded-lg py-3 font-medium">确认并关闭</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 开屏动画
+        const splash = document.getElementById('splash');
+        setTimeout(() => {
+            splash.classList.add('opacity-0');
+            setTimeout(() => {
+                splash.classList.add('hidden');
+                document.getElementById('navbar').classList.remove('hidden');
+                document.getElementById('main-page').classList.remove('hidden');
+            }, 500);
+        }, 2000);
+
+        // iOS 弹窗控制
+        const iosBtn = document.getElementById('ios-btn');
+        const iosModal = document.getElementById('ios-modal');
+        const closeModal = document.getElementById('close-modal');
+
+        iosBtn.addEventListener('click', () => {
+            iosModal.classList.remove('hidden');
+            iosModal.classList.add('flex');
+            iosModal.querySelector('div').classList.remove('opacity-0', 'scale-95');
+        });
+
+        closeModal.addEventListener('click', () => {
+            iosModal.classList.add('hidden');
+            iosModal.classList.remove('flex');
+        });
+
+        // Android 按钮
+        document.getElementById('android-btn').addEventListener('click', () => {
+            alert('安卓版本尚在开发中！');
+        });
+
+        // 核心修复：独立复制按钮功能
+        const copyBtn = document.getElementById('copy-btn');
+        copyBtn.addEventListener('click', async () => {
+            const url = 'rtmp://47.104.206.20:9178/live/9178';
+            await navigator.clipboard.writeText(url);
+            copyBtn.textContent = '已复制';
+            setTimeout(() => {
+                copyBtn.textContent = '点我复制';
+            }, 2000);
+        });
+    </script>
+
+</body>
+</html>
