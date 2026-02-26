@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Flyz OS</title>
+
+<link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
+<style>
+* {
+  margin:0; padding:0;
+  box-sizing:border-box;
+  user-select:none;
+  -webkit-font-smoothing:antialiased;
+  -webkit-tap-highlight-color:transparent;
+}
+html,body {
+  width:100vw; height:100vh;
+  overflow:hidden;
+  background:#000;
+  font-family:-apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif;
+}
+.phone {
+  position:relative;
+  width:100%; height:100%;
+  overflow:hidden;
+  padding-bottom:80px;
+}
+
+.wallpaper {
+  position:absolute; inset:0;
+  background: linear-gradient(160deg, #4A90E2, #6FB1FF, #92CCFF);
+  background-image: url('https://picsum.photos/id/1036/1920/1080');
+  background-size:cover;
+  background-position:center;
+  z-index:0;
+}
+
+/* ------------------------- 新版高级开屏动画 ------------------------- */
+.boot-screen {
+  position:fixed;
+  inset:0;
+  z-index:999999;
+  display:grid;
+  place-items:center;
+  background: linear-gradient(160deg, #4A90E2, #6FB1FF, #92CCFF);
+  overflow:hidden;
+}
+.boot-logo-wrap {
+  text-align:center;
+  animation: bootAni 2.2s ease-in-out forwards;
+}
+.boot-text {
+  font-size: 46px;
+  font-weight: 200;
+  color:#fff;
+  letter-spacing: 2px;
+  opacity:0;
+  animation: logoText 1.8s ease-in-out forwards;
+}
+.boot-sub {
+  font-size: 14px;
+  color:rgba(255,255,255,0.8);
+  margin-top: 6px;
+  opacity:0;
+  animation: logoSub 1.8s ease-in-out 0.4s forwards;
+}
+
+@keyframes bootAni {
+  0%   { opacity:1; }
+  80%  { opacity:1; }
+  100% { opacity:0; }
+}
+@keyframes logoText {
+  0%   { opacity:0; transform: translateY(20px); }
+  40%  { opacity:1; transform: translateY(0); }
+  80%  { opacity:1; }
+  100% { opacity:0; }
+}
+@keyframes logoSub {
+  0%   { opacity:0; transform: translateY(14px); }
+  40%  { opacity:1; transform: translateY(0); }
+  80%  { opacity:1; }
+  100% { opacity:0; }
+}
+
+/* 锁屏时钟 */
+.lock-screen {
+  position:absolute; inset:0; z-index:900;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  padding-top:140px;
+  color:#fff;
+  text-shadow:0 3px 12px rgba(0,0,0,0.3);
+}
+.clock-3d-host {
+  perspective:1200px;
+}
+.clock-3d {
+  font-size:72px;
+  font-weight:100;
+  transition:transform 0.2s ease;
+}
+.date-text {
+  font-size:17px;
+  margin-top:6px;
+}
+
+/* 桌面：横向整齐排版，图标小方块 */
+.home-screen {
+  position:absolute; inset:0; z-index:100;
+  padding-top:260px;
+  display:none;
+}
+.app-grid {
+  display:grid;
+  grid-template-columns:repeat(4, 1fr);
+  justify-items:center;
+  gap:20px 10px;
+  padding:0 30px;
+}
+.app-item {
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:6px;
+  color:#fff;
+}
+.app-icon {
+  width:56px;
+  height:56px;
+  border-radius:16px;
+  background:rgba(255,255,255,0.15);
+  display:grid;
+  place-items:center;
+  font-size:24px;
+  backdrop-filter:blur(20px);
+  box-shadow:0 4px 12px rgba(0,0,0,0.2);
+}
+.app-name {
+  font-size:11px;
+}
+
+/* 应用顶部栏优化 */
+.app-window {
+  position:absolute; inset:0; z-index:300;
+  background:#111;
+  display:none;
+  padding-bottom:80px;
+}
+.app-top {
+  height:48px;
+  background:rgba(255,255,255,0.1);
+  backdrop-filter:blur(30px);
+  color:#fff;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:16px;
+  font-weight:500;
+}
+.app-body {
+  width:100%;
+  height:calc(100% - 48px);
+}
+iframe {
+  width:100%; height:100%; border:none; }
+
+/* 多任务 */
+.task-view {
+  position:fixed; inset:0; z-index:1000;
+  background:rgba(0,0,0,0.4);
+  backdrop-filter:blur(30px);
+  padding:60px 30px 120px;
+  overflow-y:auto;
+  display:none;
+}
+.task-card {
+  width:100%; height:200px;
+  background:#2a3c57;
+  border-radius:24px;
+  margin-bottom:16px;
+  position:relative;
+}
+.task-close {
+  position:absolute; top:16px; right:16px;
+  width:36px; height:36px; border-radius:50%;
+  background:rgba(0,0,0,0.3); color:#fff;
+  display:grid; place-items:center;
+}
+
+/* 控制中心 */
+.control-center {
+  position:fixed; top:40px; left:50%;
+  transform:translateX(-50%);
+  width:85vw;
+  background:rgba(255,255,255,0.1);
+  backdrop-filter:blur(40px);
+  border-radius:20px;
+  padding:18px;
+  z-index:99999;
+  display:none;
+  color:#fff;
+}
+.control-grid {
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:10px;
+}
+.control-item {
+  background:rgba(255,255,255,0.1);
+  border-radius:14px;
+  padding:14px;
+  text-align:center;
+}
+
+/* 底部导航 */
+.nav-bar {
+  position:fixed; left:0; right:0; bottom:0;
+  height:80px; background:#000;
+  display:flex; align-items:center; justify-content:space-around;
+  z-index:9999;
+}
+.nav-btn {
+  width:52px; height:52px; border-radius:50%;
+  background:#1C1C1E; color:#fff;
+  display:grid; place-items:center;
+  font-size:20px;
+}
+</style>
+</head>
+
+<body>
+
+<!-- 新版高级开屏 -->
+<div class="boot-screen" id="bootView">
+  <div class="boot-logo-wrap">
+    <div class="boot-text">Flyz OS</div>
+    <div class="boot-sub">powered by digital system</div>
+  </div>
+</div>
+
+<div class="phone">
+  <div class="wallpaper"></div>
+
+  <!-- 锁屏 -->
+  <div class="lock-screen" id="lockView">
+    <div class="clock-3d-host">
+      <div class="clock-3d" id="clock3d">00:00</div>
+    </div>
+    <div class="date-text" id="dateText"></div>
+  </div>
+
+  <!-- 控制中心 -->
+  <div class="control-center" id="controlCenter">
+    <div class="control-grid">
+      <div class="control-item"><i class="fa-solid fa-wifi"></i><br>Wi‑Fi</div>
+      <div class="control-item"><i class="fa-solid fa-bluetooth"></i><br>蓝牙</div>
+      <div class="control-item"><i class="fa-solid fa-sun"></i><br>亮度</div>
+      <div class="control-item"><i class="fa-solid fa-volume-high"></i><br>音量</div>
+    </div>
+  </div>
+
+  <!-- 桌面 -->
+  <div class="home-screen" id="homeView">
+    <div class="app-grid">
+      <div class="app-item" data-app="camera">
+        <div class="app-icon"><i class="fa-solid fa-camera"></i></div>
+        <div class="app-name">相机</div>
+      </div>
+      <div class="app-item" data-app="phone">
+        <div class="app-icon"><i class="fa-solid fa-phone"></i></div>
+        <div class="app-name">电话</div>
+      </div>
+      <div class="app-item" data-app="settings">
+        <div class="app-icon"><i class="fa-solid fa-gear"></i></div>
+        <div class="app-name">设置</div>
+      </div>
+      <div class="app-item" data-app="album">
+        <div class="app-icon"><i class="fa-solid fa-images"></i></div>
+        <div class="app-name">相册</div>
+      </div>
+
+      <div class="app-item" data-app="douyin">
+        <div class="app-icon"><i class="fa-brands fa-tiktok"></i></div>
+        <div class="app-name">抖音</div>
+      </div>
+      <div class="app-item" data-app="bilibili">
+        <div class="app-icon"><i class="fa-brands fa-bilibili"></i></div>
+        <div class="app-name">B站</div>
+      </div>
+      <div class="app-item" data-app="pdd">
+        <div class="app-icon"><i class="fa-brands fa-pinterest-p"></i></div>
+        <div class="app-name">拼多多</div>
+      </div>
+      <div class="app-item" data-app="taobao">
+        <div class="app-icon"><i class="fa-solid fa-bag-shopping"></i></div>
+        <div class="app-name">淘宝</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 多任务 -->
+  <div class="task-view" id="taskView"></div>
+
+  <!-- 应用窗口 -->
+  <div class="app-window" id="cameraWin">
+    <div class="app-top">相机</div>
+    <div class="app-body">
+      <video id="cameraView" autoplay playsinline style="width:100%;height:100%;object-fit:cover;background:#000"></video>
+    </div>
+  </div>
+
+  <div class="app-window" id="phoneWin">
+    <div class="app-top">电话</div>
+    <div class="app-body" style="background:#f2f2f7;padding-top:40px;display:flex;flex-direction:column;align-items:center">
+      <div style="font-size:32px; margin-bottom:24px" id="dialNum">———</div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px">
+        <button onclick="addD('1')" style="width:64px;height:64px;border-radius:50%;font-size:24px">1</button>
+        <button onclick="addD('2')" style="width:64px;height:64px;border-radius:50%;font-size:24px">2</button>
+        <button onclick="addD('3')" style="width:64px;height:64px;border-radius:50%;font-size:24px">3</button>
+        <button onclick="addD('4')" style="width:64px;height:64px;border-radius:50%;font-size:24px">4</button>
+        <button onclick="addD('5')" style="width:64px;height:64px;border-radius:50%;font-size:24px">5</button>
+        <button onclick="addD('6')" style="width:64px;height:64px;border-radius:50%;font-size:24px">6</button>
+        <button onclick="addD('7')" style="width:64px;height:64px;border-radius:50%;font-size:24px">7</button>
+        <button onclick="addD('8')" style="width:64px;height:64px;border-radius:50%;font-size:24px">8</button>
+        <button onclick="addD('9')" style="width:64px;height:64px;border-radius:50%;font-size:24px">9</button>
+        <div></div>
+        <button onclick="addD('0')" style="width:64px;height:64px;border-radius:50%;font-size:24px">0</button>
+        <div></div>
+      </div>
+      <button onclick="callNow()" style="margin-top:20px;padding:10px 32px;border-radius:999px;background:#34c759;color:#fff;border:none">拨打</button>
+    </div>
+  </div>
+
+  <div class="app-window" id="settingsWin">
+    <div class="app-top">设置</div>
+    <div class="app-body" style="background:#1c1c1e;color:#fff;padding:20px">
+      <div style="padding:14px;border-bottom:1px solid #333">壁纸</div>
+      <div style="padding:14px;border-bottom:1px solid #333">显示</div>
+      <div style="padding:14px;border-bottom:1px solid #333">关于</div>
+    </div>
+  </div>
+
+  <div class="app-window" id="albumWin">
+    <div class="app-top">相册</div>
+    <div class="app-body" style="background:#000">
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:2px">
+        <img src="https://picsum.photos/300/300?1" style="width:100%;aspect-ratio:1">
+        <img src="https://picsum.photos/300/300?2" style="width:100%;aspect-ratio:1">
+        <img src="https://picsum.photos/300/300?3" style="width:100%;aspect-ratio:1">
+      </div>
+    </div>
+  </div>
+
+  <div class="app-window" id="douyinWin">
+    <div class="app-top">抖音</div>
+    <div class="app-body"><iframe src="https://www.douyin.com"></iframe></div>
+  </div>
+
+  <div class="app-window" id="bilibiliWin">
+    <div class="app-top">Bilibili</div>
+    <div class="app-body"><iframe src="https://www.bilibili.com"></iframe></div>
+  </div>
+
+  <div class="app-window" id="pddWin">
+    <div class="app-top">拼多多</div>
+    <div class="app-body"><iframe src="https://m.pinduoduo.com"></iframe></div>
+  </div>
+
+  <div class="app-window" id="taobaoWin">
+    <div class="app-top">淘宝</div>
+    <div class="app-body"><iframe src="https://main.m.taobao.com"></iframe></div>
+  </div>
+
+  <!-- 底部导航 -->
+  <div class="nav-bar">
+    <div class="nav-btn" id="backBtn"><i class="fa-solid fa-chevron-left"></i></div>
+    <div class="nav-btn" id="homeBtn"><i class="fa-solid fa-lock"></i></div>
+    <div class="nav-btn" id="taskBtn"><i class="fa-solid fa-square"></i></div>
+    <div class="nav-btn" id="menuBtn"><i class="fa-solid fa-bars"></i></div>
+  </div>
+</div>
+
+<script>
+let isLocked = true;
+let currentApp = null;
+let dial = '';
+let cameraStream = null;
+
+// 时钟
+function updateClock() {
+  const d = new Date();
+  const hh = String(d.getHours()).padStart(2,'0');
+  const mm = String(d.getMinutes()).padStart(2,'0');
+  clock3d.innerText = `${hh}:${mm}`;
+  const w = "日一二三四五六".split("");
+  dateText.innerText = `${d.getFullYear()}年${d.getMonth()+1}月${d.getDate()}日 周${w[d.getDay()]}`;
+}
+setInterval(updateClock, 1000);
+
+// 3D 效果
+window.addEventListener('deviceorientation', e => {
+  const rx = (e.beta  || 0) * -0.2;
+  const ry = (e.gamma || 0) *  0.3;
+  clock3d.style.transform = `rotateX(${rx}deg) rotateY(${ry}deg)`;
+});
+
+// 开机
+$(function(){
+  setTimeout(()=>{
+    $('#bootView').fadeOut(400);
+    $('#lockView').fadeIn(300);
+  }, 2200);
+});
+
+// 解锁
+homeBtn.onclick = () => {
+  if (isLocked) {
+    isLocked = false;
+    $('#lockView').fadeOut(300);
+    $('#homeView').fadeIn(300);
+    homeBtn.innerHTML = '<i class="fa-solid fa-circle"></i>';
+  } else {
+    closeAll();
+    $('#homeView').show();
+  }
+};
+
+// 打开应用
+$('.app-item').click(function(){
+  openApp($(this).data('app'));
+});
+
+function openApp(app) {
+  closeAll();
+  $('#'+app+'Win').fadeIn(300);
+  currentApp = app;
+  if (app === 'camera') startCam();
+}
+
+function closeAll() {
+  $('.app-window').hide();
+  $('#taskView').hide();
+  $('#controlCenter').hide();
+}
+
+// 多任务
+taskBtn.onclick = () => {
+  if (isLocked) return;
+  renderTask();
+  $('#taskView').fadeIn(300);
+  $('#homeView').hide();
+}
+
+function renderTask() {
+  const t = $('#taskView'); t.empty();
+  $('.app-window').each((_,el)=>{
+    const name = el.id.replace('Win','');
+    const card = $('<div class="task-card"></div>');
+    const close = $('<div class="task-close">×</div>');
+    close.click(()=>{ $(el).hide(); renderTask(); });
+    card.append(close);
+    card.click(()=>{ openApp(name); $('#taskView').hide(); });
+    t.append(card);
+  });
+}
+
+// 相机
+async function startCam() {
+  if (cameraStream) cameraStream.getTracks().forEach(t=>t.stop());
+  cameraStream = await navigator.mediaDevices.getUserMedia({ video:true });
+  $('#cameraView')[0].srcObject = cameraStream;
+}
+
+// 拨号
+function addD(n) { dial += n; $('#dialNum').text(dial); }
+function callNow() { if(dial) location.href='tel:'+dial; }
+
+// 返回
+backBtn.onclick = () => {
+  if (currentApp) {
+    $('#'+currentApp+'Win').fadeOut(200);
+    currentApp=null;
+    $('#homeView').show();
+  }
+};
+
+// 控制中心
+menuBtn.onclick = () => {
+  $('#controlCenter').fadeToggle(200);
+};
+</script>
+</body>
+</html>
