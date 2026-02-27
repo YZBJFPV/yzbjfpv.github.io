@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>暖手宝</title>
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: system-ui, sans-serif;
+}
+body {
+  background: #000;
+  color: #fff;
+}
+.wrap {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 4px 10px 10px;
+}
+
+.title {
+  font-size: 52px;
+  font-weight: 900;
+  color: #ff3333;
+  text-align: center;
+}
+
+.status {
+  font-size: 20px;
+  color: #ff3333;
+  text-align: center;
+  margin: 4px 0 8px;
+  animation: fade 1.2s infinite alternate;
+}
+@keyframes fade {
+  0% { opacity: 1; }
+  100% { opacity: 0.6; }
+}
+
+.info {
+  display: flex;
+  justify-content: space-between;
+  font-size: 16px;
+  color: #ccc;
+  margin-bottom: 8px;
+}
+
+#canvas {
+  width: 100%;
+  height: 420px;
+  background: #110808;
+  border-radius: 8px;
+}
+
+.heat-area {
+  margin: 10px 0;
+}
+.heat-label {
+  font-size: 18px;
+  color: #fff;
+  display: flex;
+  justify-content: space-between;
+}
+#heat-level {
+  font-size: 20px;
+  font-weight: bold;
+  color: #ff3333;
+}
+#heat {
+  width: 100%;
+  height: 10px;
+  background: #332222;
+  border-radius: 5px;
+  appearance: none;
+  outline: none;
+  margin-top: 6px;
+}
+#heat::-webkit-slider-thumb {
+  appearance: none;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #ff3333;
+  cursor: pointer;
+}
+
+.toggles {
+  display: flex;
+  gap: 12px;
+  margin: 10px 0;
+  flex-wrap: wrap;
+}
+.toggle-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 16px;
+  color: #fff;
+}
+.toggle-item input {
+  width: 18px;
+  height: 18px;
+}
+
+.chart-box {
+  position: relative;
+  width: 100%;
+  height: 140px;
+  background: #1a1111;
+  border-radius: 8px;
+  margin-top: 10px;
+}
+#fpsChart {
+  width: 100%;
+  height: 100%;
+}
+.fps-scale {
+  position: absolute;
+  left: 4px;
+  top: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  color: #776666;
+  font-size: 12px;
+}
+
+#start {
+  width: 100%;
+  padding: 16px;
+  background: #ff3333;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  font-size: 18px;
+  font-weight: bold;
+  margin-top: 10px;
+}
+#start:disabled {
+  background: #332222;
+  color: #888;
+}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <div class="title">暖手宝</div>
+  <div class="status" id="status">准备就绪</div>
+
+  <div class="info">
+    <div id="fps">FPS：--</div>
+    <div id="count">热量：--</div>
+    <div id="timer">已加热：00:00</div>
+  </div>
+
+  <canvas id="canvas"></canvas>
+
+  <div class="heat-area">
+    <div class="heat-label">
+      <span>热量调节</span>
+      <span id="heat-level">中热</span>
+    </div>
+    <input type="range" id="heat" min="200" max="8888" value="800">
+  </div>
+
+  <div class="toggles">
+    <label class="toggle-item"><input type="checkbox" id="enableFloat"> 浮点运算</label>
+    <label class="toggle-item"><input type="checkbox" id="enableMultiCore"> 多核满载</label>
+    <label class="toggle-item"><input type="checkbox" id="enableMemory"> 内存压力</label>
+  </div>
+
+  <div class="chart-box">
+    <div class="fps-scale">
+      <div>60</div><div>40</div><div>20</div><div>0</div>
+    </div>
+    <canvas id="fpsChart"></canvas>
+  </div>
+
+  <button id="start">启动暖手宝</button>
+</div>
+
+<script>
+const $ = id => document.getElementById(id);
+const canvas = $('canvas');
+const ctx = canvas.getContext('2d');
+const fpsChart = $('fpsChart');
+const cctx = fpsChart.getContext('2d');
+
+const W = canvas.width  = canvas.offsetWidth;
+const H = canvas.height = canvas.offsetHeight;
+const CW = fpsChart.width  = fpsChart.offsetWidth;
+const CH = fpsChart.height = fpsChart.offsetHeight;
+
+const fpsText = $('fps');
+const countText = $('count');
+const statusText = $('status');
+const startBtn = $('start');
+const heatSlider = $('heat');
+const heatLevelText = $('heat-level');
+const timerText = $('timer');
+
+const enableFloat = $('enableFloat');
+const enableMultiCore = $('enableMultiCore');
+const enableMemory = $('enableMemory');
+
+let running = false;
+let frame = 0, last = performance.now();
+let chartData = [];
+let startTime = 0;
+let timerInterval;
+let workers = [];
+
+function getLevel(v) {
+  if (v <= 250) return '微热';
+  if (v <= 500) return '较热';
+  if (v <= 1200) return '中热';
+  if (v <= 2500) return '特别热';
+  if (v <= 5000) return '超烫';
+  if (v <= 8000) return '爆热';
+  return '极限';
+}
+
+function getHeatCount() {
+  return heatSlider.value * 10000;
+}
+
+function render() {
+  if (!running) return;
+  frame++;
+  const now = performance.now();
+  const dt = now - last;
+
+  if (dt >= 100) {
+    const fps = Math.round(frame * 1000 / dt) || 0;
+    fpsText.textContent = `FPS：${fps}`;
+    chartData.push(fps);
+    frame = 0;
+    last = now;
+    drawChart();
+  }
+
+  ctx.fillStyle = '#110808';
+  ctx.fillRect(0, 0, W, H);
+
+  const count = getHeatCount();
+  ctx.fillStyle = '#ff3333';
+
+  for (let i = 0; i < count; i += 24) {
+    const x = (i * 11) % W;
+    const y = (i * 7) % H;
+    ctx.beginPath();
+    ctx.arc(x, y, 1, 0, Math.PI * 2);
+    ctx.fill();
+  }
+
+  if (enableFloat.checked) {
+    let f = 0;
+    for (let i = 0; i < 500000; i++) {
+      f += Math.sin(i) * Math.cos(i) * Math.tan(i * 0.01);
+    }
+    const py = H / 2 + Math.sin(now * 0.002) * 50;
+    ctx.strokeStyle = '#ff6666';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(0, py);
+    ctx.lineTo(W, py + Math.sin(now * 0.001) * 30);
+    ctx.stroke();
+
+    ctx.fillStyle = '#fff';
+    ctx.font = '16px monospace';
+    ctx.fillText('浮点运算：运行中', 10, 30);
+  }
+
+  if (enableMemory.checked) {
+    let arr = [];
+    for (let i = 0; i < 20000; i++) arr.push(Math.random());
+    ctx.fillStyle = '#ffaa00';
+    ctx.fillRect(200, 50, arr.length % 300, 20);
+    ctx.fillStyle = '#fff';
+    ctx.font = '16px monospace';
+    ctx.fillText('内存压力：运行中', 10, 55);
+  }
+
+  if (enableMultiCore.checked) {
+    ctx.fillStyle = '#00ff66';
+    ctx.font = '16px monospace';
+    ctx.fillText('多核满载：运行中', 10, 80);
+  }
+
+  requestAnimationFrame(render);
+}
+
+function drawChart() {
+  cctx.fillStyle = '#1a1111';
+  cctx.fillRect(0, 0, CW, CH);
+  const max = 60;
+  const step = CW / Math.max(chartData.length, 120);
+  cctx.strokeStyle = '#ff3333';
+  cctx.lineWidth = 1.4;
+  cctx.beginPath();
+  for (let i = 0; i < chartData.length; i++) {
+    const v = Math.min(chartData[i] || 0, max);
+    const x = i * step;
+    const y = CH - (v / max * CH);
+    if (i === 0) cctx.moveTo(x, y);
+    else cctx.lineTo(x, y);
+  }
+  cctx.stroke();
+}
+
+function floatTask() {
+  if (!running || !enableFloat.checked) return;
+  let x = 1.123456789;
+  for (let i = 0; i < 2000000; i++) {
+    x = Math.sin(x) * Math.cos(x) * Math.tan(x) * Math.sqrt(Math.abs(x * 1.0000001));
+  }
+  requestAnimationFrame(floatTask);
+}
+
+function memoryTask() {
+  if (!running || !enableMemory.checked) return;
+  let a = [];
+  for (let i = 0; i < 50000; i++) a.push(Math.random());
+  requestAnimationFrame(memoryTask);
+}
+
+function startWorkers() {
+  if (!enableMultiCore.checked) return;
+  const blob = new Blob([`
+    setInterval(() => {
+      let x = 1;
+      for(let i=0; i<800000; i++) x *= Math.sin(i) * 1.000001;
+    }, 0);
+  `], { type: 'application/javascript' });
+  const url = URL.createObjectURL(blob);
+  for (let i = 0; i < navigator.hardwareConcurrency; i++) {
+    workers.push(new Worker(url));
+  }
+}
+
+function startTimer() {
+  startTime = Date.now();
+  timerInterval = setInterval(() => {
+    const diff = Math.floor((Date.now() - startTime) / 1000);
+    const m = String(Math.floor(diff / 60)).padStart(2, '0');
+    const s = String(diff % 60).padStart(2, '0');
+    timerText.textContent = `已加热：${m}:${s}`;
+  }, 1000);
+}
+
+heatSlider.oninput = () => {
+  const v = +heatSlider.value;
+  heatLevelText.textContent = getLevel(v);
+  countText.textContent = `热量：${v}万`;
+};
+
+startBtn.onclick = () => {
+  running = true;
+  startBtn.disabled = true;
+  startBtn.textContent = '暖手宝运行中';
+  statusText.textContent = '暖手宝启动';
+  heatSlider.oninput();
+  startTimer();
+  render();
+  floatTask();
+  memoryTask();
+  startWorkers();
+};
+</script>
+</body>
+</html>
