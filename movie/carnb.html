@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="UTF-8">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>飞驰人生3</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:100%;height:100%;background:#000;color:#fff;font-family:system-ui,sans-serif;overflow:hidden}
+
+.splash-border{position:fixed;left:6px;top:6px;width:calc(100% - 12px);height:calc(100% - 12px);border-radius:28px;background:linear-gradient(90deg,#ff0080,#00bfff,#ff6600,#00bfff,#ff0080);background-size:500% 500%;-webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);-webkit-mask-composite:xor;mask-composite:exclude;animation:borderFlow 2.2s linear infinite;z-index:99999;pointer-events:none;opacity:1;transition:opacity 1.2s ease}
+.splash-border.hide{opacity:0}
+@keyframes borderFlow{0%{background-position:0% 50%}100%{background-position:500% 50%}}
+
+.bg{position:fixed;left:0;top:0;width:100%;height:100%;background:radial-gradient(circle at 50% 40%,#001a3a,#000);z-index:-1}
+
+.gradient-text{background:linear-gradient(90deg,#ff0080,#00bfff,#ff6600,#ff0080);background-size:400% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:flow 2s linear infinite}
+@keyframes flow{0%{background-position:0% 50%}100%{background-position:400% 50%}}
+
+.splash{position:fixed;left:0;top:0;width:100%;height:100%;background:#000;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;transition:all 1.2s ease}
+.splash.fade{opacity:0;transform:scale(1.1);pointer-events:none}
+.logo{font-size:70px;font-weight:900;letter-spacing:2px}
+.tip{margin-top:10px;font-size:17px;color:#00bfff}
+.bar-box{width:320px;height:8px;background:rgba(0,191,255,0.15);border-radius:4px;overflow:hidden;margin-top:20px}
+.bar{height:100%;width:0%;background:linear-gradient(90deg,#00bfff,#ff0080);animation:bar 3s ease forwards}
+@keyframes bar{100%{width:100%}}
+
+.loading-box{position:fixed;left:50%;top:0;transform:translate(-50%,-50%);z-index:99990;font-size:18px;font-weight:600;background:linear-gradient(90deg,#ff0080,#00bfff);padding:14px 32px;border-radius:16px;transition:all 0.5s ease;opacity:0;pointer-events:none}
+.loading-box.active{opacity:1}
+.loading-box.center{top:50%;transform:translate(-50%,-50%)}
+.loading-box.out{top:100vh;transform:translate(-50%,0)}
+
+.brand-slide{position:fixed;top:20vh;left:50%;transform:translate(-50%,-60px);font-size:34px;font-weight:700;color:#fff;text-shadow:0 0 12px #00bfff;opacity:0;z-index:9997;transition:all .7s ease}
+.brand-slide.show{transform:translate(-50%,0);opacity:1}
+
+.device-panel{position:fixed;left:0;top:0;width:100%;height:100%;background:#000;z-index:9996;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none}
+.device-panel.show{opacity:1;pointer-events:auto;animation:deviceAnim 5s ease forwards}
+@keyframes deviceAnim{0%{transform:scale(.7);opacity:0}12%{transform:scale(1);opacity:1}88%{transform:scale(1);opacity:1}100%{transform:scale(.7);opacity:0}}
+
+.device-title{font-size:28px;color:#ffd700;margin-bottom:20px;text-align:center;text-shadow:0 0 10px #ffd700}
+.device-text{font-size:17px;color:#ccc;margin:6px 0;text-align:center}
+
+.speaker-group{display:flex;gap:36px;margin:24px 0}
+.speaker{width:14px;height:60px;background:rgba(0,191,255,0.1);border-radius:7px;position:relative;overflow:hidden;box-shadow:0 0 10px #00bfff}
+.speaker::after{content:'';position:absolute;left:0;top:0;width:100%;background:linear-gradient(#00bfff,#ff0080);animation:speakerPulse 1.2s infinite alternate}
+@keyframes speakerPulse{0%{height:20%}100%{height:100%}}
+
+.ai-tip{font-size:18px;background:linear-gradient(90deg,#00bfff,#ff0080);-webkit-background-clip:text;background-clip:text;color:transparent;font-weight:600;margin-top:20px}
+
+.declare{position:fixed;left:0;top:0;width:100%;height:100%;background:rgba(0,0,0,.9);backdrop-filter:blur(12px);display:flex;align-items:center;justify-content:center;z-index:9998;opacity:0;pointer-events:none;transition:opacity .7s ease}
+.declare.show{opacity:1;pointer-events:auto}
+.declare-box{width:90%;max-width:520px;background:rgba(10,15,25,.9);border-radius:24px;padding:36px;border:1px solid rgba(0,191,255,.3);text-align:center;box-shadow:0 0 30px rgba(0,191,255,.2)}
+.declare-title{font-size:24px;color:#ffd700;margin-bottom:18px}
+.declare-text{font-size:15px;color:#ccc;line-height:1.7;margin-bottom:28px}
+.declare-btn{padding:14px 36px;background:linear-gradient(90deg,#00bfff,#ff0080);border:none;border-radius:14px;color:#fff;font-weight:bold;font-size:16px;box-shadow:0 0 12px #00bfff}
+
+.watermark{position:fixed;font-size:13px;color:rgba(255,255,255,.25);z-index:999;pointer-events:none;transition:all .8s ease;display:none}
+.wm-bottom{position:fixed;right:12px;bottom:12px;font-size:12px;color:rgba(255,255,255,.3);z-index:998}
+
+.eye-filter{position:fixed;left:0;top:0;width:100%;height:100%;background:transparent;z-index:850;pointer-events:none;transition:all .3s ease}
+.eye-filter.on{background:rgba(0,255,120,.08)}
+
+.video-frame{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:86%;height:82%;border-radius:20px;overflow:hidden;border:2px solid rgba(0,191,255,.4);transition:all .4s ease;z-index:100;box-shadow:0 0 40px rgba(0,191,255,.3)}
+.video-frame.full{width:100%;height:100%;border:none;border-radius:0;left:0;top:0;transform:none}
+
+.title{position:absolute;left:24px;top:24px;font-size:22px;font-weight:bold;background:rgba(0,0,0,.5);backdrop-filter:blur(8px);padding:8px 16px;border-radius:12px;z-index:101}
+.dolby{color:#ffd700;margin-left:8px;text-shadow:0 0 8px #ffd700}
+
+#video{width:100%;height:100%;object-fit:cover;background:#000;visibility:hidden}
+#video.show{visibility:visible}
+
+.controls{position:absolute;left:50%;bottom:28px;transform:translateX(-50%);width:90%;max-width:580px;background:rgba(0,0,0,.7);backdrop-filter:blur(15px);border-radius:20px;padding:18px 22px;z-index:300;opacity:0;transition:opacity .3s ease;border:1px solid rgba(0,191,255,.2)}
+.controls.show{opacity:1}
+.control-row{display:flex;align-items:center;gap:14px}
+.play-btn{width:44px;height:44px;border-radius:50%;background:rgba(0,191,255,.15);border:none;color:#fff;font-size:18px;display:flex;align-items:center;justify-content:center}
+.progress{flex:1;height:8px;background:rgba(255,255,255,.15);border-radius:4px;overflow:hidden}
+.progress-fill{height:100%;width:0%;background:linear-gradient(90deg,#00bfff,#ff0080)}
+.time{font-size:14px;color:#ccc;min-width:100px;text-align:center}
+.btn-bar{display:flex;gap:10px;margin-top:12px}
+.btn{flex:1;padding:8px 0;background:rgba(0,191,255,.1);border:none;color:#fff;border-radius:10px;font-size:13px}
+.btn.active{background:linear-gradient(90deg,#00bfff,#ff0080);color:#fff}
+</style>
+</head>
+<body>
+
+<div class="splash-border" id="splashBorder"></div>
+<div class="bg"></div>
+<div class="wm-bottom">flyz<br>yzbgfpv.top/movie/car</div>
+<div class="eye-filter" id="eyeFilter"></div>
+
+<div class="loading-box" id="loadingBox">正在全力加载中...</div>
+<div class="brand-slide" id="brandSlide">Apple</div>
+
+<div class="splash" id="splash">
+  <div class="logo gradient-text">Flyz</div>
+  <div class="tip">启动中</div>
+  <div class="bar-box"><div class="bar"></div></div>
+</div>
+
+<div class="declare" id="declare">
+  <div class="declare-box">
+    <div class="declare-title">免责声明</div>
+    <div class="declare-text">
+      本页面仅用于技术测试与个人学习<br>
+      不存储、不复制、不传播任何版权视频<br>
+      所有资源均来自互联网公开分享<br>
+      点击确认即表示您已阅读并同意
+    </div>
+    <button class="declare-btn" id="agreeBtn">我已阅读并确认</button>
+  </div>
+</div>
+
+<div class="device-panel" id="devicePanel">
+  <div class="device-title" id="deviceWelcome"></div>
+  <div class="device-text" id="deviceInfo"></div>
+  <div class="device-text">支持：高清解码 · 全屏HDR · 视网膜屏</div>
+  <div class="speaker-group">
+    <div class="speaker"></div>
+    <div class="speaker"></div>
+  </div>
+  <div class="device-text">双扬声器立体声</div>
+  <div class="ai-tip" id="aiTip"></div>
+</div>
+
+<div class="video-frame" id="vFrame">
+  <div class="title">飞驰人生3 <span class="dolby">比杜视界</span></div>
+  <video id="video" playsinline muted></video>
+</div>
+
+<div class="controls" id="controls">
+  <div class="control-row">
+    <button class="play-btn" id="playBtn">▶</button>
+    <div class="progress"><div class="progress-fill" id="progFill"></div></div>
+    <div class="time" id="time">00:00 / 00:00</div>
+  </div>
+  <div class="btn-bar">
+    <button class="btn" id="speed">倍速</button>
+    <button class="btn active" id="bl">蓝光</button>
+    <button class="btn" id="eye">护眼</button>
+    <button class="btn" id="cache">缓存</button>
+    <button class="btn" id="full">全屏</button>
+  </div>
+</div>
+
+<script>
+const v=document.getElementById('video');
+const playBtn=document.getElementById('playBtn');
+const loadingBox=document.getElementById('loadingBox');
+const splash=document.getElementById('splash');
+const splashBorder=document.getElementById('splashBorder');
+const declare=document.getElementById('declare');
+const devicePanel=document.getElementById('devicePanel');
+const brandSlide=document.getElementById('brandSlide');
+const controls=document.getElementById('controls');
+const vFrame=document.getElementById('vFrame');
+const progFill=document.getElementById('progFill');
+const timeTxt=document.getElementById('time');
+
+const url='https://hn.bfvvs.com/play/erk0lNwa/index.m3u8';
+
+v.src=url;
+v.preload='auto';
+v.muted=false;
+v.play().catch(()=>{});
+playBtn.textContent='⏸';
+
+function detectDevice(){const ua=navigator.userAgent;if(ua.includes('iPad'))return{brand:'Apple',name:'iPad',info:'已检测：iPad 设备 | 视网膜高清屏'};if(ua.includes('iPhone'))return{brand:'Apple',name:'iPhone',info:'已检测：iPhone 设备 | 立体声双扬声器'};return{brand:'Apple',name:'Apple 设备',info:'已检测：高性能影音引擎'}}
+
+setTimeout(()=>{splash.classList.add('fade');splashBorder.classList.add('hide');setTimeout(()=>{declare.classList.add('show')},400)},3000);
+
+agreeBtn.onclick=()=>{
+  declare.classList.remove('show');
+  const dev=detectDevice();
+  brandSlide.textContent=dev.brand;
+  brandSlide.classList.add('show');
+  devicePanel.classList.add('show');
+  deviceWelcome.textContent=`欢迎 ${dev.name} 用户`;
+  deviceInfo.textContent=dev.info;
+  aiTip.textContent='正在启用 Flyz AI 为您优化影音体验';
+
+  setTimeout(()=>{
+    devicePanel.classList.remove('show');
+    brandSlide.classList.remove('show');
+    v.classList.add('show');
+    controls.classList.add('show');
+
+    loadingBox.classList.add('active');
+    setTimeout(()=>{
+      loadingBox.classList.add('center');
+      setTimeout(()=>{loadingBox.classList.add('out')},2000);
+    },500);
+  },5000);
+};
+
+v.onplay=()=>{playBtn.textContent='⏸'};
+v.onpause=()=>{playBtn.textContent='▶'};
+playBtn.onclick=(e)=>{e.stopPropagation();v.paused?v.play():v.pause()};
+
+v.ontimeupdate=()=>{if(!v.duration)return;progFill.style.width=(v.currentTime/v.duration*100)+'%';const fmt=t=>String(Math.floor(t/60)).padStart(2,0)+':'+String(Math.floor(t%60)).padStart(2,0);timeTxt.textContent=fmt(v.currentTime)+' / '+fmt(v.duration)};
+
+const speeds=[1,1.25,1.5,2,3];let sIdx=0;
+speed.onclick=(e)=>{e.stopPropagation();sIdx=(sIdx+1)%speeds.length;v.playbackRate=speeds[sIdx];speed.textContent=speeds[sIdx]+'x'};
+
+eye.onclick=(e)=>{e.stopPropagation();eyeFilter.classList.toggle('on');eye.classList.toggle('active');bl.classList.remove('active')};
+full.onclick=(e)=>{e.stopPropagation();vFrame.classList.toggle('full')};
+</script>
+</body>
+</html>
