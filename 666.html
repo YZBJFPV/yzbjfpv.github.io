@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Flyz 跑分平台</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:system-ui,sans-serif}
+body{background:#000;color:#fff}
+.container{max-width:900px;margin:0 auto;padding:12px}
+.head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.title{font-size:22px;color:#0ff}
+.info{display:flex;gap:16px;font-size:14px;color:#ccc}
+#canvas{width:100%;height:420px;background:#000;border-radius:10px;margin-bottom:10px}
+.chart-box{position:relative;width:100%;height:160px;background:#111;border-radius:10px;margin-bottom:10px}
+#fpsChart{width:100%;height:100%}
+.fps-label{position:absolute;left:4px;top:0;bottom:0;display:flex;flex-direction:column;justify-content:space-between;color:#888;font-size:12px}
+.progress{height:8px;background:#222;border-radius:4px;overflow:hidden;margin-bottom:10px}
+.bar{height:100%;width:0%;background:#0ff}
+.score{font-size:36px;text-align:center;color:#fff;margin:10px 0}
+#start{width:100%;padding:14px;background:#0ff;color:#000;border:none;border-radius:10px;font-size:16px;font-weight:bold}
+#start:disabled{background:#333;color:#666}
+</style>
+
+<div class="container">
+  <div class="head">
+    <div class="title">Flyz 跑分平台</div>
+    <div class="info">
+      <div id="round">轮次：0/6</div>
+      <div id="fps">FPS：--</div>
+      <div id="time">剩余：20s</div>
+    </div>
+  </div>
+
+  <canvas id="canvas"></canvas>
+
+  <div class="chart-box">
+    <div class="fps-label">
+      <div>60</div><div>40</div><div>20</div><div>0</div>
+    </div>
+    <canvas id="fpsChart"></canvas>
+  </div>
+
+  <div class="progress"><div class="bar" id="bar"></div></div>
+  <div class="score" id="score">--</div>
+  <button id="start">开始跑分</button>
+</div>
+
+<script>
+const $ = id => document.getElementById(id);
+const canvas = $('canvas');
+const ctx = canvas.getContext('2d');
+const fpsChart = $('fpsChart');
+const cctx = fpsChart.getContext('2d');
+
+const W = canvas.width  = canvas.offsetWidth;
+const H = canvas.height = canvas.offsetHeight;
+const CW = fpsChart.width  = fpsChart.offsetWidth;
+const CH = fpsChart.height = fpsChart.offsetHeight;
+
+const roundText = $('round');
+const fpsText = $('fps');
+const timeText = $('time');
+const bar = $('bar');
+const scoreBox = $('score');
+const startBtn = $('start');
+
+let running = false;
+let frame = 0, last = performance.now();
+let fpsList = [], chartData = [];
+let roundScores = [];
+
+// 6轮压力
+const tasks = [
+  { name: '15万',   count: 150000 },
+  { name: '25万',   count: 250000 },
+  { name: '50万',   count: 500000 },
+  { name: '75万',   count: 750000 },
+  { name: '100万',  count: 1000000 },
+  { name: '200万',  count: 2000000 },
+];
+
+// 低闪烁、平稳压测渲染
+function renderLoop(count) {
+  if (!running) return;
+  frame++;
+  const now = performance.now();
+  const dt = now - last;
+
+  if (dt >= 100) {
+    const fps = Math.round(frame * 1000 / dt);
+    fpsText.textContent = `FPS：${fps}`;
+    fpsList.push(fps);
+    chartData.push(fps);
+    frame = 0;
+    last = now;
+    drawChart();
+  }
+
+  ctx.fillStyle = '#000';
+  ctx.fillRect(0, 0, W, H);
+  ctx.fillStyle = '#fff';
+
+  // 批量绘制，不每帧全随机乱闪
+  for (let i = 0; i < count; i += 8) {
+    const x = (i * 13) % W;
+    const y = (i * 7) % H;
+    ctx.beginPath();
+    ctx.arc(x, y, 1.5, 0, Math.PI * 2);
+    ctx.fill();
+  }
+  requestAnimationFrame(() => renderLoop(count));
+}
+
+// 帧率曲线 + 左侧刻度
+function drawChart() {
+  cctx.fillStyle = '#111';
+  cctx.fillRect(0, 0, CW, CH);
+  const max = 60;
+  const step = CW / Math.max(chartData.length, 120);
+  cctx.strokeStyle = '#0ff';
+  cctx.lineWidth = 1.5;
+  cctx.beginPath();
+  for (let i = 0; i < chartData.length; i++) {
+    const v = Math.min(chartData[i], max);
+    const x = i * step;
+    const y = CH - (v / max * CH);
+    if (i === 0) cctx.moveTo(x, y);
+    else cctx.lineTo(x, y);
+  }
+  cctx.stroke();
+}
+
+// 单轮执行
+async function runRound(taskIdx) {
+  const task = tasks[taskIdx];
+  roundText.textContent = `轮次：${taskIdx+1}/${tasks.length}`;
+  running = true;
+  fpsList = [];
+  renderLoop(task.count);
+
+  for (let s = 20; s >= 0; s--) {
+    timeText.textContent = `剩余：${s}s`;
+    await new Promise(r => setTimeout(r, 1000));
+  }
+
+  running = false;
+  const avg = fpsList.length ? fpsList.reduce((a,b)=>a+b)/fpsList.length : 1;
+  roundScores.push(avg);
+  bar.style.width = ((taskIdx+1)/tasks.length*100) + '%';
+}
+
+// 主流程
+async function startBench() {
+  startBtn.disabled = true;
+  startBtn.textContent = '跑分中...';
+  roundScores = [];
+  chartData = [];
+  bar.style.width = '0%';
+
+  for (let i = 0; i < tasks.length; i++) {
+    await runRound(i);
+  }
+
+  const total = roundScores.reduce((a,b)=>a+b)/roundScores.length;
+  const score = Math.round(total * 1800);
+  scoreBox.textContent = score;
+  startBtn.disabled = false;
+  startBtn.textContent = '重新跑分';
+}
+
+startBtn.onclick = startBench;
+</script>
