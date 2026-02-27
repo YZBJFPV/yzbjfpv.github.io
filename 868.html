@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>🔥 终极暖手宝 🔥</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:system-ui,sans-serif}
+body{background:#000;color:#fff}
+.wrap{width:100vw;padding:4px 6px 10px}
+
+.title{font-size:46px;font-weight:900;color:#ff0000;text-align:center}
+.status{font-size:20px;color:#ff0000;text-align:center;margin:4px 0;animation:fade 1s infinite alternate}
+@keyframes fade{0%{opacity:1}100%{opacity:.5}}
+
+.info{display:flex;justify-content:space-between;font-size:14px;color:#ccc;margin-bottom:6px}
+#canvas{width:100%;height:460px;background:#100505;border-radius:8px}
+
+.heat-area{margin:8px 0}
+.heat-label{font-size:16px;color:#fff;display:flex;justify-content:space-between}
+#heat-level{font-size:20px;font-weight:bold;color:#ff0000}
+#heat{width:100%;height:10px;background:#442222;border-radius:5px;appearance:none;outline:none;margin-top:6px}
+#heat::-webkit-slider-thumb{appearance:none;width:24px;height:24px;border-radius:50%;background:#ff0000}
+
+.mush-area{margin:8px 0}
+.mush-label{font-size:16px;color:#fff;display:flex;justify-content:space-between}
+#mush-count{font-size:18px;color:#ff0000}
+#mushroom{width:100%;height:10px;background:#442222;border-radius:5px;appearance:none;outline:none;margin-top:6px}
+#mushroom::-webkit-slider-thumb{appearance:none;width:24px;height:24px;border-radius:50%;background:#ff0000}
+
+.toggles{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:10px 0}
+.toggle-item{display:flex;align-items:center;gap:6px;font-size:14px;color:#fff}
+.toggle-item input{width:18px;height:18px}
+
+.chart-box{position:relative;width:100%;height:280px;background:#221111;border-radius:8px;margin-top:8px}
+#fpsChart{width:100%;height:100%}
+.fps-scale{position:absolute;left:4px;top:0;bottom:0;display:flex;flex-direction:column;justify-content:space-between;color:#886666;font-size:12px}
+
+#start{width:100%;padding:16px;background:#ff0000;color:#fff;border:none;border-radius:10px;font-size:20px;font-weight:bold;margin-top:10px}
+#start:disabled{background:#442222;color:#aaa}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <div class="title">🔥暖手宝🔥</div>
+  <div class="status" id="status">准备就绪</div>
+  <div class="info">
+    <div id="fps">FPS：--</div>
+    <div id="count">热量：--</div>
+    <div id="timer">已加热：00:00</div>
+  </div>
+
+  <canvas id="canvas"></canvas>
+
+  <div class="heat-area">
+    <div class="heat-label">
+      <span>热量调节</span>
+      <span id="heat-level">微温</span>
+    </div>
+    <input type="range" id="heat" min="200" max="20000" value="1000">
+  </div>
+
+  <div class="mush-area">
+    <div class="heat-label">
+      <span>毒蘑菇数量 (0-50)</span>
+      <span id="mush-count">0</span>
+    </div>
+    <input type="range" id="mushroom" min="0" max="50" value="0">
+  </div>
+
+  <div class="toggles">
+    <label class="toggle-item"><input type="checkbox" id="enable3d" checked> 3D多面体</label>
+    <label class="toggle-item"><input type="checkbox" id="enableFloat" checked> 浮点运算</label>
+    <label class="toggle-item"><input type="checkbox" id="enableMulti" checked> 多核满载</label>
+    <label class="toggle-item"><input type="checkbox" id="enableMem" checked> 内存压载</label>
+  </div>
+
+  <div class="chart-box">
+    <div class="fps-scale"><div>3</div><div>2</div><div>1</div><div>0</div></div>
+    <canvas id="fpsChart"></canvas>
+  </div>
+
+  <button id="start">启动暖手宝</button>
+</div>
+
+<script>
+const $ = id => document.getElementById(id);
+const canvas = $('canvas');
+const ctx = canvas.getContext('2d');
+const fpsChart = $('fpsChart');
+const cctx = fpsChart.getContext('2d');
+
+const W = canvas.offsetWidth;
+const H = canvas.offsetHeight;
+const CW = fpsChart.offsetWidth;
+const CH = fpsChart.offsetHeight;
+canvas.width = W;
+canvas.height = H;
+fpsChart.width = CW;
+fpsChart.height = CH;
+
+const fpsText = $('fps');
+const countText = $('count');
+const statusText = $('status');
+const startBtn = $('start');
+const heatSlider = $('heat');
+const heatLevelText = $('heat-level');
+const mushSlider = $('mushroom');
+const mushCount = $('mush-count');
+const timerText = $('timer');
+
+const enable3d = $('enable3d');
+const enableFloat = $('enableFloat');
+const enableMulti = $('enableMulti');
+const enableMem = $('enableMem');
+
+let running = false;
+let frame = 0, last = performance.now();
+let chartData = [];
+let startTime = 0;
+let timerInterval;
+let workers = [];
+
+function getLevel(v) {
+  if(v <= 1000) return '微温';
+  if(v <= 3000) return '温';
+  if(v <= 7000) return '热';
+  if(v <= 12000) return '很热';
+  if(v <= 17000) return '爆热';
+  return '极限🔥';
+}
+
+function getHeatCount() {
+  return heatSlider.value * 10000;
+}
+
+function drawPoly(t) {
+  const r = 120;
+  ctx.strokeStyle = '#ff3333';
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  for(let i=0;i<=24;i++){
+    const a = i/24*Math.PI*2;
+    const s = 1 + 0.3*Math.sin(a*4 + t);
+    const x = Math.cos(a)*r*s;
+    const y = Math.sin(a)*r*s;
+    const z = Math.sin(a*2 + t)*r*0.7;
+    const f = 1/(1+z/500);
+    const px = W/2 + x*f;
+    const py = H/2 + y*f;
+    i ? ctx.lineTo(px,py) : ctx.moveTo(px,py);
+  }
+  ctx.closePath();
+  ctx.stroke();
+}
+
+function render() {
+  if(!running) return;
+  frame++;
+  const now = performance.now();
+  const dt = now - last;
+
+  if(dt >= 100){
+    const fps = Math.round(frame*1000/dt)||0;
+    fpsText.textContent = `FPS：${fps}`;
+    chartData.push(fps);
+    if(chartData.length > CW) chartData.shift();
+    frame=0; last=now;
+    drawChart();
+  }
+
+  ctx.fillStyle = '#100505';
+  ctx.fillRect(0,0,W,H);
+
+  const cnt = getHeatCount();
+  ctx.fillStyle = '#ff0000';
+  for(let i=0;i<cnt;i+=8){
+    const x=(i*11)%W;
+    const y=(i*7)%H;
+    ctx.beginPath();
+    ctx.arc(x,y,1,0,Math.PI*2);
+    ctx.fill();
+  }
+
+  if(enable3d.checked) drawPoly(now*0.001);
+
+  const N = +mushSlider.value;
+  for(let k=0;k<N;k++){
+    let v=0;
+    for(let i=0;i<5000000;i++) v+=Math.tanh(i)*Math.hypot(i,v)*Math.atan(i)*Math.exp(Math.sin(i));
+    for(let i=0;i<5000000;i++) v*=Math.cos(i)*Math.asin(Math.min(0.99,Math.abs(v/(i+1))));
+  }
+
+  requestAnimationFrame(render);
+}
+
+function drawChart() {
+  cctx.fillStyle = '#221111';
+  cctx.fillRect(0,0,CW,CH);
+  cctx.strokeStyle = '#ff0000';
+  cctx.lineWidth = 1;
+  cctx.beginPath();
+  chartData.forEach((val,i)=>{
+    const v = Math.min(val||0, 3);
+    const y = CH - v/3 * CH;
+    const x = i / (chartData.length-1) * CW;
+    i ? cctx.lineTo(x,y) : cctx.moveTo(x,y);
+  });
+  cctx.stroke();
+}
+
+function floatTask(){
+  if(!running||!enableFloat.checked)return;
+  let x=1.1;
+  for(let i=0;i<10000000;i++) x=Math.sin(x)*Math.cos(x)*Math.tan(x)*Math.sqrt(Math.abs(x));
+  requestAnimationFrame(floatTask);
+}
+
+function memTask(){
+  if(!running||!enableMem.checked)return;
+  let a=[];
+  for(let i=0;i<300000;i++) a.push(Math.random());
+  requestAnimationFrame(memTask);
+}
+
+function startWorkers(){
+  if(!enableMulti.checked)return;
+  const b=new Blob([`setInterval(()=>{let x=1;for(let i=0;i<5000000;i++)x*=Math.sin(i)*1.000001},0)`],{type:'text/javascript'});
+  const u=URL.createObjectURL(b);
+  for(let i=0;i<navigator.hardwareConcurrency;i++)workers.push(new Worker(u));
+}
+
+function startTimer(){
+  startTime=Date.now();
+  timerInterval=setInterval(()=>{
+    const t=Math.floor((Date.now()-startTime)/1000);
+    const m=String(Math.floor(t/60)).padStart(2,'0');
+    const s=String(t%60).padStart(2,'0');
+    timerText.textContent=`已加热：${m}:${s}`;
+  },1000);
+}
+
+heatSlider.oninput=()=>{
+  const v=+heatSlider.value;
+  heatLevelText.textContent=getLevel(v);
+  countText.textContent=`热量：${v}万`;
+};
+
+mushSlider.oninput=()=>{
+  mushCount.textContent = mushSlider.value;
+};
+
+startBtn.onclick=()=>{
+  running=true;
+  startBtn.disabled=true;
+  startBtn.textContent='🔥 全力运行中 🔥';
+  statusText.textContent='系统已满载';
+  heatSlider.oninput();
+  startTimer();
+  render();
+  floatTask();
+  memTask();
+  startWorkers();
+};
+</script>
+</body>
+</html>
