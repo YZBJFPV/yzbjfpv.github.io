@@ -79,6 +79,23 @@ html,body{width:100%;height:100%;background:#000;color:#fff;font-family:system-u
 .btn-bar{display:flex;gap:10px;margin-top:12px}
 .btn{flex:1;padding:8px 0;background:rgba(0,191,255,.1);border:none;color:#fff;border-radius:10px;font-size:13px}
 .btn.active{background:linear-gradient(90deg,#00bfff,#ff0080);color:#fff}
+
+/* 提示弹窗 */
+.toast{
+  position:fixed;
+  left:50%; top:50%;
+  transform:translate(-50%,-50%);
+  background:rgba(0,0,0,.7);
+  color:#fff;
+  padding:12px 24px;
+  border-radius:12px;
+  font-size:14px;
+  z-index:9999;
+  opacity:0;
+  pointer-events:none;
+  transition:opacity .4s;
+}
+.toast.show{opacity:1}
 </style>
 </head>
 <body>
@@ -122,7 +139,7 @@ html,body{width:100%;height:100%;background:#000;color:#fff;font-family:system-u
   <div class="ai-tip" id="aiTip"></div>
 </div>
 
-<div class="video-frame" id="vFrame">
+<div class="video-frame" id="vFrame" onclick="toggleControls()">
   <div class="title">飞驰人生3 <span class="dolby">比杜视界</span></div>
   <video id="video" playsinline muted></video>
 </div>
@@ -142,6 +159,8 @@ html,body{width:100%;height:100%;background:#000;color:#fff;font-family:system-u
   </div>
 </div>
 
+<div class="toast" id="toast">点击屏幕显示/隐藏控制面板</div>
+
 <script>
 const v=document.getElementById('video');
 const playBtn=document.getElementById('playBtn');
@@ -155,14 +174,26 @@ const controls=document.getElementById('controls');
 const vFrame=document.getElementById('vFrame');
 const progFill=document.getElementById('progFill');
 const timeTxt=document.getElementById('time');
+const toast=document.getElementById('toast');
 
 const url='https://hn.bfvvs.com/play/erk0lNwa/index.m3u8';
 
+// 开屏就预加载并播放
 v.src=url;
 v.preload='auto';
-v.muted=false;
+v.muted=true;
 v.play().catch(()=>{});
 playBtn.textContent='⏸';
+
+let firstClick = true;
+function toggleControls(){
+  if(firstClick){
+    firstClick = false;
+    toast.classList.add('show');
+    setTimeout(()=>toast.classList.remove('show'), 2000);
+  }
+  controls.classList.toggle('show');
+}
 
 function detectDevice(){const ua=navigator.userAgent;if(ua.includes('iPad'))return{brand:'Apple',name:'iPad',info:'已检测：iPad 设备 | 视网膜高清屏'};if(ua.includes('iPhone'))return{brand:'Apple',name:'iPhone',info:'已检测：iPhone 设备 | 立体声双扬声器'};return{brand:'Apple',name:'Apple 设备',info:'已检测：高性能影音引擎'}}
 
@@ -183,6 +214,7 @@ agreeBtn.onclick=()=>{
     brandSlide.classList.remove('show');
     v.classList.add('show');
     controls.classList.add('show');
+    v.muted = false;
 
     loadingBox.classList.add('active');
     setTimeout(()=>{
