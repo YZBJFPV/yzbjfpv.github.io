@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover">
+<title>飞驰人生3｜FlyzMovie</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:100%;height:100%;background:#000;color:#fff;font-family:-apple-system,BlinkMacSystemFont,system-ui,sans-serif;overflow:hidden}
+.splash{position:fixed;inset:0;background:#000;display:flex;align-items:center;justify-content:center;z-index:9999;animation:sh 0s 5s forwards}
+@keyframes sh{to{opacity:0;visibility:hidden}}
+.logo{position:absolute;animation:lo 1.2s .3s cubic-bezier(.2,.8,.2,1) forwards}
+@keyframes lo{from{transform:translateY(-100vh);opacity:0}to{opacity:1}}
+.logo h1{font-size:clamp(42px,10vw,80px);font-weight:700;letter-spacing:2px;text-align:center}
+.domain{position:absolute;animation:do 1.2s .8s cubic-bezier(.2,.8,.2,1) forwards;margin-top:120px}
+@keyframes do{from{transform:translateY(100vh);opacity:0}to{opacity:1}}
+.domain p{font-size:clamp(14px,3vw,20px);color:#aaa;text-align:center;letter-spacing:1px}
+.tip{position:fixed;top:20px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,.6);color:#fff;padding:8px 16px;border-radius:20px;font-size:12px;white-space:nowrap;animation:tp 6s forwards;z-index:20}
+@keyframes tp{0%{opacity:0}10%{opacity:1}80%{opacity:1}100%{opacity:0}}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.97);z-index:990;display:none;align-items:center;justify-content:center;padding:20px}
+.card{background:#111;border-radius:18px;max-width:650px;width:100%;padding:40px;border:1px solid rgba(255,255,255,.08)}
+.btns{display:flex;gap:14px;justify-content:flex-end;margin-top:20px}
+.btn{padding:12px 26px;border-radius:10px;border:none;cursor:pointer}
+.ok{background:#fff;color:#000}
+.no{background:#222;color:#aaa}
+.player{display:none;position:relative;width:100%;height:100%}
+video{width:100%;height:100%;object-fit:contain;display:block}
+.watermark{position:absolute;inset:0;pointer-events:none;z-index:10}
+.watermark span{position:absolute;font-size:clamp(22px,5vw,40px);font-weight:700;color:rgba(255,255,255,.15);animation:fl 22s linear infinite}
+@keyframes fl{0%{transform:translate(10vw,20vh)}25%{transform:translate(70vw,25vh)}50%{transform:translate(45vw,65vh)}75%{transform:translate(20vw,55vh)}100%{transform:translate(10vw,20vh)}}
+.overlay{position:fixed;left:50%;bottom:30px;transform:translateX(-50%);width:94%;max-width:600px;background:rgba(40,40,40,.7);backdrop-filter:blur(12px);border-radius:20px;padding:24px;z-index:30;display:none}
+.controls{display:flex;flex-direction:column;gap:16px}
+.row{display:flex;align-items:center;gap:16px}
+.toggle{width:48px;height:48px;border-radius:50%;background:rgba(255,255,255,.1);color:#fff;border:none;font-size:18px}
+.progress{flex:1;height:10px;background:rgba(255,255,255,.2);border-radius:5px;position:relative}
+.bar{height:100%;background:#fff;width:0%;border-radius:5px}
+.markers{position:absolute;top:0;left:0;width:100%;height:100%}
+.marker{position:absolute;top:-3px;width:6px;height:16px;background:#007aff;border-radius:3px}
+.time{font-size:13px;color:#ccc;min-width:100px;text-align:center}
+.btm-row{display:flex;gap:12px;justify-content:space-between}
+.small-btn{padding:8px 12px;background:rgba(255,255,255,.1);color:#fff;border:none;border-radius:8px;font-size:13px}
+.dl-panel{position:fixed;inset:0;background:rgba(0,0,0,.9);z-index:1000;display:none;align-items:center;justify-content:center;padding:20px}
+.dl-box{background:#111;border-radius:20px;padding:30px;max-width:400px;width:100%}
+.dl-input{width:100%;padding:12px;border-radius:10px;border:1px solid #333;background:#222;color:#fff;margin:10px 0}
+.full{position:fixed!important;inset:0!important;width:100vw!important;height:100vh!important;z-index:99!important}
+.bottom{position:absolute;right:20px;bottom:20px;font-size:12px;color:rgba(255,255,255,.3);z-index:15}
+</style>
+</head>
+<body>
+
+<div class="splash">
+  <div class="logo"><h1>FlyzMovie</h1></div>
+  <div class="domain"><p>yzbjfpv.top/movie/car</p></div>
+</div>
+
+<div class="tip">点击屏幕显示控制面板</div>
+
+<div class="modal" id="modal">
+  <div class="card">
+    <h3>免责声明</h3>
+    <p style="margin:20px 0;line-height:1.7;color:#ccc">本页面仅用于技术测试与个人学习，所有视频资源通过第三方网络抓包技术获取，本站不存储、不复制、不缓存、不上传任何音视频内容，版权均归属原版权方所有。<br><br>用户点击同意即表示仅用于个人非商业用途，并自行承担相关风险。</p>
+    <div class="btns">
+      <button class="btn no" id="no">不同意</button>
+      <button class="btn ok" id="ok">同意</button>
+    </div>
+  </div>
+</div>
+
+<div class="dl-panel" id="dlPanel">
+  <div class="dl-box">
+    <h3>离线下载</h3>
+    <p style="margin:10px 0;color:#ccc">下载需付费，请联系网站管理员购买密钥。</p>
+    <p style="color:#ccc;font-size:14px">密码：yzbjfpv.top/movie/car</p>
+    <input class="dl-input" id="key" placeholder="请输入密钥">
+    <div class="btns">
+      <button class="btn no" onclick="closeDL()">取消</button>
+      <button class="btn ok" onclick="checkKey()">确定</button>
+    </div>
+  </div>
+</div>
+
+<div class="player" id="player" onclick="showPanel()">
+  <video id="video" playsinline webkit-playsinline></video>
+  <div class="watermark"><span>FlyzMovie</span></div>
+  <div class="bottom">yzbjfpv.top/movie/car</div>
+  <div class="overlay" id="overlay">
+    <div class="controls">
+      <div class="row">
+        <button class="toggle" id="toggle">播放</button>
+        <div class="progress" id="progressWrap">
+          <div class="bar" id="bar"></div>
+          <div class="markers" id="markers"></div>
+        </div>
+        <div class="time" id="time">00:00 / 00:00</div>
+      </div>
+      <div class="btm-row">
+        <button class="small-btn" id="markBtn">添加标记</button>
+        <button class="small-btn" id="dlBtn">离线下载</button>
+        <button class="small-btn" id="fsBtn">全屏</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/hls.js@1.5.8/dist/hls.min.js"></script>
+<script>
+const v=document.getElementById('video');
+const u="https://hn.bfvvs.com/play/erk0lNwa/index.m3u8";
+if(Hls.isSupported()){let h=new Hls();h.loadSource(u);h.attachMedia(v)}else{v.src=u}
+let last=localStorage.getItem('lastPos')||0;
+setTimeout(()=>{document.getElementById('modal').style.display='flex'},5000);
+document.getElementById('no').onclick=()=>{alert('未同意，无法播放');window.close()};
+document.getElementById('ok').onclick=()=>{document.getElementById('modal').style.display='none';document.getElementById('player').style.display='block';v.currentTime=Number(last);v.play()};
+function showPanel(){let o=document.getElementById('overlay');o.style.display=o.style.display=='block'?'none':'block'}
+const t=document.getElementById('toggle');
+t.onclick=()=>{if(v.paused){v.play();t.textContent='暂停'}else{v.pause();t.textContent='播放'}};
+const wrap=document.getElementById('progressWrap');
+const bar=document.getElementById('bar');
+const time=document.getElementById('time');
+let moving=false;
+wrap.onmousedown=e=>{moving=true;seek(e)};
+wrap.onmouseup=()=>moving=false;
+wrap.onmousemove=e=>moving&&seek(e);
+wrap.ontouchstart=e=>{moving=true;seek(e.touches[0])};
+wrap.ontouchend=()=>moving=false;
+wrap.ontouchmove=e=>moving&&seek(e.touches[0]);
+function seek(e){let rect=wrap.getBoundingClientRect();let x=e.clientX-rect.left;let per=x/rect.width;v.currentTime=per*v.duration}
+v.ontimeupdate=()=>{bar.style.width=(v.currentTime/v.duration*100)+'%';localStorage.setItem('lastPos',v.currentTime);let c=fmt(v.currentTime);let d=fmt(v.duration);time.textContent=c+' / '+d};
+function fmt(s){s=Math.floor(s);let m=String(Math.floor(s/60)).padStart(2,'0');let ss=String(s%60).padStart(2,'0');return m+':'+ss}
+document.getElementById('markBtn').onclick=()=>{let per=v.currentTime/v.duration*100;let m=document.createElement('div');m.className='marker';m.style.left=per+'%';document.getElementById('markers').append(m)};
+document.getElementById('dlBtn').onclick=()=>{document.getElementById('dlPanel').style.display='flex'};
+function closeDL(){document.getElementById('dlPanel').style.display='none'}
+function checkKey(){let k=document.getElementById('key').value;if(k=='yzbjfpv.top/movie/car'){alert('验证成功！视频地址已复制，可使用支持m3u8的播放器下载播放');navigator.clipboard.writeText(u);closeDL()}else{alert('密钥错误')}}
+document.getElementById('fsBtn').onclick=()=>{let p=document.getElementById('player');p.classList.toggle('full');this.textContent=p.contains('full')?'退出':'全屏'};
+</script>
+</body>
+</html>
