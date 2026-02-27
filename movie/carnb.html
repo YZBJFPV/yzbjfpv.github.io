@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>飞驰人生3</title>
+<title>飞驰人生3｜FlyzMovie观影平台</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 html,body{width:100%;height:100%;background:#000;color:#fff;font-family:system-ui,sans-serif;overflow:hidden}
@@ -69,32 +69,22 @@ html,body{width:100%;height:100%;background:#000;color:#fff;font-family:system-u
 #video{width:100%;height:100%;object-fit:cover;background:#000;visibility:hidden}
 #video.show{visibility:visible}
 
-.controls{position:absolute;left:50%;bottom:28px;transform:translateX(-50%);width:90%;max-width:580px;background:rgba(0,0,0,.7);backdrop-filter:blur(15px);border-radius:20px;padding:18px 22px;z-index:300;opacity:0;transition:opacity .3s ease;border:1px solid rgba(0,191,255,.2)}
+/* 拉长加宽控制面板 */
+.controls{position:absolute;left:50%;bottom:28px;transform:translateX(-50%);width:96%;max-width:720px;background:rgba(0,0,0,.8);backdrop-filter:blur(15px);border-radius:20px;padding:20px 24px;z-index:300;opacity:0;transition:opacity .3s ease;border:1px solid rgba(0,191,255,.3)}
 .controls.show{opacity:1}
-.control-row{display:flex;align-items:center;gap:14px}
-.play-btn{width:44px;height:44px;border-radius:50%;background:rgba(0,191,255,.15);border:none;color:#fff;font-size:18px;display:flex;align-items:center;justify-content:center}
-.progress{flex:1;height:8px;background:rgba(255,255,255,.15);border-radius:4px;overflow:hidden}
-.progress-fill{height:100%;width:0%;background:linear-gradient(90deg,#00bfff,#ff0080)}
-.time{font-size:14px;color:#ccc;min-width:100px;text-align:center}
-.btn-bar{display:flex;gap:10px;margin-top:12px}
-.btn{flex:1;padding:8px 0;background:rgba(0,191,255,.1);border:none;color:#fff;border-radius:10px;font-size:13px}
+.control-row{display:flex;align-items:center;gap:16px}
+.play-btn{width:46px;height:46px;border-radius:50%;background:rgba(0,191,255,.15);border:none;color:#fff;font-size:20px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+
+/* 进度条更好点、更好拖 */
+.progress{flex:1;height:10px;background:rgba(255,255,255,.2);border-radius:5px;overflow:hidden;position:relative;cursor:pointer}
+.progress-fill{height:100%;width:0%;background:linear-gradient(90deg,#00bfff,#ff0080);position:absolute;left:0;top:0}
+
+.time{font-size:15px;color:#ccc;min-width:110px;text-align:center;flex-shrink:0}
+.btn-bar{display:flex;gap:10px;margin-top:14px}
+.btn{flex:1;padding:10px 0;background:rgba(0,191,255,.1);border:none;color:#fff;border-radius:10px;font-size:14px}
 .btn.active{background:linear-gradient(90deg,#00bfff,#ff0080);color:#fff}
 
-/* 提示弹窗 */
-.toast{
-  position:fixed;
-  left:50%; top:50%;
-  transform:translate(-50%,-50%);
-  background:rgba(0,0,0,.7);
-  color:#fff;
-  padding:12px 24px;
-  border-radius:12px;
-  font-size:14px;
-  z-index:9999;
-  opacity:0;
-  pointer-events:none;
-  transition:opacity .4s;
-}
+.toast{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);background:rgba(0,0,0,.75);color:#fff;padding:14px 26px;border-radius:14px;font-size:15px;z-index:9999;opacity:0;pointer-events:none;transition:opacity .4s}
 .toast.show{opacity:1}
 </style>
 </head>
@@ -147,14 +137,16 @@ html,body{width:100%;height:100%;background:#000;color:#fff;font-family:system-u
 <div class="controls" id="controls">
   <div class="control-row">
     <button class="play-btn" id="playBtn">▶</button>
-    <div class="progress"><div class="progress-fill" id="progFill"></div></div>
+    <div class="progress" id="progress">
+      <div class="progress-fill" id="progFill"></div>
+    </div>
     <div class="time" id="time">00:00 / 00:00</div>
   </div>
   <div class="btn-bar">
     <button class="btn" id="speed">倍速</button>
     <button class="btn active" id="bl">蓝光</button>
     <button class="btn" id="eye">护眼</button>
-    <button class="btn" id="cache">缓存</button>
+    <button class="btn" id="mark">标记</button>
     <button class="btn" id="full">全屏</button>
   </div>
 </div>
@@ -162,52 +154,87 @@ html,body{width:100%;height:100%;background:#000;color:#fff;font-family:system-u
 <div class="toast" id="toast">点击屏幕显示/隐藏控制面板</div>
 
 <script>
-const v=document.getElementById('video');
-const playBtn=document.getElementById('playBtn');
-const loadingBox=document.getElementById('loadingBox');
-const splash=document.getElementById('splash');
-const splashBorder=document.getElementById('splashBorder');
-const declare=document.getElementById('declare');
-const devicePanel=document.getElementById('devicePanel');
-const brandSlide=document.getElementById('brandSlide');
-const controls=document.getElementById('controls');
-const vFrame=document.getElementById('vFrame');
-const progFill=document.getElementById('progFill');
-const timeTxt=document.getElementById('time');
-const toast=document.getElementById('toast');
+const v = document.getElementById('video');
+const playBtn = document.getElementById('playBtn');
+const progress = document.getElementById('progress');
+const progFill = document.getElementById('progFill');
+const timeTxt = document.getElementById('time');
+const controls = document.getElementById('controls');
+const markBtn = document.getElementById('mark');
+const toast = document.getElementById('toast');
 
-const url='https://hn.bfvvs.com/play/erk0lNwa/index.m3u8';
+const url = 'https://hn.bfvvs.com/play/erk0lNwa/index.m3u8';
 
-// 开屏就预加载并播放
-v.src=url;
-v.preload='auto';
-v.muted=true;
+v.src = url;
+v.preload = 'auto';
+v.muted = true;
 v.play().catch(()=>{});
-playBtn.textContent='⏸';
+playBtn.textContent = '⏸';
+
+// 点击 + 拖拽进度条
+let dragging = false;
+function seek(e) {
+  const rect = progress.getBoundingClientRect();
+  const x = e.clientX || (e.touches && e.touches[0].clientX);
+  const p = Math.max(0, Math.min(1, (x - rect.left) / rect.width));
+  v.currentTime = p * v.duration;
+}
+
+progress.addEventListener('mousedown', (e) => { dragging = true; seek(e); });
+document.addEventListener('mousemove', (e) => { if(dragging) seek(e); });
+document.addEventListener('mouseup', () => { dragging = false; });
+progress.addEventListener('touchstart', (e) => { dragging = true; seek(e.touches[0]); });
+document.addEventListener('touchmove', (e) => { if(dragging) seek(e.touches[0]); });
+document.addEventListener('touchend', () => { dragging = false; });
+
+// 标记时间点 → 暗区缓存
+markBtn.onclick = (e) => {
+  e.stopPropagation();
+  const t = v.currentTime;
+  const marks = JSON.parse(localStorage.getItem('video_marks') || '[]');
+  marks.push({ time: t, date: new Date().toLocaleString() });
+  localStorage.setItem('video_marks', JSON.stringify(marks));
+  showToast('已标记时间点：' + fmt(t));
+};
+
+function showToast(msg) {
+  toast.textContent = msg;
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 1800);
+}
 
 let firstClick = true;
-function toggleControls(){
-  if(firstClick){
+function toggleControls() {
+  if(firstClick) {
     firstClick = false;
-    toast.classList.add('show');
-    setTimeout(()=>toast.classList.remove('show'), 2000);
+    showToast('点击屏幕显示/隐藏控制面板');
   }
   controls.classList.toggle('show');
 }
 
+function fmt(t) {
+  const m = String(Math.floor(t/60)).padStart(2,'0');
+  const s = String(Math.floor(t%60)).padStart(2,'0');
+  return m+':'+s;
+}
+
 function detectDevice(){const ua=navigator.userAgent;if(ua.includes('iPad'))return{brand:'Apple',name:'iPad',info:'已检测：iPad 设备 | 视网膜高清屏'};if(ua.includes('iPhone'))return{brand:'Apple',name:'iPhone',info:'已检测：iPhone 设备 | 立体声双扬声器'};return{brand:'Apple',name:'Apple 设备',info:'已检测：高性能影音引擎'}}
 
-setTimeout(()=>{splash.classList.add('fade');splashBorder.classList.add('hide');setTimeout(()=>{declare.classList.add('show')},400)},3000);
+setTimeout(()=>{
+  splash.classList.add('fade');
+  splashBorder.classList.add('hide');
+  setTimeout(()=> declare.classList.add('show'), 400);
+}, 3000);
 
-agreeBtn.onclick=()=>{
+agreeBtn.onclick = () => {
   declare.classList.remove('show');
-  const dev=detectDevice();
-  brandSlide.textContent=dev.brand;
+  const dev = detectDevice();
+  brandSlide.textContent = dev.brand;
   brandSlide.classList.add('show');
   devicePanel.classList.add('show');
-  deviceWelcome.textContent=`欢迎 ${dev.name} 用户`;
-  deviceInfo.textContent=dev.info;
-  aiTip.textContent='正在启用 Flyz AI 为您优化影音体验';
+  deviceWelcome.textContent = `欢迎 ${dev.name} 用户`;
+  deviceInfo.textContent = dev.info;
+  aiTip.textContent = '正在启用 Flyz AI 为您优化影音体验';
 
   setTimeout(()=>{
     devicePanel.classList.remove('show');
@@ -219,22 +246,26 @@ agreeBtn.onclick=()=>{
     loadingBox.classList.add('active');
     setTimeout(()=>{
       loadingBox.classList.add('center');
-      setTimeout(()=>{loadingBox.classList.add('out')},2000);
-    },500);
-  },5000);
+      setTimeout(()=> loadingBox.classList.add('out'), 2000);
+    }, 500);
+  }, 5000);
 };
 
-v.onplay=()=>{playBtn.textContent='⏸'};
-v.onpause=()=>{playBtn.textContent='▶'};
-playBtn.onclick=(e)=>{e.stopPropagation();v.paused?v.play():v.pause()};
+v.ontimeupdate = () => {
+  if(!v.duration) return;
+  progFill.style.width = (v.currentTime/v.duration*100)+'%';
+  timeTxt.textContent = fmt(v.currentTime)+' / '+fmt(v.duration);
+};
 
-v.ontimeupdate=()=>{if(!v.duration)return;progFill.style.width=(v.currentTime/v.duration*100)+'%';const fmt=t=>String(Math.floor(t/60)).padStart(2,0)+':'+String(Math.floor(t%60)).padStart(2,0);timeTxt.textContent=fmt(v.currentTime)+' / '+fmt(v.duration)};
+v.onplay = () => playBtn.textContent = '⏸';
+v.onpause = () => playBtn.textContent = '▶';
+playBtn.onclick = (e) => { e.stopPropagation(); v.paused?v.play():v.pause(); };
 
-const speeds=[1,1.25,1.5,2,3];let sIdx=0;
-speed.onclick=(e)=>{e.stopPropagation();sIdx=(sIdx+1)%speeds.length;v.playbackRate=speeds[sIdx];speed.textContent=speeds[sIdx]+'x'};
+const speeds = [1,1.25,1.5,2,3]; let sIdx=0;
+speed.onclick = (e) => { e.stopPropagation(); sIdx=(sIdx+1)%speeds.length; v.playbackRate=speeds[sIdx]; speed.textContent=speeds[sIdx]+'x'; };
 
-eye.onclick=(e)=>{e.stopPropagation();eyeFilter.classList.toggle('on');eye.classList.toggle('active');bl.classList.remove('active')};
-full.onclick=(e)=>{e.stopPropagation();vFrame.classList.toggle('full')};
+eye.onclick = (e) => { e.stopPropagation(); eyeFilter.classList.toggle('on'); eye.classList.toggle('active'); bl.classList.remove('active'); };
+full.onclick = (e) => { e.stopPropagation(); vFrame.classList.toggle('full'); };
 </script>
 </body>
 </html>
