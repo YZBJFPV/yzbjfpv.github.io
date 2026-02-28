@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>屏幕照明｜Flyz远征飞｜Tools</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html,body{width:100%;height:100%;background:#fff;transition:none!important;}
+
+  #brightValue{
+    position:fixed;top:50%;left:50%;
+    transform:translate(-50%,-50%);
+    font-size:60px;font-weight:bold;color:#222;
+    user-select:none;
+  }
+
+  .btn{
+    position:fixed;top:50%;transform:translateY(-50%);
+    width:80px;height:120px;font-size:40px;
+    border:none;background:#eee;border-radius:10px;
+    cursor:pointer;user-select:none;
+  }
+  #minus{left:30px;}
+  #plus{right:30px;}
+
+  .flashGroup{
+    position:fixed;top:20px;left:50%;transform:translateX(-50%);
+    display:flex;gap:10px;
+  }
+  .flashBtn{
+    padding:12px 16px;border:none;border-radius:8px;
+    background:#222;color:#fff;cursor:pointer;
+  }
+  .flashBtn.active{background:#f44;}
+
+  /* 底部一键开关灯 */
+  #toggleLight{
+    position:fixed;bottom:30px;left:50%;transform:translateX(-50%);
+    padding:14px 30px;
+    border:none;border-radius:10px;
+    background:#ff4444;color:#fff;font-size:18px;
+    cursor:pointer;
+  }
+</style>
+</head>
+<body>
+
+<div id="brightValue">100</div>
+<button id="minus" class="btn">-</button>
+<button id="plus" class="btn">+</button>
+
+<div class="flashGroup">
+  <button class="flashBtn" data-f="off">关闭</button>
+  <button class="flashBtn" data-f="low">低速15Hz</button>
+  <button class="flashBtn" data-f="mid">中速30Hz</button>
+  <button class="flashBtn" data-f="high">高速60Hz</button>
+</div>
+
+<!-- 底部开关灯按钮 -->
+<button id="toggleLight">开关灯</button>
+
+<script>
+  const body = document.body;
+  const brightVal = document.getElementById('brightValue');
+  const toggleLight = document.getElementById('toggleLight');
+  let brightness = 100;
+  let flashTimer = null;
+
+  let pressTimer = null;
+  let speed = 1;
+  let isPressing = false;
+
+  function startChange(dir) {
+    isPressing = true;
+    speed = 1;
+    clearInterval(pressTimer);
+    function step() {
+      if (!isPressing) return;
+      brightness += dir * speed;
+      brightness = Math.max(0, Math.min(100, brightness));
+      updateBright();
+      speed = Math.min(10, speed + 0.4);
+    }
+    step();
+    pressTimer = setInterval(step, 50);
+  }
+
+  function stopChange() {
+    isPressing = false;
+    clearInterval(pressTimer);
+  }
+
+  function updateBright() {
+    brightVal.textContent = Math.round(brightness);
+    body.style.filter = `brightness(${brightness}%)`;
+  }
+
+  // 一键开关灯
+  toggleLight.addEventListener('click', () => {
+    if (brightness > 0) {
+      brightness = 0;
+    } else {
+      brightness = 100;
+    }
+    updateBright();
+  });
+
+  const minus = document.getElementById('minus');
+  const plus = document.getElementById('plus');
+
+  minus.onmousedown = ()=>startChange(-1);
+  plus.onmousedown = ()=>startChange(1);
+  document.onmouseup = stopChange;
+  minus.ontouchstart = ()=>startChange(-1);
+  plus.ontouchstart = ()=>startChange(1);
+  document.ontouchend = stopChange;
+
+  const btns = document.querySelectorAll('.flashBtn');
+  btns.forEach(b=>{
+    b.onclick = ()=>{
+      btns.forEach(x=>x.classList.remove('active'));
+      b.classList.add('active');
+      setFlash(b.dataset.f);
+    }
+  });
+
+  function setFlash(mode) {
+    clearInterval(flashTimer);
+    body.style.background = '#fff';
+    if (mode === 'off') return;
+    let ms = mode==='low'?1000/15:mode==='mid'?1000/30:1000/60;
+    let c = true;
+    flashTimer = setInterval(()=>{
+      body.style.background = c?'#000':'#fff';
+      c=!c;
+    }, ms);
+  }
+</script>
+</body>
+</html>
