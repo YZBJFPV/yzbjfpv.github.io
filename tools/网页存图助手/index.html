@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta property="og:title" content="FLyz存图助手 - 专业图片处理工具" />
+    <meta property="og:description" content="在线图片压缩、格式转换、滤镜美化，一站式图片处理" />
+    <meta property="og:image" content="https://cdnjs.cloudflare.com/ajax/libs/heroicons/2.1.1/24/outline/photo.svg" />
+    <title>FLyz存图助手 - 专业图片处理工具</title>
+    
+    <!-- Tailwind CSS (Cloudflare CDN) -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/3.4.1/tailwind.min.css" rel="stylesheet">
+    <!-- Font Awesome (Cloudflare CDN) -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+    
+    <style>
+        /* 开屏动画 */
+        .splash-screen {
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            animation: fadeOut 0.8s ease-in-out 2.2s forwards;
+        }
+        .logo-animation {
+            animation: logoSpin 1.5s ease-in-out, logoPulse 0.6s ease-in-out 1.6s;
+        }
+        @keyframes logoSpin {
+            0% { transform: rotate(0deg) scale(0.4); opacity: 0; }
+            100% { transform: rotate(360deg) scale(1); opacity: 1; }
+        }
+        @keyframes logoPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.15); }
+        }
+        @keyframes fadeOut {
+            to { opacity: 0; visibility: hidden; }
+        }
+
+        /* 主内容动画 */
+        .main-content {
+            opacity: 0;
+            animation: fadeIn 0.8s ease-in-out 2.4s forwards;
+        }
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+
+        /* 功能卡片悬停效果 */
+        .feature-card {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 25px 50px rgba(99, 102, 241, 0.25);
+        }
+
+        /* 渐变背景 */
+        .gradient-bg {
+            background: linear-gradient(135deg, #f0f4ff 0%, #e0e7ff 100%);
+        }
+
+        /* 按钮效果 */
+        .btn-primary {
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            transition: all 0.3s ease;
+        }
+        .btn-primary:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 25px rgba(99, 102, 241, 0.4);
+        }
+
+        /* 拖拽区域样式 */
+        .drop-zone {
+            border: 3px dashed #6366f1;
+            transition: all 0.3s ease;
+        }
+        .drop-zone.dragover {
+            background-color: rgba(99, 102, 241, 0.08);
+            border-color: #8b5cf6;
+            transform: scale(1.02);
+        }
+
+        /* 图片预览区 */
+        .preview-img {
+            max-height: 300px;
+            object-fit: contain;
+        }
+    </style>
+</head>
+<body class="gradient-bg min-h-screen">
+    <!-- 开屏动画 -->
+    <div class="splash-screen fixed inset-0 z-50 flex items-center justify-center">
+        <div class="text-center text-white">
+            <div class="logo-animation inline-block">
+                <i class="fas fa-images text-8xl mb-6"></i>
+            </div>
+            <h1 class="text-4xl font-bold mb-2">FLyz存图助手</h1>
+            <p class="text-lg opacity-90">专业图片处理工具</p>
+        </div>
+    </div>
+
+    <!-- 主内容 -->
+    <div class="main-content">
+        <!-- 头部 -->
+        <header class="py-10 px-4">
+            <div class="max-w-6xl mx-auto text-center">
+                <h1 class="text-5xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent mb-4">
+                    <i class="fas fa-wand-magic-sparkles mr-3"></i>FLyz存图助手
+                </h1>
+                <p class="text-gray-600 text-lg">强大的在线图片处理工具 · 压缩 · 转换 · 美化 · 免费</p>
+            </div>
+        </header>
+
+        <!-- 功能区 -->
+        <main class="max-w-6xl mx-auto px-4 pb-16">
+            <!-- 上传区域 -->
+            <div class="bg-white rounded-3xl shadow-2xl p-10 mb-10">
+                <div id="dropZone" class="drop-zone rounded-2xl p-12 text-center cursor-pointer">
+                    <i class="fas fa-cloud-arrow-up text-7xl text-indigo-500 mb-6"></i>
+                    <h3 class="text-2xl font-semibold text-gray-700 mb-3">拖拽图片到此处</h3>
+                    <p class="text-gray-500 mb-6">支持 JPG, PNG, GIF, WebP 格式</p>
+                    <input type="file" id="fileInput" accept="image/*" multiple class="hidden">
+                    <button class="btn-primary text-white px-10 py-4 rounded-full font-semibold text-lg shadow-lg">
+                        <i class="fas fa-folder-open mr-2"></i>选择图片
+                    </button>
+                </div>
+            </div>
+
+            <!-- 图片预览区 -->
+            <div id="previewSection" class="hidden bg-white rounded-3xl shadow-2xl p-8 mb-10">
+                <h3 class="text-2xl font-bold text-gray-800 mb-6 flex items-center">
+                    <i class="fas fa-eye mr-3 text-indigo-500"></i>图片预览
+                </h3>
+                <div id="previewContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+            </div>
+
+            <!-- 功能网格 -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
+                <!-- 图片压缩 -->
+                <div class="feature-card bg-white rounded-2xl shadow-lg p-8 text-center">
+                    <div class="w-20 h-20 bg-gradient-to-br from-indigo-400 to-purple-500 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <i class="fas fa-compress text-3xl text-white"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-3">图片压缩</h3>
+                    <p class="text-gray-600 mb-6">减小体积，保持画质</p>
+                    <button class="btn-primary text-white px-6 py-3 rounded-full font-semibold w-full" onclick="compressImages()">
+                        开始压缩
+                    </button>
+                </div>
+
+                <!-- 格式转换 -->
+                <div class="feature-card bg-white rounded-2xl shadow-lg p-8 text-center">
+                    <div class="w-20 h-20 bg-gradient-to-br from-emerald-400 to-teal-500 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <i class="fas fa-exchange-alt text-3xl text-white"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-3">格式转换</h3>
+                    <p class="text-gray-600 mb-6">JPG/PNG/WebP互转</p>
+                    <div class="space-y-2">
+                        <select id="formatSelect" class="w-full border border-gray-300 rounded-lg px-4 py-2 mb-3">
+                            <option value="jpeg">转为 JPG</option>
+                            <option value="png">转为 PNG</option>
+                            <option value="webp">转为 WebP</option>
+                        </select>
+                        <button class="bg-gradient-to-r from-emerald-500 to-teal-500 text-white px-6 py-3 rounded-full font-semibold w-full hover:shadow-lg transition-all" onclick="convertFormat()">
+                            转换格式
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 图片美化 -->
+                <div class="feature-card bg-white rounded-2xl shadow-lg p-8 text-center">
+                    <div class="w-20 h-20 bg-gradient-to-br from-pink-400 to-rose-500 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <i class="fas fa-wand-magic text-3xl text-white"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-3">智能美化</h3>
+                    <p class="text-gray-600 mb-6">一键滤镜调色</p>
+                    <button class="bg-gradient-to-r from-pink-500 to-rose-500 text-white px-6 py-3 rounded-full font-semibold w-full hover:shadow-lg transition-all" onclick="applyFilter()">
+                        一键美化
+                    </button>
+                </div>
+
+                <!-- 批量下载 -->
+                <div class="feature-card bg-white rounded-2xl shadow-lg p-8 text-center">
+                    <div class="w-20 h-20 bg-gradient-to-br from-amber-400 to-orange-500 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <i class="fas fa-download text-3xl text-white"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-3">批量下载</h3>
+                    <p class="text-gray-600 mb-6">一键保存所有图片</p>
+                    <button class="bg-gradient-to-r from-amber-500 to-orange-500 text-white px-6 py-3 rounded-full font-semibold w-full hover:shadow-lg transition-all" onclick="downloadAll()">
+                        全部下载
+                    </button>
+                </div>
+            </div>
+        </main>
+
+        <!-- 页脚 -->
+        <footer class="py-8 text-center text-gray-600">
+            <p>&copy; 2024 FLyz存图助手 · <a href="https://yzbjfpv.top/tools" class="text-indigo-600 hover:underline font-semibold">yzbjfpv.top/tools</a></p>
+        </footer>
+    </div>
+
+    <!-- 引入微信JS-SDK -->
+    <script src="https://res.wx.qq.com/open/js/jweixin-1.6.0.js"></script>
+    
+    <script>
+        // 全局变量存储图片
+        let uploadedImages = [];
+
+        // 初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            initUpload();
+            initWechatShare();
+        });
+
+        // 上传功能初始化
+        function initUpload() {
+            const dropZone = document.getElementById('dropZone');
+            const fileInput = document.getElementById('fileInput');
+
+            // 点击上传
+            dropZone.addEventListener('click', () => fileInput.click());
+
+            // 拖拽事件
+            dropZone.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                dropZone.classList.add('dragover');
+            });
+
+            dropZone.addEventListener('dragleave', () => {
+                dropZone.classList.remove('dragover');
+            });
+
+            dropZone.addEventListener('drop', (e) => {
+                e.preventDefault();
+                dropZone.classList.remove('dragover');
+                handleFiles(e.dataTransfer.files);
+            });
+
+            fileInput.addEventListener('change', (e) => {
+                handleFiles(e.target.files);
+            });
+        }
+
+        // 处理文件
+        function handleFiles(files) {
+            Array.from(files).forEach(file => {
+                if (file.type.startsWith('image/')) {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        uploadedImages.push({
+                            name: file.name,
+                            data: e.target.result,
+                            type: file.type
+                        });
+                        renderPreview();
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+        }
+
+        // 渲染预览
+        function renderPreview() {
+            const previewSection = document.getElementById('previewSection');
+            const previewContainer = document.getElementById('previewContainer');
+            
+            previewSection.classList.remove('hidden');
+            previewContainer.innerHTML = '';
+
+            uploadedImages.forEach((img, index) => {
+                const div = document.createElement('div');
+                div.className = 'bg-gray-50 rounded-xl p-4 relative';
+                div.innerHTML = `
+                    <img src="${img.data}" class="preview-img w-full rounded-lg mb-3">
+                    <p class="text-sm text-gray-600 truncate">${img.name}</p>
+                    <button onclick="removeImage(${index})" class="absolute top-2 right-2 bg-red-500 text-white w-8 h-8 rounded-full hover:bg-red-600 transition-colors">
+                        <i class="fas fa-times"></i>
+                    </button>
+                `;
+                previewContainer.appendChild(div);
+            });
+        }
+
+        // 移除图片
+        function removeImage(index) {
+            uploadedImages.splice(index, 1);
+            if (uploadedImages.length === 0) {
+                document.getElementById('previewSection').classList.add('hidden');
+            } else {
+                renderPreview();
+            }
+        }
+
+        // 图片压缩
+        function compressImages() {
+            if (uploadedImages.length === 0) {
+                alert('请先上传图片！');
+                return;
+            }
+
+            uploadedImages.forEach((img, index) => {
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                const image = new Image();
+                
+                image.onload = () => {
+                    canvas.width = image.width;
+                    canvas.height = image.height;
+                    ctx.drawImage(image, 0, 0);
+                    canvas.toBlob((blob) => {
+                        const reader = new FileReader();
+                        reader.onload = (e) => {
+                            uploadedImages[index].data = e.target.result;
+                            uploadedImages[index].name = 'compressed_' + img.name;
+                            renderPreview();
+                        };
+                        reader.readAsDataURL(blob);
+                    }, 'image/jpeg', 0.7);
+                };
+                image.src = img.data;
+            });
+            alert('压缩完成！');
+        }
+
+        // 格式转换
+        function convertFormat() {
+            if (uploadedImages.length === 0) {
+                alert('请先上传图片！');
+                return;
+            }
+
+            const format = document.getElementById('formatSelect').value;
+            const mimeType = 'image/' + format;
+
+            uploadedImages.forEach((img, index) => {
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                const image = new Image();
+                
+                image.onload = () => {
+                    canvas.width = image.width;
+                    canvas.height = image.height;
+                    ctx.drawImage(image, 0, 0);
+                    canvas.toBlob((blob) => {
+                        const reader = new FileReader();
+                        reader.onload = (e) => {
+                            uploadedImages[index].data = e.target.result;
+                            uploadedImages[index].name = img.name.replace(/\.[^/.]+$/, '') + '.' + format;
+                            uploadedImages[index].type = mimeType;
+                            renderPreview();
+                        };
+                        reader.readAsDataURL(blob);
+                    }, mimeType);
+                };
+                image.src = img.data;
+            });
+            alert('格式转换完成！');
+        }
+
+        // 应用滤镜
+        function applyFilter() {
+            if (uploadedImages.length === 0) {
+                alert('请先上传图片！');
+                return;
+            }
+
+            uploadedImages.forEach((img, index) => {
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                const image = new Image();
+                
+                image.onload = () => {
+                    canvas.width = image.width;
+                    canvas.height = image.height;
+                    ctx.filter = 'contrast(1.1) saturate(1.3) brightness(1.05)';
+                    ctx.drawImage(image, 0, 0);
+                    uploadedImages[index].data = canvas.toDataURL(img.type);
+                    uploadedImages[index].name = 'enhanced_' + img.name;
+                    renderPreview();
+                };
+                image.src = img.data;
+            });
+            alert('美化完成！');
+        }
+
+        // 批量下载
+        function downloadAll() {
+            if (uploadedImages.length === 0) {
+                alert('没有可下载的图片！');
+                return;
+            }
+
+            uploadedImages.forEach(img => {
+                const a = document.createElement('a');
+                a.href = img.data;
+                a.download = img.name;
+                a.click();
+            });
+        }
+
+        // 微信分享配置
+        function initWechatShare() {
+            if (typeof wx === "undefined") return;
+
+            const currentUrl = window.location.href;
+            const projectName = "FLyz存图助手 - 专业图片处理工具";
+            const projectDesc = "在线图片压缩、格式转换、滤镜美化，一站式免费图片处理工具";
+            const projectImage = "https://cdnjs.cloudflare.com/ajax/libs/heroicons/2.1.1/24/outline/photo.svg";
+
+            // 模拟配置（实际使用需对接后端API获取签名）
+            wx.config({
+                debug: false,
+                appId: '',
+                timestamp: '',
+                nonceStr: '',
+                signature: '',
+                jsApiList: ["updateAppMessageShareData", "updateTimelineShareData"]
+            });
+
+            wx.ready(function () {
+                wx.updateAppMessageShareData({
+                    title: projectName,
+                    desc: projectDesc,
+                    link: currentUrl,
+                    imgUrl: projectImage
+                });
+
+                wx.updateTimelineShareData({
+                    title: projectName,
+                    link: currentUrl,
+                    imgUrl: projectImage
+                });
+            });
+        }
+    </script>
+</body>
+</html>
