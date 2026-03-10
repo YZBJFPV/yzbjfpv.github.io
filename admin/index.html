@@ -3,296 +3,712 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>管理员后台|Flyz远征飞官网</title>
+    <title>管理｜Flyz远征飞官网</title>
+    <!-- Tailwind CSS (国内加速) -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        primary: '#1E293B',
-                        accent: '#3B82F6',
-                    },
-                }
-            }
+    <!-- Font Awesome (国内加速) -->
+    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap');
+        
+        * {
+            font-family: 'Noto Sans SC', sans-serif;
         }
-    </script>
-    <style type="text/tailwindcss">
-        @layer utilities {
-            .bg-grid {
-                background-size: 40px 40px;
-                background-image: 
-                    linear-gradient(to right, rgba(255,255,255,0.05) 1px, transparent 1px),
-                    linear-gradient(to bottom, rgba(255,255,255,0.05) 1px, transparent 1px);
-            }
-            .text-glow {
-                text-shadow: 0 0 10px rgba(59, 130, 246, 0.5);
-            }
-            .folder-content {
-                max-height: 0;
-                overflow: hidden;
-                transition: max-height 0.3s ease;
-            }
-            .folder-expanded .folder-content {
-                max-height: 1000px;
-            }
-            .btn-pop {
-                transition: transform 0.2s, box-shadow 0.2s;
-            }
-            .btn-pop:hover {
-                transform: translateY(-2px);
-                box-shadow: 0 10px 25px -5px rgba(59, 130, 246, 0.2);
-            }
+        
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+            min-height: 100vh;
+        }
+        
+        .glass-card {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(148, 163, 184, 0.2);
+        }
+        
+        .glow-border {
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.3), inset 0 0 20px rgba(59, 130, 246, 0.1);
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(59, 130, 246, 0.4);
+        }
+        
+        .file-tree-item:hover {
+            background: rgba(59, 130, 246, 0.2);
+        }
+        
+        .file-tree-item.active {
+            background: rgba(59, 130, 246, 0.3);
+            border-left: 3px solid #3b82f6;
+        }
+        
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: rgba(30, 41, 59, 0.5);
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: rgba(59, 130, 246, 0.5);
+            border-radius: 4px;
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .pulse-glow {
+            animation: pulseGlow 2s infinite;
+        }
+        
+        @keyframes pulseGlow {
+            0%, 100% { box-shadow: 0 0 20px rgba(59, 130, 246, 0.3); }
+            50% { box-shadow: 0 0 40px rgba(59, 130, 246, 0.6); }
+        }
+        
+        .loading-dots::after {
+            content: '';
+            animation: dots 1.5s steps(4, end) infinite;
+        }
+        
+        @keyframes dots {
+            0%, 20% { content: ''; }
+            40% { content: '.'; }
+            60% { content: '..'; }
+            80%, 100% { content: '...'; }
         }
     </style>
 </head>
-<body class="bg-primary text-gray-100 min-h-screen">
-    <!-- 登录弹窗 -->
-    <div id="login" class="fixed inset-0 z-50 flex items-center justify-center bg-grid">
-        <div class="absolute inset-0 bg-primary/80 backdrop-blur-sm"></div>
-        <div class="relative w-full max-w-xs p-8 bg-primary border border-gray-700 rounded-xl shadow-2xl z-10">
-            <div class="mb-6 text-center">
-                <div class="inline-flex items-center justify-center w-16 h-16 mb-4 rounded-full bg-accent/20">
-                    <i class="fa fa-shield text-accent text-2xl"></i>
+<body class="text-slate-100">
+    <!-- 登录页面 -->
+    <div id="loginPage" class="min-h-screen flex items-center justify-center p-4">
+        <div class="glass-card glow-border rounded-2xl p-8 w-full max-w-md fade-in">
+            <div class="text-center mb-8">
+                <div class="w-20 h-20 mx-auto mb-4 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center pulse-glow">
+                    <i class="fas fa-plane-departure text-3xl"></i>
                 </div>
-                <h2 class="text-2xl font-bold text-glow">管理员认证</h2>
-                <p class="text-gray-400 mt-2">请输入账号密码访问文件中心</p>
+                <h1 class="text-3xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+                    Flyz远征飞
+                </h1>
+                <p class="text-slate-400 mt-2">管理后台</p>
             </div>
             
-            <form id="loginForm" class="space-y-4">
+            <form id="loginForm" class="space-y-6">
                 <div>
-                    <label class="block text-sm text-gray-400 mb-1">用户名</label>
-                    <input type="text" id="user" class="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent" required>
+                    <label class="block text-sm font-medium text-slate-300 mb-2">
+                        <i class="fas fa-user mr-2"></i>账号
+                    </label>
+                    <input type="text" id="username" 
+                           class="w-full px-4 py-3 bg-slate-800/50 border border-slate-600 rounded-lg focus:outline-none focus:border-blue-500 transition-colors"
+                           placeholder="请输入账号">
                 </div>
+                
                 <div>
-                    <label class="block text-sm text-gray-400 mb-1">密码</label>
-                    <input type="password" id="pass" class="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent" required>
+                    <label class="block text-sm font-medium text-slate-300 mb-2">
+                        <i class="fas fa-lock mr-2"></i>密码
+                    </label>
+                    <input type="password" id="password" 
+                           class="w-full px-4 py-3 bg-slate-800/50 border border-slate-600 rounded-lg focus:outline-none focus:border-blue-500 transition-colors"
+                           placeholder="请输入密码">
                 </div>
-                <button type="submit" class="w-full py-3 bg-accent text-white rounded-lg font-medium btn-pop">
-                    <i class="fa fa-sign-in mr-2"></i>登录
+                
+                <button type="submit" class="w-full btn-primary text-white font-medium py-3 rounded-lg">
+                    <i class="fas fa-sign-in-alt mr-2"></i>登录
                 </button>
             </form>
+            
+            <p id="loginError" class="text-red-400 text-center mt-4 hidden">
+                <i class="fas fa-exclamation-circle mr-2"></i>账号或密码错误
+            </p>
         </div>
     </div>
 
-    <!-- 主内容区 -->
-    <div id="content" class="hidden container mx-auto px-4 py-8">
-        <header class="mb-8 pb-4 border-b border-gray-800">
-            <div class="flex justify-between items-center">
-                <h1 class="text-2xl font-bold">文件管理中心</h1>
-                <div class="flex items-center">
-                    <span class="text-gray-400 mr-3"><i class="fa fa-user-circle text-accent"></i> 管理员</span>
-                    <button id="logout" class="text-gray-400 hover:text-accent transition-colors">
-                        <i class="fa fa-sign-out"></i> 退出
+    <!-- 主管理页面 -->
+    <div id="adminPage" class="hidden min-h-screen">
+        <!-- 顶部导航 -->
+        <nav class="glass-card border-b border-slate-700">
+            <div class="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
+                <div class="flex items-center space-x-4">
+                    <div class="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
+                        <i class="fas fa-plane-departure"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-xl font-bold">Flyz远征飞官网</h1>
+                        <p class="text-xs text-slate-400">仓库管理系统</p>
+                    </div>
+                </div>
+                
+                <div class="flex items-center space-x-4">
+                    <span id="userInfo" class="text-slate-300">
+                        <i class="fas fa-user-circle mr-2"></i><span id="currentUser"></span>
+                    </span>
+                    <button onclick="logout()" class="px-4 py-2 bg-slate-700 hover:bg-slate-600 rounded-lg transition-colors">
+                        <i class="fas fa-sign-out-alt mr-2"></i>退出
                     </button>
                 </div>
             </div>
-            <p class="text-gray-400 mt-2">点击下方链接访问对应文件，所有链接均指向 yzbjfpv.top 域名</p>
-        </header>
+        </nav>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-            <!-- 根目录文件 -->
-            <a href="https://yzbjfpv.top/index.html" target="_blank" class="p-4 bg-gray-800/50 rounded-lg border border-gray-700 btn-pop">
-                <i class="fa fa-file-html-o text-accent mr-2"></i>index.html
-            </a>
-            <a href="https://yzbjfpv.top/index2.html" target="_blank" class="p-4 bg-gray-800/50 rounded-lg border border-gray-700 btn-pop">
-                <i class="fa fa-file-html-o text-accent mr-2"></i>index2.html
-            </a>
-            <a href="https://yzbjfpv.top/oldindex.html" target="_blank" class="p-4 bg-gray-800/50 rounded-lg border border-gray-700 btn-pop">
-                <i class="fa fa-file-html-o text-accent mr-2"></i>oldindex.html
-            </a>
-            <a href="https://yzbjfpv.top/404.html" target="_blank" class="p-4 bg-gray-800/50 rounded-lg border border-gray-700 btn-pop">
-                <i class="fa fa-file-html-o text-accent mr-2"></i>404.html
-            </a>
-            <a href="https://yzbjfpv.top/ai.html" target="_blank" class="p-4 bg-gray-800/50 rounded-lg border border-gray-700 btn-pop">
-                <i class="fa fa-file-html-o text-accent mr-2"></i>ai.html
-            </a>
-            <a href="https://yzbjfpv.top/game.html" target="_blank" class="p-4 bg-gray-800/50 rounded-lg border border-gray-700 btn-pop">
-                <i class="fa fa-file-html-o text-accent mr-2"></i>game.html
-            </a>
-            <a href="https://yzbjfpv.top/spy.html" target="_blank" class="p-4 bg-gray-800/50 rounded-lg border border-gray-700 btn-pop">
-                <i class="fa fa-file-html-o text-accent mr-2"></i>spy.html
-            </a>
-            <a href="https://yzbjfpv.top/fix.html" target="_blank" class="p-4 bg-gray-800/50 rounded-lg border border-gray-700 btn-pop">
-                <i class="fa fa-file-html-o text-accent mr-2"></i>fix.html
-            </a>
-            <a href="https://yzbjfpv.top/info.html" target="_blank" class="p-4 bg-gray-800/50 rounded-lg border border-gray-700 btn-pop">
-                <i class="fa fa-file-html-o text-accent mr-2"></i>info.html
-            </a>
-            <a href="https://yzbjfpv.top/question.html" target="_blank" class="p-4 bg-gray-800/50 rounded-lg border border-gray-700 btn-pop">
-                <i class="fa fa-file-html-o text-accent mr-2"></i>question.html
-            </a>
-            <a href="https://yzbjfpv.top/wxtalk.html" target="_blank" class="p-4 bg-gray-800/50 rounded-lg border border-gray-700 btn-pop">
-                <i class="fa fa-file-html-o text-accent mr-2"></i>wxtalk.html
-            </a>
-            <a href="https://yzbjfpv.top/down.html" target="_blank" class="p-4 bg-gray-800/50 rounded-lg border border-gray-700 btn-pop">
-                <i class="fa fa-file-html-o text-accent mr-2"></i>down.html
-            </a>
-            <a href="https://yzbjfpv.top/spare-download.html" target="_blank" class="p-4 bg-gray-800/50 rounded-lg border border-gray-700 btn-pop">
-                <i class="fa fa-file-html-o text-accent mr-2"></i>spare-download.html
-            </a>
-            <a href="https://yzbjfpv.top/20250709.html" target="_blank" class="p-4 bg-gray-800/50 rounded-lg border border-gray-700 btn-pop">
-                <i class="fa fa-file-html-o text-accent mr-2"></i>20250709.html
-            </a>
-            <a href="https://yzbjfpv.top/78.html" target="_blank" class="p-4 bg-gray-800/50 rounded-lg border border-gray-700 btn-pop">
-                <i class="fa fa-file-html-o text-accent mr-2"></i>78.html
-            </a>
-            <a href="https://yzbjfpv.top/86.html" target="_blank" class="p-4 bg-gray-800/50 rounded-lg border border-gray-700 btn-pop">
-                <i class="fa fa-file-html-o text-accent mr-2"></i>86.html
-            </a>
-            <a href="https://yzbjfpv.top/dj.html" target="_blank" class="p-4 bg-gray-800/50 rounded-lg border border-gray-700 btn-pop">
-                <i class="fa fa-file-html-o text-accent mr-2"></i>dj.html
-            </a>
-            <a href="https://yzbjfpv.top/ffzbzq.html" target="_blank" class="p-4 bg-gray-800/50 rounded-lg border border-gray-700 btn-pop">
-                <i class="fa fa-file-html-o text-accent mr-2"></i>ffzbzq.html
-            </a>
-            <a href="https://yzbjfpv.top/mxgs.html" target="_blank" class="p-4 bg-gray-800/50 rounded-lg border border-gray-700 btn-pop">
-                <i class="fa fa-file-html-o text-accent mr-2"></i>mxgs.html
-            </a>
-            <a href="https://yzbjfpv.top/ys.html" target="_blank" class="p-4 bg-gray-800/50 rounded-lg border border-gray-700 btn-pop">
-                <i class="fa fa-file-html-o text-accent mr-2"></i>ys.html
-            </a>
-            <a href="https://yzbjfpv.top/zxcs.html" target="_blank" class="p-4 bg-gray-800/50 rounded-lg border border-gray-700 btn-pop">
-                <i class="fa fa-file-html-o text-accent mr-2"></i>zxcs.html
-            </a>
-            <a href="https://yzbjfpv.top/yz.html" target="_blank" class="p-4 bg-gray-800/50 rounded-lg border border-gray-700 btn-pop">
-                <i class="fa fa-file-html-o text-accent mr-2"></i>yz.html
-            </a>
-            <a href="https://yzbjfpv.top/tx.html" target="_blank" class="p-4 bg-gray-800/50 rounded-lg border border-gray-700 btn-pop">
-                <i class="fa fa-file-html-o text-accent mr-2"></i>tx.html
-            </a>
-            <a href="https://yzbjfpv.top/dick.html" target="_blank" class="p-4 bg-gray-800/50 rounded-lg border border-gray-700 btn-pop">
-                <i class="fa fa-file-html-o text-accent mr-2"></i>dick.html
-            </a>
-
-            <!-- school文件夹 -->
-            <div class="col-span-full md:col-span-1 lg:col-span-4 xl:col-span-5 folder-item p-4 bg-gray-800/30 rounded-lg border border-gray-700 cursor-pointer">
-                <div class="flex items-center justify-between">
-                    <div class="flex items-center">
-                        <i class="fa fa-folder text-yellow-500 mr-2 transition-transform duration-300"></i>
-                        <span class="font-medium">school 文件夹</span>
-                    </div>
-                    <i class="fa fa-chevron-down text-gray-500 transition-transform duration-300"></i>
+        <!-- 主内容区 -->
+        <div class="max-w-7xl mx-auto p-4">
+            <!-- 操作栏 -->
+            <div class="glass-card rounded-xl p-4 mb-6 flex flex-wrap items-center justify-between gap-4">
+                <div class="flex items-center space-x-3 flex-wrap">
+                    <button onclick="fetchRepo()" class="btn-primary px-5 py-2 rounded-lg text-white">
+                        <i class="fas fa-sync-alt mr-2"></i>刷新仓库
+                    </button>
+                    <button onclick="showManualImport()" class="px-5 py-2 bg-yellow-600 hover:bg-yellow-500 rounded-lg text-white transition-colors">
+                        <i class="fas fa-keyboard mr-2"></i>手动导入
+                    </button>
+                    <button onclick="exportConfig()" class="px-5 py-2 bg-green-600 hover:bg-green-500 rounded-lg text-white transition-colors">
+                        <i class="fas fa-download mr-2"></i>导出配置
+                    </button>
+                    <label class="px-5 py-2 bg-purple-600 hover:bg-purple-500 rounded-lg text-white transition-colors cursor-pointer">
+                        <i class="fas fa-upload mr-2"></i>导入配置
+                        <input type="file" accept=".txt" onchange="importConfig(event)" class="hidden">
+                    </label>
                 </div>
-                <div class="folder-content ml-6 mt-3 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
-                    <!-- 信息技术课子文件夹 -->
-                    <div class="col-span-full sm:col-span-2 md:col-span-3 lg:col-span-4 folder-item p-3 bg-gray-800/50 rounded-lg border border-gray-700 cursor-pointer">
-                        <div class="flex items-center justify-between">
-                            <div class="flex items-center">
-                                <i class="fa fa-folder text-yellow-400 mr-2 transition-transform duration-300"></i>
-                                <span class="font-medium">信息技术课</span>
-                            </div>
-                            <i class="fa fa-chevron-down text-gray-500 transition-transform duration-300"></i>
-                        </div>
-                        <div class="folder-content ml-6 mt-2 grid grid-cols-1 sm:grid-cols-2 gap-2">
-                            <a href="https://yzbjfpv.top/school/%E4%BF%A1%E6%81%E8%E6%E6%E5%E8%E8%E8%E6%E6%E5%E8%E8/%E6%9E%81%E5%9F%E5%87%E6%9D%E5%8D%E6%89%E8%95%E6%8E%89/" target="_blank" class="p-2 bg-gray-800/50 rounded-lg border border-gray-700 btn-pop text-sm">
-                                <i class="fa fa-folder-open text-yellow-400 mr-2"></i>极域杀手
-                            </a>
+                
+                <div class="flex items-center space-x-2">
+                    <input type="text" id="searchInput" placeholder="搜索文件路径..." 
+                           class="px-4 py-2 bg-slate-800/50 border border-slate-600 rounded-lg focus:outline-none focus:border-blue-500"
+                           oninput="filterFiles()">
+                </div>
+            </div>
+
+            <!-- 主体内容 -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <!-- 文件树 -->
+                <div class="glass-card rounded-xl p-4">
+                    <h2 class="text-lg font-bold mb-4 flex items-center">
+                        <i class="fas fa-folder-tree mr-2 text-blue-400"></i>
+                        仓库文件结构
+                        <span id="fileCount" class="ml-auto text-sm text-slate-400"></span>
+                        <span id="sourceBadge" class="ml-2 text-xs px-2 py-1 rounded bg-slate-700"></span>
+                    </h2>
+                    <div id="fileTree" class="h-96 overflow-y-auto space-y-1">
+                        <div class="text-center text-slate-400 py-8">
+                            <i class="fas fa-folder-open text-3xl mb-3"></i>
+                            <p>点击"刷新仓库"加载文件</p>
+                            <p class="text-xs mt-2">或使用"手动导入"功能</p>
                         </div>
                     </div>
+                </div>
 
-                    <!-- 2025暑假作业子文件夹 -->
-                    <div class="col-span-full sm:col-span-2 md:col-span-3 lg:col-span-4 folder-item p-3 bg-gray-800/50 rounded-lg border border-gray-700 cursor-pointer">
-                        <div class="flex items-center justify-between">
-                            <div class="flex items-center">
-                                <i class="fa fa-folder text-yellow-400 mr-2 transition-transform duration-300"></i>
-                                <span class="font-medium">2025暑假作业</span>
+                <!-- 备注编辑 -->
+                <div class="glass-card rounded-xl p-4">
+                    <h2 class="text-lg font-bold mb-4 flex items-center">
+                        <i class="fas fa-edit mr-2 text-purple-400"></i>
+                        备注管理
+                    </h2>
+                    
+                    <div id="editorPanel" class="space-y-4">
+                        <div>
+                            <label class="block text-sm text-slate-400 mb-2">当前选中路径</label>
+                            <div id="selectedPath" class="px-4 py-2 bg-slate-800/50 rounded-lg font-mono text-sm break-all">
+                                未选择文件
                             </div>
-                            <i class="fa fa-chevron-down text-gray-500 transition-transform duration-300"></i>
                         </div>
-                        <div class="folder-content ml-6 mt-2 grid grid-cols-1 sm:grid-cols-2 gap-2">
-                            <a href="https://yzbjfpv.top/school/2025%E6%9A%E9%97%B4%E4%BD%E4%BD%E4%B8%E9%97%E4%B8%E9%97/index.html" target="_blank" class="p-2 bg-gray-800/50 rounded-lg border border-gray-700 btn-pop text-sm">
-                                <i class="fa fa-file-html-o text-accent mr-2"></i>index.html
-                            </a>
-                            <a href="https://yzbjfpv.top/school/2025%E6%9A%E9%97%B4%E4%BD%E4%BD%E4%B8%E9%97%E4%B8%E9%97/%E6%95%B0%E5%AD%A6.html" target="_blank" class="p-2 bg-gray-800/50 rounded-lg border border-gray-700 btn-pop text-sm">
-                                <i class="fa fa-file-html-o text-accent mr-2"></i>数学.html
-                            </a>
-                            <a href="https://yzbjfpv.top/school/2025%E6%9A%E9%97%B4%E4%BD%E4%BD%E4%B8%E9%97%E4%B8%E9%97/%E7%89%A9%E7%90%E5%AD%A6.html" target="_blank" class="p-2 bg-gray-800/50 rounded-lg border border-gray-700 btn-pop text-sm">
-                                <i class="fa fa-file-html-o text-accent mr-2"></i>物理.html
-                            </a>
-                            <a href="https://yzbjfpv.top/school/2025%E6%9A%E9%97%B4%E4%BD%E4%BD%E4%B8%E9%97%E4%B8%E9%97/%E8%8B%B1%E8%AF%AD.html" target="_blank" class="p-2 bg-gray-800/50 rounded-lg border border-gray-700 btn-pop text-sm">
-                                <i class="fa fa-file-html-o text-accent mr-2"></i>英语.html
-                            </a>
+                        
+                        <div>
+                            <label class="block text-sm text-slate-400 mb-2">功能备注（10字内）</label>
+                            <input type="text" id="remarkInput" maxlength="10" 
+                                   class="w-full px-4 py-3 bg-slate-800/50 border border-slate-600 rounded-lg focus:outline-none focus:border-blue-500"
+                                   placeholder="输入备注..." disabled>
+                        </div>
+                        
+                        <div class="flex space-x-4">
+                            <button onclick="saveRemark()" id="saveBtn" 
+                                    class="flex-1 btn-primary text-white py-2 rounded-lg disabled:opacity-50" disabled>
+                                <i class="fas fa-save mr-2"></i>保存备注
+                            </button>
+                            <button onclick="openPreview()" id="previewBtn"
+                                    class="flex-1 bg-slate-700 hover:bg-slate-600 text-white py-2 rounded-lg transition-colors disabled:opacity-50" disabled>
+                                <i class="fas fa-external-link-alt mr-2"></i>预览页面
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- 备注统计 -->
+                    <div class="mt-6 pt-6 border-t border-slate-700">
+                        <h3 class="text-sm font-medium text-slate-400 mb-3">备注统计</h3>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="text-center p-3 bg-slate-800/30 rounded-lg">
+                                <div id="totalFiles" class="text-2xl font-bold text-blue-400">0</div>
+                                <div class="text-xs text-slate-400">总文件数</div>
+                            </div>
+                            <div class="text-center p-3 bg-slate-800/30 rounded-lg">
+                                <div id="remarkedFiles" class="text-2xl font-bold text-green-400">0</div>
+                                <div class="text-xs text-slate-400">已备注</div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
 
-            <!-- 工具文件夹 -->
-            <div class="col-span-full md:col-span-1 lg:col-span-4 xl:col-span-5 folder-item p-4 bg-gray-800/30 rounded-lg border border-gray-700 cursor-pointer">
-                <div class="flex items-center justify-between">
-                    <div class="flex items-center">
-                        <i class="fa fa-folder text-yellow-500 mr-2 transition-transform duration-300"></i>
-                        <span class="font-medium">tools 文件夹</span>
-                    </div>
-                    <i class="fa fa-chevron-down text-gray-500 transition-transform duration-300"></i>
-                </div>
-                <div class="folder-content ml-6 mt-3 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
-                    <a href="https://yzbjfpv.top/tools/%E7%BD%91%E9%80%9F%E6%B5%8B%E8%AF%95/" target="_blank" class="p-3 bg-gray-800/50 rounded-lg border border-gray-700 btn-pop text-sm">
-                        <i class="fa fa-file-html-o text-accent mr-2"></i>网速测试
-                    </a>
-                    <a href="https://yzbjfpv.top/tools/%E7%BD%91%E9%80%9F%E6%B5%8B%E8%AF%95/%E6%B5%8B%E9%80%9F%E6%A8%A1%E5%9D%97.js" target="_blank" class="p-3 bg-gray-800/50 rounded-lg border border-gray-700 btn-pop text-sm">
-                        <i class="fa fa-file-js-o text-yellow-400 mr-2"></i>测速模块.js
-                    </a>
+    <!-- 手动导入弹窗 -->
+    <div id="importModal" class="fixed inset-0 bg-black/80 hidden z-50 flex items-center justify-center p-4">
+        <div class="glass-card rounded-2xl w-full max-w-2xl fade-in">
+            <div class="p-6 border-b border-slate-700 flex items-center justify-between">
+                <h3 class="text-xl font-bold"><i class="fas fa-keyboard mr-2 text-yellow-400"></i>手动导入文件列表</h3>
+                <button onclick="closeImportModal()" class="text-slate-400 hover:text-white text-2xl">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="p-6">
+                <p class="text-slate-400 mb-4 text-sm">
+                    请将仓库的文件列表粘贴在下方（每行一个路径，或粘贴 JSON 格式）：
+                </p>
+                <textarea id="importTextarea" class="w-full h-64 px-4 py-3 bg-slate-800/50 border border-slate-600 rounded-lg focus:outline-none focus:border-blue-500 font-mono text-sm"
+                          placeholder="示例：&#10;index.html&#10;admin/index.html&#10;apple/index.html&#10;flyz/2024/index.html"></textarea>
+                <div class="mt-4 flex justify-end space-x-4">
+                    <button onclick="closeImportModal()" class="px-6 py-2 bg-slate-700 hover:bg-slate-600 rounded-lg transition-colors">
+                        取消
+                    </button>
+                    <button onclick="processManualImport()" class="btn-primary px-6 py-2 rounded-lg text-white">
+                        <i class="fas fa-check mr-2"></i>导入
+                    </button>
                 </div>
             </div>
+        </div>
+    </div>
 
-            <!-- 其他文件 -->
-            <a href="https://yzbjfpv.top/logo.png" target="_blank" class="p-4 bg-gray-800/50 rounded-lg border border-gray-700 btn-pop">
-                <i class="fa fa-file-image-o text-green-400 mr-2"></i>logo.png
-            </a>
-            <a href="https://yzbjfpv.top/favicon.ico" target="_blank" class="p-4 bg-gray-800/50 rounded-lg border border-gray-700 btn-pop">
-                <i class="fa fa-file-image-o text-green-400 mr-2"></i>favicon.ico
-            </a>
+    <!-- 预览弹窗 -->
+    <div id="previewModal" class="fixed inset-0 bg-black/80 hidden z-50 flex items-center justify-center p-4">
+        <div class="glass-card rounded-2xl w-full max-w-5xl h-5/6 flex flex-col">
+            <div class="p-4 border-b border-slate-700 flex items-center justify-between">
+                <h3 class="font-bold">页面预览</h3>
+                <button onclick="closePreview()" class="text-slate-400 hover:text-white text-2xl">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="flex-1 p-4">
+                <iframe id="previewFrame" class="w-full h-full rounded-lg bg-white"></iframe>
+            </div>
         </div>
     </div>
 
     <script>
-        // 登录功能
-        const loginForm = document.getElementById('loginForm');
-        const loginModal = document.getElementById('login');
-        const content = document.getElementById('content');
-        const logoutBtn = document.getElementById('logout');
+        // ==================== 配置 ====================
+        const CONFIG = {
+            repo: 'YZBJFPV/yzbjfpv.github.io',
+            branch: 'main',
+            domain: 'https://yzbjfpv.top',
+            // 多个 GitHub API 代理源（按优先级尝试）
+            apiMirrors: [
+                'https://api.github.com',
+                'https://gh.api.99988866.xyz',
+                'https://github-proxy.com',
+                'https://mirror.ghproxy.com/https://api.github.com'
+            ],
+            accounts: {
+                'yzfpv': 'yzfpv',
+                'admin': 'admin'
+            }
+        };
 
-        loginForm.addEventListener('submit', (e) => {
+        // ==================== 状态管理 ====================
+        let state = {
+            isLoggedIn: false,
+            currentUser: '',
+            files: [],
+            remarks: {},
+            selectedFile: null,
+            source: '' // 'api' | 'cache' | 'manual'
+        };
+
+        // ==================== 存储系统 ====================
+        const STORAGE_KEY = 'flyz_admin_data_v1';
+
+        function saveToStorage() {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+        }
+
+        function loadFromStorage() {
+            const saved = localStorage.getItem(STORAGE_KEY);
+            if (saved) {
+                try {
+                    const parsed = JSON.parse(saved);
+                    state = { ...state, ...parsed };
+                } catch (e) {
+                    console.error('读取缓存失败', e);
+                }
+            }
+        }
+
+        // ==================== 初始化 ====================
+        document.addEventListener('DOMContentLoaded', () => {
+            loadFromStorage();
+            checkLoginStatus();
+        });
+
+        // ==================== 登录系统 ====================
+        document.getElementById('loginForm').addEventListener('submit', (e) => {
             e.preventDefault();
-            const user = document.getElementById('user').value;
-            const pass = document.getElementById('pass').value;
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
             
-            if (user === 'yzfpv' && pass === 'yzfpv') {
-                loginModal.classList.add('opacity-0', 'pointer-events-none');
+            if (CONFIG.accounts[username] && CONFIG.accounts[username] === password) {
+                state.isLoggedIn = true;
+                state.currentUser = username;
+                saveToStorage();
+                showAdminPage();
+            } else {
+                document.getElementById('loginError').classList.remove('hidden');
                 setTimeout(() => {
-                    loginModal.classList.add('hidden');
-                    content.classList.remove('hidden');
-                }, 300);
+                    document.getElementById('loginError').classList.add('hidden');
+                }, 3000);
             }
         });
 
-        // 退出功能
-        logoutBtn.addEventListener('click', () => {
-            content.classList.add('hidden');
-            loginModal.classList.remove('hidden', 'opacity-0', 'pointer-events-none');
-            document.getElementById('user').value = '';
-            document.getElementById('pass').value = '';
-        });
+        function checkLoginStatus() {
+            if (state.isLoggedIn) {
+                showAdminPage();
+                if (state.files.length > 0) {
+                    renderFileTree();
+                    updateStats();
+                    updateSourceBadge();
+                }
+            }
+        }
 
-        // 文件夹展开/折叠交互
-        document.querySelectorAll('.folder-item').forEach(folder => {
-            folder.addEventListener('click', () => {
-                folder.classList.toggle('folder-expanded');
-                const icon = folder.querySelector('.fa-folder');
-                const chevron = folder.querySelector('.fa-chevron-down');
-                
-                if (folder.classList.contains('folder-expanded')) {
-                    icon.classList.add('fa-folder-open');
-                    chevron.style.transform = 'rotate(180deg)';
+        function showAdminPage() {
+            document.getElementById('loginPage').classList.add('hidden');
+            document.getElementById('adminPage').classList.remove('hidden');
+            document.getElementById('currentUser').textContent = state.currentUser;
+        }
+
+        function logout() {
+            state.isLoggedIn = false;
+            state.currentUser = '';
+            saveToStorage();
+            location.reload();
+        }
+
+        // ==================== 仓库爬取（多重代理策略） ====================
+        async function fetchRepo() {
+            const fileTree = document.getElementById('fileTree');
+            fileTree.innerHTML = `
+                <div class="text-center text-slate-400 py-8">
+                    <i class="fas fa-spinner fa-spin text-2xl mb-2"></i>
+                    <p class="loading-dots">正在尝试获取仓库文件</p>
+                    <p class="text-xs mt-4 text-slate-500">正在通过多个源尝试，请稍候...</p>
+                </div>
+            `;
+
+            let success = false;
+            
+            // 1. 优先尝试从缓存恢复（如果有）
+            if (state.files.length > 0 && state.source !== 'manual') {
+                renderFileTree();
+                updateStats();
+                updateSourceBadge();
+                return;
+            }
+
+            // 2. 依次尝试各个代理源
+            for (let i = 0; i < CONFIG.apiMirrors.length; i++) {
+                const mirror = CONFIG.apiMirrors[i];
+                try {
+                    fileTree.innerHTML = `
+                        <div class="text-center text-slate-400 py-8">
+                            <i class="fas fa-spinner fa-spin text-2xl mb-2"></i>
+                            <p>正在尝试源 ${i + 1}/${CONFIG.apiMirrors.length}...</p>
+                            <p class="text-xs mt-2 text-slate-500">${mirror}</p>
+                        </div>
+                    `;
+
+                    const apiUrl = `${mirror}/repos/${CONFIG.repo}/git/trees/${CONFIG.branch}?recursive=1`;
+                    const controller = new AbortController();
+                    const timeoutId = setTimeout(() => controller.abort(), 10000); // 10秒超时
+
+                    const response = await fetch(apiUrl, { 
+                        signal: controller.signal,
+                        headers: { 'Accept': 'application/vnd.github.v3+json' }
+                    });
+                    
+                    clearTimeout(timeoutId);
+                    
+                    if (!response.ok) throw new Error('API请求失败');
+                    
+                    const data = await response.json();
+                    state.files = data.tree.filter(item => item.type === 'blob').map(item => ({ path: item.path }));
+                    state.source = 'api';
+                    success = true;
+                    break;
+                } catch (error) {
+                    console.log(`源 ${mirror} 失败:`, error);
+                    continue;
+                }
+            }
+
+            if (success) {
+                saveToStorage();
+                renderFileTree();
+                updateStats();
+                updateSourceBadge();
+            } else {
+                fileTree.innerHTML = `
+                    <div class="text-center text-yellow-400 py-8">
+                        <i class="fas fa-exclamation-triangle text-3xl mb-3"></i>
+                        <p class="font-bold">网络请求失败</p>
+                        <p class="text-sm mt-2 text-slate-400">所有源均无法访问，请：</p>
+                        <div class="mt-4 space-y-2">
+                            <button onclick="fetchRepo()" class="btn-primary px-6 py-2 rounded-lg text-white text-sm">
+                                <i class="fas fa-redo mr-2"></i>再试一次
+                            </button>
+                            <button onclick="showManualImport()" class="px-6 py-2 bg-yellow-600 hover:bg-yellow-500 rounded-lg text-white text-sm ml-2">
+                                <i class="fas fa-keyboard mr-2"></i>手动导入
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        // ==================== 手动导入功能 ====================
+        function showManualImport() {
+            document.getElementById('importModal').classList.remove('hidden');
+        }
+
+        function closeImportModal() {
+            document.getElementById('importModal').classList.add('hidden');
+        }
+
+        function processManualImport() {
+            const text = document.getElementById('importTextarea').value.trim();
+            if (!text) {
+                alert('请输入内容');
+                return;
+            }
+
+            let paths = [];
+            
+            // 尝试解析 JSON
+            try {
+                const json = JSON.parse(text);
+                if (Array.isArray(json)) {
+                    paths = json.map(item => typeof item === 'string' ? item : item.path);
+                } else if (json.tree) {
+                    paths = json.tree.filter(item => item.type === 'blob').map(item => item.path);
+                }
+            } catch (e) {
+                // 按行解析
+                paths = text.split('\n')
+                    .map(line => line.trim())
+                    .filter(line => line && !line.startsWith('{') && !line.startsWith('['));
+            }
+
+            if (paths.length === 0) {
+                alert('未识别到有效路径');
+                return;
+            }
+
+            state.files = paths.map(path => ({ path }));
+            state.source = 'manual';
+            saveToStorage();
+            
+            closeImportModal();
+            renderFileTree();
+            updateStats();
+            updateSourceBadge();
+        }
+
+        // ==================== 文件树渲染 ====================
+        function renderFileTree(filter = '') {
+            const fileTree = document.getElementById('fileTree');
+            const filteredFiles = state.files.filter(f => 
+                f.path.toLowerCase().includes(filter.toLowerCase())
+            );
+
+            document.getElementById('fileCount').textContent = `(${filteredFiles.length}个文件)`;
+
+            if (filteredFiles.length === 0) {
+                fileTree.innerHTML = `
+                    <div class="text-center text-slate-400 py-8">
+                        <i class="fas fa-search text-2xl mb-2"></i>
+                        <p>未找到匹配文件</p>
+                    </div>
+                `;
+                return;
+            }
+
+            // 构建目录树结构
+            const tree = buildTree(filteredFiles.map(f => f.path));
+            fileTree.innerHTML = renderTreeNode(tree, '');
+        }
+
+        function buildTree(paths) {
+            const tree = {};
+            paths.forEach(path => {
+                const parts = path.split('/');
+                let current = tree;
+                parts.forEach((part, i) => {
+                    if (!current[part]) {
+                        current[part] = i === parts.length - 1 ? null : {};
+                    }
+                    if (current[part] !== null) {
+                        current = current[part];
+                    }
+                });
+            });
+            return tree;
+        }
+
+        function renderTreeNode(node, parentPath, level = 0) {
+            let html = '';
+            const indent = level * 16;
+
+            Object.keys(node).sort((a, b) => {
+                const aIsFolder = node[a] !== null;
+                const bIsFolder = node[b] !== null;
+                if (aIsFolder && !bIsFolder) return -1;
+                if (!aIsFolder && bIsFolder) return 1;
+                return a.localeCompare(b);
+            }).forEach(key => {
+                const fullPath = parentPath ? `${parentPath}/${key}` : key;
+                const isFolder = node[key] !== null;
+
+                if (isFolder) {
+                    html += `
+                        <div class="pl-2">
+                            <div class="flex items-center py-1 px-2 text-slate-300">
+                                <i class="fas fa-folder text-yellow-500 mr-2" style="margin-left: ${indent}px"></i>
+                                <span class="text-sm">${key}</span>
+                            </div>
+                            ${renderTreeNode(node[key], fullPath, level + 1)}
+                        </div>
+                    `;
                 } else {
-                    icon.classList.remove('fa-folder-open');
-                    chevron.style.transform = 'rotate(0)';
+                    const hasRemark = state.remarks[fullPath];
+                    html += `
+                        <div class="file-tree-item flex items-center py-1 px-2 rounded cursor-pointer ${state.selectedFile === fullPath ? 'active' : ''}"
+                             onclick="selectFile('${fullPath.replace(/'/g, "\\'")}')"
+                             style="padding-left: ${indent + 24}px">
+                            <i class="fas fa-file-code text-blue-400 mr-2 text-xs"></i>
+                            <span class="text-sm flex-1 ${hasRemark ? 'text-white' : 'text-slate-400'}">${key}</span>
+                            ${hasRemark ? `<span class="text-xs bg-blue-600 px-2 py-0.5 rounded">${hasRemark}</span>` : ''}
+                        </div>
+                    `;
                 }
             });
-        });
+
+            return html;
+        }
+
+        function filterFiles() {
+            const filter = document.getElementById('searchInput').value;
+            renderFileTree(filter);
+        }
+
+        // ==================== 文件选择与备注 ====================
+        function selectFile(path) {
+            state.selectedFile = path;
+            document.getElementById('selectedPath').textContent = path;
+            document.getElementById('remarkInput').value = state.remarks[path] || '';
+            document.getElementById('remarkInput').disabled = false;
+            document.getElementById('saveBtn').disabled = false;
+            document.getElementById('previewBtn').disabled = false;
+            
+            renderFileTree(document.getElementById('searchInput').value);
+        }
+
+        function saveRemark() {
+            if (!state.selectedFile) return;
+            const remark = document.getElementById('remarkInput').value.trim();
+            if (remark) {
+                state.remarks[state.selectedFile] = remark;
+            } else {
+                delete state.remarks[state.selectedFile];
+            }
+            saveToStorage();
+            updateStats();
+            renderFileTree(document.getElementById('searchInput').value);
+        }
+
+        function updateStats() {
+            document.getElementById('totalFiles').textContent = state.files.length;
+            document.getElementById('remarkedFiles').textContent = Object.keys(state.remarks).length;
+        }
+
+        function updateSourceBadge() {
+            const badge = document.getElementById('sourceBadge');
+            const labels = { 'api': 'API获取', 'cache': '本地缓存', 'manual': '手动导入' };
+            const colors = { 'api': 'bg-green-700', 'cache': 'bg-blue-700', 'manual': 'bg-yellow-700' };
+            badge.textContent = labels[state.source] || '';
+            badge.className = `ml-2 text-xs px-2 py-1 rounded ${colors[state.source] || 'bg-slate-700'}`;
+        }
+
+        // ==================== 预览功能 ====================
+        function openPreview() {
+            if (!state.selectedFile) return;
+            const url = `${CONFIG.domain}/${state.selectedFile}`;
+            document.getElementById('previewFrame').src = url;
+            document.getElementById('previewModal').classList.remove('hidden');
+        }
+
+        function closePreview() {
+            document.getElementById('previewModal').classList.add('hidden');
+            document.getElementById('previewFrame').src = '';
+        }
+
+        // ==================== 配置导入导出 ====================
+        function exportConfig() {
+            const data = {
+                version: 1,
+                exportDate: new Date().toISOString(),
+                files: state.files,
+                remarks: state.remarks
+            };
+            
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `flyz_admin_config_${new Date().toISOString().slice(0,10)}.txt`;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        function importConfig(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                try {
+                    const data = JSON.parse(e.target.result);
+                    if (data.files) state.files = data.files;
+                    if (data.remarks) state.remarks = data.remarks;
+                    state.source = 'cache';
+                    saveToStorage();
+                    renderFileTree();
+                    updateStats();
+                    updateSourceBadge();
+                    alert('配置导入成功！');
+                } catch (err) {
+                    alert('配置文件解析失败，请检查格式');
+                }
+            };
+            reader.readAsText(file);
+            event.target.value = '';
+        }
     </script>
 </body>
 </html>
