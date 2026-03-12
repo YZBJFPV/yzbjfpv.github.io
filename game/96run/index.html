@@ -1,0 +1,2240 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>九六快跑 - 3D PARKOUR</title>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
+    <style>
+        /* 基础重置 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-user-select: none;
+            user-select: none;
+            font-family: 'Arial', sans-serif;
+        }
+        
+        html, body {
+            overflow: hidden !important;
+            width: 100vw;
+            height: 100vh;
+            background: #0a0a1a;
+            touch-action: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+        }
+        
+        /* 加载页面 */
+        #loadingScreen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #0a0a1a 0%, #1a1a3e 50%, #0a1a2e 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease-out;
+        }
+        
+        .loading-logo {
+            font-size: clamp(2.5rem, 8vw, 5rem);
+            font-weight: bold;
+            background: linear-gradient(45deg, #00f5ff, #7c3aed, #ff0080);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 2rem;
+            text-shadow: 0 0 40px rgba(0, 245, 255, 0.6);
+            letter-spacing: 5px;
+        }
+        
+        .loading-bar-container {
+            width: clamp(200px, 60vw, 400px);
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .loading-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #00f5ff, #7c3aed);
+            width: 0%;
+            border-radius: 4px;
+            transition: width 1.5s ease-out;
+        }
+        
+        .loading-text {
+            color: #888;
+            margin-top: 1rem;
+            font-size: clamp(0.8rem, 2vw, 1rem);
+            letter-spacing: 2px;
+        }
+        
+        /* 游戏画布 */
+        #gameCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 10;
+        }
+        
+        /* 游戏UI */
+        #gameUI {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 100;
+        }
+        
+        .top-left-ui {
+            position: absolute;
+            top: 25px;
+            left: 25px;
+        }
+        
+        .score-display {
+            color: white;
+            font-size: clamp(1.2rem, 4vw, 1.8rem);
+            font-weight: bold;
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.8);
+        }
+        
+        .coin-diamond-display {
+            display: flex;
+            gap: 15px;
+            margin-top: 5px;
+        }
+        
+        .coin-display, .diamond-display {
+            font-size: clamp(0.9rem, 3vw, 1.2rem);
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.8);
+        }
+        
+        .coin-display {
+            color: #ffd700;
+        }
+        
+        .diamond-display {
+            color: #00f5ff;
+        }
+        
+        .health-display {
+            font-size: clamp(1rem, 3vw, 1.5rem);
+            margin-top: 8px;
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.8);
+        }
+        
+        .shield-status {
+            font-size: clamp(0.8rem, 2.5vw, 1rem);
+            margin-top: 5px;
+            font-weight: bold;
+        }
+        
+        .shield-ready {
+            color: #00ff88;
+        }
+        
+        .shield-cooldown {
+            color: #ff4444;
+        }
+        
+        /* 右上角UI */
+        .top-right-ui {
+            position: absolute;
+            top: 25px;
+            right: 25px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 8px;
+        }
+        
+        .fps-display {
+            color: #00f5ff;
+            font-size: clamp(0.8rem, 2.5vw, 1rem);
+            font-weight: bold;
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.8);
+            background: rgba(0, 0, 0, 0.3);
+            padding: 8px 15px;
+            border-radius: 15px;
+        }
+        
+        .scene-indicator {
+            color: white;
+            font-size: clamp(0.8rem, 2.5vw, 1rem);
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.8);
+            background: rgba(0, 0, 0, 0.3);
+            padding: 8px 15px;
+            border-radius: 15px;
+        }
+        
+        .controls-hint {
+            position: absolute;
+            bottom: 25px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: rgba(255, 255, 255, 0.6);
+            font-size: clamp(0.7rem, 2vw, 0.9rem);
+            text-align: center;
+            width: 90%;
+        }
+        
+        /* 通用面板样式 */
+        .panel {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.92);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 200;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.5s ease;
+            pointer-events: none;
+            overflow-y: auto;
+            padding: 20px;
+        }
+        
+        .panel.active {
+            opacity: 1;
+            visibility: visible;
+            pointer-events: auto;
+        }
+        
+        .panel-title {
+            font-size: clamp(1.8rem, 6vw, 3rem);
+            color: white;
+            margin-bottom: 1rem;
+            text-shadow: 0 0 30px rgba(0, 245, 255, 0.8);
+            text-align: center;
+        }
+        
+        .panel-subtitle {
+            font-size: clamp(1rem, 3vw, 1.3rem);
+            color: #ffd700;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+        
+        .menu-btn {
+            background: linear-gradient(45deg, #00f5ff, #7c3aed);
+            color: white;
+            border: none;
+            padding: 12px 40px;
+            font-size: clamp(0.9rem, 2.5vw, 1.1rem);
+            border-radius: 25px;
+            cursor: pointer;
+            margin: 8px;
+            transition: transform 0.3s, box-shadow 0.3s;
+            pointer-events: auto;
+        }
+        
+        .menu-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 25px rgba(0, 245, 255, 0.6);
+        }
+        
+        .menu-btn.secondary {
+            background: linear-gradient(45deg, #333, #555);
+        }
+        
+        /* 设置面板 */
+        .settings-group {
+            width: clamp(280px, 60vw, 320px);
+            margin: 12px 0;
+        }
+        
+        .settings-label {
+            color: white;
+            font-size: clamp(0.9rem, 2.5vw, 1rem);
+            margin-bottom: 8px;
+            display: block;
+        }
+        
+        .settings-options {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .option-btn {
+            flex: 1;
+            padding: 8px;
+            border: 2px solid #444;
+            background: #222;
+            color: white;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: clamp(0.8rem, 2vw, 0.9rem);
+        }
+        
+        .option-btn.active {
+            border-color: #00f5ff;
+            background: #00f5ff;
+            color: #000;
+            font-weight: bold;
+        }
+        
+        /* 角色自定义面板 */
+        .avatar-customize {
+            width: clamp(280px, 70vw, 400px);
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .avatar-preview {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            border: 2px solid #00f5ff;
+            margin: 0 auto 15px;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #222;
+        }
+        
+        .avatar-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .avatar-upload {
+            text-align: center;
+            margin: 10px 0;
+        }
+        
+        .upload-btn {
+            background: #444;
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+        
+        #avatarInput {
+            display: none;
+        }
+        
+        /* 商店面板 */
+        .shop-items {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 15px;
+            width: 100%;
+            max-width: 500px;
+            margin-bottom: 25px;
+        }
+        
+        .shop-item {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid #333;
+            border-radius: 12px;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .shop-item:hover {
+            border-color: #00f5ff;
+        }
+        
+        .item-icon {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+        
+        .item-name {
+            color: white;
+            font-size: 0.9rem;
+            margin-bottom: 5px;
+        }
+        
+        .item-price {
+            color: #00f5ff;
+            font-size: 0.8rem;
+        }
+        
+        /* 签到面板 */
+        .sign-panel {
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .sign-reward {
+            font-size: 1.5rem;
+            color: #00f5ff;
+            margin: 20px 0;
+        }
+        
+        /* 充值面板 */
+        .recharge-panel {
+            width: clamp(280px, 70vw, 400px);
+        }
+        
+        .recharge-contact {
+            color: white;
+            font-size: 1.2rem;
+            margin: 20px 0;
+            text-align: center;
+        }
+        
+        .recharge-wx {
+            color: #00ff88;
+            font-weight: bold;
+        }
+        
+        .code-input-group {
+            display: flex;
+            gap: 10px;
+            margin: 20px 0;
+            width: 100%;
+        }
+        
+        .code-input {
+            flex: 1;
+            padding: 10px;
+            background: #222;
+            border: 2px solid #444;
+            border-radius: 8px;
+            color: white;
+            font-size: 1rem;
+        }
+        
+        .exchange-btn {
+            background: #00f5ff;
+            color: #000;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        
+        /* 皮肤商店 */
+        .skin-shop {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: 15px;
+            width: 100%;
+            max-width: 500px;
+            margin-bottom: 25px;
+        }
+        
+        .skin-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid #333;
+            border-radius: 12px;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .skin-card:hover {
+            border-color: #555;
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        .skin-card.selected {
+            border-color: #00f5ff;
+            box-shadow: 0 0 15px rgba(0, 245, 255, 0.4);
+        }
+        
+        .skin-card.locked {
+            opacity: 0.7;
+        }
+        
+        .skin-preview {
+            width: 60px;
+            height: 80px;
+            margin: 0 auto 10px;
+            border-radius: 8px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 2rem;
+        }
+        
+        .skin-name {
+            color: white;
+            font-size: 0.9rem;
+            margin-bottom: 5px;
+        }
+        
+        .skin-price {
+            color: #ffd700;
+            font-size: 0.8rem;
+        }
+        
+        .skin-price.free {
+            color: #00ff88;
+        }
+    </style>
+</head>
+<body>
+    <!-- 背景音乐 -->
+    <audio id="bgMusic" preload="auto" loop>
+        <source src="https://cdn.jsdelivr.net/npm/sample-audio-files@1.0.0/audio/mp3/sample-15s.mp3" type="audio/mpeg">
+    </audio>
+    
+    <!-- 加载页面 -->
+    <div id="loadingScreen">
+        <div class="loading-logo">九六快跑</div>
+        <div class="loading-bar-container">
+            <div class="loading-bar" id="loadingBar"></div>
+        </div>
+        <div class="loading-text" id="loadingText">加载中... 0%</div>
+    </div>
+    
+    <!-- 游戏画布 -->
+    <canvas id="gameCanvas"></canvas>
+    
+    <!-- 游戏UI -->
+    <div id="gameUI">
+        <div class="top-left-ui">
+            <div class="score-display">Score: <span id="score">0</span></div>
+            <div class="coin-diamond-display">
+                <div class="coin-display">💰 <span id="sessionCoins">0</span></div>
+                <div class="diamond-display">💎 <span id="diamonds">0</span></div>
+            </div>
+            <div class="health-display" id="healthDisplay">❤️ 1</div>
+            <div class="shield-status" id="shieldStatus">
+                <span class="shield-ready">🛡️ 免伤道具就绪 (E/双击)</span>
+            </div>
+            <div class="high-score">最高分: <span id="highScore">0</span></div>
+        </div>
+        
+        <div class="top-right-ui">
+            <div class="fps-display" id="fpsDisplay">FPS: --</div>
+            <div class="scene-indicator" id="sceneIndicator">场景: 城市</div>
+        </div>
+        
+        <div class="controls-hint" id="controlHint">
+            PC: W跳跃 | S滑铲 | A左 | D右 | E使用免伤道具<br>
+            手机: 上滑跳跃 | 下滑滑铲 | 左右滑动移动 | 双击使用免伤道具
+        </div>
+    </div>
+    
+    <!-- 主菜单 -->
+    <div id="menuScreen" class="panel">
+        <div class="panel-title">九六快跑</div>
+        <div class="panel-subtitle">最高分: <span id="menuHighScore">0</span> | 💰 <span id="menuTotalCoins">0</span> | 💎 <span id="menuDiamonds">0</span></div>
+        <button class="menu-btn" onclick="startGame()">开始游戏</button>
+        <button class="menu-btn secondary" onclick="showSkinShop()">皮肤商店</button>
+        <button class="menu-btn secondary" onclick="showShop()">道具商店</button>
+        <button class="menu-btn secondary" onclick="showAvatarCustomize()">自定义角色</button>
+        <button class="menu-btn secondary" onclick="showSettings()">设置</button>
+        <button class="menu-btn secondary" onclick="showSignPanel()">每日签到</button>
+        <button class="menu-btn secondary" onclick="showRechargePanel()">充值/兑换</button>
+    </div>
+    
+    <!-- 角色自定义面板 -->
+    <div id="avatarCustomizeScreen" class="panel">
+        <div class="panel-title">自定义角色</div>
+        <div class="avatar-customize">
+            <div class="avatar-preview">
+                <img id="avatarPreviewImg" class="avatar-img" src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgZmlsbD0iIzMyMyIvPjx0ZXh0IHg9IjUwIiB5PSI1NSIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjIwIiBmaWxsPSJ3aGl0ZSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgYWxpZ25tZW50LWJhc2VsaW5lPSJtaWRkbGUiPk5PVCBBVVRPIElORVQ8L3RleHQ+PC9zdmc+" alt="头像预览">
+            </div>
+            <div class="avatar-upload">
+                <input type="file" id="avatarInput" accept="image/*">
+                <button class="upload-btn" onclick="document.getElementById('avatarInput').click()">上传头像</button>
+            </div>
+            <div style="text-align: center; color: #888; font-size: 0.8rem; margin-top: 10px;">
+                支持JPG/PNG格式，建议正方形图片
+            </div>
+        </div>
+        <button class="menu-btn" onclick="saveAvatar()">保存</button>
+        <button class="menu-btn secondary" onclick="showMenu()">返回</button>
+    </div>
+    
+    <!-- 道具商店 -->
+    <div id="shopScreen" class="panel">
+        <div class="panel-title">道具商店</div>
+        <div class="panel-subtitle">💎 当前钻石: <span id="shopDiamonds">0</span></div>
+        <div class="shop-items">
+            <div class="shop-item" onclick="buyItem('invincible', 5)">
+                <div class="item-icon">🛡️</div>
+                <div class="item-name">免伤道具</div>
+                <div class="item-price">5钻石/个</div>
+            </div>
+            <div class="shop-item" onclick="buyItem('health', 10)">
+                <div class="item-icon">❤️</div>
+                <div class="item-name">生命+1</div>
+                <div class="item-price">10钻石/个</div>
+            </div>
+            <div class="shop-item" onclick="buyItem('coinBoost', 20)">
+                <div class="item-icon">💰</div>
+                <div class="item-name">金币翻倍</div>
+                <div class="item-price">20钻石/个</div>
+            </div>
+        </div>
+        <button class="menu-btn secondary" onclick="showMenu()">返回</button>
+    </div>
+    
+    <!-- 签到面板 -->
+    <div id="signPanel" class="panel">
+        <div class="panel-title">每日签到</div>
+        <div class="sign-panel">
+            <div class="sign-reward">今日签到奖励: 20钻石 💎</div>
+            <div id="signStatus" style="color: white; font-size: 1.2rem; margin: 10px 0;">
+                还未签到
+            </div>
+            <button class="menu-btn" onclick="signIn()">立即签到</button>
+        </div>
+        <button class="menu-btn secondary" onclick="showMenu()">返回</button>
+    </div>
+    
+    <!-- 充值/兑换面板 -->
+    <div id="rechargePanel" class="panel">
+        <div class="panel-title">充值/兑换</div>
+        <div class="recharge-panel">
+            <div class="recharge-contact">
+                联系微信: <span class="recharge-wx">YGWFK</span>
+            </div>
+            <div style="color: white; margin: 15px 0; text-align: center;">
+                输入兑换码领取钻石
+            </div>
+            <div class="code-input-group">
+                <input type="text" class="code-input" id="exchangeCode" placeholder="请输入兑换码">
+                <button class="exchange-btn" onclick="exchangeCode()">兑换</button>
+            </div>
+        </div>
+        <button class="menu-btn secondary" onclick="showMenu()">返回</button>
+    </div>
+    
+    <!-- 皮肤商店 -->
+    <div id="skinShopScreen" class="panel">
+        <div class="panel-title">皮肤商店</div>
+        <div class="panel-subtitle">💰 总金币: <span id="shopTotalCoins">0</span></div>
+        <div class="skin-shop" id="skinShopContainer"></div>
+        <button class="menu-btn secondary" onclick="showMenu()">返回</button>
+    </div>
+    
+    <!-- 设置面板 -->
+    <div id="settingsScreen" class="panel">
+        <div class="panel-title">设置</div>
+        
+        <!-- 画质设置 -->
+        <div class="settings-group">
+            <label class="settings-label">画质</label>
+            <div class="settings-options">
+                <button class="option-btn" data-quality="ultraLow" onclick="setQuality('ultraLow')">超低</button>
+                <button class="option-btn" data-quality="low" onclick="setQuality('low')">低</button>
+                <button class="option-btn" data-quality="medium" onclick="setQuality('medium')">中</button>
+                <button class="option-btn" data-quality="high" onclick="setQuality('high')">高</button>
+            </div>
+        </div>
+        
+        <!-- 模型精度 -->
+        <div class="settings-group">
+            <label class="settings-label">模型精度</label>
+            <div class="settings-options">
+                <button class="option-btn" data-model="ultraLow" onclick="setModelPrecision('ultraLow')">超低</button>
+                <button class="option-btn" data-model="low" onclick="setModelPrecision('low')">低</button>
+                <button class="option-btn" data-model="medium" onclick="setModelPrecision('medium')">中</button>
+            </div>
+        </div>
+        
+        <!-- 帧率控制 -->
+        <div class="settings-group">
+            <label class="settings-label">帧率限制</label>
+            <div class="settings-options">
+                <button class="option-btn" data-fps="30" onclick="setFpsLimit('30')">30帧</button>
+                <button class="option-btn" data-fps="50" onclick="setFpsLimit('50')">50帧</button>
+                <button class="option-btn" data-fps="unlimited" onclick="setFpsLimit('unlimited')">无限制</button>
+            </div>
+        </div>
+        
+        <div style="margin-top: 25px;">
+            <button class="menu-btn" onclick="saveSettings()">保存设置</button>
+            <button class="menu-btn secondary" onclick="showMenu()">取消</button>
+        </div>
+    </div>
+    
+    <!-- 游戏结束界面 -->
+    <div id="gameOverScreen" class="panel">
+        <div class="panel-title">游戏结束</div>
+        <div class="panel-subtitle">最终得分: <span id="finalScore">0</span> | 💰 <span id="finalSessionCoins">0</span></div>
+        <div class="panel-subtitle" style="font-size: clamp(0.9rem, 2.5vw, 1.1rem);">最高分: <span id="gameOverHighScore">0</span> | 💎 <span id="gameOverDiamonds">0</span></div>
+        <button class="menu-btn" onclick="startGame()">再来一局</button>
+        <button class="menu-btn secondary" onclick="showMenu()">返回菜单</button>
+    </div>
+        <script>
+// 全局容错机制
+try {
+    // ===================== 核心常量配置 =====================
+    const LANES = [-4, 0, 4];
+    const MAX_LANE_INDEX = LANES.length - 1;
+    const MIN_LANE_INDEX = 0;
+    
+    // 帧率控制配置
+    const FPS_CONFIG = {
+        30: 1000 / 30,
+        50: 1000 / 50,
+        unlimited: 0
+    };
+    let fpsLimit = localStorage.getItem('jl96_fpsLimit') || 'unlimited';
+    let frameInterval = FPS_CONFIG[fpsLimit];
+    let lastFrameTime = 0;
+    // FPS实时计算
+    let fpsArray = [];
+    let lastFpsUpdateTime = 0;
+    let currentFps = 0;
+
+    // 游戏核心状态
+    let gameState = 'loading';
+    let score = 0;
+    let sessionCoins = 0;
+    let totalCoins = parseInt(localStorage.getItem('jl96_totalCoins')) || 0;
+    let diamonds = parseInt(localStorage.getItem('jl96_diamonds')) || 0;
+    let highScore = parseInt(localStorage.getItem('jl96_highScore')) || 0;
+    let currentSceneIndex = 0;
+    let gameSpeed = 0.3;
+    const BASE_GAME_SPEED = 0.3;
+    const SPEED_INCREMENT = 0.00008;
+    
+    // 玩家状态
+    let playerLane = 1;
+    let isJumping = false;
+    let jumpVelocity = 0;
+    const GRAVITY = -0.015;
+    const JUMP_FORCE = 0.35;
+    let isSliding = false;
+    let slideTimer = 0;
+    const SLIDE_DURATION = 0.6;
+    const SLIDE_HEIGHT_SCALE = 0.4;
+    // 血量系统
+    let currentHealth = 1;
+    let maxHealth = 1;
+    const MAX_HEALTH_LIMIT = 10;
+    let lastHealthThreshold = 0;
+    // 免伤道具系统
+    let isInvincible = false;
+    let invincibleTimer = 0;
+    const INVINCIBLE_DURATION = 3;
+    const SHIELD_COOLDOWN = 15;
+    let lastShieldUseTime = -9999;
+    let invincibleItems = parseInt(localStorage.getItem('jl96_invincibleItems')) || 0;
+    
+    // 角色自定义
+    let avatarImage = localStorage.getItem('jl96_avatarImage') || '';
+    
+    // 渲染相关
+    let playerGroup;
+    let playerParts = {};
+    let animationTime = 0;
+    const cachedSin = [];
+    // 预计算三角函数
+    for (let i = 0; i < 360; i++) cachedSin[i] = Math.sin(i * Math.PI / 180);
+    for (let i = 0; i < 360; i++) cachedSin[i + 360] = Math.cos(i * Math.PI / 180);
+    
+    // 皮肤系统
+    const SKINS = [
+        { id: 'default', name: '默认', price: 0, unlocked: true, color: 0x00f5ff, hasGlow: false, emoji: '🧑' },
+        { id: 'fire', name: '火焰', price: 1000, unlocked: false, color: 0xff4444, hasGlow: true, glowColor: 0xff0000, emoji: '🔥' },
+        { id: 'cyber', name: '赛博', price: 3000, unlocked: false, color: 0x7c3aed, hasGlow: true, glowColor: 0x00f5ff, emoji: '🤖' }
+    ];
+    let currentSkinId = localStorage.getItem('jl96_currentSkin') || 'default';
+    
+    // Three.js核心
+    let scene, camera, renderer;
+    let isRendererInitialized = false;
+    
+    // 对象池
+    let objectPool = {
+        obstacles: [],
+        coins: [],
+        planes: [],
+        bombs: [],
+        activeObstacles: [],
+        activeCoins: [],
+        activePlanes: [],
+        activeBombs: []
+    };
+    let lastObstacleZ = -50;
+    const MIN_OBSTACLE_GAP = 18;
+    const OBSTACLE_SPAWN_RATE = 0.035;
+    
+    // 障碍物配置
+    const OBSTACLE_TYPES = {
+        BOX: { id: 'box', height: 1.5, needJump: true, needSlide: false, size: [1.5,1.5,1.5] },
+        BARRIER: { id: 'barrier', height: 1, needJump: true, needSlide: false, size: [1.6,1,1.6] },
+        LOW_RAIL: { id: 'lowRail', height: 0.5, needJump: false, needSlide: true, size: [3.5,0.5,1] },
+        DOUBLE_BLOCK: { id: 'doubleBlock', height: 1.5, needJump: true, needSlide: false, size: [1.5,1.5,1.5] }
+    };
+    
+    // 场景元素
+    let groundSegments = [];
+    let environmentObjects = [];
+    let clouds = [];
+    
+    // 游戏设置
+    let gameSettings = {
+        quality: localStorage.getItem('jl96_quality') || 'low',
+        modelPrecision: localStorage.getItem('jl96_model') || 'low'
+    };
+    
+    // 签到相关
+    let lastSignDate = localStorage.getItem('jl96_lastSignDate') || '';
+    
+    // 兑换码相关
+    let usedCodes = JSON.parse(localStorage.getItem('jl96_usedCodes')) || [];
+    
+    // 画质配置表
+    const QUALITY_CONFIG = {
+        ultraLow: {
+            antialias: false,
+            shadowEnabled: false,
+            pixelRatio: 1,
+            fogEnabled: true,
+            fogDensity: 0.12,
+            farClip: 30,
+            nearClip: 0.1,
+            envObjectCount: 2,
+            cloudCount: 0,
+            useBasicMaterial: true,
+            planeSpawnRate: 0.001,
+            envAnimation: false,
+            coinRotation: false
+        },
+        low: {
+            antialias: false,
+            shadowEnabled: false,
+            pixelRatio: 1,
+            fogEnabled: true,
+            fogDensity: 0.05,
+            farClip: 60,
+            nearClip: 0.1,
+            envObjectCount: 12,
+            cloudCount: 5,
+            useBasicMaterial: false,
+            planeSpawnRate: 0.004,
+            envAnimation: false,
+            coinRotation: true
+        },
+        medium: {
+            antialias: true,
+            shadowEnabled: true,
+            shadowType: THREE.BasicShadowMap,
+            shadowBias: -0.0001,
+            pixelRatio: Math.min(window.devicePixelRatio, 1.5),
+            fogEnabled: true,
+            fogDensity: 0.03,
+            farClip: 80,
+            nearClip: 0.1,
+            envObjectCount: 25,
+            cloudCount: 15,
+            useBasicMaterial: false,
+            planeSpawnRate: 0.006,
+            envAnimation: true,
+            coinRotation: true
+        },
+        high: {
+            antialias: true,
+            shadowEnabled: true,
+            shadowType: THREE.PCFSoftShadowMap,
+            shadowBias: -0.0001,
+            pixelRatio: window.devicePixelRatio,
+            fogEnabled: true,
+            fogDensity: 0.02,
+            farClip: 120,
+            nearClip: 0.1,
+            envObjectCount: 40,
+            cloudCount: 25,
+            useBasicMaterial: false,
+            planeSpawnRate: 0.008,
+            envAnimation: true,
+            coinRotation: true
+        }
+    };
+    
+    // 模型精度配置
+    const MODEL_CONFIG = {
+        ultraLow: {
+            playerSegments: [1, 1],
+            coinSegments: [2, 4],
+            obstacleSegments: [1, 2],
+            envSegments: [1, 1],
+            planeSegments: [1, 1]
+        },
+        low: {
+            playerSegments: [2, 2],
+            coinSegments: [4, 8],
+            obstacleSegments: [3, 4],
+            envSegments: [4, 4],
+            planeSegments: [3, 3]
+        },
+        medium: {
+            playerSegments: [4, 4],
+            coinSegments: [8, 16],
+            obstacleSegments: [6, 8],
+            envSegments: [6, 8],
+            planeSegments: [4, 4]
+        }
+    };
+    
+    // 场景配置
+    const SCENES = [
+        { name: '城市', bgColor: 0x1a1a2e, groundColor: 0x333344, fogColor: 0x1a1a2e },
+        { name: '森林', bgColor: 0x0a2a1a, groundColor: 0x1a4a2a, fogColor: 0x0a2a1a },
+        { name: '沙漠', bgColor: 0x3a2a1a, groundColor: 0x5a4a2a, fogColor: 0x3a2a1a },
+        { name: '太空', bgColor: 0x0a0a1a, groundColor: 0x1a1a3a, fogColor: 0x0a0a1a }
+    ];
+    
+    // 全局复用资源
+    let globalGeometries = {};
+    let globalMaterials = {};
+    
+    // 触摸控制
+    let touchStartData = null;
+    let lastTouchTime = 0;
+    let touchCount = 0;
+    const DOUBLE_TAP_THRESHOLD = 300;
+    const SWIPE_THRESHOLD = 30;
+    const JUMP_SWIPE_THRESHOLD = 50;
+    const SLIDE_SWIPE_THRESHOLD = 50;
+
+    // DOM元素缓存
+    const bgMusic = document.getElementById('bgMusic');
+    const fpsDisplay = document.getElementById('fpsDisplay');
+    const scoreDisplay = document.getElementById('score');
+    const sessionCoinsDisplay = document.getElementById('sessionCoins');
+    const diamondsDisplay = document.getElementById('diamonds');
+    const healthDisplay = document.getElementById('healthDisplay');
+    const shieldStatusDisplay = document.getElementById('shieldStatus');
+    const highScoreDisplay = document.getElementById('highScore');
+    const sceneIndicatorDisplay = document.getElementById('sceneIndicator');
+    const loadingBar = document.getElementById('loadingBar');
+    const loadingText = document.getElementById('loadingText');
+    const loadingScreen = document.getElementById('loadingScreen');
+
+    // ===================== 帧率控制与FPS计算 =====================
+    function setFpsLimit(level) {
+        fpsLimit = level;
+        frameInterval = FPS_CONFIG[level];
+        document.querySelectorAll('[data-fps]').forEach(btn => btn.classList.remove('active'));
+        document.querySelector(`[data-fps="${level}"]`).classList.add('active');
+    }
+
+    function updateFps(currentTime) {
+        const deltaTime = currentTime - lastFpsUpdateTime;
+        fpsArray.push(deltaTime);
+        if (fpsArray.length > 30) fpsArray.shift();
+        
+        if (currentTime - lastFpsUpdateTime >= 1000) {
+            const averageDelta = fpsArray.reduce((a, b) => a + b, 0) / fpsArray.length;
+            currentFps = Math.round(1000 / averageDelta);
+            fpsDisplay.textContent = `FPS: ${currentFps}`;
+            lastFpsUpdateTime = currentTime;
+            fpsArray = [];
+        }
+    }
+
+    // ===================== 加载进度模拟 =====================
+    function simulateLoading() {
+        let progress = 0;
+        const interval = setInterval(() => {
+            progress += Math.random() * 10;
+            if (progress > 100) progress = 100;
+            
+            loadingBar.style.width = `${progress}%`;
+            loadingText.textContent = `加载中... ${Math.round(progress)}%`;
+            
+            if (progress === 100) {
+                clearInterval(interval);
+                setTimeout(() => {
+                    loadingScreen.style.opacity = 0;
+                    setTimeout(() => {
+                        loadingScreen.style.display = 'none';
+                        gameState = 'menu';
+                        showMenu();
+                    }, 500);
+                }, 500);
+            }
+        }, 100);
+    }
+
+    // ===================== 渲染初始化 =====================
+    function initRenderer() {
+        const quality = QUALITY_CONFIG[gameSettings.quality];
+        
+        scene = new THREE.Scene();
+        scene.background = new THREE.Color(SCENES[0].bgColor);
+        if (quality.fogEnabled) {
+            scene.fog = new THREE.FogExp2(SCENES[0].fogColor, quality.fogDensity);
+        }
+        
+        // 相机初始化
+        camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, quality.nearClip, quality.farClip);
+        camera.position.set(0, 5, 10);
+        camera.lookAt(new THREE.Vector3(0, 2, 0));
+        
+        // 渲染器初始化
+        renderer = new THREE.WebGLRenderer({ 
+            canvas: document.getElementById('gameCanvas'),
+            antialias: quality.antialias,
+            alpha: false,
+            powerPreference: "low-power"
+        });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(quality.pixelRatio);
+        renderer.autoClear = true;
+        renderer.setClearColor(SCENES[0].bgColor, 1);
+        
+        // 阴影设置
+        if (quality.shadowEnabled) {
+            renderer.shadowMap.enabled = true;
+            renderer.shadowMap.type = quality.shadowType;
+        } else {
+            renderer.shadowMap.enabled = false;
+        }
+        
+        // 光照
+        const ambientLight = new THREE.AmbientLight(0xffffff, quality.useBasicMaterial ? 0.8 : 0.6);
+        scene.add(ambientLight);
+        
+        const directionalLight = new THREE.DirectionalLight(0xffffff, quality.useBasicMaterial ? 0.5 : 0.8);
+        directionalLight.position.set(10, 20, 10);
+        if (quality.shadowEnabled) {
+            directionalLight.castShadow = true;
+            directionalLight.shadow.mapSize.width = quality.quality === 'high' ? 2048 : 1024;
+            directionalLight.shadow.mapSize.height = quality.quality === 'high' ? 2048 : 1024;
+            directionalLight.shadow.bias = quality.shadowBias;
+        }
+        scene.add(directionalLight);
+        
+        isRendererInitialized = true;
+    }
+    
+    // 全局资源初始化
+    function initGlobalAssets() {
+        const model = MODEL_CONFIG[gameSettings.modelPrecision];
+        const quality = QUALITY_CONFIG[gameSettings.quality];
+        const MaterialClass = quality.useBasicMaterial ? THREE.MeshBasicMaterial : THREE.MeshStandardMaterial;
+        
+        // 全局几何体复用
+        globalGeometries.boxObstacle = new THREE.BoxGeometry(...OBSTACLE_TYPES.BOX.size, model.obstacleSegments[0], model.obstacleSegments[0], model.obstacleSegments[0]);
+        globalGeometries.barrierObstacle = new THREE.CylinderGeometry(0.8, 0.8, OBSTACLE_TYPES.BARRIER.height, model.obstacleSegments[1]);
+        globalGeometries.lowRailObstacle = new THREE.BoxGeometry(...OBSTACLE_TYPES.LOW_RAIL.size, model.obstacleSegments[0], model.obstacleSegments[0], model.obstacleSegments[0]);
+        globalGeometries.coin = new THREE.TorusGeometry(0.4, 0.15, model.coinSegments[0], model.coinSegments[1]);
+        globalGeometries.ground = new THREE.BoxGeometry(12, 0.5, 10);
+        globalGeometries.laneLine = new THREE.BoxGeometry(0.2, 0.01, 8);
+        globalGeometries.plane = new THREE.BoxGeometry(4, 1, 3, model.planeSegments[0], model.planeSegments[1], model.planeSegments[0]);
+        globalGeometries.bomb = new THREE.SphereGeometry(0.4, model.obstacleSegments[0], model.obstacleSegments[0]);
+        globalGeometries.explosion = new THREE.SphereGeometry(2, model.obstacleSegments[0], model.obstacleSegments[0]);
+        globalGeometries.shield = new THREE.SphereGeometry(1.2, 8, 8);
+        globalGeometries.avatar = new THREE.SphereGeometry(0.35, model.playerSegments[1], model.playerSegments[0]);
+        
+        // 全局材质复用
+        globalMaterials.boxObstacle = new MaterialClass({ color: 0xff6b6b });
+        globalMaterials.barrierObstacle = new MaterialClass({ color: 0xffa500 });
+        globalMaterials.lowRailObstacle = new MaterialClass({ color: 0x888888 });
+        globalMaterials.coin = new MaterialClass({ 
+            color: 0xffd700, 
+            metalness: quality.useBasicMaterial ? 0 : 0.8, 
+            roughness: quality.useBasicMaterial ? 0 : 0.2 
+        });
+        globalMaterials.ground = new MaterialClass({ color: SCENES[0].groundColor });
+        globalMaterials.laneLine = new MaterialClass({ color: 0xffffff });
+        globalMaterials.cloud = new MaterialClass({ color: 0xffffff, transparent: true, opacity: 0.7 });
+        globalMaterials.plane = new MaterialClass({ color: 0x444444 });
+        globalMaterials.bomb = new MaterialClass({ color: 0x222222 });
+        globalMaterials.explosion = new MaterialClass({ color: 0xff4400, transparent: true, opacity: 0.8 });
+        globalMaterials.shield = new MaterialClass({ color: 0x00f5ff, transparent: true, opacity: 0.3, side: THREE.DoubleSide });
+    }
+    
+    // 玩家模型创建（新增旋转动画和回头效果）
+    function createPlayer() {
+        const model = MODEL_CONFIG[gameSettings.modelPrecision];
+        const quality = QUALITY_CONFIG[gameSettings.quality];
+        const MaterialClass = quality.useBasicMaterial ? THREE.MeshBasicMaterial : THREE.MeshStandardMaterial;
+        const currentSkin = SKINS.find(s => s.id === currentSkinId) || SKINS[0];
+        
+        playerGroup = new THREE.Group();
+        
+        // 身体
+        const bodyGeo = new THREE.BoxGeometry(0.8, 1.2, 0.6, model.playerSegments[0], model.playerSegments[1], model.playerSegments[0]);
+        const bodyMat = new MaterialClass({ 
+            color: currentSkin.color, 
+            metalness: quality.useBasicMaterial ? 0 : 0.3, 
+            roughness: quality.useBasicMaterial ? 0 : 0.5,
+            emissive: currentSkin.hasGlow ? currentSkin.glowColor : 0x000000,
+            emissiveIntensity: currentSkin.hasGlow ? 0.3 : 0
+        });
+        const body = new THREE.Mesh(bodyGeo, bodyMat);
+        body.position.y = 0.9;
+        if (quality.shadowEnabled) body.castShadow = true;
+        playerGroup.add(body);
+        playerParts.body = body;
+        playerParts.bodyMat = bodyMat;
+        
+        // 头部（支持自定义头像）
+        let headMat;
+        if (avatarImage) {
+            const textureLoader = new THREE.TextureLoader();
+            const texture = textureLoader.load(avatarImage);
+            texture.needsUpdate = true;
+            headMat = new MaterialClass({ map: texture });
+        } else {
+            headMat = bodyMat.clone();
+        }
+        
+        const head = new THREE.Mesh(globalGeometries.avatar, headMat);
+        head.position.y = 1.8;
+        head.userData = { lookBackTimer: 0, lookBackInterval: Math.random() * 5 + 5 };
+        if (quality.shadowEnabled) head.castShadow = true;
+        playerGroup.add(head);
+        playerParts.head = head;
+        playerParts.headMat = headMat;
+        
+        // 四肢
+        const leftArmGeo = new THREE.CylinderGeometry(0.12, 0.12, 0.8, model.playerSegments[0]);
+        const leftArm = new THREE.Mesh(leftArmGeo, bodyMat);
+        leftArm.position.set(-0.55, 1.1, 0);
+        leftArm.rotation.z = 0.3;
+        if (quality.shadowEnabled) leftArm.castShadow = true;
+        playerGroup.add(leftArm);
+        playerParts.leftArm = leftArm;
+        
+        const rightArmGeo = new THREE.CylinderGeometry(0.12, 0.12, 0.8, model.playerSegments[0]);
+        const rightArm = new THREE.Mesh(rightArmGeo, bodyMat);
+        rightArm.position.set(0.55, 1.1, 0);
+        rightArm.rotation.z = -0.3;
+        if (quality.shadowEnabled) rightArm.castShadow = true;
+        playerGroup.add(rightArm);
+        playerParts.rightArm = rightArm;
+        
+        const leftLegGeo = new THREE.CylinderGeometry(0.15, 0.15, 0.9, model.playerSegments[0]);
+        const leftLeg = new THREE.Mesh(leftLegGeo, bodyMat);
+        leftLeg.position.set(-0.25, 0.2, 0);
+        if (quality.shadowEnabled) leftLeg.castShadow = true;
+        playerGroup.add(leftLeg);
+        playerParts.leftLeg = leftLeg;
+        
+        const rightLegGeo = new THREE.CylinderGeometry(0.15, 0.15, 0.9, model.playerSegments[0]);
+        const rightLeg = new THREE.Mesh(rightLegGeo, bodyMat);
+        rightLeg.position.set(0.25, 0.2, 0);
+        if (quality.shadowEnabled) rightLeg.castShadow = true;
+        playerGroup.add(rightLeg);
+        playerParts.rightLeg = rightLeg;
+        
+        // 护盾
+        const shield = new THREE.Mesh(globalGeometries.shield, globalMaterials.shield);
+        shield.visible = false;
+        playerGroup.add(shield);
+        playerParts.shield = shield;
+        
+        playerGroup.position.set(LANES[playerLane], 0, 0);
+        scene.add(playerGroup);
+    }
+    
+    // 地面创建
+    function createGround() {
+        const quality = QUALITY_CONFIG[gameSettings.quality];
+        for (let i = 0; i < 30; i++) {
+            const ground = new THREE.Mesh(globalGeometries.ground, globalMaterials.ground);
+            ground.position.set(0, -0.25, -i * 10);
+            ground.userData = { baseZ: -i * 10 };
+            if (quality.shadowEnabled) ground.receiveShadow = true;
+            scene.add(ground);
+            groundSegments.push(ground);
+            
+            // 车道线
+            if (i % 3 === 0) {
+                for (let lane = -1; lane <= 1; lane += 2) {
+                    const line = new THREE.Mesh(globalGeometries.laneLine, globalMaterials.laneLine);
+                    line.position.set(lane * 4, 0.01, -i * 10);
+                    line.userData = { baseZ: -i * 10 };
+                    scene.add(line);
+                    groundSegments.push(line);
+                }
+            }
+        }
+    }
+    
+    // 环境创建
+    function createEnvironment() {
+        const quality = QUALITY_CONFIG[gameSettings.quality];
+        const model = MODEL_CONFIG[gameSettings.modelPrecision];
+        const currentScene = SCENES[currentSceneIndex];
+        const MaterialClass = quality.useBasicMaterial ? THREE.MeshBasicMaterial : THREE.MeshStandardMaterial;
+        
+        // 清空旧环境
+        environmentObjects.forEach(obj => scene.remove(obj));
+        environmentObjects = [];
+        
+        // 生成新环境
+        for (let i = 0; i < quality.envObjectCount; i++) {
+            const side = Math.random() > 0.5 ? 1 : -1;
+            const x = side * (6 + Math.random() * 4);
+            const z = -i * 8 - Math.random() * 5;
+            
+            if (currentSceneIndex === 0) {
+                // 城市建筑
+                const height = 5 + Math.random() * 15;
+                const geo = new THREE.BoxGeometry(3, height, 3, model.envSegments[0], model.envSegments[1], model.envSegments[0]);
+                const mat = new MaterialClass({ 
+                    color: new THREE.Color().setHSL(Math.random() * 0.1 + 0.6, 0.3, 0.3)
+                });
+                const building = new THREE.Mesh(geo, mat);
+                building.position.set(x, height / 2, z);
+                building.userData = { baseZ: z };
+                if (quality.shadowEnabled) building.castShadow = true;
+                scene.add(building);
+                environmentObjects.push(building);
+            } else if (currentSceneIndex === 1) {
+                // 森林树木
+                const trunkGeo = new THREE.CylinderGeometry(0.3, 0.5, 3, model.envSegments[0]);
+                const trunkMat = new MaterialClass({ color: 0x4a3728 });
+                const trunk = new THREE.Mesh(trunkGeo, trunkMat);
+                trunk.position.set(x, 1.5, z);
+                trunk.userData = { baseZ: z };
+                scene.add(trunk);
+                environmentObjects.push(trunk);
+                
+                const leavesGeo = new THREE.ConeGeometry(2, 5, model.envSegments[1]);
+                const leavesMat = new MaterialClass({ color: 0x228b22 });
+                const leaves = new THREE.Mesh(leavesGeo, leavesMat);
+                leaves.position.set(x, 5, z);
+                leaves.userData = { baseZ: z };
+                if (quality.shadowEnabled) leaves.castShadow = true;
+                scene.add(leaves);
+                environmentObjects.push(leaves);
+            } else if (currentSceneIndex === 2) {
+                // 沙漠仙人掌
+                const cactusGeo = new THREE.CylinderGeometry(0.3, 0.4, 3, model.envSegments[0]);
+                const cactusMat = new MaterialClass({ color: 0x222222 });
+                const cactus = new THREE.Mesh(cactusGeo, cactusMat);
+                cactus.position.set(x, 1.5, z);
+                cactus.userData = { baseZ: z };
+                if (quality.shadowEnabled) cactus.castShadow = true;
+                scene.add(cactus);
+                environmentObjects.push(cactus);
+            }
+        }
+        
+        // 云
+        clouds.forEach(cloud => scene.remove(cloud));
+        clouds = [];
+        for (let i = 0; i < quality.cloudCount; i++) {
+            const cloudGeo = new THREE.SphereGeometry(1 + Math.random(), model.envSegments[0], model.envSegments[0]);
+            const cloud = new THREE.Mesh(cloudGeo, globalMaterials.cloud);
+            cloud.position.set(
+                (Math.random() - 0.5) * 40,
+                15 + Math.random() * 10,
+                -i * 15
+            );
+            cloud.userData = { baseZ: -i * 15 };
+            scene.add(cloud);
+            clouds.push(cloud);
+        }
+    }
+    
+    // ===================== 角色自定义 =====================
+    function handleAvatarUpload(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+        
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            avatarImage = e.target.result;
+            document.getElementById('avatarPreviewImg').src = avatarImage;
+            
+            // 更新玩家头部材质
+            if (playerParts.headMat) {
+                const textureLoader = new THREE.TextureLoader();
+                const texture = textureLoader.load(avatarImage);
+                texture.needsUpdate = true;
+                playerParts.headMat.map = texture;
+                playerParts.headMat.needsUpdate = true;
+            }
+        };
+        reader.readAsDataURL(file);
+    }
+    
+    function saveAvatar() {
+        localStorage.setItem('jl96_avatarImage', avatarImage);
+        alert('头像保存成功！');
+        showMenu();
+    }
+    
+    // ===================== 皮肤系统 =====================
+    function loadSkins() {
+        const savedUnlocked = localStorage.getItem('jl96_unlockedSkins');
+        if (savedUnlocked) {
+            const unlockedIds = JSON.parse(savedUnlocked);
+            SKINS.forEach(skin => {
+                if (unlockedIds.includes(skin.id)) skin.unlocked = true;
+            });
+        }
+    }
+    
+    function saveSkins() {
+        const unlockedIds = SKINS.filter(s => s.unlocked).map(s => s.id);
+        localStorage.setItem('jl96_unlockedSkins', JSON.stringify(unlockedIds));
+    }
+    
+    function renderSkinShop() {
+        const container = document.getElementById('skinShopContainer');
+        container.innerHTML = '';
+        
+        SKINS.forEach(skin => {
+            const card = document.createElement('div');
+            card.className = `skin-card ${skin.id === currentSkinId ? 'selected' : ''} ${!skin.unlocked ? 'locked' : ''}`;
+            card.innerHTML = `
+                <div class="skin-preview" style="background: ${skin.unlocked ? `#${skin.color.toString(16).padStart(6, '0')}` : '#333'};">
+                    ${skin.emoji}
+                </div>
+                <div class="skin-name">${skin.name}</div>
+                <div class="skin-price ${skin.price === 0 ? 'free' : ''}">
+                    ${skin.price === 0 ? '免费' : `💰 ${skin.price}`}
+                </div>
+            `;
+            card.onclick = () => handleSkinClick(skin);
+            container.appendChild(card);
+        });
+        document.getElementById('shopTotalCoins').textContent = totalCoins;
+    }
+    
+    function handleSkinClick(skin) {
+        if (skin.unlocked) {
+            currentSkinId = skin.id;
+            localStorage.setItem('jl96_currentSkin', currentSkinId);
+            updatePlayerSkin();
+            renderSkinShop();
+        } else if (totalCoins >= skin.price) {
+            if (confirm(`花费${skin.price}金币解锁${skin.name}皮肤？`)) {
+                totalCoins -= skin.price;
+                skin.unlocked = true;
+                currentSkinId = skin.id;
+                localStorage.setItem('jl96_totalCoins', totalCoins);
+                localStorage.setItem('jl96_currentSkin', currentSkinId);
+                saveSkins();
+                updateAllCoinDisplays();
+                updatePlayerSkin();
+                renderSkinShop();
+            }
+        } else {
+            alert(`金币不足！还需要${skin.price - totalCoins}个金币`);
+        }
+    }
+    
+    function updatePlayerSkin() {
+        if (!playerParts.bodyMat) return;
+        const quality = QUALITY_CONFIG[gameSettings.quality];
+        const currentSkin = SKINS.find(s => s.id === currentSkinId) || SKINS[0];
+        
+        playerParts.bodyMat.color.setHex(currentSkin.color);
+        if (!quality.useBasicMaterial) {
+            playerParts.bodyMat.emissive.setHex(currentSkin.hasGlow ? currentSkin.glowColor : 0x000000);
+            playerParts.bodyMat.emissiveIntensity = currentSkin.hasGlow ? 0.3 : 0;
+        }
+        playerParts.bodyMat.needsUpdate = true;
+    }
+    
+    // ===================== 道具商店 =====================
+    function buyItem(itemType, price) {
+        if (diamonds < price) {
+            alert('钻石不足！');
+            return;
+        }
+        
+        if (confirm(`花费${price}钻石购买${getItemName(itemType)}？`)) {
+            diamonds -= price;
+            localStorage.setItem('jl96_diamonds', diamonds);
+            
+            if (itemType === 'invincible') {
+                invincibleItems += 1;
+                localStorage.setItem('jl96_invincibleItems', invincibleItems);
+            } else if (itemType === 'health') {
+                maxHealth = Math.min(maxHealth + 1, MAX_HEALTH_LIMIT);
+                currentHealth = maxHealth;
+            }
+            
+            updateAllCoinDisplays();
+            alert('购买成功！');
+        }
+    }
+    
+    function getItemName(itemType) {
+        switch(itemType) {
+            case 'invincible': return '免伤道具';
+            case 'health': return '生命+1';
+            case 'coinBoost': return '金币翻倍';
+            default: return '道具';
+        }
+    }
+      // ===================== 签到系统 =====================
+    function checkSignStatus() {
+        const today = new Date().toISOString().split('T')[0];
+        const signStatus = document.getElementById('signStatus');
+        
+        if (lastSignDate === today) {
+            signStatus.textContent = '今日已签到，明天再来吧！';
+            signStatus.style.color = '#00ff88';
+        } else {
+            signStatus.textContent = '还未签到，点击按钮签到';
+            signStatus.style.color = '#ffd700';
+        }
+    }
+    
+    function signIn() {
+        const today = new Date().toISOString().split('T')[0];
+        
+        if (lastSignDate === today) {
+            alert('今日已签到，无需重复签到！');
+            return;
+        }
+        
+        diamonds += 20;
+        lastSignDate = today;
+        
+        localStorage.setItem('jl96_diamonds', diamonds);
+        localStorage.setItem('jl96_lastSignDate', lastSignDate);
+        
+        updateAllCoinDisplays();
+        checkSignStatus();
+        
+        alert('签到成功！获得20钻石奖励');
+    }
+    
+    // ===================== 兑换码系统 =====================
+    function exchangeCode() {
+        const code = document.getElementById('exchangeCode').value.trim();
+        if (!code) {
+            alert('请输入兑换码！');
+            return;
+        }
+        
+        if (usedCodes.includes(code)) {
+            alert('该兑换码已使用！');
+            return;
+        }
+        
+        // 简易加密验证（前端计算）
+        try {
+            const decoded = atob(code);
+            const [diamondCount, expireTime] = decoded.split('|');
+            
+            if (Date.now() > parseInt(expireTime)) {
+                alert('兑换码已过期！');
+                return;
+            }
+            
+            // 添加钻石
+            const diamondsToAdd = parseInt(diamondCount);
+            diamonds += diamondsToAdd;
+            localStorage.setItem('jl96_diamonds', diamonds);
+            
+            // 标记为已使用
+            usedCodes.push(code);
+            localStorage.setItem('jl96_usedCodes', JSON.stringify(usedCodes));
+            
+            updateAllCoinDisplays();
+            document.getElementById('exchangeCode').value = '';
+            
+            alert(`兑换成功！获得${diamondsToAdd}钻石`);
+        } catch (e) {
+            alert('无效的兑换码！');
+        }
+    }
+    
+    // ===================== 对象池 =====================
+    function getObstacle(type) {
+        if (objectPool.obstacles.length > 0) {
+            const obs = objectPool.obstacles.pop();
+            obs.userData.type = type;
+            return obs;
+        } else {
+            let geo, mat;
+            switch(type) {
+                case OBSTACLE_TYPES.BOX.id:
+                    geo = globalGeometries.boxObstacle;
+                    mat = globalMaterials.boxObstacle;
+                    break;
+                case OBSTACLE_TYPES.BARRIER.id:
+                    geo = globalGeometries.barrierObstacle;
+                    mat = globalMaterials.barrierObstacle;
+                    break;
+                case OBSTACLE_TYPES.LOW_RAIL.id:
+                    geo = globalGeometries.lowRailObstacle;
+                    mat = globalMaterials.lowRailObstacle;
+                    break;
+                case OBSTACLE_TYPES.DOUBLE_BLOCK.id:
+                    geo = globalGeometries.boxObstacle;
+                    mat = globalMaterials.boxObstacle;
+                    break;
+            }
+            const obstacle = new THREE.Mesh(geo, mat);
+            obstacle.userData = { type: type };
+            if (QUALITY_CONFIG[gameSettings.quality].shadowEnabled) obstacle.castShadow = true;
+            return obstacle;
+        }
+    }
+    
+    function recycleObstacle(obstacle) {
+        scene.remove(obstacle);
+        obstacle.visible = true;
+        objectPool.obstacles.push(obstacle);
+    }
+    
+    function getCoin() {
+        if (objectPool.coins.length > 0) {
+            return objectPool.coins.pop();
+        } else {
+            const coin = new THREE.Mesh(globalGeometries.coin, globalMaterials.coin);
+            coin.rotation.x = Math.PI / 2;
+            coin.userData = { type: 'coin' };
+            if (QUALITY_CONFIG[gameSettings.quality].shadowEnabled) coin.castShadow = true;
+            return coin;
+        }
+    }
+    
+    function recycleCoin(coin) {
+        scene.remove(coin);
+        coin.visible = true;
+        objectPool.coins.push(coin);
+    }
+    
+    function getPlane() {
+        if (objectPool.planes.length > 0) {
+            return objectPool.planes.pop();
+        } else {
+            const plane = new THREE.Mesh(globalGeometries.plane, globalMaterials.plane);
+            plane.userData = { type: 'plane' };
+            return plane;
+        }
+    }
+    
+    function recyclePlane(plane) {
+        scene.remove(plane);
+        plane.visible = true;
+        objectPool.planes.push(plane);
+    }
+    
+    function getBomb() {
+        if (objectPool.bombs.length > 0) {
+            return objectPool.bombs.pop();
+        } else {
+            const bomb = new THREE.Mesh(globalGeometries.bomb, globalMaterials.bomb);
+            bomb.userData = { type: 'bomb', state: 'falling' };
+            return bomb;
+        }
+    }
+    
+    function recycleBomb(bomb) {
+        scene.remove(bomb);
+        bomb.visible = true;
+        bomb.userData.state = 'falling';
+        bomb.geometry = globalGeometries.bomb;
+        bomb.material = globalMaterials.bomb;
+        objectPool.bombs.push(bomb);
+    }
+    
+    // ===================== 生成逻辑 =====================
+    function spawnObstacle() {
+        if (lastObstacleZ > -30) return;
+        
+        const random = Math.random();
+        let type, laneIndex, obstacle;
+        
+        if (random < 0.25) {
+            type = OBSTACLE_TYPES.BOX.id;
+            laneIndex = Math.floor(Math.random() * LANES.length);
+            obstacle = getObstacle(type);
+            obstacle.position.set(LANES[laneIndex], 0.75, -50);
+        } else if (random < 0.5) {
+            type = OBSTACLE_TYPES.BARRIER.id;
+            laneIndex = Math.floor(Math.random() * LANES.length);
+            obstacle = getObstacle(type);
+            obstacle.position.set(LANES[laneIndex], 0.5, -50);
+        } else if (random < 0.75) {
+            type = OBSTACLE_TYPES.LOW_RAIL.id;
+            obstacle = getObstacle(type);
+            obstacle.position.set(0, 0.25, -50);
+        } else {
+            type = OBSTACLE_TYPES.DOUBLE_BLOCK.id;
+            laneIndex = Math.floor(Math.random() * LANES.length);
+            obstacle = getObstacle(type);
+            obstacle.position.set(LANES[laneIndex], 0.75, -50);
+            
+            // 双块额外生成一个
+            const obstacle2 = getObstacle(type);
+            obstacle2.position.set(LANES[(laneIndex + 1) % 3], 0.75, -55);
+            scene.add(obstacle2);
+            objectPool.activeObstacles.push(obstacle2);
+        }
+        
+        scene.add(obstacle);
+        objectPool.activeObstacles.push(obstacle);
+        lastObstacleZ = -50;
+    }
+    
+    function spawnCoin() {
+        if (Math.random() > 0.1) return;
+        
+        const laneIndex = Math.floor(Math.random() * LANES.length);
+        const coin = getCoin();
+        coin.position.set(LANES[laneIndex], 1.2, -50);
+        scene.add(coin);
+        objectPool.activeCoins.push(coin);
+    }
+    
+    // ===================== 玩家动画 =====================
+    function updatePlayerAnimation(delta) {
+        if (!playerGroup) return;
+        
+        animationTime += delta * 10;
+        const runCycle = cachedSin[Math.floor(animationTime) % 360] * 0.5;
+        
+        // 跑步动画
+        if (!isJumping && !isSliding) {
+            playerParts.leftLeg.rotation.x = runCycle;
+            playerParts.rightLeg.rotation.x = -runCycle;
+            playerParts.leftArm.rotation.x = -runCycle;
+            playerParts.rightArm.rotation.x = runCycle;
+            
+            // 回头效果
+            const head = playerParts.head;
+            head.userData.lookBackTimer += delta;
+            if (head.userData.lookBackTimer > head.userData.lookBackInterval) {
+                head.userData.lookBackTimer = 0;
+                head.userData.lookBackInterval = Math.random() * 8 + 5;
+                head.userData.isLookingBack = !head.userData.isLookingBack;
+            }
+            
+            if (head.userData.isLookingBack) {
+                head.rotation.y = Math.PI * 0.8 * Math.sin(animationTime * 0.1);
+            } else {
+                head.rotation.y = 0;
+            }
+        }
+        
+        // 跳跃旋转动画（丝滑空中旋转）
+        if (isJumping) {
+            playerGroup.rotation.y += delta * 5; // 旋转速度
+            playerParts.leftLeg.rotation.x = Math.PI / 2;
+            playerParts.rightLeg.rotation.x = Math.PI / 2;
+            playerParts.leftArm.rotation.x = -Math.PI / 2;
+            playerParts.rightArm.rotation.x = Math.PI / 2;
+        }
+        
+        // 滑铲动画
+        if (isSliding) {
+            playerGroup.scale.y = SLIDE_HEIGHT_SCALE;
+            playerParts.leftLeg.rotation.x = 0;
+            playerParts.rightLeg.rotation.x = 0;
+            playerParts.leftArm.rotation.x = 0;
+            playerParts.rightArm.rotation.x = 0;
+        } else if (playerGroup.scale.y < 1) {
+            playerGroup.scale.y = Math.min(1, playerGroup.scale.y + delta * 5);
+        }
+        
+        // 免伤护盾显示
+        playerParts.shield.visible = isInvincible;
+        if (isInvincible) {
+            playerParts.shield.rotation.x += delta * 2;
+            playerParts.shield.rotation.y += delta * 2;
+        }
+    }
+    
+    // ===================== 游戏更新 =====================
+    function updateGame(delta) {
+        if (gameState !== 'playing') return;
+        
+        // 更新游戏速度
+        gameSpeed += SPEED_INCREMENT * delta;
+        const effectiveSpeed = gameSpeed * delta;
+        
+        // 更新分数
+        score += Math.floor(effectiveSpeed * 100);
+        scoreDisplay.textContent = score;
+        
+        // 更新玩家位置和状态
+        updatePlayerPosition(delta);
+        updatePlayerAnimation(delta);
+        
+        // 更新免伤状态
+        if (isInvincible) {
+            invincibleTimer -= delta;
+            if (invincibleTimer <= 0) {
+                isInvincible = false;
+            }
+        }
+        
+        // 更新护盾冷却显示
+        const cooldownTime = SHIELD_COOLDOWN - (Date.now() - lastShieldUseTime) / 1000;
+        if (cooldownTime > 0 && invincibleItems > 0) {
+            shieldStatusDisplay.textContent = `🛡️ 冷却中 ${cooldownTime.toFixed(1)}s`;
+            shieldStatusDisplay.className = 'shield-status shield-cooldown';
+        } else if (invincibleItems > 0) {
+            shieldStatusDisplay.textContent = '🛡️ 免伤道具就绪 (E/双击)';
+            shieldStatusDisplay.className = 'shield-status shield-ready';
+        } else {
+            shieldStatusDisplay.textContent = '🛡️ 无免伤道具 (商店购买)';
+            shieldStatusDisplay.className = 'shield-status shield-cooldown';
+        }
+        
+        // 更新障碍物
+        for (let i = objectPool.activeObstacles.length - 1; i >= 0; i--) {
+            const obs = objectPool.activeObstacles[i];
+            obs.position.z += effectiveSpeed;
+            
+            if (obs.position.z > 20) {
+                recycleObstacle(obs);
+                objectPool.activeObstacles.splice(i, 1);
+                continue;
+            }
+            
+            // 碰撞检测
+            if (!isInvincible && checkCollision(playerGroup.position, obs.position, 1, 1)) {
+                handleCollision(obs.userData.type);
+            }
+        }
+        
+        // 更新金币
+        const quality = QUALITY_CONFIG[gameSettings.quality];
+        for (let i = objectPool.activeCoins.length - 1; i >= 0; i--) {
+            const coin = objectPool.activeCoins[i];
+            coin.position.z += effectiveSpeed;
+            if (quality.coinRotation) coin.rotation.y += delta * 5;
+            
+            if (coin.position.z > 20) {
+                recycleCoin(coin);
+                objectPool.activeCoins.splice(i, 1);
+                continue;
+            }
+            
+            if (checkCollision(playerGroup.position, coin.position, 0.5, 0.5)) {
+                collectCoin(coin, i);
+            }
+        }
+        
+        // 生成新物体
+        lastObstacleZ += effectiveSpeed;
+        if (lastObstacleZ > MIN_OBSTACLE_GAP && Math.random() < OBSTACLE_SPAWN_RATE) {
+            spawnObstacle();
+        }
+        spawnCoin();
+        
+        // 更新地面和环境
+        updateGround(effectiveSpeed);
+        updateEnvironment(effectiveSpeed);
+        
+        // 检查场景切换
+        if (score > lastHealthThreshold + 5000) {
+            lastHealthThreshold = score;
+            switchScene();
+        }
+    }
+    
+    function updatePlayerPosition(delta) {
+        // 跳跃物理
+        if (isJumping) {
+            jumpVelocity += GRAVITY * delta;
+            playerGroup.position.y += jumpVelocity * delta;
+            
+            if (playerGroup.position.y <= 0) {
+                playerGroup.position.y = 0;
+                isJumping = false;
+                jumpVelocity = 0;
+            }
+        }
+        
+        // 滑铲计时
+        if (isSliding) {
+            slideTimer -= delta;
+            if (slideTimer <= 0) {
+                isSliding = false;
+            }
+        }
+        
+        // 更新玩家车道位置（平滑移动）
+        const targetX = LANES[playerLane];
+        if (Math.abs(playerGroup.position.x - targetX) > 0.1) {
+            playerGroup.position.x += (targetX - playerGroup.position.x) * delta * 10;
+        } else {
+            playerGroup.position.x = targetX;
+        }
+    }
+    
+    function updateGround(speed) {
+        for (const ground of groundSegments) {
+            ground.position.z += speed;
+            if (ground.position.z > 50) {
+                ground.position.z = -250;
+            }
+        }
+    }
+    
+    function updateEnvironment(speed) {
+        const quality = QUALITY_CONFIG[gameSettings.quality];
+        
+        for (const obj of environmentObjects) {
+            obj.position.z += speed;
+            if (obj.position.z > 50) {
+                obj.position.z = -400;
+                obj.position.x = (Math.random() > 0.5 ? 1 : -1) * (6 + Math.random() * 4);
+            }
+            
+            if (quality.envAnimation) {
+                obj.rotation.y += speed * 0.01;
+            }
+        }
+        
+        for (const cloud of clouds) {
+            cloud.position.z += speed * 0.5;
+            if (cloud.position.z > 50) {
+                cloud.position.z = -400;
+                cloud.position.x = (Math.random() - 0.5) * 40;
+            }
+        }
+    }
+    
+    // ===================== 碰撞检测 =====================
+    function checkCollision(pos1, pos2, radius1, radius2) {
+        const dx = pos1.x - pos2.x;
+        const dz = pos1.z - pos2.z;
+        const distance = Math.sqrt(dx * dx + dz * dz);
+        return distance < radius1 + radius2;
+    }
+    
+    function handleCollision(obstacleType) {
+        const obstacle = OBSTACLE_TYPES[Object.keys(OBSTACLE_TYPES).find(key => OBSTACLE_TYPES[key].id === obstacleType)];
+        
+        // 检查是否可以通过跳跃/滑铲躲避
+        if ((obstacle.needJump && isJumping) || (obstacle.needSlide && isSliding)) {
+            return;
+        }
+        
+        currentHealth -= 1;
+        healthDisplay.textContent = `❤️ ${currentHealth}`;
+        
+        if (currentHealth <= 0) {
+            gameOver();
+        }
+    }
+    
+    function collectCoin(coin, index) {
+        sessionCoins += 1;
+        totalCoins += 1;
+        sessionCoinsDisplay.textContent = sessionCoins;
+        localStorage.setItem('jl96_totalCoins', totalCoins);
+        
+        recycleCoin(coin);
+        objectPool.activeCoins.splice(index, 1);
+    }
+    
+    // ===================== 场景切换 =====================
+    function switchScene() {
+        currentSceneIndex = (currentSceneIndex + 1) % SCENES.length;
+        const currentScene = SCENES[currentSceneIndex];
+        
+        scene.background = new THREE.Color(currentScene.bgColor);
+        scene.fog = new THREE.FogExp2(currentScene.fogColor, QUALITY_CONFIG[gameSettings.quality].fogDensity);
+        globalMaterials.ground.color.setHex(currentScene.groundColor);
+        
+        sceneIndicatorDisplay.textContent = `场景: ${currentScene.name}`;
+        createEnvironment();
+    }
+    
+    // ===================== 游戏控制 =====================
+    function moveLeft() {
+        if (gameState !== 'playing') return;
+        playerLane = Math.max(MIN_LANE_INDEX, playerLane - 1);
+    }
+    
+    function moveRight() {
+        if (gameState !== 'playing') return;
+        playerLane = Math.min(MAX_LANE_INDEX, playerLane + 1);
+    }
+    
+    function jump() {
+        if (gameState !== 'playing' || isJumping) return;
+        isJumping = true;
+        jumpVelocity = JUMP_FORCE;
+    }
+    
+    function slide() {
+        if (gameState !== 'playing' || isSliding || isJumping) return;
+        isSliding = true;
+        slideTimer = SLIDE_DURATION;
+    }
+    
+    function useInvincible() {
+        if (gameState !== 'playing' || isInvincible) return;
+        
+        const currentTime = Date.now();
+        if (currentTime - lastShieldUseTime < SHIELD_COOLDOWN * 1000) return;
+        if (invincibleItems <= 0) return;
+        
+        isInvincible = true;
+        invincibleTimer = INVINCIBLE_DURATION;
+        invincibleItems -= 1;
+        lastShieldUseTime = currentTime;
+        
+        localStorage.setItem('jl96_invincibleItems', invincibleItems);
+    }
+    
+    // ===================== 游戏流程控制 =====================
+    function startGame() {
+        // 重置游戏状态
+        gameState = 'playing';
+        score = 0;
+        sessionCoins = 0;
+        gameSpeed = BASE_GAME_SPEED;
+        currentHealth = maxHealth;
+        isInvincible = false;
+        invincibleTimer = 0;
+        lastObstacleZ = -50;
+        
+        // 清空面板
+        hideAllPanels();
+        
+        // 重置显示
+        scoreDisplay.textContent = 0;
+        sessionCoinsDisplay.textContent = 0;
+        healthDisplay.textContent = `❤️ ${currentHealth}`;
+        
+        // 清空旧物体
+        objectPool.activeObstacles.forEach(obs => recycleObstacle(obs));
+        objectPool.activeCoins.forEach(coin => recycleCoin(coin));
+        objectPool.activeObstacles = [];
+        objectPool.activeCoins = [];
+        
+        // 重新创建玩家
+        if (playerGroup) scene.remove(playerGroup);
+        createPlayer();
+        updatePlayerSkin();
+        
+        // 播放背景音乐
+        bgMusic.play().catch(e => console.log('背景音乐播放失败:', e));
+        
+        // 开始渲染循环
+        if (!isRendererInitialized) {
+            initRenderer();
+            initGlobalAssets();
+            createGround();
+            createEnvironment();
+        }
+        
+        requestAnimationFrame(gameLoop);
+    }
+    
+    function gameOver() {
+        gameState = 'gameOver';
+        
+        // 更新最高分
+        if (score > highScore) {
+            highScore = score;
+            localStorage.setItem('jl96_highScore', highScore);
+        }
+        
+        // 保存金币
+        localStorage.setItem('jl96_totalCoins', totalCoins);
+        
+        // 更新结束面板
+        document.getElementById('finalScore').textContent = score;
+        document.getElementById('finalSessionCoins').textContent = sessionCoins;
+        document.getElementById('gameOverHighScore').textContent = highScore;
+        document.getElementById('gameOverDiamonds').textContent = diamonds;
+        
+        // 显示结束面板
+        showPanel('gameOverScreen');
+        
+        // 暂停音乐
+        bgMusic.pause();
+    }
+    
+    function gameLoop(currentTime) {
+        if (gameState !== 'playing') return;
+        
+        // 帧率控制
+        if (frameInterval > 0 && currentTime - lastFrameTime < frameInterval) {
+            requestAnimationFrame(gameLoop);
+            return;
+        }
+        
+        const delta = (currentTime - lastFrameTime) / 1000;
+        lastFrameTime = currentTime;
+        
+        // 更新FPS
+        updateFps(currentTime);
+        
+        // 更新游戏逻辑
+        updateGame(delta);
+        
+        // 渲染场景
+        if (renderer) renderer.render(scene, camera);
+        
+        // 继续循环
+        requestAnimationFrame(gameLoop);
+    }
+    
+    // ===================== UI控制 =====================
+    function hideAllPanels() {
+        document.querySelectorAll('.panel').forEach(panel => panel.classList.remove('active'));
+    }
+    
+    function showPanel(panelId) {
+        hideAllPanels();
+        document.getElementById(panelId).classList.add('active');
+    }
+    
+    function showMenu() {
+        gameState = 'menu';
+        document.getElementById('menuHighScore').textContent = highScore;
+        document.getElementById('menuTotalCoins').textContent = totalCoins;
+        document.getElementById('menuDiamonds').textContent = diamonds;
+        showPanel('menuScreen');
+    }
+    
+    function showSettings() {
+        // 选中当前设置
+        document.querySelectorAll('[data-quality]').forEach(btn => btn.classList.remove('active'));
+        document.querySelectorAll('[data-model]').forEach(btn => btn.classList.remove('active'));
+        document.querySelectorAll('[data-fps]').forEach(btn => btn.classList.remove('active'));
+        
+        document.querySelector(`[data-quality="${gameSettings.quality}"]`).classList.add('active');
+        document.querySelector(`[data-model="${gameSettings.modelPrecision}"]`).classList.add('active');
+        document.querySelector(`[data-fps="${fpsLimit}"]`).classList.add('active');
+        
+        showPanel('settingsScreen');
+    }
+    
+    function showSkinShop() {
+        loadSkins();
+        renderSkinShop();
+        showPanel('skinShopScreen');
+    }
+    
+    function showShop() {
+        document.getElementById('shopDiamonds').textContent = diamonds;
+        showPanel('shopScreen');
+    }
+    
+    function showAvatarCustomize() {
+        // 显示当前头像
+        if (avatarImage) {
+            document.getElementById('avatarPreviewImg').src = avatarImage;
+        } else {
+            document.getElementById('avatarPreviewImg').src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgZmlsbD0iIzMyMyIvPjx0ZXh0IHg9IjUwIiB5PSI1NSIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjIwIiBmaWxsPSJ3aGl0ZSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgYWxpZ25tZW50LWJhc2VsaW5lPSJtaWRkbGUiPk5PVCBBVVRPIElORVQ8L3RleHQ+PC9zdmc+';
+        }
+        showPanel('avatarCustomizeScreen');
+    }
+    
+    function showSignPanel() {
+        checkSignStatus();
+        showPanel('signPanel');
+    }
+    
+    function showRechargePanel() {
+        showPanel('rechargePanel');
+    }
+    
+    function setQuality(quality) {
+        gameSettings.quality = quality;
+        localStorage.setItem('jl96_quality', quality);
+    }
+    
+    function setModelPrecision(precision) {
+        gameSettings.modelPrecision = precision;
+        localStorage.setItem('jl96_model', precision);
+    }
+    
+    function saveSettings() {
+        // 重新初始化渲染器
+        isRendererInitialized = false;
+        initRenderer();
+        initGlobalAssets();
+        createGround();
+        createEnvironment();
+        
+        alert('设置已保存，下次游戏生效！');
+        showMenu();
+    }
+    
+    function updateAllCoinDisplays() {
+        document.getElementById('sessionCoins').textContent = sessionCoins;
+        document.getElementById('diamonds').textContent = diamonds;
+        document.getElementById('menuTotalCoins').textContent = totalCoins;
+        document.getElementById('menuDiamonds').textContent = diamonds;
+        if (document.getElementById('shopDiamonds')) {
+            document.getElementById('shopDiamonds').textContent = diamonds;
+        }
+        if (document.getElementById('shopTotalCoins')) {
+            document.getElementById('shopTotalCoins').textContent = totalCoins;
+        }
+    }
+    
+    // ===================== 输入控制 =====================
+    function setupControls() {
+        // 键盘控制
+        document.addEventListener('keydown', (e) => {
+            if (gameState !== 'playing') return;
+            
+            switch(e.key.toLowerCase()) {
+                case 'a':
+                case 'arrowleft':
+                    moveLeft();
+                    break;
+                case 'd':
+                case 'arrowright':
+                    moveRight();
+                    break;
+                case 'w':
+                case 'arrowup':
+                    jump();
+                    break;
+                case 's':
+                case 'arrowdown':
+                    slide();
+                    break;
+                case 'e':
+                    useInvincible();
+                    break;
+            }
+        });
+        
+        // 触摸控制
+        document.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            if (gameState !== 'playing') return;
+            
+            const now = Date.now();
+            touchCount++;
+            
+            // 双击检测（使用免伤道具）
+            if (now - lastTouchTime < DOUBLE_TAP_THRESHOLD && touchCount >= 2) {
+                touchCount = 0;
+                useInvincible();
+                return;
+            }
+            
+            lastTouchTime = now;
+            touchStartData = {
+                x: e.touches[0].clientX,
+                y: e.touches[0].clientY,
+                time: now
+            };
+        });
+        
+        document.addEventListener('touchmove', (e) => {
+            e.preventDefault();
+            if (!touchStartData || gameState !== 'playing') return;
+            
+            const touch = e.touches[0];
+            const dx = touch.clientX - touchStartData.x;
+            const dy = touch.clientY - touchStartData.y;
+            
+            // 左右滑动（切道）
+            if (Math.abs(dx) > SWIPE_THRESHOLD) {
+                if (dx > 0) moveRight();
+                else moveLeft();
+                touchStartData = null;
+            }
+            
+            // 上下滑动（跳跃/滑铲）
+            if (Math.abs(dy) > SWIPE_THRESHOLD) {
+                if (dy < 0) jump();
+                else slide();
+                touchStartData = null;
+            }
+        });
+        
+        document.addEventListener('touchend', () => {
+            touchStartData = null;
+            // 延迟重置触摸计数，避免快速点击误判
+            setTimeout(() => { touchCount = 0; }, DOUBLE_TAP_THRESHOLD);
+        });
+        
+        // 头像上传
+        document.getElementById('avatarInput').addEventListener('change', handleAvatarUpload);
+        
+        // 窗口大小调整
+        window.addEventListener('resize', () => {
+            if (renderer) {
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(window.innerWidth, window.innerHeight);
+            }
+        });
+    }
+    
+    // ===================== 初始化 =====================
+    function initGame() {
+        // 加载保存的数据
+        highScoreDisplay.textContent = highScore;
+        diamondsDisplay.textContent = diamonds;
+        healthDisplay.textContent = `❤️ ${currentHealth}`;
+        
+        // 初始化设置按钮状态
+        document.querySelectorAll('[data-quality]').forEach(btn => {
+            if (btn.dataset.quality === gameSettings.quality) btn.classList.add('active');
+        });
+        document.querySelectorAll('[data-model]').forEach(btn => {
+            if (btn.dataset.model === gameSettings.modelPrecision) btn.classList.add('active');
+        });
+        document.querySelectorAll('[data-fps]').forEach(btn => {
+            if (btn.dataset.fps === fpsLimit) btn.classList.add('active');
+        });
+        
+        // 设置控制
+        setupControls();
+        
+        // 模拟加载
+        simulateLoading();
+    }
+    
+    // 启动游戏
+    window.addEventListener('load', initGame);
+    
+    // 暴露全局函数供HTML调用
+    window.startGame = startGame;
+    window.showMenu = showMenu;
+    window.showSettings = showSettings;
+    window.showSkinShop = showSkinShop;
+    window.showShop = showShop;
+    window.showAvatarCustomize = showAvatarCustomize;
+    window.showSignPanel = showSignPanel;
+    window.showRechargePanel = showRechargePanel;
+    window.setQuality = setQuality;
+    window.setModelPrecision = setModelPrecision;
+    window.setFpsLimit = setFpsLimit;
+    window.saveSettings = saveSettings;
+    window.saveAvatar = saveAvatar;
+    window.buyItem = buyItem;
+    window.signIn = signIn;
+    window.exchangeCode = exchangeCode;
+    
+} catch (error) {
+    console.error('游戏初始化错误:', error);
+    alert('游戏加载失败，请刷新页面重试！');
+}
+    </script>
