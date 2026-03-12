@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>九六快跑 - 开屏加载</title>
+    <title>九六快跑</title>
     <style>
         * {
             margin: 0;
@@ -12,11 +12,20 @@
             font-family: 'Arial', sans-serif;
         }
 
+        /* 全局禁用滚动条 */
         html, body {
             width: 100vw;
             height: 100vh;
-            overflow: hidden;
+            overflow: hidden !important; /* 强制禁用滚动 */
             background: linear-gradient(135deg, #0a0a1a 0%, #1a1a3e 50%, #0a1a2e 100%);
+            -ms-overflow-style: none; /* IE/Edge 隐藏滚动条 */
+            scrollbar-width: none; /* Firefox 隐藏滚动条 */
+        }
+
+        /* Chrome/Safari 隐藏滚动条 */
+        html::-webkit-scrollbar,
+        body::-webkit-scrollbar {
+            display: none !important;
         }
 
         /* 开屏容器 */
@@ -30,6 +39,31 @@
             color: white;
             position: relative;
             z-index: 1000;
+        }
+
+        /* 滚动公告横幅 */
+        .notice-bar {
+            position: absolute;
+            top: 10px;
+            left: 0;
+            width: 100%;
+            height: 40px;
+            background: rgba(0, 0, 0, 0.7);
+            overflow: hidden;
+            border-bottom: 1px solid #00f5ff;
+            opacity: 0;
+            animation: fadeIn 1s ease-out 1s forwards;
+        }
+
+        .notice-content {
+            position: absolute;
+            white-space: nowrap;
+            color: #ffd700;
+            font-size: clamp(0.8rem, 2.5vw, 1rem);
+            line-height: 40px;
+            left: 100%;
+            animation: noticeScroll linear infinite;
+            animation-duration: 10s;
         }
 
         /* 标题动画 */
@@ -88,7 +122,7 @@
         /* 防沉迷提示 */
         .anti-addiction {
             position: absolute;
-            bottom: 40px;
+            bottom: 80px;
             left: 0;
             right: 0;
             text-align: center;
@@ -98,6 +132,23 @@
             opacity: 0;
             animation: fadeIn 1s ease-out 2s forwards;
             line-height: 1.5;
+        }
+
+        /* 文字广告位 */
+        .text-ad {
+            position: absolute;
+            bottom: 50px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            font-size: clamp(0.8rem, 2.5vw, 1rem);
+            color: #00f5ff;
+            padding: 5px 0;
+            background: rgba(0, 0, 0, 0.5);
+            margin: 0 20px;
+            border-radius: 8px;
+            opacity: 0;
+            animation: fadeIn 1s ease-out 2.2s forwards;
         }
 
         /* 作者信息 */
@@ -116,7 +167,7 @@
         /* 更新提示 */
         .update-tip {
             position: absolute;
-            top: 20px;
+            top: 60px;
             right: 20px;
             font-size: clamp(0.7rem, 2vw, 0.9rem);
             color: #ffd700;
@@ -138,12 +189,22 @@
             visibility: hidden;
             transition: opacity 0.5s ease, visibility 0.5s ease;
             z-index: 10;
+            overflow: hidden !important; /* 禁用容器滚动 */
         }
 
+        /* 内嵌页面样式：隐藏滚动条但保留滚动功能 */
         #game-frame {
             width: 100%;
             height: 100%;
             border: none;
+            overflow: auto !important; /* 保留滚动功能 */
+            -ms-overflow-style: none; /* IE/Edge 隐藏滚动条 */
+            scrollbar-width: none; /* Firefox 隐藏滚动条 */
+        }
+
+        /* Chrome/Safari 隐藏iframe滚动条 */
+        #game-frame::-webkit-scrollbar {
+            display: none !important;
         }
 
         /* 动画定义 */
@@ -160,6 +221,15 @@
             }
         }
 
+        @keyframes noticeScroll {
+            0% {
+                left: 100%;
+            }
+            100% {
+                left: -100%;
+            }
+        }
+
         /* 加载完成后隐藏开屏 */
         .splash-hidden {
             opacity: 0;
@@ -172,14 +242,25 @@
             opacity: 1;
             visibility: visible;
         }
+
+        /* 错误提示样式 */
+        .error-tip {
+            color: #ff4444;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
     <!-- 开屏页面 -->
     <div id="splash-screen">
+        <!-- 滚动公告横幅 -->
+        <div class="notice-bar">
+            <div class="notice-content" id="noticeContent">加载公告中...</div>
+        </div>
+        
         <div class="update-tip">APP自动更新版本</div>
         <h1 class="app-title">九六快跑</h1>
-        <div class="version-tag">V2测试版</div>
+        <div class="version-tag" id="versionTag">加载版本信息中...</div>
         
         <div class="progress-container">
             <div class="progress-bar" id="progressBar"></div>
@@ -192,12 +273,15 @@
             适度游戏益脑，沉迷游戏伤身。合理安排时间，享受健康生活。
         </div>
         
+        <!-- 文字广告位 -->
+        <div class="text-ad" id="textAd">加载广告中...</div>
+        
         <div class="author-info">作者: 九六李沅臻</div>
     </div>
 
     <!-- 游戏容器 -->
     <div id="game-container">
-        <iframe id="game-frame" src="https://yzbjfpv.top/game/96run/test"></iframe>
+        <iframe id="game-frame"></iframe>
     </div>
 
     <script>
@@ -218,73 +302,168 @@
         const loadingStatus = document.getElementById('loadingStatus');
         const gameContainer = document.getElementById('game-container');
         const gameFrame = document.getElementById('game-frame');
+        const noticeContent = document.getElementById('noticeContent');
+        const versionTag = document.getElementById('versionTag');
+        const textAd = document.getElementById('textAd');
 
-        // 模拟加载进度
-        let progress = 0;
-        let stateIndex = 0;
-        let progressInterval;
+        // 全局变量
+        let loadTimeoutTimer = null;
 
-        // 更新加载状态
-        function updateLoadingState() {
-            if (stateIndex < loadingStates.length) {
-                loadingStatus.textContent = loadingStates[stateIndex];
-                stateIndex++;
-                // 最后一个状态停留久一点
-                const delay = stateIndex === loadingStates.length ? 800 : 1200;
-                setTimeout(updateLoadingState, delay);
-            }
-        }
-
-        // 更新进度条
-        function updateProgress() {
-            progress += Math.random() * 3;
-            if (progress > 100) progress = 100;
-            
-            progressBar.style.width = `${progress}%`;
-            
-            if (progress === 100) {
-                clearInterval(progressInterval);
-                // 等待最后一个状态完成后，检查iframe加载状态
-                setTimeout(checkIframeLoaded, 1000);
-            }
-        }
-
-        // 检查iframe加载状态
-        function checkIframeLoaded() {
-            // 监听iframe加载完成
-            gameFrame.onload = function() {
-                // 隐藏开屏页面，显示游戏
-                splashScreen.classList.add('splash-hidden');
-                gameContainer.classList.add('game-visible');
+        // 1. 加载配置数据（统一命名，隐藏链接特征）
+        async function loadConfigData(type) {
+            const configUrls = {
+                notice: 'https://yzbjfpv.top/game/96run/app/source/公告.txt',
+                version: 'https://yzbjfpv.top/game/96run/app/source/最新版本.txt',
+                ad: 'https://yzbjfpv.top/game/96run/source/文字广告.txt',
+                game: 'https://yzbjfpv.top/game/96run/source/内嵌页面链接.txt'
             };
 
-            // 容错：如果iframe加载超时，强制显示
-            setTimeout(() => {
-                if (!gameContainer.classList.contains('game-visible')) {
-                    splashScreen.classList.add('splash-hidden');
-                    gameContainer.classList.add('game-visible');
+            try {
+                const response = await fetch(configUrls[type]);
+                if (response.ok) {
+                    return (await response.text()).trim() || "";
+                } else {
+                    throw new Error("配置数据获取失败");
                 }
-            }, 15000);
+            } catch (error) {
+                console.error(`加载${type}配置失败:`, error);
+                return "";
+            }
+        }
+
+        // 2. 加载公告
+        async function loadNotice() {
+            const content = await loadConfigData('notice');
+            if (!splashScreen.classList.contains('splash-hidden')) {
+                noticeContent.textContent = content || "暂无公告";
+            }
+        }
+
+        // 3. 加载版本
+        async function loadVersion() {
+            const version = await loadConfigData('version');
+            if (!splashScreen.classList.contains('splash-hidden')) {
+                versionTag.textContent = version || "未知版本";
+            }
+        }
+
+        // 4. 加载广告
+        async function loadTextAd() {
+            const adContent = await loadConfigData('ad');
+            if (!splashScreen.classList.contains('splash-hidden')) {
+                textAd.textContent = adContent || "广告位招商 - 微信号:YGWFK2024";
+            }
+        }
+
+        // 批量加载所有配置
+        async function loadAllConfig() {
+            await Promise.all([
+                loadNotice(),
+                loadVersion(),
+                loadTextAd()
+            ]);
+        }
+
+        // 加载游戏内容（隐藏网页特征，统一称为"游戏内容"）
+        async function loadGameContent() {
+            // 获取游戏配置
+            const gameConfig = await loadConfigData('game');
+            if (!gameConfig) {
+                loadingStatus.innerHTML = '<span class="error-tip">服务器配置异常！</span> 5秒后重试...';
+                setTimeout(() => {
+                    loadingStatus.textContent = "正在重新连接服务器...";
+                    loadGameContent();
+                }, 5000);
+                return;
+            }
+
+            // 重置状态
+            gameFrame.src = "";
+            gameContainer.classList.remove('game-visible');
+            splashScreen.classList.remove('splash-hidden');
+
+            // 清除旧的超时定时器
+            if (loadTimeoutTimer) clearTimeout(loadTimeoutTimer);
+
+            // 设置60秒超时检测（服务器连接超时）
+            loadTimeoutTimer = setTimeout(() => {
+                loadingStatus.innerHTML = '<span class="error-tip">服务器连接超时！</span> 5秒后重试...';
+                progressBar.style.width = "0%";
+                
+                // 5秒后重试
+                setTimeout(() => {
+                    loadingStatus.textContent = "正在重新连接服务器...";
+                    loadGameContent();
+                }, 5000);
+            }, 60000);
+
+            // 加载游戏内容
+            gameFrame.src = gameConfig;
+
+            // 加载成功回调
+            gameFrame.onload = function() {
+                clearTimeout(loadTimeoutTimer);
+                splashScreen.classList.add('splash-hidden');
+                gameContainer.classList.add('game-visible');
+                loadingStatus.textContent = "加载完成";
+            };
+
+            // 加载失败回调（服务器连接异常）
+            gameFrame.onerror = function() {
+                clearTimeout(loadTimeoutTimer);
+                loadingStatus.innerHTML = '<span class="error-tip">服务器连接异常！</span> 5秒后重试...';
+                setTimeout(() => {
+                    loadingStatus.textContent = "正在重新连接服务器...";
+                    loadGameContent();
+                }, 5000);
+            };
+        }
+
+        // 模拟加载进度
+        function simulateLoadingProgress() {
+            let progress = 0;
+            let stateIndex = 0;
+            const progressInterval = setInterval(() => {
+                if (splashScreen.classList.contains('splash-hidden')) {
+                    clearInterval(progressInterval);
+                    return;
+                }
+
+                progress += Math.random() * 3;
+                if (progress > 100) progress = 100;
+                
+                progressBar.style.width = `${progress}%`;
+
+                if (stateIndex < loadingStates.length && progress > stateIndex * 15) {
+                    loadingStatus.textContent = loadingStates[stateIndex];
+                    stateIndex++;
+                }
+
+                if (progress === 100) {
+                    clearInterval(progressInterval);
+                }
+            }, 300);
         }
 
         // 启动加载流程
-        function startLoading() {
-            // 开始更新进度条
-            progressInterval = setInterval(updateProgress, 300);
-            // 开始更新加载状态
-            updateLoadingState();
+        async function startLoading() {
+            // 首次加载所有配置
+            await loadAllConfig();
+            
+            // 模拟进度条动画
+            simulateLoadingProgress();
+
+            // 加载游戏内容
+            loadGameContent();
+
+            // 30秒定时刷新配置（永久运行）
+            setInterval(() => {
+                loadAllConfig();
+            }, 30000);
         }
 
         // 页面加载完成后启动
         window.addEventListener('load', startLoading);
-
-        // 处理iframe加载错误
-        gameFrame.onerror = function() {
-            loadingStatus.textContent = "加载失败，正在重试...";
-            setTimeout(() => {
-                gameFrame.src = gameFrame.src;
-            }, 2000);
-        };
     </script>
 </body>
 </html>
