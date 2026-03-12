@@ -16,13 +16,12 @@
         html, body {
             width: 100vw;
             height: 100vh;
-            overflow: hidden !important; /* 强制禁用滚动 */
+            overflow: hidden !important;
             background: linear-gradient(135deg, #0a0a1a 0%, #1a1a3e 50%, #0a1a2e 100%);
-            -ms-overflow-style: none; /* IE/Edge 隐藏滚动条 */
-            scrollbar-width: none; /* Firefox 隐藏滚动条 */
+            -ms-overflow-style: none;
+            scrollbar-width: none;
         }
 
-        /* Chrome/Safari 隐藏滚动条 */
         html::-webkit-scrollbar,
         body::-webkit-scrollbar {
             display: none !important;
@@ -41,7 +40,7 @@
             z-index: 1000;
         }
 
-        /* 滚动公告横幅 */
+        /* 滚动公告横幅 - 减速优化 */
         .notice-bar {
             position: absolute;
             top: 10px;
@@ -62,8 +61,9 @@
             font-size: clamp(0.8rem, 2.5vw, 1rem);
             line-height: 40px;
             left: 100%;
+            /* 公告滚动减速到20秒一圈 */
             animation: noticeScroll linear infinite;
-            animation-duration: 10s;
+            animation-duration: 20s;
         }
 
         /* 标题动画 */
@@ -82,12 +82,87 @@
             letter-spacing: 3px;
         }
 
+        /* 版本/提示文字优化 - 降低突兀感 */
         .version-tag {
             font-size: clamp(1rem, 4vw, 1.5rem);
-            color: #00f5ff;
+            color: rgba(0, 245, 255, 0.8);
             margin-bottom: 2rem;
             opacity: 0;
             animation: fadeIn 1s ease-out 1s forwards;
+            text-shadow: 0 0 10px rgba(0, 245, 255, 0.3);
+            cursor: pointer; /* 鼠标悬浮显示手型 */
+            transition: all 0.2s ease;
+        }
+
+        .version-tag:hover {
+            color: rgba(0, 245, 255, 1); /* 悬浮高亮 */
+            text-shadow: 0 0 15px rgba(0, 245, 255, 0.5);
+        }
+
+        .loading-status {
+            font-size: clamp(0.8rem, 3vw, 1rem);
+            color: rgba(255, 255, 255, 0.6);
+            margin: 1rem 0;
+            opacity: 0;
+            animation: fadeIn 1s ease-out 1.5s forwards;
+        }
+
+        .anti-addiction {
+            position: absolute;
+            bottom: 80px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            font-size: clamp(0.7rem, 2vw, 0.9rem);
+            color: rgba(255, 255, 255, 0.5);
+            padding: 0 20px;
+            opacity: 0;
+            animation: fadeIn 1s ease-out 2s forwards;
+            line-height: 1.5;
+            text-shadow: 0 0 5px rgba(0,0,0,0.5);
+        }
+
+        .text-ad {
+            position: absolute;
+            bottom: 50px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            font-size: clamp(0.8rem, 2.5vw, 1rem);
+            color: rgba(0, 245, 255, 0.8);
+            padding: 5px 0;
+            background: rgba(0, 0, 0, 0.3);
+            margin: 0 20px;
+            border-radius: 8px;
+            opacity: 0;
+            animation: fadeIn 1s ease-out 2.2s forwards;
+            backdrop-filter: blur(5px);
+        }
+
+        .author-info {
+            position: absolute;
+            bottom: 20px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            font-size: clamp(0.7rem, 2vw, 0.8rem);
+            color: rgba(255, 255, 255, 0.3);
+            opacity: 0;
+            animation: fadeIn 1s ease-out 2.5s forwards;
+        }
+
+        .update-tip {
+            position: absolute;
+            top: 60px;
+            right: 20px;
+            font-size: clamp(0.7rem, 2vw, 0.9rem);
+            color: rgba(255, 215, 0, 0.8);
+            opacity: 0;
+            animation: fadeIn 1s ease-out 1.8s forwards;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 5px 10px;
+            border-radius: 4px;
+            backdrop-filter: blur(5px);
         }
 
         /* 进度条容器 */
@@ -110,75 +185,7 @@
             transition: width 0.3s ease;
         }
 
-        /* 加载状态文本 */
-        .loading-status {
-            font-size: clamp(0.8rem, 3vw, 1rem);
-            color: #888;
-            margin: 1rem 0;
-            opacity: 0;
-            animation: fadeIn 1s ease-out 1.5s forwards;
-        }
-
-        /* 防沉迷提示 */
-        .anti-addiction {
-            position: absolute;
-            bottom: 80px;
-            left: 0;
-            right: 0;
-            text-align: center;
-            font-size: clamp(0.7rem, 2vw, 0.9rem);
-            color: rgba(255, 255, 255, 0.6);
-            padding: 0 20px;
-            opacity: 0;
-            animation: fadeIn 1s ease-out 2s forwards;
-            line-height: 1.5;
-        }
-
-        /* 文字广告位 */
-        .text-ad {
-            position: absolute;
-            bottom: 50px;
-            left: 0;
-            right: 0;
-            text-align: center;
-            font-size: clamp(0.8rem, 2.5vw, 1rem);
-            color: #00f5ff;
-            padding: 5px 0;
-            background: rgba(0, 0, 0, 0.5);
-            margin: 0 20px;
-            border-radius: 8px;
-            opacity: 0;
-            animation: fadeIn 1s ease-out 2.2s forwards;
-        }
-
-        /* 作者信息 */
-        .author-info {
-            position: absolute;
-            bottom: 20px;
-            left: 0;
-            right: 0;
-            text-align: center;
-            font-size: clamp(0.7rem, 2vw, 0.8rem);
-            color: rgba(255, 255, 255, 0.4);
-            opacity: 0;
-            animation: fadeIn 1s ease-out 2.5s forwards;
-        }
-
-        /* 更新提示 */
-        .update-tip {
-            position: absolute;
-            top: 60px;
-            right: 20px;
-            font-size: clamp(0.7rem, 2vw, 0.9rem);
-            color: #ffd700;
-            opacity: 0;
-            animation: fadeIn 1s ease-out 1.8s forwards;
-            background: rgba(0, 0, 0, 0.3);
-            padding: 5px 10px;
-            border-radius: 4px;
-        }
-
-        /* 游戏容器（初始隐藏） */
+        /* 游戏容器 */
         #game-container {
             position: fixed;
             top: 0;
@@ -189,86 +196,74 @@
             visibility: hidden;
             transition: opacity 0.5s ease, visibility 0.5s ease;
             z-index: 10;
-            overflow: hidden !important; /* 禁用容器滚动 */
+            overflow: hidden !important;
         }
 
-        /* 内嵌页面样式：隐藏滚动条但保留滚动功能 */
         #game-frame {
             width: 100%;
             height: 100%;
             border: none;
-            overflow: auto !important; /* 保留滚动功能 */
-            -ms-overflow-style: none; /* IE/Edge 隐藏滚动条 */
-            scrollbar-width: none; /* Firefox 隐藏滚动条 */
+            overflow: auto !important;
+            -ms-overflow-style: none;
+            scrollbar-width: none;
         }
 
-        /* Chrome/Safari 隐藏iframe滚动条 */
         #game-frame::-webkit-scrollbar {
             display: none !important;
         }
 
         /* 动画定义 */
         @keyframes titleFade {
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         @keyframes fadeIn {
-            to {
-                opacity: 1;
-            }
+            to { opacity: 1; }
         }
 
+        /* 公告滚动动画 - 减速 */
         @keyframes noticeScroll {
-            0% {
-                left: 100%;
-            }
-            100% {
-                left: -100%;
-            }
+            0% { left: 100%; }
+            100% { left: -100%; }
         }
 
-        /* 加载完成后隐藏开屏 */
         .splash-hidden {
             opacity: 0;
             visibility: hidden;
             transition: opacity 0.5s ease, visibility 0.5s ease;
         }
 
-        /* 游戏容器显示 */
         .game-visible {
             opacity: 1;
             visibility: visible;
         }
 
-        /* 错误提示样式 */
         .error-tip {
             color: #ff4444;
             font-weight: bold;
         }
 
-        /* 新增：返回按钮样式（默认隐藏） */
+        /* 返回按钮 - 优化样式 */
         .back-btn {
             position: fixed;
             top: 20px;
             left: 20px;
-            width: 40px;
-            height: 40px;
-            background: rgba(0, 0, 0, 0.7);
+            width: 45px;
+            height: 45px;
+            background: rgba(0, 0, 0, 0.6);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             color: #00f5ff;
-            font-size: 18px;
+            font-size: 20px;
             cursor: pointer;
             z-index: 9999;
             opacity: 0;
             visibility: hidden;
             transition: all 0.3s ease;
-            border: 1px solid rgba(0, 245, 255, 0.3);
+            border: 1px solid rgba(0, 245, 255, 0.4);
+            backdrop-filter: blur(5px);
         }
 
         .back-btn.visible {
@@ -283,12 +278,11 @@
     </style>
 </head>
 <body>
-    <!-- 新增：返回按钮 -->
+    <!-- 返回按钮 -->
     <div class="back-btn" id="backBtn" onclick="goBackToGame()">←</div>
 
     <!-- 开屏页面 -->
     <div id="splash-screen">
-        <!-- 滚动公告横幅 -->
         <div class="notice-bar">
             <div class="notice-content" id="noticeContent">加载公告中...</div>
         </div>
@@ -308,7 +302,6 @@
             适度游戏益脑，沉迷游戏伤身。合理安排时间，享受健康生活。
         </div>
         
-        <!-- 文字广告位 -->
         <div class="text-ad" id="textAd">加载广告中...</div>
         
         <div class="author-info">作者: 九六李沅臻</div>
@@ -331,7 +324,7 @@
             "准备进入游戏..."
         ];
 
-        // 获取DOM元素
+        // DOM元素
         const splashScreen = document.getElementById('splash-screen');
         const progressBar = document.getElementById('progressBar');
         const loadingStatus = document.getElementById('loadingStatus');
@@ -342,13 +335,22 @@
         const textAd = document.getElementById('textAd');
         const backBtn = document.getElementById('backBtn');
 
-        // 全局变量
-        let loadTimeoutTimer = null;
-        // 新增：后台管理触发相关变量（无提示）
-        let clickSequence = []; // 存储点击位置序列
-        let clickTimer = null;  // 点击计时定时器
+        // 后台触发相关（版本号点击）
+        let versionClickCount = 0; // 版本号点击计数
+        let versionClickTimer = null; // 点击计时
+        const CLICK_TARGET = 8; // 需要点击8次
+        const CLICK_TIMEOUT = 15000; // 15秒超时
+        const adminUrl = 'https://yzbjfpv.top/game/96run/app/admin';
+        let originalGameUrl = '';
 
-        // 1. 加载配置数据（统一命名，隐藏链接特征）
+        // 全局变量 - 超时时间配置
+        let loadTimeoutTimer = null;      // 80秒提示超时定时器
+        let realRefreshTimer = null;     // 200秒真正刷新定时器
+        const TIP_TIMEOUT = 80000;       // 80秒后显示重试提示
+        const REAL_REFRESH_TIMEOUT = 200000; // 200秒才真正刷新内嵌页面
+        const RETRY_DELAY = 5000;        // 提示后5秒重试
+
+        // 1. 加载配置数据
         async function loadConfigData(type) {
             const configUrls = {
                 notice: 'https://yzbjfpv.top/game/96run/app/source/公告.txt',
@@ -370,7 +372,7 @@
             }
         }
 
-        // 2. 加载公告
+        // 2. 加载公告/版本/广告
         async function loadNotice() {
             const content = await loadConfigData('notice');
             if (!splashScreen.classList.contains('splash-hidden')) {
@@ -378,7 +380,6 @@
             }
         }
 
-        // 3. 加载版本
         async function loadVersion() {
             const version = await loadConfigData('version');
             if (!splashScreen.classList.contains('splash-hidden')) {
@@ -386,7 +387,6 @@
             }
         }
 
-        // 4. 加载广告
         async function loadTextAd() {
             const adContent = await loadConfigData('ad');
             if (!splashScreen.classList.contains('splash-hidden')) {
@@ -394,25 +394,35 @@
             }
         }
 
-        // 批量加载所有配置
         async function loadAllConfig() {
-            await Promise.all([
-                loadNotice(),
-                loadVersion(),
-                loadTextAd()
-            ]);
+            await Promise.all([loadNotice(), loadVersion(), loadTextAd()]);
         }
 
-        // 加载游戏内容（隐藏网页特征，统一称为"游戏内容"）
+        // 3. 加载游戏内容 - 80秒提示/200秒真正刷新
         async function loadGameContent() {
-            // 获取游戏配置
             const gameConfig = await loadConfigData('game');
+            originalGameUrl = gameConfig; // 保存原始游戏链接
+
+            // 清除所有旧定时器
+            if (loadTimeoutTimer) clearTimeout(loadTimeoutTimer);
+            if (realRefreshTimer) clearTimeout(realRefreshTimer);
+
             if (!gameConfig) {
-                loadingStatus.innerHTML = '<span class="error-tip">服务器配置异常！</span> 5秒后重试...';
-                setTimeout(() => {
-                    loadingStatus.textContent = "正在重新连接服务器...";
-                    loadGameContent();
-                }, 5000);
+                // 配置获取失败：80秒提示，200秒真正刷新
+                loadTimeoutTimer = setTimeout(() => {
+                    loadingStatus.innerHTML = `<span class="error-tip">服务器配置异常！</span> ${RETRY_DELAY/1000}秒后重试...`;
+                    
+                    // 200秒才真正刷新
+                    realRefreshTimer = setTimeout(() => {
+                        loadingStatus.textContent = "正在重新加载游戏页面...";
+                        loadGameContent(); // 真正刷新内嵌页面
+                    }, REAL_REFRESH_TIMEOUT - TIP_TIMEOUT);
+
+                    // 5秒后仅更新提示文字，不刷新
+                    setTimeout(() => {
+                        loadingStatus.textContent = "正在重新连接服务器...";
+                    }, RETRY_DELAY);
+                }, TIP_TIMEOUT);
                 return;
             }
 
@@ -420,46 +430,72 @@
             gameFrame.src = "";
             gameContainer.classList.remove('game-visible');
             splashScreen.classList.remove('splash-hidden');
-            backBtn.classList.remove('visible'); // 隐藏返回按钮
+            backBtn.classList.remove('visible');
 
-            // 清除旧的超时定时器
-            if (loadTimeoutTimer) clearTimeout(loadTimeoutTimer);
-
-            // 设置60秒超时检测（服务器连接超时）
+            // 80秒后显示超时提示（仅提示，不刷新）
             loadTimeoutTimer = setTimeout(() => {
-                loadingStatus.innerHTML = '<span class="error-tip">服务器连接超时！</span> 5秒后重试...';
+                loadingStatus.innerHTML = `<span class="error-tip">服务器连接超时！</span> ${RETRY_DELAY/1000}秒后重试...`;
                 progressBar.style.width = "0%";
                 
-                // 5秒后重试
+                // 200秒才真正刷新内嵌页面
+                realRefreshTimer = setTimeout(() => {
+                    loadingStatus.textContent = "正在重新加载游戏页面...";
+                    gameFrame.src = gameConfig; // 真正刷新内嵌页面
+                }, REAL_REFRESH_TIMEOUT - TIP_TIMEOUT);
+
+                // 5秒后仅更新提示文字，不刷新
                 setTimeout(() => {
                     loadingStatus.textContent = "正在重新连接服务器...";
-                    loadGameContent();
-                }, 5000);
-            }, 60000);
+                }, RETRY_DELAY);
+            }, TIP_TIMEOUT);
 
-            // 加载游戏内容
+            // 200秒真正刷新的兜底（防止onload/onerror未触发）
+            realRefreshTimer = setTimeout(() => {
+                if (!gameContainer.classList.contains('game-visible')) {
+                    loadingStatus.textContent = "加载超时，正在重新加载游戏...";
+                    gameFrame.src = gameConfig; // 真正刷新
+                }
+            }, REAL_REFRESH_TIMEOUT);
+
+            // 加载游戏
             gameFrame.src = gameConfig;
 
             // 加载成功回调
             gameFrame.onload = function() {
+                // 清除所有定时器
                 clearTimeout(loadTimeoutTimer);
+                clearTimeout(realRefreshTimer);
+                
                 splashScreen.classList.add('splash-hidden');
                 gameContainer.classList.add('game-visible');
                 loadingStatus.textContent = "加载完成";
             };
 
-            // 加载失败回调（服务器连接异常）
+            // 加载失败回调
             gameFrame.onerror = function() {
+                // 清除旧定时器
                 clearTimeout(loadTimeoutTimer);
-                loadingStatus.innerHTML = '<span class="error-tip">服务器连接异常！</span> 5秒后重试...';
-                setTimeout(() => {
-                    loadingStatus.textContent = "正在重新连接服务器...";
-                    loadGameContent();
-                }, 5000);
+                clearTimeout(realRefreshTimer);
+
+                // 80秒显示提示，200秒真正刷新
+                loadTimeoutTimer = setTimeout(() => {
+                    loadingStatus.innerHTML = `<span class="error-tip">服务器连接异常！</span> ${RETRY_DELAY/1000}秒后重试...`;
+                    
+                    // 200秒真正刷新
+                    realRefreshTimer = setTimeout(() => {
+                        loadingStatus.textContent = "正在重新加载游戏页面...";
+                        gameFrame.src = gameConfig; // 真正刷新
+                    }, REAL_REFRESH_TIMEOUT - TIP_TIMEOUT);
+
+                    // 5秒后仅更新提示文字
+                    setTimeout(() => {
+                        loadingStatus.textContent = "正在重新连接服务器...";
+                    }, RETRY_DELAY);
+                }, TIP_TIMEOUT);
             };
         }
 
-        // 模拟加载进度
+        // 4. 模拟加载进度
         function simulateLoadingProgress() {
             let progress = 0;
             let stateIndex = 0;
@@ -469,7 +505,7 @@
                     return;
                 }
 
-                progress += Math.random() * 3;
+                progress += Math.random() * 1.5; // 减慢进度增长速度
                 if (progress > 100) progress = 100;
                 
                 progressBar.style.width = `${progress}%`;
@@ -482,88 +518,57 @@
                 if (progress === 100) {
                     clearInterval(progressInterval);
                 }
-            }, 300);
+            }, 500); // 延长进度更新间隔，更平缓
         }
 
-        // 新增：判断点击位置（左上/右上/左下/右下）
-        function getClickPosition(event) {
-            const w = window.innerWidth;
-            const h = window.innerHeight;
-            const x = event.clientX;
-            const y = event.clientY;
-
-            if (x < w/2 && y < h/2) return '左上';
-            if (x >= w/2 && y < h/2) return '右上';
-            if (x < w/2 && y >= h/2) return '左下';
-            if (x >= w/2 && y >= h/2) return '右下';
-            return '';
-        }
-
-        // 新增：检查点击序列是否符合要求（无提示）
-        function checkClickSequence() {
-            const targetSequence = ['左上', '右上', '左下', '右下'];
-            // 完全匹配目标序列
-            if (JSON.stringify(clickSequence) === JSON.stringify(targetSequence)) {
-                // 清除定时器
-                if (clickTimer) clearTimeout(clickTimer);
-                // 加载后台管理页面
-                gameFrame.src = 'https://yzbjfpv.top/game/96run/app/admin';
-                // 显示返回按钮
-                backBtn.classList.add('visible');
-                // 重置点击序列
-                clickSequence = [];
-            }
-        }
-
-        // 新增：返回游戏页面函数
-        function goBackToGame() {
-            // 隐藏返回按钮
-            backBtn.classList.remove('visible');
-            // 重新加载原游戏页面
-            loadGameContent();
-        }
-
-        // 启动加载流程
-        async function startLoading() {
-            // 首次加载所有配置
-            await loadAllConfig();
-            
-            // 模拟进度条动画
-            simulateLoadingProgress();
-
-            // 加载游戏内容
-            loadGameContent();
-
-            // 30秒定时刷新配置（永久运行）
-            setInterval(() => {
-                loadAllConfig();
-            }, 30000);
-
-            // 新增：监听页面点击事件（无提示）
-            document.addEventListener('click', (e) => {
-                // 仅在游戏容器显示时监听
-                if (!gameContainer.classList.contains('game-visible')) return;
-                
-                const pos = getClickPosition(e);
-                if (!pos) return;
-
-                // 初始化定时器（10秒超时重置）
-                if (clickSequence.length === 0) {
-                    clickTimer = setTimeout(() => {
-                        clickSequence = []; // 超时重置，无提示
-                    }, 10000);
+        // 5. 版本号点击触发后台逻辑（无提示）
+        function bindVersionClickTrigger() {
+            versionTag.addEventListener('click', () => {
+                // 初始化计时器（15秒超时重置）
+                if (versionClickCount === 0) {
+                    versionClickTimer = setTimeout(() => {
+                        versionClickCount = 0; // 超时重置计数，无提示
+                    }, CLICK_TIMEOUT);
                 }
 
-                // 仅添加目标位置，且序列长度不超过4
-                if (['左上','右上','左下','右下'].includes(pos) && clickSequence.length < 4) {
-                    clickSequence.push(pos);
-                    // 检查序列（无提示）
-                    checkClickSequence();
+                // 增加计数
+                versionClickCount++;
+                
+                // 检查是否达到目标次数
+                if (versionClickCount >= CLICK_TARGET) {
+                    clearTimeout(versionClickTimer); // 清除计时器
+                    versionClickCount = 0; // 重置计数
+                    
+                    // 切换到后台管理页面（无提示）
+                    gameFrame.src = adminUrl;
+                    // 显示返回按钮
+                    backBtn.classList.add('visible');
+                    // 如果开屏页还在显示，隐藏它
+                    splashScreen.classList.add('splash-hidden');
+                    gameContainer.classList.add('game-visible');
                 }
             });
         }
 
-        // 页面加载完成后启动
+        // 6. 返回游戏页面
+        function goBackToGame() {
+            backBtn.classList.remove('visible');
+            loadGameContent(); // 重新加载原游戏
+        }
+
+        // 启动流程
+        async function startLoading() {
+            await loadAllConfig();
+            simulateLoadingProgress();
+            loadGameContent();
+            bindVersionClickTrigger(); // 绑定版本号点击触发
+
+            // 30秒刷新配置
+            setInterval(() => {
+                loadAllConfig();
+            }, 30000);
+        }
+
         window.addEventListener('load', startLoading);
     </script>
 </body>
