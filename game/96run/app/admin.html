@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>96快跑|充值管理后台</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+        }
+
+        /* 开屏动画容器 */
+        #splash-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: #050510;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            transition: all 0.8s cubic-bezier(0.19, 1, 0.22, 1);
+        }
+
+        .splash-title {
+            font-size: clamp(2.5rem, 8vw, 4rem);
+            font-weight: 800;
+            background: linear-gradient(135deg, #00f5ff, #7c3aed, #ff0080);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: 2px;
+            opacity: 0;
+            transform: translateY(30px);
+            animation: titleFade 1.2s ease-out 0.5s forwards;
+        }
+
+        .splash-subtitle {
+            margin-top: 20px;
+            font-size: clamp(1rem, 3vw, 1.2rem);
+            color: rgba(255, 255, 255, 0.7);
+            opacity: 0;
+            animation: fadeIn 1s ease-out 1.2s forwards;
+        }
+
+        .splash-loader {
+            width: 60px;
+            height: 60px;
+            border: 3px solid rgba(0, 245, 255, 0.2);
+            border-top-color: #00f5ff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-top: 40px;
+            opacity: 0;
+            animation-delay: 1.5s;
+            animation-fill-mode: forwards;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); opacity: 0; }
+            10% { opacity: 1; }
+            100% { transform: rotate(360deg); opacity: 1; }
+        }
+
+        @keyframes titleFade {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+
+        /* 主页面样式 */
+        body {
+            background: linear-gradient(135deg, #0a0a1a 0%, #12122c 50%, #0f0f2f 100%);
+            color: #e0e0e0;
+            min-height: 100vh;
+            padding: 20px;
+            background-attachment: fixed;
+            overflow-x: hidden;
+        }
+
+        .admin-container {
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: rgba(255, 255, 255, 0.04);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+            transform: translateY(20px);
+            opacity: 0;
+            transition: all 0.8s ease 0.3s;
+        }
+
+        .admin-container.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            position: relative;
+        }
+
+        .header h1 {
+            font-size: clamp(1.8rem, 6vw, 2.4rem);
+            font-weight: 700;
+            background: linear-gradient(90deg, #00f5ff, #7c3aed);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 8px;
+        }
+
+        .header .tag {
+            font-size: 0.9rem;
+            color: rgba(0, 245, 255, 0.7);
+            font-weight: 500;
+        }
+
+        .card {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 16px;
+            padding: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            margin-bottom: 25px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 10px;
+            font-size: 1rem;
+            font-weight: 500;
+            color: #b0b0b0;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 15px 20px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            color: white;
+            font-size: 1rem;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .form-input:focus {
+            border-color: #00f5ff;
+            box-shadow: 0 0 0 4px rgba(0, 245, 255, 0.1);
+            background: rgba(0, 0, 0, 0.4);
+        }
+
+        /* 数字输入框优化 */
+        input[type=number]::-webkit-inner-spin-button,
+        input[type=number]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        input[type=number] {
+            -moz-appearance: textfield;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(90deg, #00f5ff, #7c3aed);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-size: 1.05rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.6s ease;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 245, 255, 0.2);
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .result-card {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 16px;
+            padding: 25px;
+            border: 1px solid rgba(0, 245, 255, 0.15);
+            margin-top: 20px;
+            opacity: 0;
+            transform: translateY(15px);
+            transition: all 0.5s ease;
+        }
+
+        .result-card.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .result-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .result-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #00f5ff;
+            display: flex;
+            align-items: center;
+        }
+
+        .result-title::before {
+            content: '🔑';
+            margin-right: 10px;
+            font-size: 1.2rem;
+        }
+
+        .copy-btn {
+            padding: 8px 15px;
+            background: rgba(0, 245, 255, 0.2);
+            border: 1px solid #00f5ff;
+            border-radius: 8px;
+            color: #00f5ff;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .copy-btn:hover {
+            background: #00f5ff;
+            color: #0a0a1a;
+        }
+
+        .result-code {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px;
+            border-radius: 8px;
+            color: #f0f0f0;
+            font-size: 1.05rem;
+            word-break: break-all;
+            line-height: 1.5;
+            margin-bottom: 12px;
+        }
+
+        .result-tip {
+            font-size: 0.9rem;
+            color: #ff6666;
+            display: flex;
+            align-items: center;
+        }
+
+        .result-tip::before {
+            content: '⚠️';
+            margin-right: 8px;
+        }
+
+        /* 复制成功提示 */
+        .copy-toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 245, 255, 0.9);
+            color: #0a0a1a;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: 999;
+        }
+
+        .copy-toast.show {
+            opacity: 1;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        /* 响应式适配 */
+        @media (max-width: 480px) {
+            .admin-container {
+                padding: 30px 20px;
+            }
+            .card {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 开屏动画 -->
+    <div id="splash-screen">
+        <div class="splash-title">96快跑</div>
+        <div class="splash-subtitle">充值管理后台 | 管理员专用</div>
+        <div class="splash-loader"></div>
+    </div>
+
+    <!-- 主内容 -->
+    <div class="admin-container" id="main-content">
+        <div class="header">
+            <h1>充值兑换码生成</h1>
+            <div class="tag">后台管理系统 V2.1</div>
+        </div>
+
+        <div class="card">
+            <div class="form-group">
+                <label class="form-label" for="a78b9">钻石数量</label>
+                <input type="number" id="a78b9" class="form-input" min="1" max="9999" value="100" placeholder="请输入1-9999之间的数值">
+            </div>
+            <button class="btn" onclick="c89d0()">生成兑换码</button>
+        </div>
+
+        <div class="result-card" id="e78f9">
+            <div class="result-header">
+                <div class="result-title">生成的兑换码</div>
+                <button class="copy-btn" onclick="d90e1()">复制兑换码</button>
+            </div>
+            <div class="result-code" id="f89g0"></div>
+            <div class="result-tip">该兑换码1分钟内有效，且仅可使用一次</div>
+        </div>
+
+        <div class="footer">
+            © 2025 96快跑 充值管理系统 | 管理员权限专用
+        </div>
+    </div>
+
+    <!-- 复制成功提示 -->
+    <div class="copy-toast" id="copyToast">复制成功！</div>
+
+    <script>
+        // 开屏动画逻辑
+        setTimeout(() => {
+            document.getElementById('splash-screen').style.opacity = 0;
+            document.getElementById('splash-screen').style.transform = 'scale(0.95)';
+            setTimeout(() => {
+                document.getElementById('splash-screen').style.display = 'none';
+                document.getElementById('main-content').classList.add('show');
+            }, 800);
+        }, 2500);
+
+        // 核心生成逻辑
+        function c89d0() {
+            var x = document.getElementById("a78b9").value * 1;
+            if (isNaN(x) || x < 1 || x > 9999) {
+                alert("请输入1-9999之间的钻石数量！");
+                return;
+            }
+            var y = Date.now() + 60000, z = x + "|" + y, aa = window.btoa(z);
+            document.getElementById("f89g0").textContent = aa;
+            document.getElementById("e78f9").classList.add("show");
+        }
+
+        // 复制兑换码逻辑
+        function d90e1() {
+            var s = document.getElementById("f89g0").textContent;
+            navigator.clipboard.writeText(s).then(() => {
+                var t = document.getElementById("copyToast");
+                t.classList.add("show");
+                setTimeout(() => {
+                    t.classList.remove("show");
+                }, 1500);
+            }).catch(() => {
+                alert("复制失败，请手动复制！");
+            });
+        }
+
+        // 初始化隐藏结果区域
+        document.addEventListener("DOMContentLoaded", function() {
+            var bb = document.getElementById("e78f9");
+            bb.style.display = "block";
+            bb.classList.remove("show");
+        });
+    </script>
+</body>
+</html>
