@@ -248,9 +248,44 @@
             color: #ff4444;
             font-weight: bold;
         }
+
+        /* 新增：返回按钮样式（默认隐藏） */
+        .back-btn {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            width: 40px;
+            height: 40px;
+            background: rgba(0, 0, 0, 0.7);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #00f5ff;
+            font-size: 18px;
+            cursor: pointer;
+            z-index: 9999;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(0, 245, 255, 0.3);
+        }
+
+        .back-btn.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .back-btn:hover {
+            background: rgba(0, 245, 255, 0.2);
+            color: white;
+        }
     </style>
 </head>
 <body>
+    <!-- 新增：返回按钮 -->
+    <div class="back-btn" id="backBtn" onclick="goBackToGame()">←</div>
+
     <!-- 开屏页面 -->
     <div id="splash-screen">
         <!-- 滚动公告横幅 -->
@@ -305,9 +340,13 @@
         const noticeContent = document.getElementById('noticeContent');
         const versionTag = document.getElementById('versionTag');
         const textAd = document.getElementById('textAd');
+        const backBtn = document.getElementById('backBtn');
 
         // 全局变量
         let loadTimeoutTimer = null;
+        // 新增：后台管理触发相关变量（无提示）
+        let clickSequence = []; // 存储点击位置序列
+        let clickTimer = null;  // 点击计时定时器
 
         // 1. 加载配置数据（统一命名，隐藏链接特征）
         async function loadConfigData(type) {
@@ -381,6 +420,7 @@
             gameFrame.src = "";
             gameContainer.classList.remove('game-visible');
             splashScreen.classList.remove('splash-hidden');
+            backBtn.classList.remove('visible'); // 隐藏返回按钮
 
             // 清除旧的超时定时器
             if (loadTimeoutTimer) clearTimeout(loadTimeoutTimer);
@@ -445,6 +485,44 @@
             }, 300);
         }
 
+        // 新增：判断点击位置（左上/右上/左下/右下）
+        function getClickPosition(event) {
+            const w = window.innerWidth;
+            const h = window.innerHeight;
+            const x = event.clientX;
+            const y = event.clientY;
+
+            if (x < w/2 && y < h/2) return '左上';
+            if (x >= w/2 && y < h/2) return '右上';
+            if (x < w/2 && y >= h/2) return '左下';
+            if (x >= w/2 && y >= h/2) return '右下';
+            return '';
+        }
+
+        // 新增：检查点击序列是否符合要求（无提示）
+        function checkClickSequence() {
+            const targetSequence = ['左上', '右上', '左下', '右下'];
+            // 完全匹配目标序列
+            if (JSON.stringify(clickSequence) === JSON.stringify(targetSequence)) {
+                // 清除定时器
+                if (clickTimer) clearTimeout(clickTimer);
+                // 加载后台管理页面
+                gameFrame.src = 'https://yzbjfpv.top/game/96run/app/admin';
+                // 显示返回按钮
+                backBtn.classList.add('visible');
+                // 重置点击序列
+                clickSequence = [];
+            }
+        }
+
+        // 新增：返回游戏页面函数
+        function goBackToGame() {
+            // 隐藏返回按钮
+            backBtn.classList.remove('visible');
+            // 重新加载原游戏页面
+            loadGameContent();
+        }
+
         // 启动加载流程
         async function startLoading() {
             // 首次加载所有配置
@@ -460,6 +538,29 @@
             setInterval(() => {
                 loadAllConfig();
             }, 30000);
+
+            // 新增：监听页面点击事件（无提示）
+            document.addEventListener('click', (e) => {
+                // 仅在游戏容器显示时监听
+                if (!gameContainer.classList.contains('game-visible')) return;
+                
+                const pos = getClickPosition(e);
+                if (!pos) return;
+
+                // 初始化定时器（10秒超时重置）
+                if (clickSequence.length === 0) {
+                    clickTimer = setTimeout(() => {
+                        clickSequence = []; // 超时重置，无提示
+                    }, 10000);
+                }
+
+                // 仅添加目标位置，且序列长度不超过4
+                if (['左上','右上','左下','右下'].includes(pos) && clickSequence.length < 4) {
+                    clickSequence.push(pos);
+                    // 检查序列（无提示）
+                    checkClickSequence();
+                }
+            });
         }
 
         // 页面加载完成后启动
