@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>网易云音乐MP3外链生成工具</title>
+    <!-- 核心资源 -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- Tailwind 深度定制 -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        netease: '#C62F2F',
+                        neteaseLight: '#FF4444',
+                        neteaseDark: '#8B0000',
+                        dark: '#0F0F13',
+                        light: '#F5F5F7'
+                    },
+                    animation: {
+                        'float-slow': 'floatSlow 6s ease-in-out infinite',
+                        'float-medium': 'floatMedium 4s ease-in-out infinite',
+                        'float-fast': 'floatFast 3s ease-in-out infinite',
+                        'glow': 'glow 2s ease-in-out infinite alternate',
+                        'slide-up-stagger': 'slideUpStagger 0.5s ease-out forwards',
+                        'fade-in-scale': 'fadeInScale 0.6s ease-out forwards',
+                        'toast-up': 'toastUp 0.4s ease-out forwards',
+                        'toast-down': 'toastDown 0.3s ease-in forwards',
+                        'shine': 'shine 1.5s ease-in-out infinite',
+                    },
+                    keyframes: {
+                        floatSlow: {
+                            '0%, 100%': { transform: 'translateY(0) rotate(0deg)' },
+                            '50%': { transform: 'translateY(-20px) rotate(5deg)' },
+                        },
+                        floatMedium: {
+                            '0%, 100%': { transform: 'translateY(0) rotate(0deg)' },
+                            '50%': { transform: 'translateY(-15px) rotate(-3deg)' },
+                        },
+                        floatFast: {
+                            '0%, 100%': { transform: 'translateY(0) rotate(0deg)' },
+                            '50%': { transform: 'translateY(-10px) rotate(2deg)' },
+                        },
+                        glow: {
+                            '0%': { boxShadow: '0 0 10px rgba(198, 47, 47, 0.3), 0 0 20px rgba(198, 47, 47, 0.1)' },
+                            '100%': { boxShadow: '0 0 20px rgba(198, 47, 47, 0.6), 0 0 40px rgba(198, 47, 47, 0.3)' },
+                        },
+                        slideUpStagger: {
+                            '0%': { transform: 'translateY(30px)', opacity: '0' },
+                            '100%': { transform: 'translateY(0)', opacity: '1' },
+                        },
+                        fadeInScale: {
+                            '0%': { transform: 'scale(0.95)', opacity: '0' },
+                            '100%': { transform: 'scale(1)', opacity: '1' },
+                        },
+                        toastUp: {
+                            '0%': { transform: 'translate(-50%, 20px)', opacity: '0' },
+                            '100%': { transform: 'translate(-50%, 0)', opacity: '1' },
+                        },
+                        toastDown: {
+                            '0%': { transform: 'translate(-50%, 0)', opacity: '1' },
+                            '100%': { transform: 'translate(-50%, 20px)', opacity: '0' },
+                        },
+                        shine: {
+                            '0%, 100%': { backgroundPosition: '200% center' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- 自定义工具类 -->
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .content-auto {
+                content-visibility: auto;
+            }
+            .glass {
+                background: rgba(255, 255, 255, 0.05);
+                backdrop-filter: blur(12px);
+                -webkit-backdrop-filter: blur(12px);
+                border: 1px solid rgba(255, 255, 255, 0.1);
+            }
+            .glass-hover {
+                transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            }
+            .glass-hover:hover {
+                background: rgba(255, 255, 255, 0.08);
+                border-color: rgba(198, 47, 47, 0.4);
+                transform: translateY(-2px);
+            }
+            .text-gradient {
+                background: linear-gradient(90deg, #fff 0%, #FF4444 100%);
+                background-size: 200% auto;
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+            }
+            .btn-glow {
+                box-shadow: 0 0 20px rgba(198, 47, 47, 0.4);
+            }
+        }
+    </style>
+</head>
+<body class="bg-dark min-h-screen font-sans text-light overflow-x-hidden relative">
+    <!-- 背景装饰元素 -->
+    <div class="fixed inset-0 -z-10 overflow-hidden">
+        <div class="absolute top-[-10%] left-[-5%] w-[500px] h-[500px] rounded-full bg-netease/20 blur-[100px] animate-float-slow"></div>
+        <div class="absolute bottom-[-10%] right-[-5%] w-[600px] h-[600px] rounded-full bg-neteaseDark/30 blur-[120px] animate-float-medium"></div>
+        <div class="absolute top-[30%] right-[10%] w-[300px] h-[300px] rounded-full bg-neteaseLight/10 blur-[80px] animate-float-fast"></div>
+    </div>
+
+    <!-- 浮动音符装饰 -->
+    <div class="fixed top-[15%] left-[10%] text-white/10 text-5xl animate-float-slow -z-10">
+        <i class="fa fa-music"></i>
+    </div>
+    <div class="fixed bottom-[20%] right-[8%] text-white/10 text-4xl animate-float-medium -z-10">
+        <i class="fa fa-music"></i>
+    </div>
+    <div class="fixed top-[60%] left-[20%] text-white/10 text-3xl animate-float-fast -z-10">
+        <i class="fa fa-music"></i>
+    </div>
+
+    <!-- 主内容容器 -->
+    <main class="relative z-10 max-w-6xl mx-auto px-4 py-20 min-h-screen flex flex-col">
+        <!-- 顶部Hero区 -->
+        <section class="text-center mb-16 animate-fade-in-scale">
+            <h1 class="text-[clamp(2rem,6vw,4rem)] font-bold mb-6 text-gradient animate-shine">
+                网易云音乐MP3外链生成工具
+            </h1>
+            <p class="text-white/60 text-lg md:text-xl max-w-2xl mx-auto">
+                一键生成长期有效外链，支持批量处理，极速转换
+            </p>
+        </section>
+
+        <!-- 核心输入操作区 -->
+        <section class="glass rounded-3xl p-6 md:p-8 mb-12 animate-fade-in-scale" style="animation-delay: 0.1s">
+            <textarea 
+                id="inputArea" 
+                rows="7" 
+                class="w-full bg-white/5 border border-white/10 rounded-2xl p-5 text-white/90 text-lg focus:outline-none focus:border-netease focus:ring-2 focus:ring-netease/30 resize-none transition-all duration-300 placeholder:text-white/30"
+                placeholder="请输入歌曲ID或网易云歌曲链接，一行一个，支持批量处理"
+            ></textarea>
+            
+            <!-- 按钮组 -->
+            <div class="flex flex-wrap gap-4 mt-6">
+                <button 
+                    id="generateBtn" 
+                    class="bg-netease hover:bg-neteaseLight text-white px-8 py-4 rounded-xl font-semibold text-lg transition-all duration-300 hover:btn-glow hover:scale-105 active:scale-95 flex items-center gap-2"
+                >
+                    <i class="fa fa-magic"></i>
+                    生成外链
+                </button>
+                <button 
+                    id="copyAllBtn" 
+                    class="bg-white/10 hover:bg-white/15 text-white px-8 py-4 rounded-xl font-semibold text-lg transition-all duration-300 hover:scale-105 active:scale-95 flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+                    disabled
+                >
+                    <i class="fa fa-copy"></i>
+                    复制全部链接
+                </button>
+                <button 
+                    id="clearBtn" 
+                    class="bg-white/5 hover:bg-white/10 text-white/80 px-8 py-4 rounded-xl font-semibold text-lg transition-all duration-300 hover:scale-105 active:scale-95 flex items-center gap-2 ml-auto"
+                >
+                    <i class="fa fa-trash"></i>
+                    清空
+                </button>
+            </div>
+        </section>
+
+        <!-- 结果展示区 -->
+        <section class="flex-1">
+            <!-- 空状态 -->
+            <div id="resultEmpty" class="glass rounded-3xl p-16 text-center animate-fade-in-scale" style="animation-delay: 0.2s">
+                <i class="fa fa-music text-6xl text-white/10 mb-6 block"></i>
+                <p class="text-white/40 text-xl">输入内容后点击生成，结果将显示在这里</p>
+            </div>
+
+            <!-- 结果列表 -->
+            <div id="resultList" class="space-y-4 hidden"></div>
+        </section>
+    </main>
+
+    <!-- 功能说明区（放在最底部，符合要求） -->
+    <section class="relative z-10 max-w-6xl mx-auto px-4 pb-20">
+        <div class="glass rounded-3xl p-6 md:p-8 animate-fade-in-scale" style="animation-delay: 0.3s">
+            <h2 class="text-2xl font-bold mb-6 text-white flex items-center gap-3">
+                <i class="fa fa-info-circle text-netease"></i>
+                使用功能说明
+            </h2>
+            <div class="space-y-4 text-white/70 text-lg">
+                <div class="flex items-start gap-3">
+                    <i class="fa fa-check-circle text-netease mt-1 shrink-0"></i>
+                    <span>支持两种输入格式：<strong class="text-white">纯数字歌曲ID</strong> 或 <strong class="text-white">完整的网易云歌曲链接</strong>，一行一个，支持批量处理</span>
+                </div>
+                <div class="flex items-start gap-3">
+                    <i class="fa fa-check-circle text-netease mt-1 shrink-0"></i>
+                    <span>链接示例：<code class="bg-white/10 px-3 py-1 rounded-lg text-neteaseLight">http://music.163.com/#/song?id=317151</code></span>
+                </div>
+                <div class="flex items-start gap-3">
+                    <i class="fa fa-check-circle text-netease mt-1 shrink-0"></i>
+                    <span>ID示例：<code class="bg-white/10 px-3 py-1 rounded-lg text-neteaseLight">317151</code></span>
+                </div>
+                <div class="flex items-start gap-3">
+                    <i class="fa fa-check-circle text-netease mt-1 shrink-0"></i>
+                    <span>生成规则：自动提取歌曲ID，生成格式为 <code class="bg-white/10 px-3 py-1 rounded-lg text-neteaseLight">http://music.163.com/song/media/outer/url?id=歌曲ID.mp3</code> 的长期有效外链</span>
+                </div>
+                <div class="flex items-start gap-3">
+                    <i class="fa fa-check-circle text-netease mt-1 shrink-0"></i>
+                    <span>生成的链接可直接用于下载、外链分享、网页音频播放，长期有效</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 页脚 -->
+        <footer class="mt-10 text-center text-white/30 text-sm">
+            <p>本工具仅用于学习交流，音乐版权归网易云音乐及原作者所有</p>
+        </footer>
+    </section>
+
+    <!-- 提示浮层 -->
+    <div id="toast" class="fixed bottom-10 left-1/2 -translate-x-1/2 z-[9999] glass rounded-xl px-6 py-4 flex items-center gap-3 opacity-0 invisible">
+        <i class="fa fa-check-circle text-neteaseLight text-xl"></i>
+        <span id="toastText" class="text-white text-lg font-medium">操作成功</span>
+    </div>
+
+    <!-- 核心JS逻辑 -->
+    <script>
+        // 元素获取
+        const inputArea = document.getElementById('inputArea');
+        const generateBtn = document.getElementById('generateBtn');
+        const copyAllBtn = document.getElementById('copyAllBtn');
+        const clearBtn = document.getElementById('clearBtn');
+        const resultEmpty = document.getElementById('resultEmpty');
+        const resultList = document.getElementById('resultList');
+        const toast = document.getElementById('toast');
+        const toastText = document.getElementById('toastText');
+
+        // 核心生成规则
+        const BASE_URL = 'http://music.163.com/song/media/outer/url?id=';
+        
+        // 提取歌曲ID
+        function extractSongId(input) {
+            input = input.trim();
+            if (!input) return null;
+            const idMatch = input.match(/id=(\d+)/);
+            if (idMatch && idMatch[1]) return idMatch[1];
+            if (/^\d+$/.test(input)) return input;
+            return null;
+        }
+
+        // 生成外链
+        function generateUrl(id) {
+            return `${BASE_URL}${id}.mp3`;
+        }
+
+        // 提示框控制
+        function showToast(text, isError = false) {
+            toastText.textContent = text;
+            if (isError) {
+                toast.querySelector('i').className = 'fa fa-exclamation-circle text-white text-xl';
+            } else {
+                toast.querySelector('i').className = 'fa fa-check-circle text-neteaseLight text-xl';
+            }
+            // 显示动画
+            toast.classList.remove('invisible', 'opacity-0', 'animate-toast-down');
+            toast.classList.add('animate-toast-up', 'opacity-100', 'visible');
+            // 隐藏
+            setTimeout(() => {
+                toast.classList.remove('animate-toast-up');
+                toast.classList.add('animate-toast-down');
+                setTimeout(() => {
+                    toast.classList.add('invisible', 'opacity-0');
+                }, 300);
+            }, 2500);
+        }
+
+        // 生成按钮逻辑
+        generateBtn.addEventListener('click', () => {
+            const inputContent = inputArea.value.trim();
+            if (!inputContent) {
+                showToast('请先输入歌曲ID或链接！', true);
+                return;
+            }
+
+            const lines = inputContent.split('\n').filter(line => line.trim());
+            const resultData = [];
+
+            lines.forEach((line, index) => {
+                const id = extractSongId(line);
+                resultData.push({
+                    index: index + 1,
+                    id: id,
+                    origin: line,
+                    url: id ? generateUrl(id) : null,
+                    isValid: !!id
+                });
+            });
+
+            // 渲染结果
+            renderResult(resultData);
+            copyAllBtn.disabled = false;
+            showToast(`成功生成 ${resultData.filter(item => item.isValid).length} 个有效外链！`);
+        });
+
+        // 渲染结果列表
+        function renderResult(data) {
+            resultEmpty.classList.add('hidden');
+            resultList.classList.remove('hidden');
+            resultList.innerHTML = '';
+
+            data.forEach((item, index) => {
+                const itemDiv = document.createElement('div');
+                itemDiv.className = 'glass rounded-2xl p-5 glass-hover animate-slide-up-stagger';
+                itemDiv.style.animationDelay = `${index * 0.08}s`;
+                itemDiv.style.opacity = '0';
+
+                if (item.isValid) {
+                    itemDiv.innerHTML = `
+                        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+                            <div class="flex-1">
+                                <div class="flex items-center gap-3 mb-2">
+                                    <span class="bg-netease/20 text-neteaseLight px-3 py-1 rounded-full text-sm font-medium">序号 ${item.index}</span>
+                                    <span class="text-white/60">歌曲ID: <span class="text-white">${item.id}</span></span>
+                                </div>
+                                <a href="${item.url}" target="_blank" class="text-white/90 hover:text-neteaseLight transition-colors font-medium break-all text-lg">
+                                    ${item.url}
+                                </a>
+                            </div>
+                            <div class="flex gap-3 shrink-0">
+                                <button class="copyBtn bg-white/10 hover:bg-white/20 text-white px-4 py-2 rounded-xl transition-all hover:scale-105 active:scale-95" data-url="${item.url}">
+                                    <i class="fa fa-copy mr-1"></i>复制
+                                </button>
+                                <a href="${item.url}" target="_blank" class="bg-netease/80 hover:bg-netease text-white px-4 py-2 rounded-xl transition-all hover:scale-105 active:scale-95">
+                                    <i class="fa fa-play mr-1"></i>试听
+                                </a>
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    itemDiv.innerHTML = `
+                        <div class="flex items-center justify-between gap-4">
+                            <div class="flex-1">
+                                <div class="flex items-center gap-3 mb-2">
+                                    <span class="bg-white/10 text-white/60 px-3 py-1 rounded-full text-sm font-medium">序号 ${item.index}</span>
+                                    <span class="text-red-400">无法识别的内容</span>
+                                </div>
+                                <p class="text-white/40 break-all">${item.origin}</p>
+                            </div>
+                        </div>
+                    `;
+                }
+
+                resultList.appendChild(itemDiv);
+            });
+
+            // 绑定单个复制按钮
+            document.querySelectorAll('.copyBtn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const url = btn.getAttribute('data-url');
+                    navigator.clipboard.writeText(url).then(() => {
+                        showToast('链接复制成功！');
+                        btn.classList.add('animate-glow');
+                        setTimeout(() => btn.classList.remove('animate-glow'), 1500);
+                    });
+                });
+            });
+        }
+
+        // 复制全部按钮
+        copyAllBtn.addEventListener('click', () => {
+            const allLinks = [];
+            document.querySelectorAll('.copyBtn').forEach(btn => {
+                allLinks.push(btn.getAttribute('data-url'));
+            });
+            if (allLinks.length === 0) {
+                showToast('暂无有效链接可复制！', true);
+                return;
+            }
+            navigator.clipboard.writeText(allLinks.join('\n')).then(() => {
+                showToast('全部链接复制成功！');
+                copyAllBtn.classList.add('animate-glow');
+                setTimeout(() => copyAllBtn.classList.remove('animate-glow'), 1500);
+            });
+        });
+
+        // 清空按钮
+        clearBtn.addEventListener('click', () => {
+            inputArea.value = '';
+            resultList.innerHTML = '';
+            resultList.classList.add('hidden');
+            resultEmpty.classList.remove('hidden');
+            copyAllBtn.disabled = true;
+            showToast('已清空全部内容');
+        });
+
+        // 鼠标视差效果
+        document.addEventListener('mousemove', (e) => {
+            const moveX = (e.clientX - window.innerWidth / 2) * 0.02;
+            const moveY = (e.clientY - window.innerHeight / 2) * 0.02;
+            document.querySelectorAll('.animate-float-slow, .animate-float-medium, .animate-float-fast').forEach(el => {
+                el.style.transform = `translate(${moveX}px, ${moveY}px) ${el.style.transform}`;
+            });
+        });
+    </script>
+</body>
+</html>
