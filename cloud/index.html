@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YZCloud沅臻云盘</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script>
+        // 老IE浏览器检测
+        const isIE = /MSIE|Trident/.test(window.navigator.userAgent);
+        if (isIE) document.documentElement.classList.add('ie-old');
+
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#0F52BA',
+                        secondary: '#00BFFF',
+                        accent: '#7C3AED',
+                        dark: '#05070F',
+                        card: 'rgba(15, 23, 42, 0.6)',
+                        light: '#F8FAFC'
+                    },
+                    fontFamily: {
+                        mono: ['JetBrains Mono', 'Consolas', 'monospace'],
+                    },
+                }
+            }
+        }
+    </script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root { --grid-speed: 8s; }
+        
+        /* ====================== 全局背景 与开屏完全隔离 ====================== */
+        body { 
+            background: #05070F;
+            min-height: 100vh; 
+            overflow-x: hidden;
+            position: relative;
+        }
+        /* 远景网格 无限滚动 */
+        .bg-grid-far {
+            content: '';
+            position: fixed;
+            inset: 0;
+            z-index: -2;
+            background-image: linear-gradient(rgba(0, 191, 255, 0.08) 1px, transparent 1px), 
+                              linear-gradient(90deg, rgba(0, 191, 255, 0.08) 1px, transparent 1px);
+            background-size: 40px 40px;
+            animation: gridMoveFar 15s linear infinite;
+            will-change: transform;
+        }
+        /* 近景网格 视差滚动 */
+        .bg-grid-near {
+            content: '';
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+            background-image: linear-gradient(rgba(124, 58, 237, 0.12) 1px, transparent 1px), 
+                              linear-gradient(90deg, rgba(124, 58, 237, 0.12) 1px, transparent 1px);
+            background-size: 80px 80px;
+            animation: gridMoveNear 10s linear infinite;
+            will-change: transform;
+        }
+        /* 网格动画 */
+        @keyframes gridMoveFar {
+            0% { transform: perspective(1000px) rotateX(65deg) translateY(0) scale(2); }
+            100% { transform: perspective(1000px) rotateX(65deg) translateY(-400px) scale(2); }
+        }
+        @keyframes gridMoveNear {
+            0% { transform: perspective(800px) rotateX(65deg) translateY(0) scale(1.5); }
+            100% { transform: perspective(800px) rotateX(65deg) translateY(-800px) scale(1.5); }
+        }
+
+        /* ====================== 全局粒子系统 ====================== */
+        @keyframes particleFlow {
+            0% { transform: translate3d(var(--x), 100vh, 0) scale(var(--scale)); opacity: 0; }
+            10% { opacity: var(--opacity); }
+            90% { opacity: var(--opacity); }
+            100% { transform: translate3d(var(--x), -100px, 0) scale(var(--scale)); opacity: 0; }
+        }
+        .particles-container {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            pointer-events: none;
+            overflow: hidden;
+        }
+        .flow-particle {
+            position: absolute;
+            border-radius: 50%;
+            background: var(--color);
+            width: var(--size);
+            height: var(--size);
+            left: var(--x);
+            animation: particleFlow var(--duration) linear infinite;
+            animation-delay: var(--delay);
+            box-shadow: 0 0 var(--glow) var(--color);
+            will-change: transform, opacity;
+        }
+
+        /* 玻璃拟态通用样式 */
+        .glass { 
+            background: rgba(15, 23, 42, 0.6); 
+            backdrop-filter: blur(12px); 
+            -webkit-backdrop-filter: blur(12px); 
+            border: 1px solid rgba(255, 255, 255, 0.08); 
+        }
+        /* 3D卡片hover效果 */
+        .card-3d {
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transform-style: preserve-3d;
+            will-change: transform;
+        }
+        .card-3d:hover {
+            transform: translateY(-10px) rotateX(5deg) rotateY(2deg);
+            box-shadow: 0 25px 50px rgba(0, 191, 255, 0.3);
+            border-color: rgba(0, 191, 255, 0.5);
+        }
+        .btn-glow { 
+            transition: all 0.3s ease; 
+            will-change: box-shadow, transform;
+        }
+        .btn-glow:hover { 
+            box-shadow: 0 0 30px rgba(0, 191, 255, 0.6); 
+            transform: scale(1.02);
+        }
+
+        /* 滚动触发动画 */
+        .scroll-animate {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: all 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+            will-change: transform, opacity;
+        }
+        .scroll-animate.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* ====================== 开屏动画 2秒精准 文字超快 独立不重合 ====================== */
+        @keyframes letterFlyIn {
+            0% { transform: translate3d(var(--x), var(--y), 0) scale(2); opacity: 0; filter: blur(20px); }
+            100% { transform: translate3d(0, 0, 0) scale(1); opacity: 1; filter: blur(0); }
+        }
+        @keyframes subSlideUp {
+            0% { transform: translateY(30px); opacity: 0; filter: blur(10px); letter-spacing: 10px; }
+            100% { transform: translateY(0); opacity: 1; filter: blur(0); letter-spacing: 4px; }
+        }
+        @keyframes tagFadeIn {
+            0% { opacity: 0; transform: scale(0.8); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+        @keyframes progressShine {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+        @keyframes splashExit {
+            0% { opacity: 1; transform: scale(1); filter: blur(0); }
+            100% { opacity: 0; transform: scale(0.8); filter: blur(30px); pointer-events: none; }
+        }
+        @keyframes splashParticleFloat {
+            0% { transform: translate(0, 0); opacity: 0; }
+            50% { opacity: 0.9; }
+            100% { transform: translate(var(--tx), var(--ty)); opacity: 0; }
+        }
+
+        /* 开屏容器 完全独立 不与背景重合 */
+        #splash {
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+            background: #05070F !important;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            animation: splashExit 0.5s ease forwards;
+            animation-delay: 2s; /* 2秒后退出 */
+        }
+        /* 开屏独立网格 */
+        .splash-grid-far {
+            position: absolute;
+            inset: 0;
+            background-image: linear-gradient(rgba(0, 191, 255, 0.08) 1px, transparent 1px), 
+                              linear-gradient(90deg, rgba(0, 191, 255, 0.08) 1px, transparent 1px);
+            background-size: 40px 40px;
+            animation: gridMoveFar 15s linear infinite;
+            opacity: 0.8;
+        }
+        .splash-grid-near {
+            position: absolute;
+            inset: 0;
+            background-image: linear-gradient(rgba(124, 58, 237, 0.12) 1px, transparent 1px), 
+                              linear-gradient(90deg, rgba(124, 58, 237, 0.12) 1px, transparent 1px);
+            background-size: 80px 80px;
+            animation: gridMoveNear 10s linear infinite;
+            opacity: 0.8;
+        }
+        /* 开屏独立粒子 */
+        .splash-particles {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            z-index: 1;
+        }
+        .splash-particle {
+            position: absolute;
+            border-radius: 50%;
+            background: var(--color);
+            width: var(--size);
+            height: var(--size);
+            left: var(--x);
+            top: var(--y);
+            animation: splashParticleFloat 1.5s linear infinite;
+            animation-delay: var(--delay);
+            box-shadow: 0 0 var(--glow) var(--color);
+            will-change: transform, opacity;
+        }
+
+        /* 标题字母 初始模糊 超快动画 适配2秒 */
+        .title-letter {
+            display: inline-block;
+            font-size: clamp(3rem, 12vw, 7rem);
+            font-weight: 900;
+            background: linear-gradient(135deg, #00BFFF 0%, #7C3AED 50%, #0F52BA 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 0 40px rgba(0, 191, 255, 0.3);
+            transform: translate3d(var(--x), var(--y), 0) scale(2);
+            opacity: 0;
+            filter: blur(20px);
+            animation: letterFlyIn 0.3s cubic-bezier(0.18, 0.82, 0.28, 1) forwards; /* 动画更快 */
+            will-change: transform, opacity, filter;
+        }
+        .splash-subtitle {
+            font-size: clamp(1rem, 4vw, 1.8rem);
+            color: rgba(255, 255, 255, 0.7);
+            letter-spacing: 4px;
+            margin-top: 0.5rem;
+            animation: subSlideUp 0.4s ease forwards;
+            animation-delay: 0.4s; /* 适配2秒时长 */
+            opacity: 0;
+        }
+        .splash-tag {
+            margin-top: 2rem;
+            color: rgba(255, 255, 255, 0.5);
+            animation: tagFadeIn 0.3s ease forwards;
+            animation-delay: 0.6s; /* 适配2秒时长 */
+            opacity: 0;
+        }
+        .progress-wrap {
+            width: 90%;
+            max-width: 600px;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 100px;
+            margin-top: 4rem;
+            overflow: hidden;
+            position: relative;
+            z-index: 10;
+        }
+        .progress-bar {
+            height: 100%;
+            width: 0%;
+            border-radius: 100px;
+            background: linear-gradient(90deg, #0F52BA, #00BFFF, #7C3AED, #00BFFF, #0F52BA);
+            background-size: 200% 100%;
+            animation: progressRun 2s linear forwards, progressShine 0.8s linear infinite; /* 2秒精准填满 */
+            box-shadow: 0 0 15px rgba(0, 191, 255, 0.8);
+            will-change: width;
+        }
+        @keyframes progressRun {
+            0% { width: 0%; }
+            100% { width: 100%; }
+        }
+        #percent {
+            margin-top: 1rem;
+            font-family: var(--font-mono);
+            font-size: 1.4rem;
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: 700;
+            text-shadow: 0 0 15px rgba(0, 191, 255, 0.6);
+            position: relative;
+            z-index: 10;
+        }
+
+        /* 导航栏滚动动态效果 */
+        #navbar {
+            transition: all 0.4s ease;
+            will-change: background, backdrop-filter, padding;
+        }
+        #navbar.scrolled {
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(20px);
+            padding-top: 0.75rem;
+            padding-bottom: 0.75rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        /* ====================== 赞助商排版 ====================== */
+        .sponsor-tag {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.25rem;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            transition: all 0.3s ease;
+        }
+        .sponsor-tag:hover {
+            background: rgba(0, 191, 255, 0.1);
+            border-color: rgba(0, 191, 255, 0.3);
+            transform: translateY(-3px);
+        }
+        .sponsor-icon {
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #00BFFF, #7C3AED);
+            color: white;
+            font-size: 10px;
+        }
+
+        /* 技术支持标签排版 */
+        .tech-tag {
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            background: rgba(15, 82, 186, 0.1);
+            border: 1px solid rgba(15, 82, 186, 0.3);
+            color: #00BFFF;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        .tech-tag:hover {
+            background: rgba(15, 82, 186, 0.2);
+            border-color: #00BFFF;
+            color: white;
+        }
+
+        /* ====================== 老IE浏览器适配 ====================== */
+        .ie-old #splash,
+        .ie-old .bg-grid-far,
+        .ie-old .bg-grid-near,
+        .ie-old .particles-container,
+        .ie-old .glass {
+            display: none !important;
+        }
+        .ie-old body {
+            background: #0a0f1c;
+            color: #fff;
+            font-family: Arial, sans-serif;
+        }
+        .ie-old #main {
+            opacity: 1 !important;
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .ie-old .ie-simple-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .ie-old .ie-node-box {
+            border: 1px solid #00BFFF;
+            padding: 20px;
+            margin-bottom: 20px;
+            background: #0f172a;
+        }
+        .ie-old .ie-btn {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            background: #00BFFF;
+            color: #fff;
+            text-align: center;
+            text-decoration: none;
+            font-weight: bold;
+            margin-top: 15px;
+        }
+        .ie-old .ie-warning {
+            border: 1px solid #ff7d00;
+            padding: 15px;
+            margin: 20px 0;
+            background: #2d1a00;
+            font-size: 14px;
+        }
+        .ie-old footer {
+            text-align: center;
+            margin-top: 30px;
+            font-size: 12px;
+            color: #999;
+        }
+    </style>
+</head>
+<body class="text-light font-sans">
+
+<!-- 全局背景 -->
+<div class="bg-grid-far"></div>
+<div class="bg-grid-near"></div>
+<!-- 全局流动粒子 -->
+<div class="particles-container" id="particles"></div>
+
+<!-- 老IE简易界面 -->
+<!--[if IE]>
+<div id="ie-simple">
+    <div class="ie-simple-header">
+        <h1>YZ Cloud 沅臻云盘</h1>
+        <p>免费高速不限速 · 为方便模友而生</p>
+    </div>
+
+    <div class="ie-node-box">
+        <h2>节点 · 北京</h2>
+        <p>配置：i7-8565U + UHD620｜512G SSD + 3TB HDD</p>
+        <p><strong>账号：888 密码：666</strong></p>
+        <a href="http://123.56.106.49:12345" target="_blank" class="ie-btn">进入北京节点</a>
+    </div>
+
+    <div class="ie-node-box">
+        <h2>节点 · 河北</h2>
+        <p>配置：Celeron J1800｜64G + 128G</p>
+        <p><strong>账号：A1/A2/A3 密码：1234</strong></p>
+        <a href="http://47.104.206.20:51794" target="_blank" class="ie-btn">进入河北节点</a>
+    </div>
+
+    <div class="ie-warning">
+        <h3>⚠️ 使用警告</h3>
+        <p>本账号仅用于个人非商业用途，严禁用于非法用途、违规传播或恶意攻击。点击进入即代表您同意自行承担全部责任，情节严重将移交相关部门处理。</p>
+        <p>下载站纯公益无上传/下载收费内容</p>
+    </div>
+
+    <footer>
+        <p>© 2026 YZ Cloud 沅臻云盘 · 纯公益免费下载站</p>
+        <p><a href="https://frp.80cn.cn" target="_blank">管理员登录</a></p>
+    </footer>
+</div>
+<![endif]-->
+
+<!-- 现代浏览器开屏动画 2秒精准 独立粒子 不重合 -->
+<div id="splash" class="modern-only">
+    <div class="splash-grid-far"></div>
+    <div class="splash-grid-near"></div>
+    <div class="splash-particles" id="splash-particles"></div>
+    
+    <div class="text-center z-10">
+        <div class="title-wrap">
+            <span class="title-letter" style="--x: -150px; --y: -100px; animation-delay: 0.05s">Y</span>
+            <span class="title-letter" style="--x: -100px; --y: 80px; animation-delay: 0.1s">Z</span>
+            <span class="title-letter" style="--x: 100px; --y: -80px; animation-delay: 0.15s">&nbsp;</span>
+            <span class="title-letter" style="--x: 80px; --y: 120px; animation-delay: 0.2s">C</span>
+            <span class="title-letter" style="--x: -60px; --y: -90px; animation-delay: 0.25s">l</span>
+            <span class="title-letter" style="--x: 120px; --y: 60px; animation-delay: 0.3s">o</span>
+            <span class="title-letter" style="--x: -120px; --y: 70px; animation-delay: 0.35s">u</span>
+            <span class="title-letter" style="--x: 150px; --y: -120px; animation-delay: 0.4s">d</span>
+        </div>
+        <p class="splash-subtitle">沅臻云盘</p>
+        <p class="splash-tag">免费高速不限速 · 为模友而生</p>
+    </div>
+
+    <div class="progress-wrap">
+        <div class="progress-bar"></div>
+    </div>
+    <p id="percent">0.00%</p>
+</div>
+
+<!-- 主内容 完全未改动 -->
+<div id="main" class="opacity-0 transition-opacity duration-800 pt-28 pb-16 min-h-screen relative z-10">
+    <!-- 动态导航栏 -->
+    <nav id="navbar" class="glass fixed top-0 left-0 right-0 z-40 px-6 py-4">
+        <div class="container mx-auto flex flex-col md:flex-row md:justify-between md:items-center gap-2">
+            <div class="flex items-center gap-3">
+                <h2 class="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-[#00BFFF] to-[#0F52BA]">YZ Cloud</h2>
+                <span class="text-white/60 text-lg">沅臻云盘</span>
+            </div>
+            <p class="text-white/70 text-sm md:text-base">免费高速不限速 · 可直接上传共享资源 · 为方便模友而生</p>
+        </div>
+    </nav>
+
+    <!-- 节点卡片区域 -->
+    <div class="container mx-auto px-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto mt-8">
+            <!-- 北京节点 -->
+            <div class="glass card-3d rounded-2xl p-8 scroll-animate">
+                <div class="flex justify-between items-start mb-6">
+                    <div>
+                        <h3 class="text-2xl font-bold mb-1 flex items-center gap-2">
+                            <i class="fa fa-server text-[#00BFFF]"></i>节点 · 北京
+                        </h3>
+                        <p class="text-white/50 text-sm">核心节点 · 低延迟高带宽</p>
+                    </div>
+                    <span id="status-beijing" class="px-3 py-1 rounded-full text-xs bg-green-500/20 text-green-400 font-medium">
+                        <i class="fa fa-check-circle"></i> 在线
+                    </span>
+                </div>
+                <div class="space-y-3 mb-8 text-white/80">
+                    <p class="flex items-center gap-3"><i class="fa fa-microchip w-5 text-[#00BFFF]"></i> i7-8565U + UHD620</p>
+                    <p class="flex items-center gap-3"><i class="fa fa-hdd-o w-5 text-[#00BFFF]"></i> 512G SSD + 3TB HDD</p>
+                </div>
+                <button data-server="beijing" data-url="http://123.56.106.49:12345" 
+                    class="w-full py-4 rounded-xl bg-gradient-to-r from-[#00BFFF] to-[#0F52BA] text-white font-bold text-lg btn-glow">
+                    进入北京节点
+                </button>
+            </div>
+
+            <!-- 河北节点 -->
+            <div class="glass card-3d rounded-2xl p-8 scroll-animate" style="transition-delay: 0.15s;">
+                <div class="flex justify-between items-start mb-6">
+                    <div>
+                        <h3 class="text-2xl font-bold mb-1 flex items-center gap-2">
+                            <i class="fa fa-server text-[#7C3AED]"></i>节点 · 河北
+                        </h3>
+                        <p class="text-white/50 text-sm">备用节点 · 稳定高可用</p>
+                    </div>
+                    <span id="status-hebei" class="px-3 py-1 rounded-full text-xs bg-green-500/20 text-green-400 font-medium">
+                        <i class="fa fa-check-circle"></i> 在线
+                    </span>
+                </div>
+                <div class="space-y-3 mb-8 text-white/80">
+                    <p class="flex items-center gap-3"><i class="fa fa-microchip w-5 text-[#7C3AED]"></i> Celeron J1800</p>
+                    <p class="flex items-center gap-3"><i class="fa fa-hdd-o w-5 text-[#7C3AED]"></i> 64G + 128G</p>
+                </div>
+                <button data-server="hebei" data-url="http://47.104.206.20:51794" 
+                    class="w-full py-4 rounded-xl bg-gradient-to-r from-[#7C3AED] to-[#0F52BA] text-white font-bold text-lg btn-glow">
+                    进入河北节点
+                </button>
+            </div>
+        </div>
+
+        <!-- 赞助商区域 -->
+        <div class="mt-24 mb-12 scroll-animate">
+            <div class="text-center mb-8">
+                <h4 class="text-xl font-bold text-white mb-2 flex items-center justify-center gap-2">
+                    <i class="fa fa-star text-yellow-400"></i> 官方赞助商
+                </h4>
+                <p class="text-white/50 text-sm">感谢以下合作伙伴的大力支持</p>
+            </div>
+            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 max-w-4xl mx-auto">
+                <div class="sponsor-tag">
+                    <div class="sponsor-icon"><i class="fa fa-bolt"></i></div>
+                    <span class="text-white/80">大黄狗电池</span>
+                </div>
+                <div class="sponsor-tag">
+                    <div class="sponsor-icon"><i class="fa fa-battery-full"></i></div>
+                    <span class="text-white/80">博氏电池</span>
+                </div>
+                <div class="sponsor-tag">
+                    <div class="sponsor-icon"><i class="fa fa-video-camera"></i></div>
+                    <span class="text-white/80">飞阅传媒</span>
+                </div>
+                <div class="sponsor-tag">
+                    <div class="sponsor-icon"><i class="fa fa-wifi"></i></div>
+                    <span class="text-white/80">PandaRC</span>
+                </div>
+                <div class="sponsor-tag">
+                    <div class="sponsor-icon"><i class="fa fa-plane"></i></div>
+                    <span class="text-white/80">HaoYeRC</span>
+                </div>
+                <div class="sponsor-tag">
+                    <div class="sponsor-icon"><i class="fa fa-battery-three-quarters"></i></div>
+                    <span class="text-white/80">嘟嘟电池</span>
+                </div>
+                <div class="sponsor-tag">
+                    <div class="sponsor-icon"><i class="fa fa-cogs"></i></div>
+                    <span class="text-white/80">翼效架构</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 技术支持区域 -->
+        <div class="mb-16 scroll-animate" style="transition-delay: 0.1s;">
+            <div class="text-center mb-8">
+                <h4 class="text-xl font-bold text-white mb-2 flex items-center justify-center gap-2">
+                    <i class="fa fa-code text-[#00BFFF]"></i> 技术支持
+                </h4>
+            </div>
+            <div class="flex flex-wrap justify-center gap-3 max-w-3xl mx-auto">
+                <a href="https://yzbjfpv.top" target="_blank" class="tech-tag">yzbjfpv.top</a>
+                <a href="https://917813.com.cn" target="_blank" class="tech-tag">917813.com.cn</a>
+                <a href="https://wanshizan.com.cn" target="_blank" class="tech-tag">wanshizan.com.cn</a>
+                <a href="https://pokrc.com" target="_blank" class="tech-tag">pokrc.com</a>
+                <a href="https://pokrc.cn" target="_blank" class="tech-tag">pokrc.cn</a>
+            </div>
+        </div>
+
+        <!-- 页脚 -->
+        <footer class="text-center text-white/40 text-sm pt-8 border-t border-white/10 scroll-animate" style="transition-delay: 0.2s;">
+            <p>© 2026 YZ Cloud 沅臻云盘 · 纯公益免费下载站</p>
+            <a href="https://frp.80cn.cn" target="_blank" class="inline-block mt-4 text-[#00BFFF] hover:underline">
+                <i class="fa fa-user-secret mr-1"></i>管理员登录
+            </a>
+        </footer>
+    </div>
+</div>
+
+<!-- 警告弹窗 -->
+<div id="warning" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/80 backdrop-blur-sm">
+    <div class="glass rounded-2xl p-8 max-w-md w-[90%] shadow-2xl">
+        <div class="flex items-center gap-3 mb-6">
+            <i class="fa fa-exclamation-triangle text-yellow-500 text-3xl"></i>
+            <h2 class="text-2xl font-bold">使用警告</h2>
+        </div>
+        <div class="space-y-4 mb-8 leading-relaxed text-white/80 text-sm">
+            <p>本账号仅用于个人非商业用途，严禁用于非法用途、违规传播或恶意攻击。</p>
+            <p>点击下方按钮即代表您同意自行承担因上传损害国家、社会、集体利益的内容至本下载站或其他不当行为的全部责任。</p>
+            <p>情节严重将移交相关部门处理。</p>
+            <p class="font-medium text-white">下载站纯公益无上传/下载收费内容</p>
+        </div>
+        <div id="account-info" class="bg-[#0F52BA]/20 border border-[#00BFFF]/30 rounded-xl p-4 mb-8 text-sm"></div>
+        <button id="agree" class="w-full py-4 rounded-xl bg-gradient-to-r from-[#00BFFF] to-[#0F52BA] text-white font-bold text-lg btn-glow">
+            我已阅读并同意，立即访问
+        </button>
+    </div>
+</div>
+
+<!-- 隐藏iframe检测节点状态 -->
+<div class="hidden">
+    <iframe src="http://123.56.106.49:12345" onload="setStatus('beijing',true)" onerror="setStatus('beijing',false)"></iframe>
+    <iframe src="http://47.104.206.20:51794" onload="setStatus('hebei',true)" onerror="setStatus('hebei',false)"></iframe>
+</div>
+
+<script>
+    // 老IE直接终止执行后续JS
+    if (!isIE) {
+        // 开屏百分比同步 精准2秒
+        const percentEl = document.getElementById('percent');
+        const startTime = Date.now();
+        const duration = 2000; // 改回2秒
+
+        function updatePercent() {
+            const elapsed = Date.now() - startTime;
+            const progress = Math.min(elapsed / duration, 1);
+            percentEl.textContent = (progress * 100).toFixed(2) + '%';
+            
+            if (progress < 1) {
+                requestAnimationFrame(updatePercent);
+            } else {
+                setTimeout(() => {
+                    document.getElementById('main').style.opacity = '1';
+                }, 300);
+            }
+        }
+        requestAnimationFrame(updatePercent);
+
+        // 开屏独立粒子生成
+        function createSplashParticles() {
+            const container = document.getElementById('splash-particles');
+            const particleCount = 80;
+            const colors = ['#00BFFF', '#7C3AED', '#0F52BA', '#ffffff'];
+            
+            for (let i = 0; i < particleCount; i++) {
+                const p = document.createElement('div');
+                p.className = 'splash-particle';
+                
+                const x = Math.random() * window.innerWidth;
+                const y = Math.random() * window.innerHeight;
+                const size = Math.random() * 3 + 1;
+                const tx = (Math.random() - 0.5) * 200;
+                const ty = (Math.random() - 0.5) * 200;
+                const delay = Math.random() * 2;
+                const glow = Math.random() * 8 + 2;
+                const color = colors[Math.floor(Math.random() * colors.length)];
+                
+                p.style.setProperty('--x', x + 'px');
+                p.style.setProperty('--y', y + 'px');
+                p.style.setProperty('--size', size + 'px');
+                p.style.setProperty('--tx', tx + 'px');
+                p.style.setProperty('--ty', ty + 'px');
+                p.style.setProperty('--delay', delay + 's');
+                p.style.setProperty('--glow', glow + 'px');
+                p.style.setProperty('--color', color);
+                
+                container.appendChild(p);
+            }
+        }
+        createSplashParticles();
+
+        // 全局流动粒子系统
+        function createFlowParticles() {
+            const container = document.getElementById('particles');
+            const particleCount = 120;
+            const colors = ['#00BFFF', '#7C3AED', '#0F52BA', '#ffffff'];
+            
+            for (let i = 0; i < particleCount; i++) {
+                const p = document.createElement('div');
+                p.className = 'flow-particle';
+                
+                const x = Math.random() * window.innerWidth;
+                const size = Math.random() * 3 + 1;
+                const scale = Math.random() * 1 + 0.5;
+                const duration = Math.random() * 6 + 3;
+                const delay = Math.random() * 10;
+                const opacity = Math.random() * 0.6 + 0.2;
+                const glow = Math.random() * 10 + 2;
+                const color = colors[Math.floor(Math.random() * colors.length)];
+                
+                p.style.setProperty('--x', x + 'px');
+                p.style.setProperty('--size', size + 'px');
+                p.style.setProperty('--scale', scale);
+                p.style.setProperty('--duration', duration + 's');
+                p.style.setProperty('--delay', delay + 's');
+                p.style.setProperty('--opacity', opacity);
+                p.style.setProperty('--glow', glow + 'px');
+                p.style.setProperty('--color', color);
+                
+                container.appendChild(p);
+            }
+        }
+        createFlowParticles();
+
+        // 导航栏滚动动态效果
+        window.addEventListener('scroll', () => {
+            const navbar = document.getElementById('navbar');
+            if (window.scrollY > 20) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+
+        // 滚动触发动画
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.scroll-animate').forEach(el => {
+            observer.observe(el);
+        });
+
+        // 节点在线状态更新
+        function setStatus(region, isOnline) {
+            const el = document.getElementById('status-' + region);
+            if (isOnline) {
+                el.className = 'px-3 py-1 rounded-full text-xs bg-green-500/20 text-green-400 font-medium';
+                el.innerHTML = '<i class="fa fa-check-circle"></i> 在线';
+            } else {
+                el.className = 'px-3 py-1 rounded-full text-xs bg-red-500/20 text-red-400 font-medium';
+                el.innerHTML = '<i class="fa fa-times-circle"></i> 离线';
+            }
+        }
+
+        // 节点点击事件
+        let targetUrl = '';
+        document.querySelectorAll('[data-server]').forEach(btn => {
+            btn.addEventListener('click', () => {
+                targetUrl = btn.dataset.url;
+                const serverType = btn.dataset.server;
+                const accountInfo = document.getElementById('account-info');
+
+                if (serverType === 'beijing') {
+                    accountInfo.innerHTML = `
+                        <p class="text-white/60 mb-2">北京节点访问账号</p>
+                        <p class="text-lg font-medium text-white mb-1">账号：888</p>
+                        <p class="text-lg font-medium text-white">密码：666</p>
+                    `;
+                } else {
+                    const accounts = ['A1', 'A2', 'A3'];
+                    const randomAcc = accounts[Math.floor(Math.random() * accounts.length)];
+                    accountInfo.innerHTML = `
+                        <p class="text-white/60 mb-2">河北节点访问账号</p>
+                        <p class="text-lg font-medium text-white mb-1">账号：${randomAcc}</p>
+                        <p class="text-lg font-medium text-white">密码：1234</p>
+                    `;
+                }
+                document.getElementById('warning').style.display = 'flex';
+            });
+        });
+
+        // 同意并跳转
+        document.getElementById('agree').addEventListener('click', () => {
+            window.open(targetUrl, '_blank');
+            document.getElementById('warning').style.display = 'none';
+        });
+
+        // 点击空白关闭弹窗
+        document.getElementById('warning').addEventListener('click', (e) => {
+            if (e.target === document.getElementById('warning')) {
+                document.getElementById('warning').style.display = 'none';
+            }
+        });
+
+        // 窗口大小变化时重绘粒子
+        window.addEventListener('resize', () => {
+            document.getElementById('particles').innerHTML = '';
+            createFlowParticles();
+        });
+    }
+</script>
+</body>
+</html>
