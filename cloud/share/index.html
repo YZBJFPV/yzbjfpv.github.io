@@ -4,52 +4,44 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>YZCloud分享卡片生成</title>
-    <!-- 更换为国内稳定bootcdn源，加载零失败 -->
     <script src="https://cdn.bootcdn.net/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <script src="https://cdn.bootcdn.net/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
-        /* 全局极致重置 从根节点锁死 */
-        html, body {
-            margin: 0 !important;
-            padding: 0 !important;
-            width: 100% !important;
-            height: 100% !important;
-            min-height: 100vh !important;
-            overflow-x: hidden !important;
-            box-sizing: border-box !important;
-        }
-
-        *, *::before, *::after {
+        * {
             margin: 0;
             padding: 0;
-            box-sizing: border-box !important;
-            flex-shrink: 0;
+            box-sizing: border-box;
         }
 
-        :root {
-            --primary-gradient: linear-gradient(135deg, #3b82f6, #06b6d4);
-            --card-bg: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
-            --text-dark: #0f172a;
-            --text-muted: #64748b;
-            --shadow-soft: 0 10px 40px rgba(0, 0, 0, 0.08);
-            --shadow-card: 0 20px 60px rgba(0, 0, 0, 0.15);
-        }
-
-        /* 页面主体 严格居中锁死 */
-        body {
-            position: relative;
-            background: #0a0e17;
-            display: flex !important;
-            flex-direction: column !important;
-            align-items: center !important;
-            justify-content: center !important;
-            padding: 20px 16px !important;
-            gap: 32px !important;
-            color: #fff;
+        html, body {
+            width: 100%;
+            height: 100%;
+            min-height: 100vh;
+            overflow-x: hidden;
             font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", Roboto, Arial, sans-serif;
         }
 
-        /* 背景动画 严格不干扰前景 */
+        :root {
+            --primary: #3b82f6;
+            --primary-gradient: linear-gradient(135deg, #3b82f6, #06b6d4);
+            --card-bg-soft: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
+            --text-dark: #0f172a;
+            --text-muted: #64748b;
+            --qrcode-box-size: 220px;
+        }
+
+        body {
+            position: relative;
+            background: #0a0e17;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px 16px;
+            gap: 32px;
+            color: #fff;
+        }
+
         body::before {
             content: '';
             position: fixed;
@@ -59,27 +51,10 @@
             height: 100%;
             background: 
                 radial-gradient(circle at 20% 20%, rgba(59, 130, 246, 0.3) 0%, transparent 50%),
-                radial-gradient(circle at 80% 80%, rgba(6, 182, 212, 0.3) 0%, transparent 50%),
-                radial-gradient(circle at 40% 70%, rgba(124, 58, 237, 0.2) 0%, transparent 50%);
+                radial-gradient(circle at 80% 80%, rgba(6, 182, 212, 0.3) 0%, transparent 50%);
             animation: bgFlow 12s ease-in-out infinite alternate;
-            z-index: 0 !important;
-            pointer-events: none !important;
-            will-change: transform;
-        }
-
-        body::after {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-image: 
-                linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
-            background-size: 40px 40px;
-            z-index: 0 !important;
-            pointer-events: none !important;
+            z-index: 0;
+            pointer-events: none;
         }
 
         @keyframes bgFlow {
@@ -87,415 +62,315 @@
             100% { transform: translate(-5%, -5%) scale(1.1); }
         }
 
-        /* 操作面板 严格尺寸约束 */
         .control-panel {
-            position: relative !important;
-            z-index: 10 !important;
-            width: 100% !important;
-            max-width: 420px !important;
-            min-width: 300px !important;
+            position: relative;
+            z-index: 10;
+            width: 100%;
+            max-width: 420px;
             background: rgba(255, 255, 255, 0.05);
             backdrop-filter: blur(25px);
             border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 24px !important;
-            padding: 28px 24px !important;
-            display: flex !important;
-            flex-direction: column !important;
-            align-items: stretch !important;
-            gap: 20px !important;
-            flex-grow: 0 !important;
-            flex-shrink: 0 !important;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-            overflow: hidden !important;
+            border-radius: 24px;
+            padding: 28px 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
         }
 
         .panel-title {
-            width: 100% !important;
-            font-size: 20px !important;
-            font-weight: 600 !important;
-            text-align: center !important;
+            font-size: 20px;
+            font-weight: 600;
+            text-align: center;
             background: var(--primary-gradient);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            line-height: 1.4 !important;
         }
 
         .input-group {
-            width: 100% !important;
-            display: flex !important;
-            flex-direction: column !important;
-            align-items: stretch !important;
-            gap: 8px !important;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
         }
 
         .input-group label {
-            width: 100% !important;
-            font-size: 14px !important;
-            color: #cbd5e1 !important;
-            font-weight: 500 !important;
-            padding-left: 4px !important;
-            line-height: 1.4 !important;
-            text-align: left !important;
+            font-size: 14px;
+            color: #cbd5e1;
+            font-weight: 500;
+            padding-left: 4px;
         }
 
         .input-group input {
-            width: 100% !important;
-            height: 48px !important;
-            padding: 0 18px !important;
+            width: 100%;
+            height: 48px;
+            padding: 0 18px;
             background: rgba(0, 0, 0, 0.25);
             border: 1px solid rgba(255, 255, 255, 0.12);
-            border-radius: 14px !important;
-            color: #fff !important;
-            font-size: 15px !important;
-            outline: none !important;
+            border-radius: 14px;
+            color: #fff;
+            font-size: 15px;
+            outline: none;
             transition: all 0.3s ease;
-            line-height: 48px !important;
         }
 
         .input-group input:focus {
-            border-color: #3b82f6 !important;
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15), 0 0 20px rgba(59, 130, 246, 0.2) !important;
-            background: rgba(0, 0, 0, 0.3) !important;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
         }
 
         .action-buttons {
-            width: 100% !important;
-            display: flex !important;
-            align-items: center !important;
-            gap: 12px !important;
-            margin-top: 4px !important;
+            display: flex;
+            gap: 12px;
+            margin-top: 4px;
         }
 
         .btn {
-            flex: 1 !important;
-            height: 48px !important;
-            border-radius: 14px !important;
-            border: none !important;
-            font-size: 15px !important;
-            font-weight: 600 !important;
-            cursor: pointer !important;
-            transition: all 0.2s ease !important;
-            line-height: 48px !important;
-            padding: 0 !important;
-            text-align: center !important;
+            flex: 1;
+            height: 48px;
+            border-radius: 14px;
+            border: none;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
         }
 
         .btn-primary {
-            background: var(--primary-gradient) !important;
-            color: #fff !important;
-            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3) !important;
+            background: var(--primary-gradient);
+            color: #fff;
         }
 
         .btn-primary:active {
-            transform: scale(0.97) !important;
+            transform: scale(0.97);
         }
 
         .btn-secondary {
-            background: rgba(255, 255, 255, 0.1) !important;
-            color: #fff !important;
-            border: 1px solid rgba(255, 255, 255, 0.15) !important;
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            border: 1px solid rgba(255, 255, 255, 0.15);
         }
 
         .btn-secondary:active {
-            transform: scale(0.97) !important;
-            background: rgba(255, 255, 255, 0.15) !important;
+            transform: scale(0.97);
         }
 
         .btn:disabled {
-            opacity: 0.5 !important;
-            cursor: not-allowed !important;
-            transform: none !important;
-            box-shadow: none !important;
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
         }
 
-        /* 核心分享卡片 极致严格约束 杜绝歪斜 */
         .share-card {
-            position: relative !important;
-            z-index: 10 !important;
-            width: 100% !important;
-            max-width: 420px !important;
-            min-width: 300px !important;
-            aspect-ratio: 3/4 !important;
-            background: var(--card-bg) !important;
-            border-radius: 32px !important;
-            padding: 48px 40px !important;
-            margin: 0 !important;
-            display: flex !important;
-            flex-direction: column !important;
-            align-items: center !important;
-            justify-content: flex-start !important;
-            box-shadow: var(--shadow-card) !important;
-            overflow: hidden !important;
-            flex-grow: 0 !important;
-            flex-shrink: 0 !important;
+            position: relative;
+            z-index: 10;
+            width: 100%;
+            max-width: 420px;
+            aspect-ratio: 3/4;
+            background: var(--card-bg-soft);
+            border-radius: 32px;
+            padding: 48px 40px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
         }
 
-        /* 卡片内部所有模块 严格100%宽度 居中对齐 锁死间距 */
         .card-header {
-            width: 100% !important;
-            display: flex !important;
-            flex-direction: row !important;
-            align-items: center !important;
-            justify-content: space-between !important;
-            margin: 0 0 56px 0 !important;
-            padding: 0 !important;
-            z-index: 1 !important;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 56px;
+            flex-shrink: 0;
         }
 
         .brand-logo {
-            display: flex !important;
-            align-items: center !important;
-            gap: 6px !important;
-            font-size: 18px !important;
-            font-weight: 700 !important;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 18px;
+            font-weight: 700;
             background: var(--primary-gradient);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            line-height: 1.2 !important;
+            line-height: 1.2;
+            white-space: nowrap;
         }
 
         .brand-tag {
-            padding: 4px 10px !important;
-            background: rgba(59, 130, 246, 0.1) !important;
-            border-radius: 999px !important;
-            font-size: 12px !important;
-            font-weight: 600 !important;
-            color: #3b82f6 !important;
-            line-height: 1.2 !important;
+            padding: 4px 10px;
+            background: rgba(59, 130, 246, 0.1);
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--primary);
+            line-height: 1.2;
+            white-space: nowrap;
         }
 
         .card-content {
-            width: 100% !important;
-            text-align: center !important;
-            margin: 0 0 40px 0 !important;
-            padding: 0 !important;
-            z-index: 1 !important;
+            width: 100%;
+            text-align: center;
+            margin-bottom: 40px;
+            flex-shrink: 0;
         }
 
         .username-text {
-            width: 100% !important;
-            font-size: 28px !important;
-            font-weight: 700 !important;
-            color: var(--text-dark) !important;
-            margin: 0 0 8px 0 !important;
-            line-height: 1.2 !important;
-            text-align: center !important;
-            padding: 0 !important;
+            width: 100%;
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 8px;
+            line-height: 1.2;
+            text-align: center;
+            word-break: keep-all;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         .share-desc {
-            width: 100% !important;
-            font-size: 16px !important;
-            color: var(--text-muted) !important;
-            line-height: 1.5 !important;
-            text-align: center !important;
-            margin: 0 !important;
-            padding: 0 !important;
+            width: 100%;
+            font-size: 16px;
+            color: var(--text-muted);
+            line-height: 1.5;
+            text-align: center;
+            white-space: nowrap;
         }
 
-        /* 二维码容器 严格固定尺寸 居中锁死 */
-        .qrcode-wrapper {
-            width: 224px !important;
-            height: 224px !important;
-            background: #ffffff !important;
-            border-radius: 24px !important;
-            padding: 12px !important;
-            margin: 0 0 32px 0 !important;
-            box-shadow: var(--shadow-soft) !important;
-            z-index: 1 !important;
-            display: flex !important;
-            align-items: center !important;
-            justify-content: center !important;
-            flex-shrink: 0 !important;
+        /* ============================================== */
+        /* 外层白框：保留圆角 */
+        .qrcode-box {
+            width: var(--qrcode-box-size);
+            height: var(--qrcode-box-size);
+            background: #ffffff;
+            border-radius: 16px; /* 这个圆角保留 */
+            padding: 0;
+            margin-bottom: 32px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            overflow: hidden;
         }
 
-        #qrcode {
-            width: 200px !important;
-            height: 200px !important;
-            border-radius: 12px !important;
-            display: flex !important;
-            align-items: center !important;
-            justify-content: center !important;
-            overflow: hidden !important;
+        /* 二维码本身：0 圆角，完整直角，不被切 */
+        #qrcode-img {
+            width: 100%;
+            height: 100%;
+            display: block;
+            object-fit: contain;
+            border-radius: 0 !important; /* 内层圆角彻底删掉 */
+            image-rendering: pixelated;
+            image-rendering: crisp-edges;
         }
-
-        #qrcode img, #qrcode canvas {
-            width: 100% !important;
-            height: 100% !important;
-            display: block !important;
-            border-radius: 12px !important;
-        }
+        /* ============================================== */
 
         .card-footer {
-            width: 100% !important;
-            text-align: center !important;
-            margin: auto 0 0 0 !important;
-            padding: 0 !important;
-            z-index: 1 !important;
+            margin-top: auto;
+            text-align: center;
+            width: 100%;
+            flex-shrink: 0;
         }
 
         .scan-tip {
-            width: 100% !important;
-            font-size: 15px !important;
-            color: var(--text-muted) !important;
-            margin: 0 0 12px 0 !important;
-            line-height: 1.4 !important;
-            text-align: center !important;
+            font-size: 15px;
+            color: var(--text-muted);
+            margin-bottom: 12px;
+            line-height: 1.4;
+            text-align: center;
+            white-space: nowrap;
         }
 
-        .bottom-watermark {
-            width: 100% !important;
-            font-size: 11px !important;
-            color: rgba(0, 0, 0, 0.15) !important;
-            font-weight: 500 !important;
-            line-height: 1.2 !important;
-            text-align: center !important;
-            margin: 0 !important;
+        .watermark {
+            font-size: 11px;
+            color: rgba(0, 0, 0, 0.15);
+            font-weight: 500;
+            line-height: 1.2;
+            text-align: center;
+            white-space: nowrap;
         }
 
-        /* 竖屏严格适配 杜绝歪斜 */
-        @media (orientation: portrait) {
+        @media (orientation: portrait) and (max-width: 480px) {
+            :root {
+                --qrcode-box-size: 200px;
+            }
             body {
-                flex-direction: column !important;
-                align-items: center !important;
-                justify-content: center !important;
-                padding: 20px 16px !important;
-                gap: 24px !important;
+                padding: 20px 16px;
+                gap: 24px;
+                justify-content: flex-start;
+                padding-top: 30px;
             }
             .control-panel, .share-card {
-                max-width: 100% !important;
-                width: 100% !important;
+                max-width: 100%;
             }
             .share-card {
-                aspect-ratio: 3/4 !important;
-                padding: 40px 32px !important;
-            }
-            .card-header {
-                margin-bottom: 48px !important;
+                padding: 40px 32px;
             }
             .username-text {
-                font-size: 26px !important;
-            }
-            .qrcode-wrapper {
-                width: 200px !important;
-                height: 200px !important;
-            }
-            #qrcode {
-                width: 176px !important;
-                height: 176px !important;
+                font-size: 26px;
             }
         }
 
-        /* 横屏严格适配 强制双栏 完整显示 杜绝溢出 */
         @media (orientation: landscape) {
+            :root {
+                --qrcode-box-size: 180px;
+            }
             body {
-                flex-direction: row !important;
-                flex-wrap: nowrap !important;
-                align-items: center !important;
-                justify-content: center !important;
-                padding: 20px !important;
-                gap: 40px !important;
-                min-height: 100vh !important;
-                height: 100% !important;
+                flex-direction: row;
+                flex-wrap: nowrap;
+                align-items: center;
+                justify-content: center;
+                padding: 20px;
+                gap: 40px;
+                min-height: 100vh;
             }
             .control-panel {
-                max-width: 380px !important;
-                width: 45% !important;
-                max-height: 95vh !important;
-                overflow-y: auto !important;
+                max-width: 380px;
+                width: 45%;
+                max-height: 95vh;
+                overflow-y: auto;
             }
             .share-card {
-                max-width: 380px !important;
-                width: 45% !important;
-                max-height: 95vh !important;
-                height: auto !important;
-                aspect-ratio: 3/4 !important;
-                padding: 40px 32px !important;
-            }
-            .card-header {
-                margin-bottom: 40px !important;
+                max-width: 380px;
+                width: 45%;
+                max-height: 95vh;
+                padding: 40px 32px;
             }
             .username-text {
-                font-size: 24px !important;
-            }
-            .qrcode-wrapper {
-                width: 180px !important;
-                height: 180px !important;
-                margin-bottom: 24px !important;
-            }
-            #qrcode {
-                width: 156px !important;
-                height: 156px !important;
+                font-size: 24px;
             }
         }
 
-        /* 小屏横屏额外约束 */
         @media (orientation: landscape) and (max-width: 767px) {
+            :root {
+                --qrcode-box-size: 140px;
+            }
             body {
-                gap: 20px !important;
-                padding: 16px !important;
+                gap: 20px;
+                padding: 16px;
             }
             .control-panel {
-                padding: 20px !important;
-                width: 48% !important;
+                padding: 20px;
+                width: 48%;
             }
             .share-card {
-                padding: 28px 24px !important;
-                width: 48% !important;
-            }
-            .brand-logo {
-                font-size: 16px !important;
-            }
-            .brand-tag {
-                font-size: 10px !important;
-                padding: 3px 8px !important;
+                padding: 28px 24px;
+                width: 48%;
             }
             .username-text {
-                font-size: 20px !important;
+                font-size: 20px;
             }
-            .share-desc {
-                font-size: 14px !important;
-            }
-            .qrcode-wrapper {
-                width: 140px !important;
-                height: 140px !important;
-                padding: 8px !important;
-            }
-            #qrcode {
-                width: 124px !important;
-                height: 124px !important;
-            }
-            .scan-tip {
-                font-size: 13px !important;
-            }
-        }
-
-        /* 超小屏竖屏约束 */
-        @media (orientation: portrait) and (max-width: 375px) {
-            .share-card {
-                padding: 32px 24px !important;
-            }
-            .card-header {
-                margin-bottom: 40px !important;
-            }
-            .username-text {
-                font-size: 24px !important;
-            }
-            .qrcode-wrapper {
-                width: 180px !important;
-                height: 180px !important;
-            }
-            #qrcode {
-                width: 156px !important;
-                height: 156px !important;
+            .qrcode-box {
+                margin-bottom: 24px;
             }
         }
     </style>
 </head>
 <body>
-    <!-- 操作面板 -->
     <div class="control-panel">
         <div class="panel-title">YZCloud 分享卡片生成</div>
         <div class="input-group">
@@ -512,7 +387,6 @@
         </div>
     </div>
 
-    <!-- 最终分享卡片 -->
     <div class="share-card" id="shareCard">
         <div class="card-header">
             <div class="brand-logo">☁️ YZCloud 网盘</div>
@@ -524,30 +398,25 @@
             <div class="share-desc">通过 YZCloud 网盘分享了资源</div>
         </div>
 
-        <div class="qrcode-wrapper">
-            <div id="qrcode"></div>
+        <div class="qrcode-box">
+            <img id="qrcode-img" alt="资源二维码" />
         </div>
 
         <div class="card-footer">
             <div class="scan-tip">长按识别二维码 · 快速获取资源</div>
-            <div class="bottom-watermark">yzbjfpv.top/cloud</div>
+            <div class="watermark">yzbjfpv.top/cloud</div>
         </div>
     </div>
 
     <script>
-        // 元素获取
         const usernameInput = document.getElementById('username');
         const linkInput = document.getElementById('resourceLink');
         const showUsername = document.getElementById('showUsername');
-        const qrcodeEl = document.getElementById('qrcode');
+        const qrcodeImg = document.getElementById('qrcode-img');
         const generateBtn = document.getElementById('generateBtn');
         const saveBtn = document.getElementById('saveBtn');
         const shareCard = document.getElementById('shareCard');
 
-        // 全局二维码实例，用于清空重绘
-        let qrcodeInstance = null;
-
-        // 防抖优化
         const debounce = (fn, delay = 200) => {
             let timer = null;
             return (...args) => {
@@ -556,7 +425,6 @@
             };
         };
 
-        // 读取本地缓存用户名
         const initCache = () => {
             const savedUsername = localStorage.getItem('yzcloud_username');
             if (savedUsername) {
@@ -565,61 +433,56 @@
             }
         };
 
-        // 全新二维码生成逻辑 零失败
         const generateQRCode = (originLink) => {
-            // 清空之前的二维码实例和内容
-            if (qrcodeInstance) qrcodeInstance.clear();
-            qrcodeEl.innerHTML = '';
+            qrcodeImg.src = '';
             saveBtn.disabled = true;
+            if (!originLink || originLink.trim() === '') return;
 
-            // 空链接不生成
-            if (!originLink || originLink.trim() === '') {
-                return;
-            }
-            
-            // 拼接跳转地址，自动编码处理链接
             const targetUrl = `https://yzbjfpv.top/cloud/share/loading?=${encodeURIComponent(originLink.trim())}`;
-            
-            // 生成二维码 兼容性拉满
-            try {
-                qrcodeInstance = new QRCode(qrcodeEl, {
-                    text: targetUrl,
-                    width: 200,
-                    height: 200,
-                    colorDark: '#0f172a',
-                    colorLight: '#ffffff',
-                    correctLevel: QRCode.CorrectLevel.H // 最高纠错级别
-                });
-                // 生成成功解锁保存按钮
-                setTimeout(() => {
-                    saveBtn.disabled = false;
-                }, 100);
-            } catch (error) {
-                console.error('二维码生成失败：', error);
-                alert('二维码生成失败，请检查链接后重试');
-            }
+            const qrcodeSize = qrcodeImg.clientWidth;
+
+            const tempDiv = document.createElement('div');
+            tempDiv.style.display = 'none';
+            document.body.appendChild(tempDiv);
+
+            new QRCode(tempDiv, {
+                text: targetUrl,
+                width: qrcodeSize,
+                height: qrcodeSize,
+                colorDark: '#000000',
+                colorLight: '#ffffff',
+                correctLevel: QRCode.CorrectLevel.H
+            });
+
+            setTimeout(() => {
+                const canvas = tempDiv.querySelector('canvas');
+                if (canvas) {
+                    qrcodeImg.src = canvas.toDataURL('image/png');
+                    qrcodeImg.onload = () => {
+                        saveBtn.disabled = false;
+                    };
+                }
+                document.body.removeChild(tempDiv);
+            }, 100);
         };
 
-        // 更新卡片预览
         const updateCard = debounce(() => {
             const username = usernameInput.value.trim();
             const originLink = linkInput.value.trim();
-            
-            // 更新用户名显示
             showUsername.textContent = username ? `用户 ${username}` : '用户 匿名';
-            // 缓存用户名
             if (username) localStorage.setItem('yzcloud_username', username);
-            // 生成二维码
             generateQRCode(originLink);
         });
 
-        // 保存高清卡片
+        window.addEventListener('resize', debounce(() => {
+            const originLink = linkInput.value.trim();
+            generateQRCode(originLink);
+        }, 300));
+
         const saveCardToImage = async () => {
             if (saveBtn.disabled) return;
-            
             saveBtn.disabled = true;
             saveBtn.textContent = '保存中...';
-            
             try {
                 const canvas = await html2canvas(shareCard, {
                     scale: 4,
@@ -627,35 +490,27 @@
                     backgroundColor: '#f8fafc',
                     logging: false
                 });
-                
                 const link = document.createElement('a');
                 link.download = `YZCloud分享卡片_${Date.now()}.png`;
                 link.href = canvas.toDataURL('image/png', 1.0);
                 link.click();
             } catch (error) {
                 alert('保存失败，请重试');
-                console.error(error);
             } finally {
                 saveBtn.disabled = false;
                 saveBtn.textContent = '保存卡片';
             }
         };
 
-        // 事件绑定
         usernameInput.addEventListener('input', updateCard);
         linkInput.addEventListener('input', updateCard);
         linkInput.addEventListener('paste', updateCard);
         generateBtn.addEventListener('click', updateCard);
         saveBtn.addEventListener('click', saveCardToImage);
 
-        // 页面初始化 检查库是否加载成功
         window.addEventListener('DOMContentLoaded', () => {
-            if (typeof QRCode === 'undefined') {
-                alert('二维码库加载失败，请刷新页面重试');
-                return;
-            }
             initCache();
-            updateCard();
+            setTimeout(updateCard, 200);
         });
     </script>
 </body>
