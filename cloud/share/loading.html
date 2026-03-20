@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YZCloud资源跳转中</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", Roboto, Arial, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(160deg, #0f172a, #1e293b);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            color: #fff;
+        }
+
+        .container {
+            text-align: center;
+            max-width: 400px;
+            width: 100%;
+        }
+
+        .brand-logo {
+            font-size: 24px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #3b82f6, #06b6d4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        /* 加载动画容器 */
+        .loading-box {
+            position: relative;
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 40px;
+        }
+
+        /* 渐变旋转环 */
+        .loading-ring {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: conic-gradient(from 0deg, #3b82f6, #06b6d4, transparent 65%);
+            animation: rotate 1.2s linear infinite;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+        .loading-ring::before {
+            content: '';
+            position: absolute;
+            width: 85%;
+            height: 85%;
+            border-radius: 50%;
+            background: #0f172a;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        /* 中心跳动圆点 */
+        .loading-dot {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #3b82f6, #06b6d4);
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            animation: pulse 1.2s ease-in-out infinite;
+        }
+
+        @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+            50% { transform: translate(-50%, -50%) scale(1.3); opacity: 0.8; }
+        }
+
+        .title {
+            font-size: 22px;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+
+        .desc {
+            font-size: 15px;
+            color: #cbd5e1;
+            margin-bottom: 30px;
+            line-height: 1.5;
+        }
+
+        .countdown {
+            font-size: 14px;
+            color: #94a3b8;
+        }
+
+        .error-box {
+            display: none;
+        }
+
+        .error-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #ef4444;
+            margin-bottom: 12px;
+        }
+
+        .error-desc {
+            font-size: 15px;
+            color: #cbd5e1;
+            margin-bottom: 24px;
+        }
+
+        .retry-btn {
+            padding: 12px 32px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #3b82f6, #06b6d4);
+            color: #fff;
+            border: none;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="container" id="loadingContainer">
+        <div class="brand-logo">☁️ YZCloud 网盘</div>
+        <div class="loading-box">
+            <div class="loading-ring"></div>
+            <div class="loading-dot"></div>
+        </div>
+        <h1 class="title">资源跳转中</h1>
+        <p class="desc">正在为您加载目标资源，请稍候...</p>
+        <p class="countdown"><span id="countdown">3</span> 秒后自动跳转</p>
+    </div>
+
+    <div class="container error-box" id="errorContainer">
+        <div class="brand-logo">☁️ YZCloud 网盘</div>
+        <h2 class="error-title">链接无效</h2>
+        <p class="error-desc">未获取到有效的资源链接，请返回检查后重试</p>
+        <button class="retry-btn" onclick="window.history.back()">返回上一页</button>
+    </div>
+
+    <script>
+        // 获取目标链接
+        const getTargetLink = () => {
+            const search = window.location.search;
+            if (!search.startsWith('?=')) return null;
+            const link = decodeURIComponent(search.replace('?=', ''));
+            return link && link.trim() !== '' ? link : null;
+        };
+
+        // 倒计时跳转逻辑
+        const initJump = () => {
+            const targetLink = getTargetLink();
+            const countdownEl = document.getElementById('countdown');
+            const loadingContainer = document.getElementById('loadingContainer');
+            const errorContainer = document.getElementById('errorContainer');
+
+            // 无有效链接，显示错误
+            if (!targetLink) {
+                loadingContainer.style.display = 'none';
+                errorContainer.style.display = 'block';
+                return;
+            }
+
+            // 倒计时跳转
+            let countdown = 3;
+            const timer = setInterval(() => {
+                countdown--;
+                countdownEl.textContent = countdown;
+                if (countdown <= 0) {
+                    clearInterval(timer);
+                    window.location.href = targetLink;
+                }
+            }, 1000);
+        };
+
+        // 页面初始化
+        window.addEventListener('DOMContentLoaded', initJump);
+    </script>
+</body>
+</html>
