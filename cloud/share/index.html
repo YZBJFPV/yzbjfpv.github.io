@@ -1,456 +1,261 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>YZCloud 数据传输协议</title>
-    
-    <link rel="stylesheet" href="https://lf3-cdn-tos.bytecdntp.com/cdn/expire-1-M/font-awesome/6.0.0/css/all.min.css">
-    <script src="https://lf6-cdn-tos.bytecdntp.com/cdn/expire-1-M/qrcodejs/1.0.0/qrcode.min.js"></script>
-    <script src="https://lf26-cdn-tos.bytecdntp.com/cdn/expire-1-M/html2canvas/1.4.1/html2canvas.min.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>分享卡片</title>
+<script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.1/build/qrcode.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
 
-    <style>
-        /* CSS 变量：统一管理主题色和字体 */
-        :root {
-            --dark-bg: #0C0D12; /* 深邃的背景色 */
-            --panel-alpha-bg: rgba(255, 255, 255, 0.04); /* 半透明面板背景 */
-            --panel-border: rgba(255, 255, 255, 0.08); /* 面板边框 */
-            --card-bg: #FFFFFF; /* 卡片纯白背景 */
-            --text-light: #E0E0E0; /* 浅色文本 */
-            --text-dim: #A0A0A0; /* 暗色文本 */
-            --accent-gradient: linear-gradient(90deg, #00C6FF 0%, #0072FF 100%); /* 强调色渐变 */
-            --button-primary-bg: #0072FF; /* 主按钮背景 */
-            --button-secondary-bg: rgba(255, 255, 255, 0.08); /* 次按钮背景 */
-            /* 中文排版专用字体栈，确保Windows/macOS/iOS/Android都有最佳显示 */
-            --font-family-zh: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei UI", "Microsoft YaHei", "WenQuanYi Micro Hei", sans-serif;
-            --font-family-en: "SF Pro Text", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-        }
+/* 大背景：深色科技感，完全不透明 */
+body{
+  min-height:100vh;
+  background:linear-gradient(135deg, #0f172a, #1e293b, #334155);
+  display:flex;align-items:center;justify-content:center;padding:24px;
+}
 
-        /* 全局重置与基础样式 */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: var(--font-family-zh); /* 优先中文 */
-            -webkit-font-smoothing: antialiased; /* 字体抗锯齿 */
-            -moz-osx-font-smoothing: grayscale; /* 字体抗锯齿 */
-        }
+.container{
+  display:flex;gap:32px;max-width:1000px;width:100%;
+  flex-wrap:wrap;justify-content:center;
+}
 
-        body {
-            background-color: var(--dark-bg);
-            color: var(--text-light);
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 30px;
-            overflow-x: hidden;
-            font-size: 15px;
-            line-height: 1.6;
-            /* 粒子动画背景，如果需要可以用JS实现更复杂效果 */
-            background-image:
-                radial-gradient(at 0% 0%, rgba(0, 198, 255, 0.05) 0px, transparent 50%),
-                radial-gradient(at 100% 100%, rgba(0, 114, 255, 0.05) 0px, transparent 50%);
-        }
+/* 左侧面板：不透明 + 右侧卡片同款蓝色 */
+.control-panel{
+  flex:1;min-width:340px;
+  background:linear-gradient(180deg, #e0f2fe, #7dd3fc);
+  border-radius:20px;
+  padding:32px;
+  display:flex;flex-direction:column;gap:24px;
+}
 
-        /* 布局容器 */
-        .page-layout {
-            display: flex;
-            width: 100%;
-            max-width: 1200px; /* 更宽的布局 */
-            gap: 80px; /* 元素间距增大 */
-            align-items: flex-start;
-            justify-content: center;
-        }
+.panel-title{
+  font-size:24px;font-weight:700;
+  color:#1e40af;
+}
 
-        /* 左侧控制面板 */
-        .control-panel {
-            flex: 0 0 420px; /* 固定宽度 */
-            background: var(--panel-alpha-bg);
-            backdrop-filter: blur(25px) saturate(180%); /* 更强的玻璃效果 */
-            border: 1px solid var(--panel-border);
-            border-radius: 16px; /* 统一圆角 */
-            padding: 40px;
-            box-shadow: 0 15px 40px rgba(0,0,0,0.4);
-            transition: all 0.3s ease-out;
-        }
-        .control-panel:hover {
-            border-color: rgba(0, 198, 255, 0.3); /* 鼠标悬停发光 */
-            box-shadow: 0 15px 50px rgba(0,0,0,0.6), 0 0 20px rgba(0, 198, 255, 0.1);
-        }
+.form-group{
+  display:flex;flex-direction:column;gap:10px;
+}
 
-        .panel-title {
-            font-size: 24px;
-            font-weight: 700;
-            margin-bottom: 35px;
-            letter-spacing: 0.5px;
-            color: var(--text-light); /* 标题颜色 */
-            border-left: 3px solid var(--button-primary-bg); /* 左侧强调线 */
-            padding-left: 15px;
-            font-family: var(--font-family-en); /* 标题少量英文 */
-        }
+.form-label{
+  font-size:15px;color:#1e3a8a;font-weight:500;
+}
 
-        .input-group { margin-bottom: 25px; }
-        .input-group label {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 13px;
-            color: var(--text-dim);
-            margin-bottom: 10px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            font-weight: 500;
-        }
-        .input-group label i { color: var(--button-primary-bg); }
+.form-input{
+  background:#ffffff;
+  border:1px solid #cbd5e1;
+  border-radius:14px;
+  padding:16px;color:#0f172a;font-size:15px;outline:none;
+}
 
-        .input-field {
-            width: 100%;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 14px 18px;
-            border-radius: 8px; /* 输入框圆角 */
-            color: var(--text-light);
-            font-size: 15px;
-            outline: none;
-            transition: all 0.2s ease-in-out;
-            font-family: var(--font-family-en); /* 输入框数字英文用科技字体 */
-        }
-        .input-field::placeholder { color: var(--text-dim); opacity: 0.6; }
-        .input-field:focus {
-            border-color: var(--button-primary-bg);
-            box-shadow: 0 0 0 3px rgba(0, 114, 255, 0.3); /* 聚焦光晕 */
-            background: rgba(255, 255, 255, 0.08);
-        }
+.form-input:focus{
+  border-color:#3b82f6;
+}
 
-        .action-buttons {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            margin-top: 35px;
-        }
+.btn-group{
+  display:flex;gap:14px;margin-top:4px;
+}
 
-        .btn {
-            height: 50px;
-            border: none;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            transition: all 0.2s ease-in-out;
-            letter-spacing: 0.5px;
-        }
+.btn{
+  flex:1;border:none;border-radius:14px;padding:16px;
+  font-size:15px;font-weight:600;cursor:pointer;
+}
 
-        .btn-primary {
-            background: var(--button-primary-bg);
-            color: #FFFFFF;
-            box-shadow: 0 5px 15px rgba(0, 114, 255, 0.3);
-        }
-        .btn-primary:hover {
-            background: linear-gradient(90deg, #00E6FF 0%, #0088FF 100%); /* 悬停渐变 */
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(0, 114, 255, 0.4);
-        }
+.btn-refresh{
+  background:#3b82f6;color:#fff;
+}
 
-        .btn-secondary {
-            background: var(--button-secondary-bg);
-            color: var(--text-light);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-        }
-        .btn-secondary:hover {
-            background: rgba(255, 255, 255, 0.12);
-            border-color: rgba(255, 255, 255, 0.25);
-        }
+.btn-save{
+  background:#2563eb;color:#fff;
+}
 
-        /* 右侧核心卡片展示区 */
-        .card-display-area {
-            flex: 0 0 400px; /* 固定卡片宽度，确保完美比例 */
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
+/* 卡片：高级蓝色渐变 */
+.card{
+  width:340px;height:520px;
+  background:linear-gradient(180deg, #f0f9ff 0%, #e0f2fe 35%, #7dd3fc 130%);
+  border-radius:28px;
+  padding:40px 32px;
+  display:flex;flex-direction:column;
+  box-shadow:0 15px 35px rgba(0,0,0,0.08);
+  position:relative;
+}
 
-        #share-card {
-            width: 380px; /* 卡片实际宽度 */
-            height: 510px; /* 3:4 比例，略微调整为视觉更平衡的510px */
-            background: var(--card-bg);
-            border-radius: 20px;
-            padding: 35px;
-            position: relative;
-            box-shadow: 0 25px 60px rgba(0,0,0,0.5), 0 0 30px rgba(0, 198, 255, 0.1);
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-            transform: translateZ(0); /* 硬件加速 */
-            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); /* 弹性动效 */
-        }
-        #share-card.animating {
-            transform: scale(0.95);
-            opacity: 0.7;
-        }
+/* 云图标 */
+.cloud-icon {
+  width:28px;
+  height:28px;
+  position:relative;
+  margin-right:10px;
+}
+.cloud-icon::before {
+  content:"";
+  position:absolute;
+  top:10px; left:2px;
+  width:14px; height:14px;
+  background:#2563eb;
+  border-radius:50%;
+}
+.cloud-icon::after {
+  content:"";
+  position:absolute;
+  top:6px; left:10px;
+  width:16px; height:16px;
+  background:#2563eb;
+  border-radius:50%;
+}
+.cloud-icon span {
+  position:absolute;
+  bottom:2px; left:0;
+  width:28px; height:12px;
+  background:#2563eb;
+  border-radius:6px;
+}
 
+.card-header{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:44px;
+}
 
-        /* 卡片顶部装饰线 */
-        #share-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 5px;
-            background: var(--accent-gradient); /* 顶部蓝色渐变线 */
-            border-radius: 20px 20px 0 0;
-        }
+/* YZCloud 彩色渐变 */
+.logo-wrap{
+  display:flex;align-items:center;
+  font-size:21px;font-weight:800;
+  background:linear-gradient(90deg,#1e40af,#3b82f6,#60a5fa);
+  -webkit-background-clip:text;
+  color:transparent;
+}
 
-        .card-header-section {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 40px;
-            padding-top: 5px; /* 留出顶部装饰线空间 */
-        }
+.tag{
+  background:rgba(59,130,246,0.15);
+  color:#2563eb;
+  font-size:13px;
+  padding:6px 12px;
+  border-radius:12px;
+  font-weight:600;
+}
 
-        .card-brand {
-            font-size: 18px;
-            font-weight: 800;
-            color: #1a1a1a;
-            letter-spacing: -0.5px;
-            font-family: var(--font-family-en); /* 品牌名称用英文科技字体 */
-        }
+.card-body{
+  display:flex;flex-direction:column;align-items:center;text-align:center;
+}
 
-        .access-tag {
-            font-size: 11px;
-            font-weight: 600;
-            color: #FFFFFF;
-            background-color: #333333; /* 深色标签背景 */
-            padding: 5px 12px;
-            border-radius: 4px;
-            letter-spacing: 0.5px;
-            font-family: var(--font-family-en);
-        }
+.username{
+  font-size:24px;font-weight:700;color:#0f172a;margin-bottom:8px;
+}
 
-        .card-main-content {
-            flex-grow: 1; /* 占据剩余空间 */
-            display: flex;
-            flex-direction: column;
-            justify-content: center; /* 垂直居中内容 */
-        }
+.desc{
+  font-size:15px;color:#64748b;margin-bottom:40px;
+}
 
-        .user-name-display {
-            font-size: 32px;
-            font-weight: 800;
-            color: #1A1A1A;
-            line-height: 1.25;
-            margin-bottom: 12px;
-            min-height: 40px; /* 确保空值时也有高度 */
-            word-break: break-all;
-            text-align: center; /* 用户名居中 */
-        }
+.qrcode-box{
+  width:190px;height:190px;
+  background:#fff;
+  border-radius:20px;
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 8px 20px rgba(0,0,0,0.07);
+  padding:12px;
+  margin-bottom:36px;
+}
 
-        .description-text {
-            font-size: 14px;
-            color: #666666;
-            margin-bottom: 35px;
-            text-align: center;
-        }
+#qrcode{
+  width:100%!important;height:100%!important;
+}
 
-        .qr-code-frame {
-            width: 170px; /* 二维码外框尺寸 */
-            height: 170px;
-            background: #F8F8F8;
-            border: 1px solid #E0E0E0;
-            border-radius: 10px;
-            padding: 8px;
-            margin: 0 auto; /* 居中 */
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            box-shadow: inset 0 1px 3px rgba(0,0,0,0.05); /* 内阴影 */
-            transition: all 0.3s ease-out;
-        }
-        .qr-code-frame:hover {
-            border-color: var(--button-primary-bg);
-            box-shadow: inset 0 1px 3px rgba(0,0,0,0.08), 0 0 15px rgba(0, 114, 255, 0.2);
-        }
+.tip{
+  font-size:14px;color:#475569;font-weight:500;
+  margin-bottom:20px;
+}
 
-        #qrcode-target {
-            width: 150px; /* 二维码实际尺寸 */
-            height: 150px;
-            display: block; /* 移除图片默认下边距 */
-        }
+.watermark{
+  font-size:12px;color:#9ca3af;font-weight:400;
+}
 
-        .card-footer-section {
-            margin-top: 30px;
-            padding-top: 25px;
-            border-top: 1px dashed #E0E0E0; /* 虚线分割 */
-            text-align: center;
-        }
-
-        .footer-cta {
-            font-size: 13px;
-            font-weight: 700;
-            color: #333333;
-            letter-spacing: 1px;
-            margin-bottom: 8px;
-        }
-
-        .footer-link-path {
-            font-size: 11px;
-            color: #999999;
-            font-family: var(--font-family-en); /* 链接路径用英文字体 */
-            letter-spacing: 0.5px;
-        }
-
-        /* 响应式布局 */
-        @media (max-width: 992px) {
-            .page-layout { flex-direction: column; align-items: center; gap: 40px; padding: 20px; }
-            .control-panel { flex: none; width: 100%; max-width: 380px; order: 2; padding: 30px; }
-            .card-display-area { flex: none; width: 100%; max-width: 380px; order: 1; margin-bottom: 20px; }
-            #share-card { width: 100%; height: auto; min-height: 480px; padding: 30px; }
-            .panel-title { font-size: 20px; }
-            .user-name-display { font-size: 28px; }
-        }
-        @media (max-width: 480px) {
-            .control-panel, #share-card { border-radius: 12px; }
-            .panel-title { font-size: 18px; margin-bottom: 25px; }
-            .user-name-display { font-size: 24px; }
-            .input-field { padding: 12px 15px; }
-            .btn { height: 45px; font-size: 15px; }
-        }
-    </style>
+@media(max-width:768px){
+  .container{flex-direction:column;align-items:center}
+  .control-panel{width:100%}
+}
+</style>
 </head>
 <body>
 
-    <div class="page-layout">
-        <section class="control-panel">
-            <h2 class="panel-title">数据协议配置</h2>
-            
-            <div class="input-group">
-                <label for="userNameInput"><i class="fa-solid fa-user-tag"></i> 协议发起方</label>
-                <input type="text" id="userNameInput" class="input-field" placeholder="请输入您的组织或个人名称" maxlength="15">
-            </div>
-
-            <div class="input-group">
-                <label for="shareLinkInput"><i class="fa-solid fa-link"></i> 目标传输链接</label>
-                <input type="text" id="shareLinkInput" class="input-field" placeholder="粘贴完整的资源链接 URL">
-            </div>
-
-            <div class="action-buttons">
-                <button class="btn btn-primary" onclick="generateCard()">
-                    <i class="fa-solid fa-arrow-rotate-right"></i> 生成协议视图
-                </button>
-                <button class="btn btn-secondary" onclick="exportCardImage()">
-                    <i class="fa-solid fa-cloud-arrow-down"></i> 导出协议图像 (PNG)
-                </button>
-            </div>
-        </section>
-
-        <section class="card-display-area">
-            <div id="share-card">
-                <div class="card-header-section">
-                    <span class="card-brand">YZCLOUD</span>
-                    <span class="access-tag">开放访问</span>
-                </div>
-
-                <div class="card-main-content">
-                    <h1 class="user-name-display" id="displayedUserName">未指定发起方</h1>
-                    <p class="description-text">
-                        <i class="fa-solid fa-qrcode" style="margin-right: 6px; color: #666;"></i>
-                        扫描二维码，获取 YZCloud 云端资源
-                    </p>
-                    
-                    <div class="qr-code-frame">
-                        <div id="qrcode-target"></div>
-                    </div>
-                </div>
-
-                <div class="card-footer-section">
-                    <p class="footer-cta">YZCloud | 高效·安全·稳定</p>
-                    <p class="footer-link-path">GATEWAY.YZBJFPV.TOP/ACCESS</p>
-                </div>
-            </div>
-        </section>
+<div class="container">
+  <div class="control-panel">
+    <h2 class="panel-title">YZCloud 分享生成器</h2>
+    <div class="form-group">
+      <label class="form-label">用户名称</label>
+      <input type="text" class="form-input" id="username" placeholder="请输入昵称">
     </div>
+    <div class="form-group">
+      <label class="form-label">分享链接</label>
+      <input type="url" class="form-input" id="link" placeholder="https://">
+    </div>
+    <div class="btn-group">
+      <button class="btn btn-refresh" id="refresh">刷新预览</button>
+      <button class="btn btn-save" id="save">保存卡片</button>
+    </div>
+  </div>
 
-    <script>
-        // 初始化 QRCode.js
-        const qrcodeInstance = new QRCode(document.getElementById("qrcode-target"), {
-            text: "https://yzbjfpv.top/share/loading.html?=", // 默认链接，会在JS中更新
-            width: 150,
-            height: 150,
-            colorDark : "#000000",
-            colorLight : "#FFFFFF",
-            correctLevel : QRCode.CorrectLevel.H
-        });
+  <div class="card" id="card">
+    <div class="card-header">
+      <div class="logo-wrap">
+        <div class="cloud-icon"><span></span></div>
+        YZCloud
+      </div>
+      <div class="tag">安全分享</div>
+    </div>
+    <div class="card-body">
+      <div class="username" id="showName">用户 匿名</div>
+      <div class="desc">通过 YZCloud 分享了资源</div>
+      <div class="qrcode-box"><div id="qrcode"></div></div>
+      <div class="tip">长按识别二维码 · 快速获取资源</div>
+      <div class="watermark">yzbjfpv.top/cloud</div>
+    </div>
+  </div>
+</div>
 
-        // 获取 DOM 元素
-        const userNameInput = document.getElementById('userNameInput');
-        const displayedUserName = document.getElementById('displayedUserName');
-        const shareLinkInput = document.getElementById('shareLinkInput');
-        const shareCard = document.getElementById('share-card');
+<script>
+const prefix = "https://yzbjfpv.top/share/loading.html?=";
+const usernameInput = document.getElementById('username');
+const linkInput = document.getElementById('link');
+const showName = document.getElementById('showName');
+const qrcodeEl = document.getElementById('qrcode');
+const card = document.getElementById('card');
 
-        // 实时同步用户名到卡片
-        userNameInput.addEventListener('input', (event) => {
-            displayedUserName.innerText = event.target.value.trim() || "未指定发起方";
-        });
+function makeQR(url) {
+  qrcodeEl.innerHTML = '';
+  const target = prefix + encodeURIComponent(url);
+  QRCode.toCanvas(qrcodeEl, target, {
+    width: 166, margin: 0, color: { dark: "#111827", light: "#fff" }
+  });
+}
 
-        // 生成卡片内容（二维码和文本）
-        function generateCard() {
-            const targetUserName = userNameInput.value.trim();
-            const targetShareLink = shareLinkInput.value.trim();
+usernameInput.addEventListener('input', () => {
+  const name = usernameInput.value.trim() || '匿名';
+  showName.textContent = `用户 ${name}`;
+});
 
-            if (!targetShareLink) {
-                alert("请填写目标传输链接！");
-                shareLinkInput.focus();
-                return;
-            }
+linkInput.addEventListener('input', () => {
+  const url = linkInput.value.trim();
+  if(url) makeQR(url);
+});
 
-            // 更新显示用户名
-            displayedUserName.innerText = targetUserName || "未指定发起方";
+document.getElementById('refresh').onclick = () => {
+  const name = usernameInput.value.trim() || '匿名';
+  const url = linkInput.value.trim();
+  showName.textContent = `用户 ${name}`;
+  if(url) makeQR(url);
+};
 
-            // 生成二维码内容
-            const finalQrLink = `https://yzbjfpv.top/share/loading.html?=${encodeURIComponent(targetShareLink)}`;
-            qrcodeInstance.clear(); // 清除现有二维码
-            qrcodeInstance.makeCode(finalQrLink); // 生成新二维码
+document.getElementById('save').onclick = async () => {
+  const canvas = await html2canvas(card, { scale:4, useCORS:true, logging:false });
+  const a = document.createElement('a');
+  a.download = 'YZCloud分享卡片.png';
+  a.href = canvas.toDataURL('image/png');
+  a.click();
+};
 
-            // 添加视觉反馈动画
-            shareCard.classList.add('animating');
-            setTimeout(() => {
-                shareCard.classList.remove('animating');
-            }, 300);
-        }
-
-        // 导出卡片图像
-        function exportCardImage() {
-            if (!shareLinkInput.value.trim()) {
-                alert("请先填写链接并生成卡片，再导出！");
-                return;
-            }
-
-            html2canvas(shareCard, {
-                scale: 3, // 提高渲染分辨率，确保高清
-                useCORS: true, // 允许加载跨域图片（如果二维码有）
-                backgroundColor: null, // 背景透明，便于处理
-                logging: false // 禁用控制台日志
-            }).then(canvas => {
-                const imageDataURL = canvas.toDataURL('image/png');
-                const downloadLink = document.createElement('a');
-                downloadLink.href = imageDataURL;
-                downloadLink.download = `YZCloud-协议图像-${Date.now()}.png`;
-                document.body.appendChild(downloadLink); // 临时添加到DOM
-                downloadLink.click(); // 触发下载
-                document.body.removeChild(downloadLink); // 移除
-            });
-        }
-
-        // 页面加载完成时初始化二维码
-        window.onload = () => {
-            generateCard(); // 初始生成一次，显示默认“未指定发起方”
-        };
-    </script>
+makeQR('');
+</script>
 </body>
 </html>
