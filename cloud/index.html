@@ -7,7 +7,6 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
     <script>
-        // 老IE浏览器检测
         const isIE = /MSIE|Trident/.test(window.navigator.userAgent);
         if (isIE) document.documentElement.classList.add('ie-old');
 
@@ -33,16 +32,13 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         :root { --grid-speed: 8s; }
         
-        /* ====================== 全局背景 与开屏完全隔离 ====================== */
         body { 
             background: #05070F;
             min-height: 100vh; 
             overflow-x: hidden;
             position: relative;
         }
-        /* 远景网格 无限滚动 */
         .bg-grid-far {
-            content: '';
             position: fixed;
             inset: 0;
             z-index: -2;
@@ -52,9 +48,7 @@
             animation: gridMoveFar 15s linear infinite;
             will-change: transform;
         }
-        /* 近景网格 视差滚动 */
         .bg-grid-near {
-            content: '';
             position: fixed;
             inset: 0;
             z-index: -1;
@@ -64,7 +58,6 @@
             animation: gridMoveNear 10s linear infinite;
             will-change: transform;
         }
-        /* 网格动画 */
         @keyframes gridMoveFar {
             0% { transform: perspective(1000px) rotateX(65deg) translateY(0) scale(2); }
             100% { transform: perspective(1000px) rotateX(65deg) translateY(-400px) scale(2); }
@@ -74,7 +67,6 @@
             100% { transform: perspective(800px) rotateX(65deg) translateY(-800px) scale(1.5); }
         }
 
-        /* ====================== 全局粒子系统 ====================== */
         @keyframes particleFlow {
             0% { transform: translate3d(var(--x), 100vh, 0) scale(var(--scale)); opacity: 0; }
             10% { opacity: var(--opacity); }
@@ -101,14 +93,12 @@
             will-change: transform, opacity;
         }
 
-        /* 玻璃拟态通用样式 */
         .glass { 
             background: rgba(15, 23, 42, 0.6); 
             backdrop-filter: blur(12px); 
             -webkit-backdrop-filter: blur(12px); 
             border: 1px solid rgba(255, 255, 255, 0.08); 
         }
-        /* 3D卡片hover效果 */
         .card-3d {
             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             transform-style: preserve-3d;
@@ -128,7 +118,6 @@
             transform: scale(1.02);
         }
 
-        /* 滚动触发动画 */
         .scroll-animate {
             opacity: 0;
             transform: translateY(40px);
@@ -140,7 +129,6 @@
             transform: translateY(0);
         }
 
-        /* ====================== 开屏动画 2秒精准 文字超快 独立不重合 ====================== */
         @keyframes letterFlyIn {
             0% { transform: translate3d(var(--x), var(--y), 0) scale(2); opacity: 0; filter: blur(20px); }
             100% { transform: translate3d(0, 0, 0) scale(1); opacity: 1; filter: blur(0); }
@@ -167,7 +155,6 @@
             100% { transform: translate(var(--tx), var(--ty)); opacity: 0; }
         }
 
-        /* 开屏容器 完全独立 不与背景重合 */
         #splash {
             position: fixed;
             inset: 0;
@@ -178,10 +165,7 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            animation: splashExit 0.5s ease forwards;
-            animation-delay: 2s; /* 2秒后退出 */
         }
-        /* 开屏独立网格 */
         .splash-grid-far {
             position: absolute;
             inset: 0;
@@ -200,7 +184,6 @@
             animation: gridMoveNear 10s linear infinite;
             opacity: 0.8;
         }
-        /* 开屏独立粒子 */
         .splash-particles {
             position: absolute;
             inset: 0;
@@ -221,7 +204,6 @@
             will-change: transform, opacity;
         }
 
-        /* 标题字母 初始模糊 超快动画 适配2秒 */
         .title-letter {
             display: inline-block;
             font-size: clamp(3rem, 12vw, 7rem);
@@ -234,7 +216,7 @@
             transform: translate3d(var(--x), var(--y), 0) scale(2);
             opacity: 0;
             filter: blur(20px);
-            animation: letterFlyIn 0.3s cubic-bezier(0.18, 0.82, 0.28, 1) forwards; /* 动画更快 */
+            animation: letterFlyIn 0.3s cubic-bezier(0.18, 0.82, 0.28, 1) forwards;
             will-change: transform, opacity, filter;
         }
         .splash-subtitle {
@@ -243,14 +225,14 @@
             letter-spacing: 4px;
             margin-top: 0.5rem;
             animation: subSlideUp 0.4s ease forwards;
-            animation-delay: 0.4s; /* 适配2秒时长 */
+            animation-delay: 0.4s;
             opacity: 0;
         }
         .splash-tag {
             margin-top: 2rem;
             color: rgba(255, 255, 255, 0.5);
             animation: tagFadeIn 0.3s ease forwards;
-            animation-delay: 0.6s; /* 适配2秒时长 */
+            animation-delay: 0.6s;
             opacity: 0;
         }
         .progress-wrap {
@@ -270,7 +252,7 @@
             border-radius: 100px;
             background: linear-gradient(90deg, #0F52BA, #00BFFF, #7C3AED, #00BFFF, #0F52BA);
             background-size: 200% 100%;
-            animation: progressRun 2s linear forwards, progressShine 0.8s linear infinite; /* 2秒精准填满 */
+            animation: progressRun 2s linear forwards, progressShine 0.8s linear infinite;
             box-shadow: 0 0 15px rgba(0, 191, 255, 0.8);
             will-change: width;
         }
@@ -289,7 +271,37 @@
             z-index: 10;
         }
 
-        /* 导航栏滚动动态效果 */
+        /* 高级进入按钮 - 居中 */
+        #enterBtn {
+            margin-left: auto;
+            margin-right: auto;
+            margin-top: 2.5rem;
+            padding: 1rem 3rem;
+            border-radius: 999px;
+            background: rgba(0, 191, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 191, 255, 0.4);
+            color: white;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.4s ease;
+            z-index: 10;
+            display: none;
+        }
+        #enterBtn.show {
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
+        }
+        #enterBtn:hover {
+            background: rgba(0, 191, 255, 0.25);
+            box-shadow: 0 0 25px rgba(0, 191, 255, 0.6);
+            transform: translateY(-3px);
+        }
+
         #navbar {
             transition: all 0.4s ease;
             will-change: background, backdrop-filter, padding;
@@ -299,10 +311,9 @@
             backdrop-filter: blur(20px);
             padding-top: 0.75rem;
             padding-bottom: 0.75rem;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 10px 30 rgba(0, 0, 0, 0.3);
         }
 
-        /* ====================== 赞助商排版 ====================== */
         .sponsor-tag {
             display: flex;
             align-items: center;
@@ -330,7 +341,6 @@
             font-size: 10px;
         }
 
-        /* 技术支持标签排版 */
         .tech-tag {
             padding: 0.5rem 1rem;
             border-radius: 0.5rem;
@@ -346,7 +356,6 @@
             color: white;
         }
 
-        /* ====================== 老IE浏览器适配 ====================== */
         .ie-old #splash,
         .ie-old .bg-grid-far,
         .ie-old .bg-grid-near,
@@ -367,7 +376,7 @@
         }
         .ie-old .ie-simple-header {
             text-align: center;
-            margin-bottom: 30px;
+            a
         }
         .ie-old .ie-node-box {
             border: 1px solid #00BFFF;
@@ -403,40 +412,33 @@
 </head>
 <body class="text-light font-sans">
 
-<!-- 全局背景 -->
 <div class="bg-grid-far"></div>
 <div class="bg-grid-near"></div>
-<!-- 全局流动粒子 -->
 <div class="particles-container" id="particles"></div>
 
-<!-- 老IE简易界面 -->
 <!--[if IE]>
 <div id="ie-simple">
     <div class="ie-simple-header">
         <h1>YZ Cloud 沅臻云盘</h1>
         <p>免费高速不限速 · 为方便模友而生</p>
     </div>
-
     <div class="ie-node-box">
         <h2>节点 · 北京</h2>
         <p>配置：i7-8565U + UHD620｜512G SSD + 3TB HDD</p>
         <p><strong>账号：888 密码：666</strong></p>
         <a href="http://123.56.106.49:12345" target="_blank" class="ie-btn">进入北京节点</a>
     </div>
-
     <div class="ie-node-box">
         <h2>节点 · 河北</h2>
         <p>配置：Celeron J1800｜64G + 128G</p>
         <p><strong>账号：A1/A2/A3 密码：1234</strong></p>
         <a href="http://47.104.206.20:51794" target="_blank" class="ie-btn">进入河北节点</a>
     </div>
-
     <div class="ie-warning">
         <h3>⚠️ 使用警告</h3>
         <p>本账号仅用于个人非商业用途，严禁用于非法用途、违规传播或恶意攻击。点击进入即代表您同意自行承担全部责任，情节严重将移交相关部门处理。</p>
         <p>下载站纯公益无上传/下载收费内容</p>
     </div>
-
     <footer>
         <p>© 2026 YZ Cloud 沅臻云盘 · 纯公益免费下载站</p>
         <p><a href="https://frp.80cn.cn" target="_blank">管理员登录</a></p>
@@ -444,7 +446,6 @@
 </div>
 <![endif]-->
 
-<!-- 现代浏览器开屏动画 2秒精准 独立粒子 不重合 -->
 <div id="splash" class="modern-only">
     <div class="splash-grid-far"></div>
     <div class="splash-grid-near"></div>
@@ -463,6 +464,8 @@
         </div>
         <p class="splash-subtitle">沅臻云盘</p>
         <p class="splash-tag">免费高速不限速 · 为模友而生</p>
+        
+        <button id="enterBtn">进入云盘</button>
     </div>
 
     <div class="progress-wrap">
@@ -471,9 +474,7 @@
     <p id="percent">0.00%</p>
 </div>
 
-<!-- 主内容 完全未改动 -->
 <div id="main" class="opacity-0 transition-opacity duration-800 pt-28 pb-16 min-h-screen relative z-10">
-    <!-- 动态导航栏 -->
     <nav id="navbar" class="glass fixed top-0 left-0 right-0 z-40 px-6 py-4">
         <div class="container mx-auto flex flex-col md:flex-row md:justify-between md:items-center gap-2">
             <div class="flex items-center gap-3">
@@ -484,10 +485,8 @@
         </div>
     </nav>
 
-    <!-- 节点卡片区域 -->
     <div class="container mx-auto px-4">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto mt-8">
-            <!-- 北京节点 -->
             <div class="glass card-3d rounded-2xl p-8 scroll-animate">
                 <div class="flex justify-between items-start mb-6">
                     <div>
@@ -510,7 +509,6 @@
                 </button>
             </div>
 
-            <!-- 河北节点 -->
             <div class="glass card-3d rounded-2xl p-8 scroll-animate" style="transition-delay: 0.15s;">
                 <div class="flex justify-between items-start mb-6">
                     <div>
@@ -534,7 +532,6 @@
             </div>
         </div>
 
-        <!-- 赞助商区域 -->
         <div class="mt-24 mb-12 scroll-animate">
             <div class="text-center mb-8">
                 <h4 class="text-xl font-bold text-white mb-2 flex items-center justify-center gap-2">
@@ -574,7 +571,6 @@
             </div>
         </div>
 
-        <!-- 技术支持区域 -->
         <div class="mb-16 scroll-animate" style="transition-delay: 0.1s;">
             <div class="text-center mb-8">
                 <h4 class="text-xl font-bold text-white mb-2 flex items-center justify-center gap-2">
@@ -590,7 +586,6 @@
             </div>
         </div>
 
-        <!-- 页脚 -->
         <footer class="text-center text-white/40 text-sm pt-8 border-t border-white/10 scroll-animate" style="transition-delay: 0.2s;">
             <p>© 2026 YZ Cloud 沅臻云盘 · 纯公益免费下载站</p>
             <a href="https://frp.80cn.cn" target="_blank" class="inline-block mt-4 text-[#00BFFF] hover:underline">
@@ -600,7 +595,6 @@
     </div>
 </div>
 
-<!-- 警告弹窗 -->
 <div id="warning" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/80 backdrop-blur-sm">
     <div class="glass rounded-2xl p-8 max-w-md w-[90%] shadow-2xl">
         <div class="flex items-center gap-3 mb-6">
@@ -620,182 +614,178 @@
     </div>
 </div>
 
-<!-- 隐藏iframe检测节点状态 -->
 <div class="hidden">
     <iframe src="http://123.56.106.49:12345" onload="setStatus('beijing',true)" onerror="setStatus('beijing',false)"></iframe>
     <iframe src="http://47.104.206.20:51794" onload="setStatus('hebei',true)" onerror="setStatus('hebei',false)"></iframe>
 </div>
 
 <script>
-    // 老IE直接终止执行后续JS
-    if (!isIE) {
-        // 开屏百分比同步 精准2秒
-        const percentEl = document.getElementById('percent');
-        const startTime = Date.now();
-        const duration = 2000; // 改回2秒
+if (!isIE) {
+    // 音频初始化
+    const bgMusic = new Audio('http://music.163.com/song/media/outer/url?id=3360177613.mp3');
+    bgMusic.loop = true;
+    bgMusic.volume = 1.0;
 
-        function updatePercent() {
-            const elapsed = Date.now() - startTime;
-            const progress = Math.min(elapsed / duration, 1);
-            percentEl.textContent = (progress * 100).toFixed(2) + '%';
-            
-            if (progress < 1) {
-                requestAnimationFrame(updatePercent);
-            } else {
-                setTimeout(() => {
-                    document.getElementById('main').style.opacity = '1';
-                }, 300);
-            }
-        }
-        requestAnimationFrame(updatePercent);
+    // 语音播报时音乐到70%音量
+    function speakWithMusic(text) {
+        if(!('speechSynthesis' in window)) return;
+        
+        // 语音时 70% 音量
+        bgMusic.volume = 0.7;
 
-        // 开屏独立粒子生成
-        function createSplashParticles() {
-            const container = document.getElementById('splash-particles');
-            const particleCount = 80;
-            const colors = ['#00BFFF', '#7C3AED', '#0F52BA', '#ffffff'];
-            
-            for (let i = 0; i < particleCount; i++) {
-                const p = document.createElement('div');
-                p.className = 'splash-particle';
-                
-                const x = Math.random() * window.innerWidth;
-                const y = Math.random() * window.innerHeight;
-                const size = Math.random() * 3 + 1;
-                const tx = (Math.random() - 0.5) * 200;
-                const ty = (Math.random() - 0.5) * 200;
-                const delay = Math.random() * 2;
-                const glow = Math.random() * 8 + 2;
-                const color = colors[Math.floor(Math.random() * colors.length)];
-                
-                p.style.setProperty('--x', x + 'px');
-                p.style.setProperty('--y', y + 'px');
-                p.style.setProperty('--size', size + 'px');
-                p.style.setProperty('--tx', tx + 'px');
-                p.style.setProperty('--ty', ty + 'px');
-                p.style.setProperty('--delay', delay + 's');
-                p.style.setProperty('--glow', glow + 'px');
-                p.style.setProperty('--color', color);
-                
-                container.appendChild(p);
-            }
-        }
-        createSplashParticles();
+        const u = new SpeechSynthesisUtterance(text);
+        u.lang = 'zh-CN';
 
-        // 全局流动粒子系统
-        function createFlowParticles() {
-            const container = document.getElementById('particles');
-            const particleCount = 120;
-            const colors = ['#00BFFF', '#7C3AED', '#0F52BA', '#ffffff'];
-            
-            for (let i = 0; i < particleCount; i++) {
-                const p = document.createElement('div');
-                p.className = 'flow-particle';
-                
-                const x = Math.random() * window.innerWidth;
-                const size = Math.random() * 3 + 1;
-                const scale = Math.random() * 1 + 0.5;
-                const duration = Math.random() * 6 + 3;
-                const delay = Math.random() * 10;
-                const opacity = Math.random() * 0.6 + 0.2;
-                const glow = Math.random() * 10 + 2;
-                const color = colors[Math.floor(Math.random() * colors.length)];
-                
-                p.style.setProperty('--x', x + 'px');
-                p.style.setProperty('--size', size + 'px');
-                p.style.setProperty('--scale', scale);
-                p.style.setProperty('--duration', duration + 's');
-                p.style.setProperty('--delay', delay + 's');
-                p.style.setProperty('--opacity', opacity);
-                p.style.setProperty('--glow', glow + 'px');
-                p.style.setProperty('--color', color);
-                
-                container.appendChild(p);
-            }
-        }
-        createFlowParticles();
+        // 语音结束恢复100%
+        u.onend = function() {
+            bgMusic.volume = 1.0;
+        };
 
-        // 导航栏滚动动态效果
-        window.addEventListener('scroll', () => {
-            const navbar = document.getElementById('navbar');
-            if (window.scrollY > 20) {
-                navbar.classList.add('scrolled');
-            } else {
-                navbar.classList.remove('scrolled');
-            }
-        });
-
-        // 滚动触发动画
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('active');
-                }
-            });
-        }, { threshold: 0.1 });
-
-        document.querySelectorAll('.scroll-animate').forEach(el => {
-            observer.observe(el);
-        });
-
-        // 节点在线状态更新
-        function setStatus(region, isOnline) {
-            const el = document.getElementById('status-' + region);
-            if (isOnline) {
-                el.className = 'px-3 py-1 rounded-full text-xs bg-green-500/20 text-green-400 font-medium';
-                el.innerHTML = '<i class="fa fa-check-circle"></i> 在线';
-            } else {
-                el.className = 'px-3 py-1 rounded-full text-xs bg-red-500/20 text-red-400 font-medium';
-                el.innerHTML = '<i class="fa fa-times-circle"></i> 离线';
-            }
-        }
-
-        // 节点点击事件
-        let targetUrl = '';
-        document.querySelectorAll('[data-server]').forEach(btn => {
-            btn.addEventListener('click', () => {
-                targetUrl = btn.dataset.url;
-                const serverType = btn.dataset.server;
-                const accountInfo = document.getElementById('account-info');
-
-                if (serverType === 'beijing') {
-                    accountInfo.innerHTML = `
-                        <p class="text-white/60 mb-2">北京节点访问账号</p>
-                        <p class="text-lg font-medium text-white mb-1">账号：888</p>
-                        <p class="text-lg font-medium text-white">密码：666</p>
-                    `;
-                } else {
-                    const accounts = ['A1', 'A2', 'A3'];
-                    const randomAcc = accounts[Math.floor(Math.random() * accounts.length)];
-                    accountInfo.innerHTML = `
-                        <p class="text-white/60 mb-2">河北节点访问账号</p>
-                        <p class="text-lg font-medium text-white mb-1">账号：${randomAcc}</p>
-                        <p class="text-lg font-medium text-white">密码：1234</p>
-                    `;
-                }
-                document.getElementById('warning').style.display = 'flex';
-            });
-        });
-
-        // 同意并跳转
-        document.getElementById('agree').addEventListener('click', () => {
-            window.open(targetUrl, '_blank');
-            document.getElementById('warning').style.display = 'none';
-        });
-
-        // 点击空白关闭弹窗
-        document.getElementById('warning').addEventListener('click', (e) => {
-            if (e.target === document.getElementById('warning')) {
-                document.getElementById('warning').style.display = 'none';
-            }
-        });
-
-        // 窗口大小变化时重绘粒子
-        window.addEventListener('resize', () => {
-            document.getElementById('particles').innerHTML = '';
-            createFlowParticles();
-        });
+        window.speechSynthesis.speak(u);
     }
+
+    // 进度条
+    const percentEl = document.getElementById('percent');
+    const startTime = Date.now();
+    const duration = 2000;
+
+    function updatePercent() {
+        const elapsed = Date.now() - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        percentEl.textContent = (progress * 100).toFixed(2) + '%';
+        if(progress < 1) {
+            requestAnimationFrame(updatePercent);
+        } else {
+            document.getElementById('enterBtn').classList.add('show');
+        }
+    }
+    requestAnimationFrame(updatePercent);
+
+    // 点击按钮后同时触发
+    document.getElementById('enterBtn').addEventListener('click', () => {
+        bgMusic.play().catch(()=>{});
+        speakWithMusic('沅臻云盘服务器系统自检中，网络连接正常，北京节点在线，河北节点在线，存储服务运行稳定，带宽资源充足，欢迎您的使用');
+        document.getElementById('splash').style.animation = 'splashExit 0.5s ease forwards';
+        setTimeout(() => {
+            document.getElementById('main').style.opacity = '1';
+        }, 300);
+    });
+
+    // 开屏粒子
+    function createSplashParticles() {
+        const container = document.getElementById('splash-particles');
+        const colors = ['#00BFFF', '#7C3AED', '#0F52BA', '#ffffff'];
+        for(let i=0;i<80;i++){
+            const p = document.createElement('div');
+            p.className = 'splash-particle';
+            const x = Math.random()*window.innerWidth;
+            const y = Math.random()*window.innerHeight;
+            const size = Math.random()*3+1;
+            const tx = (Math.random()-0.5)*200;
+            const ty = (Math.random()-0.5)*200;
+            const delay = Math.random()*2;
+            const glow = Math.random()*8+2;
+            const color = colors[Math.floor(Math.random()*colors.length)];
+            p.style.setProperty('--x',x+'px');
+            p.style.setProperty('--y',y+'px');
+            p.style.setProperty('--size',size+'px');
+            p.style.setProperty('--tx',tx+'px');
+            p.style.setProperty('--ty',ty+'px');
+            p.style.setProperty('--delay',delay+'s');
+            p.style.setProperty('--glow',glow+'px');
+            p.style.setProperty('--color',color);
+            container.appendChild(p);
+        }
+    }
+    createSplashParticles();
+
+    // 全局粒子
+    function createFlowParticles() {
+        const container = document.getElementById('particles');
+        const colors = ['#00BFFF', '#7C3AED', '#0F52BA', '#ffffff'];
+        for(let i=0;i<120;i++){
+            const p = document.createElement('div');
+            p.className = 'flow-particle';
+            const x = Math.random()*window.innerWidth;
+            const size = Math.random()*3+1;
+            const scale = Math.random()*1+0.5;
+            const duration = Math.random()*6+3;
+            const delay = Math.random()*10;
+            const opacity = Math.random()*0.6+0.2;
+            const glow = Math.random()*10+2;
+            const color = colors[Math.floor(Math.random()*colors.length)];
+            p.style.setProperty('--x',x+'px');
+            p.style.setProperty('--size',size+'px');
+            p.style.setProperty('--scale',scale);
+            p.style.setProperty('--duration',duration+'s');
+            p.style.setProperty('--delay',delay+'s');
+            p.style.setProperty('--opacity',opacity);
+            p.style.setProperty('--glow',glow+'px');
+            p.style.setProperty('--color',color);
+            container.appendChild(p);
+        }
+    }
+    createFlowParticles();
+
+    // 导航栏滚动
+    window.addEventListener('scroll',()=>{
+        const navbar = document.getElementById('navbar');
+        if(window.scrollY>20) navbar.classList.add('scrolled');
+        else navbar.classList.remove('scrolled');
+    });
+
+    // 滚动动画
+    const observer = new IntersectionObserver(entries=>{
+        entries.forEach(e=>e.isIntersecting&&e.target.classList.add('active'));
+    },{threshold:0.1});
+    document.querySelectorAll('.scroll-animate').forEach(el=>observer.observe(el));
+
+    // 节点状态
+    function setStatus(region,isOnline){
+        const el = document.getElementById('status-'+region);
+        if(isOnline){
+            el.className = 'px-3 py-1 rounded-full text-xs bg-green-500/20 text-green-400 font-medium';
+            el.innerHTML = '<i class="fa fa-check-circle"></i> 在线';
+        }else{
+            el.className = 'px-3 py-1 rounded-full text-xs bg-red-500/20 text-red-400 font-medium';
+            el.innerHTML = '<i class="fa fa-times-circle"></i> 离线';
+        }
+    }
+
+    // 节点点击
+    let targetUrl = '';
+    document.querySelectorAll('[data-server]').forEach(btn=>{
+        btn.addEventListener('click',()=>{
+            targetUrl = btn.dataset.url;
+            const accountInfo = document.getElementById('account-info');
+            if(btn.dataset.server==='beijing'){
+                accountInfo.innerHTML = `<p class="text-white/60 mb-2">北京节点账号</p><p class="text-lg font-medium text-white">账号：888  密码：666</p>`;
+            }else{
+                const acc = ['A1','A2','A3'][Math.floor(Math.random()*3)];
+                accountInfo.innerHTML = `<p class="text-white/60 mb-2">河北节点账号</p><p class="text-lg font-medium text-white">账号：${acc}  密码：1234</p>`;
+            }
+            document.getElementById('warning').style.display = 'flex';
+        });
+    });
+
+    // 同意跳转
+    document.getElementById('agree').addEventListener('click',()=>{
+        window.open(targetUrl,'_blank');
+        document.getElementById('warning').style.display = 'none';
+    });
+
+    // 关闭弹窗
+    document.getElementById('warning').addEventListener('click',e=>{
+        if(e.target===document.getElementById('warning')){
+            document.getElementById('warning').style.display = 'none';
+        }
+    });
+
+    window.addEventListener('resize',()=>{
+        document.getElementById('particles').innerHTML = '';
+        createFlowParticles();
+    });
+}
 </script>
 </body>
 </html>
