@@ -9,7 +9,6 @@
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
 
-/* 大背景：深色科技感，完全不透明 */
 body{
   min-height:100vh;
   background:linear-gradient(135deg, #0f172a, #1e293b, #334155);
@@ -21,7 +20,6 @@ body{
   flex-wrap:wrap;justify-content:center;
 }
 
-/* 左侧面板：不透明 + 右侧卡片同款蓝色 */
 .control-panel{
   flex:1;min-width:340px;
   background:linear-gradient(180deg, #e0f2fe, #7dd3fc);
@@ -71,7 +69,6 @@ body{
   background:#2563eb;color:#fff;
 }
 
-/* 卡片：高级蓝色渐变 */
 .card{
   width:340px;height:520px;
   background:linear-gradient(180deg, #f0f9ff 0%, #e0f2fe 35%, #7dd3fc 130%);
@@ -82,7 +79,6 @@ body{
   position:relative;
 }
 
-/* 云图标 */
 .cloud-icon {
   width:28px;
   height:28px;
@@ -118,7 +114,6 @@ body{
   margin-bottom:44px;
 }
 
-/* YZCloud 彩色渐变 */
 .logo-wrap{
   display:flex;align-items:center;
   font-size:21px;font-weight:800;
@@ -188,7 +183,7 @@ body{
     </div>
     <div class="form-group">
       <label class="form-label">分享链接</label>
-      <input type="url" class="form-input" id="link" placeholder="https://">
+      <input type="text" class="form-input" id="link" placeholder="请输入链接">
     </div>
     <div class="btn-group">
       <button class="btn btn-refresh" id="refresh">刷新预览</button>
