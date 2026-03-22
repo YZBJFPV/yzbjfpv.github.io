@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>917813兼容模式</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{width:100vw;height:100vh;overflow:hidden;font-family:Arial, sans-serif;}
+
+/* 弹窗样式 */
+.mask{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.8);z-index:9999;display:flex;align-items:center;justify-content:center;}
+.box{background:#fff;padding:30px;border-radius:16px;max-width:420px;text-align:center;box-shadow:0 0 30px rgba(0,0,0,.2);}
+.box h3{color:#333;margin-bottom:16px;font-size:18px;}
+.box p{color:#666;margin:8px 0;line-height:1.6;font-size:14px;}
+.copy-btn{display:inline-block;margin-top:12px;padding:8px 16px;background:#007bff;color:#fff;border-radius:8px;cursor:pointer;font-size:14px;transition:background .3s;}
+.copy-btn:hover{background:#0056b3;}
+.time{margin-top:20px;font-size:16px;color:#ff4444;font-weight:bold;}
+
+/* 加载动画（文字+动态省略号） */
+.loading{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:9998;font-size:18px;color:#333;display:none;}
+
+/* 内嵌页面和水印 */
+iframe{width:100%;height:100%;border:none;display:none;}
+.watermark{position:fixed;right:10px;bottom:10px;font-size:12px;color:rgba(0,0,0,.35);pointer-events:none;display:none;}
+</style>
+</head>
+<body>
+
+<!-- 弹窗 -->
+<div class="mask" id="mask">
+  <div class="box">
+    <h3>兼容模式提示</h3>
+    <p>当前使用兼容模式浏览917813官网</p>
+    <p>请使用除微信以外的浏览器打开</p>
+    <div class="copy-btn" id="copyBtn">cdn.917813.com.cn 或 917813.com.cn（点我复制）</div>
+    <div class="time" id="time">5秒后加载页面...</div>
+  </div>
+</div>
+
+<!-- 加载动画 -->
+<div class="loading" id="loading">加载中<span id="dots"></span></div>
+
+<!-- 内嵌页面和水印 -->
+<iframe id="iframe" src="https://cdn.917813.com.cn"></iframe>
+<div class="watermark" id="watermark">当前为微信浏览器兼容模式</div>
+
+<script>
+// 复制功能
+document.getElementById('copyBtn').addEventListener('click', function() {
+  const text = 'cdn.917813.com.cn 917813.com.cn';
+  navigator.clipboard.writeText(text).then(() => {
+    this.innerHTML = '✅ 复制成功！';
+    setTimeout(() => {
+      this.innerHTML = 'cdn.917813.com.cn 或 917813.com.cn（点我复制）';
+    }, 2000);
+  }).catch(() => {
+    alert('复制失败，请手动复制');
+  });
+});
+
+// 倒计时动画（5→4→3→2→1）
+let count = 5;
+const timeEl = document.getElementById('time');
+const timer = setInterval(() => {
+  timeEl.textContent = `${count}秒后加载页面...`;
+  count--;
+  if (count < 0) {
+    clearInterval(timer);
+    document.getElementById('mask').style.display = 'none';
+    document.getElementById('loading').style.display = 'block';
+    startDotAnimation(); // 启动省略号动画
+  }
+}, 1000);
+
+// 动态省略号动画（1→2→3→2→1循环）
+let dotCount = 1;
+const dotsEl = document.getElementById('dots');
+let dotInterval;
+function startDotAnimation() {
+  dotInterval = setInterval(() => {
+    dotsEl.textContent = '.'.repeat(dotCount);
+    // 按 1→2→3→2→1→2→3... 的规律循环
+    if (dotCount === 3) {
+      dotCount = 2;
+    } else if (dotCount === 1) {
+      dotCount = 2;
+    } else if (dotCount === 2) {
+      dotCount = dotsEl.textContent === '..' ? 3 : 1;
+    }
+  }, 300);
+}
+
+// 监听内嵌页面加载完成
+document.getElementById('iframe').addEventListener('load', function() {
+  clearInterval(dotInterval);
+  document.getElementById('loading').style.display = 'none';
+  this.style.display = 'block';
+  document.getElementById('watermark').style.display = 'block';
+});
+</script>
+</body>
+</html>
