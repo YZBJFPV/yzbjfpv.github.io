@@ -1,0 +1,1036 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="description" content="YZ Cloud 私有云存储，无需APP微信直开，全平台适配，高速稳定在线预览，分享无需登录" />
+<title>YZ Cloud - 新一代轻量私有云存储服务</title>
+
+<link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/animate.css/4.1.1/animate.min.css">
+<link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+:root {
+  --primary: #4D9FFF;
+  --primary-light: #72beff;
+  --primary-dark: #2563eb;
+  --bg-deep: #02050f;
+  --bg-card: #0f1830;
+  --bg-card-hover: #121e3d;
+  --text-white: #eef5ff;
+  --text-light: #cfe2ff;
+  --text-muted: #9cb6e6;
+  --text-disabled: #6b8bc7;
+  --border-color: #1f2f55;
+  --border-active: #4D9FFF;
+}
+html {
+  scroll-behavior: smooth;
+}
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-deep);
+}
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, var(--primary), var(--primary-light));
+  border-radius: 999px;
+}
+body {
+  background: var(--bg-deep);
+  color: var(--text-white);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+  overflow-x: hidden;
+  line-height: 1.6;
+}
+/* 背景装饰 */
+.bg-decor {
+  position: fixed;
+  width: 100%;
+  height: 100vh;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+.bg-decor .icon-decor {
+  position: absolute;
+  color: rgba(77,159,255,0.03);
+  font-size: 180px;
+  animation: float 12s infinite ease-in-out;
+}
+.bg-decor .icon-decor:nth-child(1) {
+  top: 10%;
+  left: 5%;
+  animation-delay: 0s;
+}
+.bg-decor .icon-decor:nth-child(2) {
+  bottom: 15%;
+  right: 8%;
+  animation-delay: 3s;
+}
+.bg-decor .icon-decor:nth-child(3) {
+  top: 60%;
+  left: 10%;
+  animation-delay: 6s;
+}
+.bg-decor .icon-decor:nth-child(4) {
+  top: 20%;
+  right: 15%;
+  animation-delay: 9s;
+}
+
+/* 动画关键帧 */
+@keyframes bgShift {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+@keyframes float {
+  0%   { transform: translateY(0) rotate(0deg); }
+  50%  { transform: translateY(-20px) rotate(5deg); }
+  100% { transform: translateY(0) rotate(0deg); }
+}
+@keyframes shine {
+  0%   { background-position: -200px; }
+  100% { background-position: 400px; }
+}
+@keyframes glow {
+  0%,100% { box-shadow: 0 0 15px rgba(77,159,255,0.3); }
+  50% { box-shadow: 0 0 30px rgba(77,159,255,0.6); }
+}
+/* 滚动动画触发类 */
+.animate-on-scroll {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: all 0.8s ease;
+}
+.animate-on-scroll.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Hero区域 */
+.hero {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 100px 20px 80px;
+  text-align: center;
+  background: linear-gradient(45deg, #0b1226, #122042, #0d1833, #070f20);
+  background-size: 400% 400%;
+  animation: bgShift 15s ease infinite;
+  z-index: 1;
+}
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: 
+    radial-gradient(circle at 20% 30%, rgba(77,159,255,0.12), transparent 50%),
+    radial-gradient(circle at 80% 70%, rgba(114,190,255,0.08), transparent 50%);
+  pointer-events: none;
+}
+.hero::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 200px;
+  background: linear-gradient(to top, var(--bg-deep), transparent);
+  pointer-events: none;
+}
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 16px;
+  background: rgba(77,159,255,0.1);
+  border: 1px solid rgba(77,159,255,0.2);
+  border-radius: 999px;
+  font-size: 14px;
+  color: var(--primary-light);
+  margin-bottom: 24px;
+  z-index: 2;
+}
+.hero h1 {
+  font-size: clamp(36px, 8vw, 64px);
+  font-weight: 900;
+  margin-bottom: 20px;
+  position: relative;
+  z-index: 2;
+  letter-spacing: -0.02em;
+}
+.hero h1 span {
+  background: linear-gradient(90deg, var(--primary), var(--primary-light), #a8d1ff);
+  background-size: 200% 100%;
+  animation: bgShift 3s ease infinite;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.hero p {
+  font-size: clamp(16px, 3vw, 20px);
+  color: var(--text-light);
+  max-width: 800px;
+  margin: 0 auto 40px;
+  position: relative;
+  z-index: 2;
+  font-weight: 400;
+}
+.hero .shine {
+  background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(150,180,255,0.3) 50%, rgba(255,255,255,0) 100%);
+  background-size: 400px 100%;
+  background-repeat: no-repeat;
+  animation: shine 4s infinite linear;
+}
+.hero-btn-group {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  justify-content: center;
+  z-index: 2;
+}
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 16px 36px;
+  background: var(--primary);
+  color: #fff;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 16px;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  border: none;
+  cursor: pointer;
+}
+.btn:hover {
+  background: var(--primary-dark);
+  transform: translateY(-3px);
+  box-shadow: 0 12px 30px rgba(77,159,255,0.35);
+}
+.btn:hover i {
+  animation: animate__rubberBand 1s ease;
+}
+.btn-outline {
+  background: transparent;
+  border: 1px solid var(--primary);
+  color: var(--text-light);
+}
+.btn-outline:hover {
+  background: rgba(77,159,255,0.1);
+  box-shadow: 0 8px 20px rgba(77,159,255,0.2);
+}
+.hero-scroll {
+  position: absolute;
+  bottom: 40px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 2;
+  animation: float 2s infinite ease-in-out;
+}
+.hero-scroll i {
+  font-size: 24px;
+  color: var(--text-muted);
+}
+
+/* 通用容器 */
+.wrap {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 80px 20px;
+  position: relative;
+  z-index: 1;
+}
+.sec-title {
+  font-size: clamp(24px, 5vw, 36px);
+  font-weight: 800;
+  text-align: center;
+  margin-bottom: 50px;
+  letter-spacing: -0.01em;
+}
+.sec-title span {
+  color: var(--primary);
+  position: relative;
+}
+.sec-title span::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background: linear-gradient(90deg, var(--primary), transparent);
+  border-radius: 999px;
+}
+.sec-desc {
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 14px;
+  margin-top: -40px;
+  margin-bottom: 30px;
+}
+
+/* 全平台适配 */
+.device-row {
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+  margin-bottom: 60px;
+  flex-wrap: wrap;
+}
+.device {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  transition: all 0.3s ease;
+}
+.device:hover {
+  transform: translateY(-6px);
+}
+.device:hover .device-icon {
+  animation: animate__tada 1s ease;
+  border-color: var(--primary);
+  box-shadow: 0 0 20px rgba(77,159,255,0.3);
+}
+.device-icon {
+  width: 70px;
+  height: 70px;
+  border-radius: 18px;
+  background: rgba(77,159,255,0.08);
+  border: 1px solid rgba(77,159,255,0.15);
+  display: grid;
+  place-items: center;
+  font-size: 30px;
+  color: var(--primary-light);
+  transition: all 0.3s ease;
+}
+.device-label {
+  font-size: 15px;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+/* 核心优势 */
+.feat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 24px;
+  margin-bottom: 80px;
+}
+.feat-card {
+  background: var(--bg-card);
+  border-radius: 18px;
+  padding: 30px;
+  border: 1px solid var(--border-color);
+  transition: all 0.4s ease;
+  position: relative;
+  overflow: hidden;
+}
+.feat-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background: linear-gradient(90deg, var(--primary), var(--primary-light));
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.4s ease;
+}
+.feat-card:hover {
+  border-color: var(--border-active);
+  background: var(--bg-card-hover);
+  transform: translateY(-8px);
+  box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+}
+.feat-card:hover::before {
+  transform: scaleX(1);
+}
+.feat-card:hover h3 i {
+  animation: animate__bounceIn 0.6s ease;
+}
+.feat-icon {
+  width: 50px;
+  height: 50px;
+  border-radius: 14px;
+  background: rgba(77,159,255,0.1);
+  display: grid;
+  place-items: center;
+  font-size: 24px;
+  color: var(--primary);
+  margin-bottom: 18px;
+}
+.feat-card h3 {
+  font-size: 19px;
+  margin-bottom: 12px;
+  color: var(--text-white);
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.feat-card p {
+  font-size: 15px;
+  color: var(--text-muted);
+  line-height: 1.6;
+}
+
+/* 套餐区域 - 强制单列 */
+.plans {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+  margin-bottom: 80px;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.plan {
+  background: var(--bg-card);
+  border-radius: 18px;
+  padding: 32px 24px;
+  text-align: center;
+  border: 1px solid var(--border-color);
+  position: relative;
+  transition: all 0.4s ease;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+.plan.hot {
+  border: 2px solid var(--primary);
+  box-shadow: 0 0 30px rgba(77,159,255,0.2);
+  animation: glow 3s infinite ease-in-out;
+  z-index: 2;
+}
+.plan:hover {
+  transform: translateY(-10px);
+  border-color: var(--primary);
+  box-shadow: 0 15px 35px rgba(77,159,255,0.25);
+}
+.plan:hover .price-main {
+  animation: animate__heartBeat 1s ease;
+}
+.plan .tag-new, .plan .tag-hot {
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 3px 14px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+.plan .tag-new {
+  background: var(--primary-dark);
+  color: #fff;
+}
+.plan .tag-hot {
+  background: linear-gradient(90deg, #f59e0b, #ef4444);
+  color: #fff;
+}
+.plan .level {
+  font-size: 26px;
+  font-weight: 800;
+  color: var(--text-white);
+  margin-bottom: 12px;
+}
+.plan .size {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--primary-light);
+  margin-bottom: 16px;
+}
+.plan .price-main {
+  font-size: 38px;
+  font-weight: 900;
+  color: var(--primary);
+  line-height: 1;
+  margin-bottom: 4px;
+}
+.plan .price-sub {
+  font-size: 14px;
+  color: var(--text-muted);
+  margin-bottom: 12px;
+}
+.plan .renew {
+  font-size: 13px;
+  color: var(--text-disabled);
+  margin-top: auto;
+  padding-top: 12px;
+  border-top: 1px solid var(--border-color);
+}
+.plan-feature {
+  list-style: none;
+  margin: 16px 0;
+  text-align: left;
+  max-width: 400px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.plan-feature li {
+  font-size: 14px;
+  color: var(--text-light);
+  padding: 6px 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.plan-feature li i {
+  color: var(--primary);
+  font-size: 12px;
+}
+
+/* 对比表格 */
+.compare {
+  background: var(--bg-card);
+  border-radius: 20px;
+  padding: 40px;
+  margin-bottom: 80px;
+  border: 1px solid var(--border-color);
+  overflow-x: auto;
+}
+.compare table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 600px;
+}
+.compare th, .compare td {
+  padding: 18px 14px;
+  text-align: center;
+  border-bottom: 1px solid var(--border-color);
+  font-size: 15px;
+}
+.compare th {
+  color: var(--text-light);
+  font-weight: 700;
+  font-size: 16px;
+  background: rgba(77,159,255,0.05);
+}
+.compare tr:last-child td {
+  border-bottom: none;
+}
+.compare tr:hover td {
+  background: rgba(77,159,255,0.03);
+}
+.compare .you {
+  color: var(--primary);
+  font-weight: 700;
+}
+.compare .check {
+  color: #10b981;
+  font-size: 18px;
+}
+.compare .cross {
+  color: #ef4444;
+  font-size: 18px;
+}
+
+/* 模态框 */
+.modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.7);
+  z-index: 9999;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(8px);
+  padding: 20px;
+}
+.modal.show {
+  display: flex;
+}
+.modal.show .modal-box {
+  animation: animate__zoomIn 0.4s ease;
+}
+.modal-box {
+  background: var(--bg-card);
+  border-radius: 20px;
+  padding: 40px 32px;
+  width: 100%;
+  max-width: 500px;
+  border: 1px solid var(--border-color);
+  position: relative;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+}
+.modal-close {
+  position: absolute;
+  top: 16px;
+  right: 20px;
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-size: 24px;
+  cursor: pointer;
+  width: 32px;
+  height: 32px;
+  display: grid;
+  place-items: center;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+.modal-close:hover {
+  background: rgba(255,255,255,0.1);
+  color: var(--text-white);
+}
+.modal-box h3 {
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 24px;
+  text-align: center;
+}
+
+/* 页脚 */
+.footer {
+  background: #080f1f;
+  padding: 60px 20px 30px;
+  position: relative;
+  z-index: 1;
+}
+.footer-wrap {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+.footer-top {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 40px;
+  margin-bottom: 40px;
+  padding-bottom: 40px;
+  border-bottom: 1px solid var(--border-color);
+}
+.footer-col h4 {
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 16px;
+  color: var(--text-white);
+}
+.footer-col ul {
+  list-style: none;
+}
+.footer-col ul li {
+  margin-bottom: 10px;
+}
+.footer-col ul li a {
+  color: var(--text-muted);
+  text-decoration: none;
+  font-size: 14px;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.footer-col ul li a:hover {
+  color: var(--primary);
+  transform: translateX(4px);
+}
+.footer-social {
+  display: flex;
+  gap: 12px;
+  margin-top: 16px;
+}
+.footer-social a {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: rgba(77,159,255,0.1);
+  display: grid;
+  place-items: center;
+  color: var(--primary-light);
+  font-size: 18px;
+  transition: all 0.3s ease;
+}
+.footer-social a:hover {
+  background: var(--primary);
+  color: #fff;
+  transform: translateY(-4px);
+}
+.footer-bottom {
+  text-align: center;
+  color: var(--text-disabled);
+  font-size: 14px;
+}
+
+/* 响应式适配 */
+@media (max-width: 768px) {
+  .hero {
+    min-height: auto;
+    padding: 80px 20px 60px;
+  }
+  .hero-btn-group {
+    flex-direction: column;
+    width: 100%;
+  }
+  .btn {
+    width: 100%;
+  }
+  .compare {
+    padding: 24px 20px;
+  }
+  .footer-top {
+    grid-template-columns: 1fr;
+  }
+}
+</style>
+</head>
+<body>
+<!-- 背景装饰 -->
+<div class="bg-decor">
+  <div class="icon-decor"><i class="fa-solid fa-cloud"></i></div>
+  <div class="icon-decor"><i class="fa-solid fa-server"></i></div>
+  <div class="icon-decor"><i class="fa-solid fa-database"></i></div>
+  <div class="icon-decor"><i class="fa-solid fa-folder-open"></i></div>
+</div>
+
+<!-- Hero区域 -->
+<section class="hero">
+  <div class="hero-badge animate__animated animate__fadeInDown animate__delay-1s">
+    <i class="fa-solid fa-rocket"></i>
+    2026年8月 即将正式上线 | 新一代私有云存储服务
+  </div>
+  <h1 class="animate__animated animate__backInDown animate__delay-0.5s">
+    <span>YZ Cloud</span> 私有云存储
+  </h1>
+  <p class="shine animate__animated animate__fadeInLeft animate__delay-1s">
+    无需APP · 微信直接打开 · 视频/PPT/PDF在线预览 · 分享无需登录 · 全平台无缝适配
+  </p>
+  <div class="hero-btn-group">
+    <a href="#plans" class="btn animate__animated animate__fadeInUp animate__delay-1.2s">
+      <i class="fa-solid fa-box-open"></i>
+      立即查看套餐
+    </a>
+    <a href="javascript:openModal()" class="btn btn-outline animate__animated animate__fadeInUp animate__delay-1.4s">
+      <i class="fa-solid fa-hand-holding-dollar"></i>
+      投资合作
+    </a>
+  </div>
+  <a href="#platform" class="hero-scroll animate__animated animate__fadeIn animate__delay-2s">
+    <i class="fa-solid fa-chevron-down"></i>
+  </a>
+</section>
+
+<div class="wrap">
+  <!-- 全平台适配 -->
+  <h2 class="sec-title animate-on-scroll" id="platform">全平台 <span>无缝适配</span></h2>
+  <div class="device-row animate-on-scroll">
+    <div class="device animate__animated animate__fadeInUp" style="animation-delay: 0s;">
+      <div class="device-icon"><i class="fa-brands fa-apple"></i></div>
+      <div class="device-label">iOS</div>
+    </div>
+    <div class="device animate__animated animate__fadeInUp" style="animation-delay: 0.1s;">
+      <div class="device-icon"><i class="fa-brands fa-android"></i></div>
+      <div class="device-label">安卓</div>
+    </div>
+    <div class="device animate__animated animate__fadeInUp" style="animation-delay: 0.2s;">
+      <div class="device-icon"><i class="fa-solid fa-mobile-screen-button"></i></div>
+      <div class="device-label">鸿蒙</div>
+    </div>
+    <div class="device animate__animated animate__fadeInUp" style="animation-delay: 0.3s;">
+      <div class="device-icon"><i class="fa-brands fa-windows"></i></div>
+      <div class="device-label">Windows</div>
+    </div>
+    <div class="device animate__animated animate__fadeInUp" style="animation-delay: 0.4s;">
+      <div class="device-icon"><i class="fa-brands fa-mac"></i></div>
+      <div class="device-label">macOS</div>
+    </div>
+    <div class="device animate__animated animate__fadeInUp" style="animation-delay: 0.5s;">
+      <div class="device-icon"><i class="fa-solid fa-globe"></i></div>
+      <div class="device-label">网页版</div>
+    </div>
+  </div>
+
+  <!-- 核心功能优势 -->
+  <h2 class="sec-title animate-on-scroll">核心 <span>功能优势</span></h2>
+  <div class="feat-grid">
+    <div class="feat-card animate-on-scroll">
+      <div class="feat-icon">
+        <i class="fa-solid fa-mobile-screen"></i>
+      </div>
+      <h3><i class="fa-solid fa-check-circle"></i>无需下载APP</h3>
+      <p>微信、浏览器直接打开即用，不占用手机存储空间，零门槛随手使用。</p>
+    </div>
+    <div class="feat-card animate-on-scroll">
+      <div class="feat-icon">
+        <i class="fa-solid fa-share-nodes"></i>
+      </div>
+      <h3><i class="fa-solid fa-check-circle"></i>分享无需登录</h3>
+      <p>他人点开链接直接下载/查看，无需注册、无需登录、无多余跳转，极致便捷。</p>
+    </div>
+    <div class="feat-card animate-on-scroll">
+      <div class="feat-icon">
+        <i class="fa-solid fa-file-video"></i>
+      </div>
+      <h3><i class="fa-solid fa-check-circle"></i>全格式在线预览</h3>
+      <p>视频、PPT、PDF、图片、文档直接在线播放查看，不用跳转第三方软件。</p>
+    </div>
+    <div class="feat-card animate-on-scroll">
+      <div class="feat-icon">
+        <i class="fa-solid fa-lock"></i>
+      </div>
+      <h3><i class="fa-solid fa-check-circle"></i>分享密码保护</h3>
+      <p>灵活设置文件访问密码，精细化控制访问权限，重要资料存储更安全。</p>
+    </div>
+    <div class="feat-card animate-on-scroll">
+      <div class="feat-icon">
+        <i class="fa-solid fa-gauge-high"></i>
+      </div>
+      <h3><i class="fa-solid fa-check-circle"></i>高速稳定传输</h3>
+      <p>外网下载速度最高 8MB/s，多线BGP网络，长期稳定运行，专业运维保障。</p>
+    </div>
+    <div class="feat-card animate-on-scroll">
+      <div class="feat-icon">
+        <i class="fa-solid fa-server"></i>
+      </div>
+      <h3><i class="fa-solid fa-check-circle"></i>数据本地托管</h3>
+      <p>文件统一存储在本地硬件集群，数据主权完全可控，杜绝第三方数据泄露风险。</p>
+    </div>
+  </div>
+
+  <!-- 会员套餐 - 强制单列 -->
+  <h2 class="sec-title animate-on-scroll" id="plans">会员 <span>套餐</span></h2>
+  <div class="plans animate-on-scroll">
+    <div class="plan">
+      <div class="tag-new">入门首选</div>
+      <div class="level">黄金会员</div>
+      <div class="size">500G 专属存储空间</div>
+      <div class="price-main">¥9</div>
+      <div class="price-sub">每月</div>
+      <ul class="plan-feature">
+        <li><i class="fa-solid fa-check"></i>全功能无限制解锁</li>
+        <li><i class="fa-solid fa-check"></i>全格式在线预览</li>
+        <li><i class="fa-solid fa-check"></i>全程不限速下载</li>
+        <li><i class="fa-solid fa-check"></i>分享无需登录</li>
+        <li><i class="fa-solid fa-check"></i>分享密码保护</li>
+        <li><i class="fa-solid fa-check"></i>零广告纯净体验</li>
+        <li><i class="fa-solid fa-check"></i>数据本地安全托管</li>
+      </ul>
+      <div class="renew">首月特惠仅需 ¥5.8 | 年付享8折优惠</div>
+    </div>
+    <div class="plan hot">
+      <div class="tag-hot">爆款推荐</div>
+      <div class="level">白金会员</div>
+      <div class="size">1000G 专属存储空间</div>
+      <div class="price-main">¥17</div>
+      <div class="price-sub">每月</div>
+      <ul class="plan-feature">
+        <li><i class="fa-solid fa-check"></i>全功能无限制解锁</li>
+        <li><i class="fa-solid fa-check"></i>全格式在线预览</li>
+        <li><i class="fa-solid fa-check"></i>全程不限速下载</li>
+        <li><i class="fa-solid fa-check"></i>分享无需登录</li>
+        <li><i class="fa-solid fa-check"></i>分享密码保护</li>
+        <li><i class="fa-solid fa-check"></i>零广告纯净体验</li>
+        <li><i class="fa-solid fa-check"></i>数据本地安全托管</li>
+      </ul>
+      <div class="renew">年付享8折优惠</div>
+    </div>
+    <div class="plan">
+      <div class="tag-new">旗舰顶配</div>
+      <div class="level">铂金会员</div>
+      <div class="size">2000G 专属存储空间</div>
+      <div class="price-main">¥36</div>
+      <div class="price-sub">每月</div>
+      <ul class="plan-feature">
+        <li><i class="fa-solid fa-check"></i>全功能无限制解锁</li>
+        <li><i class="fa-solid fa-check"></i>全格式在线预览</li>
+        <li><i class="fa-solid fa-check"></i>全程不限速下载</li>
+        <li><i class="fa-solid fa-check"></i>分享无需登录</li>
+        <li><i class="fa-solid fa-check"></i>分享密码保护</li>
+        <li><i class="fa-solid fa-check"></i>零广告纯净体验</li>
+        <li><i class="fa-solid fa-check"></i>数据本地安全托管</li>
+      </ul>
+      <div class="renew">年付享7.5折优惠</div>
+    </div>
+  </div>
+
+  <!-- 价格对比 -->
+  <h2 class="sec-title animate-on-scroll">竞品 <span>对比</span></h2>
+  <p class="sec-desc animate-on-scroll">*以下对比数据均来自2025年行业公开信息</p>
+  <div class="compare animate-on-scroll">
+    <table>
+      <tr>
+        <th>对比项</th>
+        <th class="you">YZ Cloud</th>
+        <th>百度网盘SVIP</th>
+        <th>阿里云盘会员</th>
+      </tr>
+      <tr>
+        <td>月付价格</td>
+        <td class="you">9~36元/月</td>
+        <td>30元/月</td>
+        <td>25元/月</td>
+      </tr>
+      <tr>
+        <td>存储空间</td>
+        <td class="you">500G~2000G</td>
+        <td>5TB</td>
+        <td>8TB</td>
+      </tr>
+      <tr>
+        <td>分享体验</td>
+        <td class="you">无需APP，直链预览</td>
+        <td>需APP/强制登录</td>
+        <td>需APP/登录</td>
+      </tr>
+      <tr>
+        <td>下载速度</td>
+        <td class="you">最高8MB/s 全程稳定</td>
+        <td>高峰期限速</td>
+        <td>非会员限速</td>
+      </tr>
+      <tr>
+        <td>广告植入</td>
+        <td class="you"><i class="fa-solid fa-times cross"></i> 零广告</td>
+        <td><i class="fa-solid fa-check check"></i> 开屏/弹窗广告</td>
+        <td><i class="fa-solid fa-check check"></i> 内置广告</td>
+      </tr>
+      <tr>
+        <td>数据主权</td>
+        <td class="you">本地私有集群托管</td>
+        <td>公有云存储</td>
+        <td>公有云存储</td>
+      </tr>
+    </table>
+  </div>
+</div>
+
+<!-- 投资模态框 -->
+<div class="modal" id="investModal">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal()">×</button>
+    <h3 class="animate__animated animate__fadeInDown">投资收益计算器</h3>
+    <div class="calc-row animate__animated animate__fadeInUp">
+      <label>投资金额（单盘成本约 104.47 元）</label>
+      <input type="number" class="money" value="104.47" min="0" step="0.01">
+    </div>
+    <div class="result animate__animated animate__zoomIn">
+      <div class="label">固定回本周期：12 个月</div>
+      <div class="num" id="investResult">¥9.0/月</div>
+    </div>
+    <p style="text-align:center;margin-top:20px;font-size:14px;color:#9cb6e6">
+      <i class="fa-solid fa-circle-info"></i> 有意向合作请联系站长获取详细方案
+    </p>
+  </div>
+</div>
+
+<!-- 页脚 -->
+<footer class="footer">
+  <div class="footer-wrap">
+    <div class="footer-top">
+      <div class="footer-col">
+        <h4>YZ Cloud</h4>
+        <p style="color: var(--text-muted); font-size:14px; margin-bottom:16px;">
+          新一代轻量私有云存储，为个人和团队提供安全、便捷、高速的文件存储与分享服务。
+        </p>
+        <div class="footer-social">
+          <a href="#"><i class="fa-brands fa-weixin"></i></a>
+          <a href="#"><i class="fa-brands fa-qq"></i></a>
+          <a href="#"><i class="fa-solid fa-envelope"></i></a>
+          <a href="#"><i class="fa-brands fa-github"></i></a>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h4>产品服务</h4>
+        <ul>
+          <li><a href="#plans"><i class="fa-solid fa-chevron-right"></i>套餐选购</a></li>
+          <li><a href="#"><i class="fa-solid fa-chevron-right"></i>企业定制</a></li>
+          <li><a href="#"><i class="fa-solid fa-chevron-right"></i>API接口</a></li>
+          <li><a href="#"><i class="fa-solid fa-chevron-right"></i>合作加盟</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>帮助中心</h4>
+        <ul>
+          <li><a href="#"><i class="fa-solid fa-chevron-right"></i>使用教程</a></li>
+          <li><a href="#"><i class="fa-solid fa-chevron-right"></i>常见问题</a></li>
+          <li><a href="#"><i class="fa-solid fa-chevron-right"></i>服务条款</a></li>
+          <li><a href="#"><i class="fa-solid fa-chevron-right"></i>隐私政策</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      YZ Cloud © 2026 私有云存储服务 | 2026年8月 即将正式上线 | 最终解释权归YZ Cloud所有
+    </div>
+  </div>
+</footer>
+
+<script>
+// 投资计算器
+const moneyInput = document.querySelector('.money');
+const investResult = document.getElementById('investResult');
+moneyInput.addEventListener('input', function(){
+  const money = +this.value;
+  const monthProfit = (money / 104.47 * 9).toFixed(1);
+  investResult.innerText = `¥${monthProfit}/月`;
+  // 动画效果
+  investResult.classList.add('animate__animated', 'animate__flipInX');
+  setTimeout(() => {
+    investResult.classList.remove('animate__animated', 'animate__flipInX');
+  }, 600);
+});
+
+// 模态框控制
+function openModal(){
+  document.getElementById('investModal').classList.add('show');
+  document.body.style.overflow = 'hidden';
+}
+function closeModal(){
+  const modal = document.getElementById('investModal');
+  const modalBox = modal.querySelector('.modal-box');
+  modalBox.classList.add('animate__animated', 'animate__zoomOut');
+  setTimeout(() => {
+    modal.classList.remove('show');
+    modalBox.classList.remove('animate__animated', 'animate__zoomOut');
+    document.body.style.overflow = '';
+  }, 300);
+}
+// 点击模态框背景关闭
+document.getElementById('investModal').addEventListener('click', function(e){
+  if(e.target === this) closeModal();
+});
+
+// 滚动动画触发
+const observerOptions = {
+  threshold: 0.1,
+  rootMargin: '0px 0px -50px 0px'
+};
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+      // 给子元素添加animate.css动画
+      const animElements = entry.target.querySelectorAll('.animate__animated');
+      animElements.forEach((el, index) => {
+        el.style.animationDelay = `${index * 0.1}s`;
+        el.style.opacity = '1';
+      });
+      observer.unobserve(entry.target);
+    }
+  });
+}, observerOptions);
+
+// 监听所有需要滚动动画的元素
+document.querySelectorAll('.animate-on-scroll').forEach(el => {
+  observer.observe(el);
+});
+</script>
+</body>
+</html>
