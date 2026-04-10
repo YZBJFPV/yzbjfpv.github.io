@@ -96,7 +96,6 @@
             overflow-x: hidden;
         }
 
-        /* 全局网格背景 */
         .grid-bg {
             background-image: radial-gradient(circle, rgba(49,107,243,0.03) 1px, transparent 1px);
             background-size: 40px 40px;
@@ -108,7 +107,6 @@
             100% { background-position: 40px 40px; }
         }
 
-        /* 背景淡彩色炫光自动动画 */
         .bg-glow {
             position: fixed;
             top: 0;
@@ -127,7 +125,6 @@
             pointer-events: none;
         }
 
-        /* 浮动光晕 */
         .light-orb {
             position: absolute;
             border-radius: 50%;
@@ -176,7 +173,6 @@
             75% { transform: translate(-20px, -10px) scale(1.02); }
         }
 
-        /* 滚动渐入动画 */
         .reveal {
             opacity: 0;
             transform: translateY(30px);
@@ -192,7 +188,6 @@
         .reveal-delay-3 { transition-delay: 0.3s; }
         .reveal-delay-4 { transition-delay: 0.4s; }
 
-        /* 渐变文字 */
         .gradient-text {
             background: linear-gradient(135deg, #316BF3 0%, #8B5CF6 50%, #EC4899 100%);
             background-size: 200% 200%;
@@ -202,7 +197,6 @@
             animation: shimmer 8s linear infinite;
         }
 
-        /* 玻璃态卡片 */
         .glow-card {
             background: rgba(255,255,255,0.7);
             backdrop-filter: blur(12px);
@@ -233,7 +227,6 @@
             animation: pulseGlow 2s ease-in-out infinite;
         }
 
-        /* 主按钮 */
         .btn-primary {
             background: linear-gradient(135deg, #316BF3, #8B5CF6);
             background-size: 200% 200%;
@@ -271,7 +264,6 @@
             background-position: 100% 100%;
         }
 
-        /* 次要按钮 */
         .btn-outline {
             background: transparent;
             border: 2px solid #E2E8F0;
@@ -295,7 +287,6 @@
             box-shadow: 0 8px 20px rgba(49,107,243,0.15);
         }
 
-        /* 状态标签 */
         .status-online {
             display: inline-flex;
             align-items: center;
@@ -338,7 +329,6 @@
         }
         @keyframes pulse { 0%,100%{opacity:1;}50%{opacity:0.5;} }
 
-        /* 图标容器 */
         .icon-wrapper {
             width: 52px;
             height: 52px;
@@ -355,7 +345,6 @@
             animation: rotateSlow 8s linear infinite;
         }
 
-        /* 数据行 */
         .data-row {
             display: flex;
             align-items: center;
@@ -386,7 +375,6 @@
             transform: scale(1.1) rotate(8deg);
         }
 
-        /* 导航栏 */
         .navbar {
             position: fixed;
             top: 0;
@@ -411,7 +399,6 @@
             to { transform: translateY(0); opacity: 1; }
         }
 
-        /* 打字机效果 */
         .typewriter {
             display: inline-block;
             border-right: 2px solid #316BF3;
@@ -419,12 +406,10 @@
         }
         @keyframes blink { 0%,100%{border-color:transparent;}50%{border-color:#316BF3;} }
 
-        /* 强制一行两个布局 */
         .force-two-col {
             grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
         }
 
-        /* 浮动小图标装饰 */
         .floating-icon {
             position: absolute;
             opacity: 0.15;
@@ -432,7 +417,6 @@
             animation: floatSmooth 8s ease-in-out infinite;
         }
 
-        /* 弹窗样式 */
         #warningModal {
             transition: opacity 0.3s ease;
         }
@@ -443,16 +427,12 @@
 </head>
 
 <body class="grid-bg">
-    <!-- 背景淡彩色炫光 -->
     <div class="bg-glow"></div>
-
-    <!-- 背景光晕 -->
     <div class="light-orb light-orb-1"></div>
     <div class="light-orb light-orb-2"></div>
     <div class="light-orb light-orb-3"></div>
     <div class="light-orb light-orb-4"></div>
 
-    <!-- 浮动装饰图标 -->
     <div class="floating-icon text-8xl text-primary/10" style="top:15%;left:8%;animation-delay:0s">
         <i class="fas fa-cloud"></i>
     </div>
@@ -463,7 +443,6 @@
         <i class="fas fa-bolt"></i>
     </div>
 
-    <!-- 使用警告弹窗 -->
     <div id="warningModal" class="fixed inset-0 z-[9999] hidden items-center justify-center bg-black/30 backdrop-blur-sm">
         <div class="bg-white/95 backdrop-blur-xl rounded-2xl shadow-2xl w-[90%] max-w-lg p-8 transform scale-95 opacity-0">
             <div class="flex items-center gap-3 mb-6">
@@ -493,7 +472,6 @@
         </div>
     </div>
 
-    <!-- 顶部导航栏 -->
     <nav class="navbar" id="mainNavbar">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-between">
             <div class="flex items-center gap-3">
@@ -512,10 +490,8 @@
     </nav>
 
     <div class="pt-24 pb-16 px-4 relative z-10" id="home">
-        <!-- Hero英雄区 -->
         <div class="max-w-7xl mx-auto mb-20">
             <div class="grid grid-cols-1 gap-12 items-center">
-                <!-- 左侧文字 -->
                 <div class="text-center">
                     <div class="reveal mb-4 inline-flex items-center gap-2 rounded-full px-4 py-2 text-xs tracking-wider uppercase animate-floatSmooth" style="background: rgba(49,107,243,0.08); border: 1px solid rgba(49,107,243,0.2);">
                         <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 pulse-dot"></span>
@@ -546,7 +522,6 @@
             </div>
         </div>
 
-        <!-- 核心功能区 - 强制一行两个 -->
         <div class="max-w-5xl mx-auto mb-20" id="features">
             <div class="text-center mb-12">
                 <p class="reveal text-xs font-semibold tracking-[0.3em] uppercase text-primary/70 mb-3">FEATURES</p>
@@ -598,7 +573,6 @@
             </div>
         </div>
 
-        <!-- 节点展示区 -->
         <div class="max-w-6xl mx-auto mb-20" id="nodes">
             <div class="text-center mb-12">
                 <p class="reveal text-xs font-semibold tracking-[0.3em] uppercase text-primary/70 mb-3">NODES</p>
@@ -611,11 +585,9 @@
             </div>
 
             <div id="nodes-container" class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <!-- 节点卡片由JS动态生成 -->
             </div>
         </div>
 
-        <!-- 运行时间统计 -->
         <div class="max-w-4xl mx-auto mb-16" id="runtime">
             <div class="text-center mb-12">
                 <p class="reveal text-xs font-semibold tracking-[0.3em] uppercase text-primary/70 mb-3">RUNTIME</p>
@@ -632,7 +604,6 @@
         </div>
     </div>
 
-    <!-- 页脚 -->
     <footer class="bg-glass border-t border-white/20 mt-12">
         <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
             <div class="flex flex-col md:flex-row justify-between items-center">
@@ -645,95 +616,119 @@
     </footer>
 
     <script>
-        // ==================== 节点数据配置区 ====================
+        // ========================== 节点核心配置区【唯一需要修改的地方】==========================
+        // 修改说明：
+        // 1. online: true  = 节点在线，按钮可点击
+        //    online: false = 节点离线，按钮禁用
+        // 2. url: 填写节点跳转地址，仅在线节点生效
+        // 3. 河北节点已默认填写你的地址：http://47.104.206.20:51794
+        // ======================================================================================
         const nodesData = [
-            // 双主节点（北京临时关闭）
+            // 北京主节点
             {
                 name: "北京节点",
                 desc: "主节点 · 低延迟高带宽",
-                online: false,
+                online: false,      // 在线开关
+                url: "",             // 节点跳转链接
                 color: "primary",
                 cpu: "Intel i7-11700",
                 storage: "1TB SSD + 8TB HDD",
                 bandwidth: "1000Mbps 上行"
             },
+            // 河北主节点（当前在线）
             {
                 name: "河北节点",
                 desc: "主节点 · 稳定高可用",
-                online: true,
+                online: true,                                   // 在线开关
+                url: "http://47.104.206.20:51794",              // 河北节点跳转地址
                 color: "secondary",
                 cpu: "Intel Celeron J1800",
                 storage: "500G SSD + 4TB HDD",
                 bandwidth: "500Mbps 上行"
             },
-            // 备用节点
+            // 上海备用节点
             {
                 name: "上海节点",
                 desc: "华东节点",
                 online: false,
+                url: "",
                 color: "green",
                 cpu: "AMD Ryzen 5 3600",
                 storage: "512G SSD + 3TB HDD",
                 bandwidth: "200Mbps 上行"
             },
+            // 广州备用节点
             {
                 name: "广州节点",
                 desc: "华南节点",
                 online: false,
+                url: "",
                 color: "orange",
                 cpu: "Intel i5-9400F",
                 storage: "256G SSD + 2TB HDD",
                 bandwidth: "200Mbps 上行"
             },
+            // 深圳备用节点
             {
                 name: "深圳节点",
                 desc: "珠三角节点",
                 online: false,
+                url: "",
                 color: "red",
                 cpu: "Intel i7-8700",
                 storage: "512G SSD + 4TB HDD",
                 bandwidth: "300Mbps 上行"
             },
+            // 成都备用节点
             {
                 name: "成都节点",
                 desc: "西南节点",
                 online: false,
+                url: "",
                 color: "indigo",
                 cpu: "AMD Ryzen 7 3700X",
                 storage: "1TB SSD + 6TB HDD",
                 bandwidth: "200Mbps 上行"
             },
+            // 武汉备用节点
             {
                 name: "武汉节点",
                 desc: "华中节点",
                 online: false,
+                url: "",
                 color: "teal",
                 cpu: "Intel i5-10600K",
                 storage: "512G SSD + 3TB HDD",
                 bandwidth: "200Mbps 上行"
             },
+            // 西安备用节点
             {
                 name: "西安节点",
                 desc: "西北节点",
                 online: false,
+                url: "",
                 color: "amber",
                 cpu: "Intel i7-9700",
                 storage: "512G SSD + 3TB HDD",
                 bandwidth: "200Mbps 上行"
             },
+            // 杭州备用节点
             {
                 name: "杭州节点",
                 desc: "长三角节点",
                 online: false,
+                url: "",
                 color: "cyan",
                 cpu: "AMD Ryzen 5 5600X",
                 storage: "512G SSD + 4TB HDD",
                 bandwidth: "300Mbps 上行"
             },
+            // 南京备用节点
             {
                 name: "南京节点",
                 desc: "江苏节点",
                 online: false,
+                url: "",
                 color: "violet",
                 cpu: "Intel i5-11400F",
                 storage: "256G SSD + 2TB HDD",
@@ -741,7 +736,7 @@
             }
         ];
 
-        // 颜色映射
+        // 颜色映射配置（无需修改）
         const colorMap = {
             primary: { bg: "from-primary to-blue-600", icon: "rgba(49,107,243,0.08)" },
             secondary: { bg: "from-secondary to-indigo-600", icon: "rgba(139,92,246,0.08)" },
@@ -755,17 +750,19 @@
             violet: { bg: "from-violet-500 to-purple-600", icon: "rgba(139,92,246,0.08)" }
         };
 
-        // ==================== 弹窗相关逻辑 ====================
+        // 全局变量：存储当前选中的节点跳转链接
+        let currentNodeUrl = "";
+
+        // ========================== 弹窗倒计时与跳转逻辑 ==========================
         let countdownTimer = null;
         const warningModal = document.getElementById('warningModal');
         const modalConfirm = document.getElementById('modalConfirm');
         const modalCancel = document.getElementById('modalCancel');
 
-        // 显示弹窗并启动倒计时
+        // 显示弹窗并启动5秒倒计时
         function showWarningModal() {
             warningModal.classList.remove('hidden');
             warningModal.classList.add('flex');
-            // 弹窗入场动画
             const modalContent = warningModal.querySelector('div');
             setTimeout(() => {
                 modalContent.style.transform = 'scale(1)';
@@ -774,18 +771,14 @@
 
             let countdown = 5;
             modalConfirm.textContent = `立即进入 (${countdown}s)`;
-
-            // 清除之前的定时器
             if (countdownTimer) clearInterval(countdownTimer);
 
-            // 启动倒计时
             countdownTimer = setInterval(() => {
                 countdown--;
                 if (countdown <= 0) {
                     clearInterval(countdownTimer);
                     modalConfirm.textContent = '立即进入';
-                    // 自动点击确认
-                    modalConfirm.click();
+                    modalConfirm.click(); // 倒计时结束自动确认跳转
                 } else {
                     modalConfirm.textContent = `立即进入 (${countdown}s)`;
                 }
@@ -804,26 +797,30 @@
             }, 300);
         }
 
-        // 绑定按钮事件
+        // 取消按钮事件
         modalCancel.addEventListener('click', closeWarningModal);
+
+        // 确认按钮：跳转到对应节点
         modalConfirm.addEventListener('click', () => {
             closeWarningModal();
-            // 节点连接成功提示
-            alert('节点连接成功！');
+            if (currentNodeUrl) {
+                window.location.href = currentNodeUrl; // 执行跳转
+            }
         });
 
-        // 给所有连接节点按钮绑定弹窗事件
+        // 绑定节点按钮点击事件
         function bindNodeButtonEvents() {
-            const connectButtons = document.querySelectorAll('.btn-primary:not(.opacity-60)');
-            connectButtons.forEach(btn => {
+            const buttons = document.querySelectorAll('.btn-primary:not(.opacity-60)');
+            buttons.forEach((btn, index) => {
                 btn.addEventListener('click', (e) => {
                     e.preventDefault();
-                    showWarningModal();
+                    currentNodeUrl = nodesData[index].url; // 记录当前节点链接
+                    showWarningModal(); // 弹出确认窗口
                 });
             });
         }
 
-        // 生成节点卡片
+        // ========================== 节点卡片渲染 ==========================
         function generateNodes() {
             const container = document.getElementById('nodes-container');
             container.innerHTML = '';
@@ -879,15 +876,12 @@
                         <i class="fas fa-${node.online ? 'arrow-right' : 'ban'} mr-2"></i>${node.online ? '连接节点' : '节点离线'}
                     </button>
                 `;
-
                 container.appendChild(card);
             });
-
-            // 绑定节点按钮事件
             bindNodeButtonEvents();
         }
 
-        // 运行时间计算 - 2024年8月13日下午2点20分
+        // ========================== 运行时间统计 ==========================
         function updateRuntime() {
             const startTime = new Date(2024, 7, 13, 14, 20, 0);
             const now = new Date();
@@ -904,16 +898,12 @@
                 `${years}年 ${months}月 ${days}日 ${hours.toString().padStart(2, '0')}时 ${minutes.toString().padStart(2, '0')}分 ${seconds.toString().padStart(2, '0')}秒`;
         }
 
-        // 滚动渐入动画
+        // 滚动动画
         function revealOnScroll() {
             const reveals = document.querySelectorAll('.reveal');
-            reveals.forEach(element => {
-                const windowHeight = window.innerHeight;
-                const elementTop = element.getBoundingClientRect().top;
-                const elementVisible = 150;
-                
-                if (elementTop < windowHeight - elementVisible) {
-                    element.classList.add('visible');
+            reveals.forEach(el => {
+                if (el.getBoundingClientRect().top < window.innerHeight - 150) {
+                    el.classList.add('visible');
                 }
             });
         }
@@ -921,14 +911,10 @@
         // 导航栏滚动效果
         function handleNavbarScroll() {
             const navbar = document.getElementById('mainNavbar');
-            if (window.scrollY > 50) {
-                navbar.classList.add('scrolled');
-            } else {
-                navbar.classList.remove('scrolled');
-            }
+            window.scrollY > 50 ? navbar.classList.add('scrolled') : navbar.classList.remove('scrolled');
         }
 
-        // 初始化
+        // 页面初始化
         document.addEventListener('DOMContentLoaded', () => {
             generateNodes();
             updateRuntime();
