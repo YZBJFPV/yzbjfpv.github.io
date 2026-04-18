@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>全设备·快捷指令工具箱</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            background: #f5f7fa;
+        }
+        .box {
+            background: #fff;
+            border-radius: 16px;
+        }
+        button {
+            transition: all 0.2s ease;
+        }
+        button:active {
+            scale: 0.96;
+        }
+        /* iOS禁用样式 */
+        .btn-disable-ios {
+            background-color: #d1d5db !important;
+            color: #9ca3af !important;
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+    </style>
+</head>
+<body class="p-4 pb-24">
+    <h1 class="text-2xl font-bold text-center mt-2 mb-2 text-gray-800">快捷指令娱乐工具箱</h1>
+    <p id="deviceTip" class="text-center text-xs text-gray-400 mb-6"></p>
+
+    <!-- 自定义输入框 -->
+    <div class="box p-4 mb-4 shadow">
+        <p class="text-sm text-gray-500 mb-2">自定义文字 / 自定义链接</p>
+        <input id="textInput" class="w-full border border-gray-200 rounded-lg p-2 outline-none" placeholder="在此输入内容，一键修改">
+    </div>
+
+    <!-- 微信原生快捷 -->
+    <div class="box p-4 mb-4 shadow">
+        <h2 class="font-bold mb-3 text-gray-700">🧩 微信原生功能（全设备通用）</h2>
+        <div class="grid grid-cols-3 gap-2">
+            <a href="weixin://scanqrcode"><button class="w-full bg-green-500 text-white py-2 rounded-lg text-sm">扫一扫</button></a>
+            <a href="weixin://wxpay/bizpayhome"><button class="w-full bg-red-500 text-white py-2 rounded-lg text-sm">付款码</button></a>
+            <a href="weixin://collection"><button class="w-full bg-amber-500 text-white py-2 rounded-lg text-sm">收藏</button></a>
+            <a href="weixin://card"><button class="w-full bg-blue-500 text-white py-2 rounded-lg text-sm">卡包</button></a>
+            <a href="weixin://friends/nearby"><button class="w-full bg-teal-500 text-white py-2 rounded-lg text-sm">附近的人</button></a>
+            <a href="weixin://wallet"><button class="w-full bg-rose-500 text-white py-2 rounded-lg text-sm">微信钱包</button></a>
+        </div>
+    </div>
+
+    <!-- 安卓专属系统跳转 -->
+    <div class="box p-4 mb-4 shadow">
+        <h2 class="font-bold mb-3 text-gray-700">⚙️ 系统设置跳转<span class="text-red-400 text-xs">（仅安卓）</span></h2>
+        <div class="grid grid-cols-3 gap-2" id="androidOnlyBox">
+            <button onclick="tipIos()" class="android-only w-full bg-gray-600 text-white py-2 rounded-lg text-sm">WiFi设置</button>
+            <button onclick="tipIos()" class="android-only w-full bg-gray-700 text-white py-2 rounded-lg text-sm">蓝牙设置</button>
+            <button onclick="tipIos()" class="android-only w-full bg-gray-500 text-white py-2 rounded-lg text-sm">定位设置</button>
+            <button onclick="tipIos()" class="android-only w-full bg-slate-600 text-white py-2 rounded-lg text-sm">闹钟设置</button>
+            <button onclick="tipIos()" class="android-only w-full bg-orange-500 text-white py-2 rounded-lg text-sm">应用管理</button>
+            <button onclick="tipIos()" class="android-only w-full bg-indigo-500 text-white py-2 rounded-lg text-sm">电池信息</button>
+        </div>
+    </div>
+
+    <!-- 第三方APP跳转 -->
+    <div class="box p-4 mb-4 shadow">
+        <h2 class="font-bold mb-3 text-gray-700">📱 第三方APP快速跳转</h2>
+        <div class="grid grid-cols-3 gap-2">
+            <a href="mqq://"><button class="w-full bg-sky-600 text-white py-2 rounded-lg text-sm">QQ</button></a>
+            <a href="douyin://"><button class="w-full bg-black text-white py-2 rounded-lg text-sm">抖音</button></a>
+            <a href="bilibili://"><button class="w-full bg-pink-500 text-white py-2 rounded-lg text-sm">B站</button></a>
+            <a href="xhs://"><button class="w-full bg-red-400 text-white py-2 rounded-lg text-sm">小红书</button></a>
+            <a href="orpheus://"><button class="w-full bg-green-600 text-white py-2 rounded-lg text-sm">网易云</button></a>
+            <a href="qqmusic://"><button class="w-full bg-teal-600 text-white py-2 rounded-lg text-sm">QQ音乐</button></a>
+        </div>
+    </div>
+
+    <!-- 网页特效工具 -->
+    <div class="box p-4 mb-4 shadow">
+        <h2 class="font-bold mb-3 text-gray-700">✨ 网页趣味工具</h2>
+        <div class="grid grid-cols-2 gap-2">
+            <button onclick="navigator.vibrate?navigator.vibrate(200):tipIos()" class="w-full bg-purple-500 text-white py-2 rounded-lg text-sm">设备振动</button>
+            <button onclick="fullScreen()" class="w-full bg-gray-800 text-white py-2 rounded-lg text-sm">全屏模式</button>
+            <button onclick="keepScreen()" class="w-full bg-cyan-500 text-white py-2 rounded-lg text-sm">屏幕常亮</button>
+            <button onclick="cancelScreen()" class="w-full bg-gray-400 text-white py-2 rounded-lg text-sm">取消常亮</button>
+        </div>
+    </div>
+
+    <!-- 自定义文字修改 -->
+    <div class="box p-4 mb-4 shadow">
+        <h2 class="font-bold mb-3 text-gray-700">📝 实时自定义文字</h2>
+        <p id="demoText" class="text-gray-600 mb-3">在这里自由修改你想要的文字内容</p>
+        <button onclick="changeText()" class="w-full bg-blue-600 text-white py-2 rounded-lg">确认修改</button>
+    </div>
+
+    <!-- 摄像头调用 -->
+    <div class="box p-4 mb-4 shadow">
+        <h2 class="font-bold mb-3 text-gray-700">📷 简易摄像头</h2>
+        <button onclick="openCamera()" class="w-full bg-emerald-600 text-white py-2 rounded-lg">开启后置摄像头</button>
+    </div>
+
+    <script>
+        // 设备识别
+        const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+        const isAndroid = /Android/i.test(navigator.userAgent);
+        const isWechat = /MicroMessenger/i.test(navigator.userAgent);
+        const deviceTip = document.getElementById('deviceTip');
+
+        // 设备状态栏提示
+        if(isIOS){
+            deviceTip.innerText = '当前设备：iOS | 部分安卓专属功能已禁用';
+            // 批量禁用安卓按钮
+            document.querySelectorAll('.android-only').forEach(btn=>{
+                btn.classList.add('btn-disable-ios');
+            });
+        }else if(isAndroid){
+            deviceTip.innerText = '当前设备：安卓 | 全部功能正常使用';
+            // 绑定安卓跳转
+            document.querySelector('.android-only:nth-child(1)').onclick = ()=>location.href="intent://android.settings.WIFI_SETTINGS#Intent;scheme=settings;end";
+            document.querySelector('.android-only:nth-child(2)').onclick = ()=>location.href="intent://android.settings.BLUETOOTH_SETTINGS#Intent;scheme=settings;end";
+            document.querySelector('.android-only:nth-child(3)').onclick = ()=>location.href="intent://android.settings.LOCATION_SOURCE_SETTINGS#Intent;scheme=settings;end";
+            document.querySelector('.android-only:nth-child(4)').onclick = ()=>location.href="intent://android.settings.ALARM_SETTINGS#Intent;scheme=settings;end";
+            document.querySelector('.android-only:nth-child(5)').onclick = ()=>location.href="intent://android.settings.APPLICATION_SETTINGS#Intent;scheme=settings;end";
+            document.querySelector('.android-only:nth-child(6)').onclick = ()=>location.href="intent://android.settings.BATTERY_SAVER_SETTINGS#Intent;scheme=settings;end";
+        }else{
+            deviceTip.innerText = '当前设备：电脑/其他设备';
+            document.querySelectorAll('.android-only').forEach(btn=>{
+                btn.classList.add('btn-disable-ios');
+            });
+        }
+
+        // iOS禁止弹窗
+        function tipIos(){
+            alert('⚠️ 当前为iOS设备，该功能仅支持安卓手机');
+        }
+
+        // 修改文字
+        function changeText(){
+            const val = document.getElementById('textInput').value.trim();
+            document.getElementById('demoText').innerText = val || '未输入内容，显示默认文案';
+        }
+
+        // 全屏
+        function fullScreen(){
+            document.documentElement.requestFullscreen?.();
+        }
+
+        // 屏幕常亮
+        let wakeLock = null;
+        async function keepScreen(){
+            if('wakeLock' in navigator){
+                wakeLock = await navigator.wakeLock.request();
+            }else{
+                alert('当前设备不支持屏幕常亮');
+            }
+        }
+        function cancelScreen(){
+            if(wakeLock) wakeLock.release();
+        }
+
+        // 摄像头
+        async function openCamera(){
+            try{
+                await navigator.mediaDevices.getUserMedia({video:{facingMode:"environment"}});
+                alert('摄像头已授权，可正常使用');
+            }catch{
+                alert('请允许摄像头权限');
+            }
+        }
+    </script>
+</body>
+</html>
