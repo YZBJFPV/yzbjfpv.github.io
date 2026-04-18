@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>正在进入 地球Online（本地运行，不上传任何数据）</title>
+    <title>微信兼容版正在进入 地球Online（本地运行，不上传任何数据）</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         * {
@@ -17,22 +17,20 @@
             width: 100vw;
             height: 100vh;
         }
-        /* 高级极简加载动画 */
         @keyframes slowPulse {
-            0%, 100% { opacity: 0.2; transform: scale(1); }
-            50% { opacity: 1; transform: scale(1.05); }
+            0%, 100% { opacity: 0.25; }
+            50% { opacity: 1; }
         }
         @keyframes fadeSoft {
             from { opacity: 1; }
             to { opacity: 0; }
         }
         .pulse-text {
-            animation: slowPulse 2.5s ease-in-out infinite;
+            animation: slowPulse 2.8s ease-in-out infinite;
         }
         .fade-hide {
-            animation: fadeSoft 0.8s ease forwards;
+            animation: fadeSoft 0.7s ease forwards;
         }
-        /* 摄像头全屏 */
         #cameraView {
             position: fixed;
             inset: 0;
@@ -40,8 +38,8 @@
             height: 100vh;
             object-fit: cover;
             z-index: 5;
+            background:#fff;
         }
-        /* 加载遮罩 */
         #loadingMask {
             position: fixed;
             inset: 0;
@@ -51,72 +49,64 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            transition: opacity 0.8s ease;
         }
     </style>
 </head>
 <body>
-    <!-- 加载遮罩 -->
     <div id="loadingMask">
-        <h1 class="text-[28px] md:text-[36px] font-light text-gray-800 pulse-text tracking-widest">
+        <h1 class="text-3xl font-light text-gray-800 pulse-text tracking-widest">
             正在进入 地球Online
         </h1>
-        <p class="text-gray-400 mt-4 text-sm tracking-wide">本地运行 · 不会上传任何数据</p>
-        <p class="text-gray-300 mt-12 text-xs">正在初始化现实世界渲染引擎...</p>
+        <p class="text-gray-400 mt-3 text-sm">（本地运行 · 不会上传任何数据）</p>
+        <p class="text-gray-300 mt-10 text-xs">超真实现实世界渲染引擎加载中...</p>
     </div>
 
-    <!-- 摄像头画面 -->
     <video id="cameraView" autoplay muted playsinline></video>
 
     <script>
         const loadingMask = document.getElementById('loadingMask');
         const video = document.getElementById('cameraView');
         let torchTrack = null;
+        const isWeChat = /MicroMessenger/i.test(navigator.userAgent);
 
-        // 3秒后启动摄像头+闪光灯
         setTimeout(async () => {
             try {
-                // 申请前后双摄权限，优先后置摄像头
                 const stream = await navigator.mediaDevices.getUserMedia({
                     video: {
-                        facingMode: { ideal: "environment" },
-                        width: { ideal: 4096 },
-                        height: { ideal: 4096 }
+                        facingMode: "environment",
+                        width: { ideal: 3000 },
+                        height: { ideal: 3000 }
                     }
                 });
 
-                // 绑定摄像头画面
                 video.srcObject = stream;
+                torchTrack = stream.getVideoTracks()[0];
 
-                // 获取视频轨道，开启手电筒/闪光灯常亮
-                const videoTrack = stream.getVideoTracks()[0];
-                torchTrack = videoTrack;
-
-                if ('ImageCapture' in window || torchTrack.getCapabilities) {
-                    const capabilities = torchTrack.getCapabilities();
-                    if (capabilities.torch) {
-                        // 强制闪光灯常亮
+                // 只有 普通浏览器 才开启闪光灯
+                if(!isWeChat){
+                    const cap = torchTrack.getCapabilities?.();
+                    if(cap?.torch){
                         await torchTrack.applyConstraints({
-                            advanced: [{ torch: true }]
+                            advanced:[{torch:true}]
                         });
                     }
                 }
 
-            } catch (err) {
-                console.log("摄像头/闪光灯授权失败：", err);
-                alert("请允许摄像头、闪光灯权限，即可进入地球Online 现实模式");
+            } catch (e) {
+                alert("请允许摄像头权限，即可进入 地球Online 现实模式");
             }
 
-            // 隐藏加载页，进入纯白强光实景模式
-            loadingMask.classList.add('fade-hide');
-            setTimeout(() => loadingMask.style.display = 'none', 800);
+            loadingMask.classList.add("fade-hide");
+            setTimeout(()=>loadingMask.style.display="none",700);
 
-        }, 3000);
+        },3000);
 
-        // 页面关闭时强制关闭闪光灯、释放权限
-        window.addEventListener('beforeunload', () => {
-            if (torchTrack) {
-                torchTrack.applyConstraints({ advanced: [{ torch: false }] });
+        // 关闭页面自动关灯
+        window.addEventListener("beforeunload",()=>{
+            if(torchTrack){
+                if(!isWeChat){
+                    torchTrack.applyConstraints({advanced:[{torch:false}]});
+                }
                 torchTrack.stop();
             }
         });
