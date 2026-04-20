@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>初中必背古诗文55篇｜李沅臻一模二模中考必胜！</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family: "Microsoft YaHei", sans-serif; background:#f7f8fa; padding:20px; color:#222; line-height:1.85}
+  .container{max-width:820px; margin:0 auto; background:#fff; border-radius:12px; overflow:hidden; box-shadow:0 2px 12px rgba(0,0,0,0.05)}
+  .head{background:#4169E1; color:#fff; text-align:center; padding:22px 0}
+  .head h1{font-size:22px}
+  .poem{padding:22px 26px; border-bottom:1px solid #f0f0f0}
+  .poem:last-child{border-bottom:none}
+  .poem-top{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+  .index{width:28px;height:28px;line-height:28px;background:#4169E1;color:#fff;border-radius:50%;text-align:center;font-size:14px}
+  .title{font-size:17px;font-weight:600;color:#111}
+  .author{font-size:14px;color:#666;margin-bottom:10px}
+  .line{font-size:16px;margin:2px 0}
+  .famous{color:#c81010;font-weight:bold}
+  .hl{display:inline-block;background:#fff5cc;padding:0 2px;border-radius:2px}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="head"><h1>初中必背古诗文55篇</h1></div>
+  <div id="list"></div>
+</div>
+
+<script>
+  const txtUrl = "https://yzbjfpv.top/school/task/yw/gs.txt";
+  fetch(txtUrl)
+    .then(res => res.text())
+    .then(text => {
+      const data = JSON.parse(text);
+      const list = document.getElementById('list');
+      data.forEach((item, idx) => {
+        const div = document.createElement('div');
+        div.className = 'poem';
+        let html = `
+          <div class="poem-top">
+            <div class="index">${idx+1}</div>
+            <div class="title">${item.title}</div>
+          </div>
+          <div class="author">${item.author}</div>
+        `;
+        item.lines.forEach(line => {
+          html += `<div class="line">${line}</div>`;
+        });
+        div.innerHTML = html;
+        list.appendChild(div);
+      });
+    });
+</script>
+</body>
+</html>
