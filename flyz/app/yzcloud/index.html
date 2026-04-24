@@ -2,13 +2,14 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>YZCloudAPPStartUi</title>
+    <title>YZCloud - Elite Start</title>
+    
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
     <script src="https://cdn.tailwindcss.com"></script>
 
@@ -21,49 +22,7 @@
                         body: ['Inter', 'sans-serif'],
                     },
                     colors: {
-                        primary: '#316BF3',
-                        secondary: '#8B5CF6',
-                        accent: '#EC4899',
-                    },
-                    keyframes: {
-                        floatSmooth: {
-                            '0%, 100%': { transform: 'translateY(0px)' },
-                            '50%': { transform: 'translateY(-12px)' }
-                        },
-                        pulseGlow: {
-                            '0%, 100%': { opacity: 0.9, boxShadow: '0 0 18px rgba(49,107,243,0.3)' },
-                            '50%': { opacity: 1, boxShadow: '0 0 28px rgba(49,107,243,0.5)' }
-                        },
-                        slideInUp: {
-                            '0%': { transform: 'translateY(100px)', opacity: 0 },
-                            '100%': { transform: 'translateY(0)', opacity: 1 }
-                        },
-                        slideOutDown: {
-                            '0%': { transform: 'translateY(0)', opacity: 1 },
-                            '100%': { transform: 'translateY(100px)', opacity: 0 }
-                        },
-                        rotateSlow: {
-                            '0%': { transform: 'rotate(0deg)' },
-                            '100%': { transform: 'rotate(360deg)' }
-                        },
-                        shimmer: {
-                            '0%': { backgroundPosition: '-200% 0' },
-                            '100%': { backgroundPosition: '200% 0' }
-                        },
-                        glowShift: {
-                            '0%': { backgroundPosition: '0% 50%' },
-                            '50%': { backgroundPosition: '100% 50%' },
-                            '100%': { backgroundPosition: '0% 50%' }
-                        }
-                    },
-                    animation: {
-                        floatSmooth: 'floatSmooth 6s ease-in-out infinite',
-                        pulseGlow: 'pulseGlow 4s ease-in-out infinite',
-                        slideInUp: 'slideInUp 0.8s ease-out forwards',
-                        slideOutDown: 'slideOutDown 0.6s ease-in forwards',
-                        rotateSlow: 'rotateSlow 20s linear infinite',
-                        shimmer: 'shimmer 8s linear infinite',
-                        glowShift: 'glowShift 15s ease infinite'
+                        brand: { light: '#E0E7FF', DEFAULT: '#6366F1', accent: '#A855F7' }
                     }
                 }
             }
@@ -71,431 +30,209 @@
     </script>
 
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        html { scroll-behavior: smooth; touch-action: manipulation; }
-        body {
-            font-family: 'Inter', sans-serif;
-            background: #05070F;
-            color: #fff;
-            min-height: 100vh;
-            overflow: hidden;
-            user-select: none;
-            -webkit-user-select: none;
-        }
-
-        /* 优化后的网格动画 - 更丝滑 */
-        :root { --grid-speed: 6s; }
-        #splash, #secondSplash {
-            position: fixed;
-            inset: 0;
-            z-index: 9999;
-            background: #05070F !important;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-        }
-        .splash-grid-far {
-            position: absolute;
-            inset: 0;
-            background-image: linear-gradient(rgba(0, 191, 255, 0.12) 1px, transparent 1px), 
-                              linear-gradient(90deg, rgba(0, 191, 255, 0.12) 1px, transparent 1px);
-            background-size: 30px 30px;
-            animation: gridMoveFar var(--grid-speed) linear infinite;
-            opacity: 0.9;
-        }
-        .splash-grid-near {
-            position: absolute;
-            inset: 0;
-            background-image: linear-gradient(rgba(124, 58, 237, 0.16) 1px, transparent 1px), 
-                              linear-gradient(90deg, rgba(124, 58, 237, 0.16) 1px, transparent 1px);
-            background-size: 60px 60px;
-            animation: gridMoveNear calc(var(--grid-speed) * 0.7) linear infinite;
-            opacity: 0.9;
-        }
-        @keyframes gridMoveFar {
-            0% { transform: perspective(1200px) rotateX(65deg) translateY(0) scale(2.2); }
-            100% { transform: perspective(1200px) rotateX(65deg) translateY(-300px) scale(2.2); }
-        }
-        @keyframes gridMoveNear {
-            0% { transform: perspective(1000px) rotateX(65deg) translateY(0) scale(1.6); }
-            100% { transform: perspective(1000px) rotateX(65deg) translateY(-600px) scale(1.6); }
-        }
-
-        /* 粒子动画 - 完整保留 */
-        @keyframes particleFlow {
-            0% { transform: translate3d(var(--x), 100vh, 0) scale(var(--scale)); opacity: 0; }
-            10% { opacity: var(--opacity); }
-            90% { opacity: var(--opacity); }
-            100% { transform: translate3d(var(--x), -100px, 0) scale(var(--scale)); opacity: 0; }
-        }
-        .splash-particles {
-            position: absolute;
-            inset: 0;
-            pointer-events: none;
-            z-index: 1;
-        }
-        .splash-particle {
-            position: absolute;
-            border-radius: 50%;
-            background: var(--color);
-            width: var(--size);
-            height: var(--size);
-            left: var(--x);
-            top: var(--y);
-            animation: splashParticleFloat 1.8s linear infinite;
-            animation-delay: var(--delay);
-            box-shadow: 0 0 var(--glow) var(--color);
-            will-change: transform, opacity;
-        }
-        @keyframes splashParticleFloat {
-            0% { transform: translate(0, 0); opacity: 0; }
-            50% { opacity: 0.9; }
-            100% { transform: translate(var(--tx), var(--ty)); opacity: 0; }
-        }
-
-        /* 文字飞入动画 */
-        @keyframes letterFlyIn {
-            0% { transform: translate3d(var(--x), var(--y), 0) scale(2.2); opacity: 0; filter: blur(25px); }
-            100% { transform: translate3d(0, 0, 0) scale(1); opacity: 1; filter: blur(0); }
-        }
-        @keyframes subSlideUp {
-            0% { transform: translateY(30px); opacity: 0; filter: blur(10px); letter-spacing: 10px; }
-            100% { transform: translateY(0); opacity: 1; filter: blur(0); letter-spacing: 4px; }
-        }
-        @keyframes tagFadeIn {
-            0% { opacity: 0; transform: scale(0.8); }
-            100% { opacity: 1; transform: scale(1); }
-        }
-        @keyframes progressShine {
-            0% { background-position: -200% 0; }
-            100% { background-position: 200% 0; }
-        }
-        @keyframes splashExit {
-            0% { opacity: 1; transform: scale(1); filter: blur(0); }
-            100% { opacity: 0; transform: scale(0.8); filter: blur(30px); pointer-events: none; }
-        }
-        @keyframes textCarousel {
-            0%, 20% { opacity: 1; transform: translateY(0); }
-            25%, 95% { opacity: 0; transform: translateY(-20px); }
-            100% { opacity: 1; transform: translateY(0); }
-        }
-
-        .title-letter {
-            display: inline-block;
-            font-size: clamp(3.5rem, 14vw, 8rem);
-            font-weight: 900;
-            background: linear-gradient(135deg, #00BFFF 0%, #7C3AED 50%, #0F52BA 100%);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            text-shadow: 0 0 50px rgba(0, 191, 255, 0.4);
-            transform: translate3d(var(--x), var(--y), 0) scale(2.2);
-            opacity: 0;
-            filter: blur(25px);
-            animation: letterFlyIn 0.35s cubic-bezier(0.18, 0.82, 0.28, 1) forwards;
-            will-change: transform, opacity, filter;
-        }
-        .splash-subtitle {
-            font-size: clamp(1.1rem, 4.5vw, 2rem);
-            color: rgba(255, 255, 255, 0.75);
-            letter-spacing: 4px;
-            margin-top: 0.8rem;
-            animation: subSlideUp 0.45s ease forwards;
-            animation-delay: 0.45s;
-            opacity: 0;
-        }
-        .splash-tag {
-            margin-top: 2.2rem;
-            color: rgba(255, 255, 255, 0.55);
-            animation: tagFadeIn 0.35s ease forwards;
-            animation-delay: 0.65s;
-            opacity: 0;
-        }
-        .progress-wrap {
-            width: 85%;
-            max-width: 550px;
-            height: 6px;
-            background: rgba(255, 255, 255, 0.12);
-            border-radius: 100px;
-            margin-top: 4.5rem;
-            overflow: hidden;
-            position: relative;
-            z-index: 10;
-        }
-        .progress-bar {
-            height: 100%;
-            width: 0%;
-            border-radius: 100px;
-            background: linear-gradient(90deg, #0F52BA, #00BFFF, #7C3AED, #00BFFF, #0F52BA);
-            background-size: 200% 100%;
-            animation: progressRun 2.2s linear forwards, progressShine 0.7s linear infinite;
-            box-shadow: 0 0 20px rgba(0, 191, 255, 0.9);
-            will-change: width;
-        }
-        @keyframes progressRun {
-            0% { width: 0%; }
-            100% { width: 100%; }
-        }
-        #percent {
-            margin-top: 1.2rem;
-            font-family: 'JetBrains Mono', 'Consolas', monospace;
-            font-size: 1.5rem;
-            color: rgba(255, 255, 255, 0.95);
-            font-weight: 700;
-            text-shadow: 0 0 18px rgba(0, 191, 255, 0.7);
-            position: relative;
-            z-index: 10;
-        }
-
-        /* 底部提示文字 - 增强可见性 */
-        .bottom-hint {
-            position: absolute;
-            bottom: 80px;
-            left: 50%;
-            transform: translateX(-50%) translateY(100px);
-            opacity: 0;
-            font-size: 1.4rem;
-            font-weight: 600;
-            color: #ffffff;
-            padding: 12px 28px;
-            background: rgba(0, 0, 0, 0.6);
-            backdrop-filter: blur(8px);
-            border-radius: 50px;
-            border: 1px solid rgba(0, 191, 255, 0.3);
-            text-shadow: 0 0 20px rgba(0, 191, 255, 1), 0 0 40px rgba(0, 191, 255, 0.5);
-            box-shadow: 0 0 25px rgba(0, 191, 255, 0.4);
-            animation: slideInUp 0.8s ease-out forwards;
-            z-index: 100;
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        html, body {
+            width: 100%; height: 100%; background-color: #030509;
+            color: #ffffff; font-family: 'Inter', sans-serif;
+            overflow: hidden; user-select: none; -webkit-user-select: none;
             cursor: pointer;
         }
-        .bottom-hint.pulse {
-            animation: slideInUp 0.8s ease-out forwards, pulseGlow 2s ease-in-out infinite 0.8s;
+
+        /* 全局背景流光 (第0屏就存在，但很暗) */
+        .ambient-bg { position: fixed; inset: 0; z-index: 0; overflow: hidden; pointer-events: none; }
+        .orb { position: absolute; border-radius: 50%; filter: blur(100px); opacity: 0.15; transition: all 1.5s ease; }
+        .orb-1 { width: 60vw; height: 60vw; background: #312E81; top: -10%; left: -10%; }
+        .orb-2 { width: 50vw; height: 50vw; background: #4C1D95; bottom: -10%; right: -10%; }
+        
+        /* 激活后的背景增强 */
+        .active-bg .orb { opacity: 0.5; filter: blur(80px); }
+        .active-bg .orb-1 { background: #6366F1; transform: translate(10%, 10%); }
+        .active-bg .orb-2 { background: #A855F7; transform: translate(-10%, -10%); }
+
+        /* ================= 第0屏：初始精致引导 ================= */
+        #init-screen {
+            position: fixed; inset: 0; z-index: 100;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            background-color: transparent;
+            transition: transform 1s cubic-bezier(0.8, 0, 0.2, 1), opacity 0.8s ease;
+        }
+        
+        /* 初始YZ文字划入 */
+        .init-title {
+            font-family: 'Space Grotesk', sans-serif; font-size: 4rem; font-weight: 700;
+            background: linear-gradient(to bottom, #ffffff, rgba(255,255,255,0.2));
+            -webkit-background-clip: text; color: transparent;
+            opacity: 0; transform: translateY(40px);
+            animation: slideInUp 1.2s cubic-bezier(0.2, 1, 0.3, 1) forwards;
+        }
+        
+        /* 初始底部划入 */
+        .init-footer {
+            position: absolute; bottom: 12vh;
+            display: flex; flex-direction: column; align-items: center; gap: 12px;
+            opacity: 0; transform: translateY(30px);
+            animation: slideInUp 1s cubic-bezier(0.2, 1, 0.3, 1) forwards 0.5s;
         }
 
-        /* 云图标替代logo */
-        .cloud-logo {
-            font-size: clamp(5rem, 20vw, 10rem);
-            background: linear-gradient(135deg, #00BFFF 0%, #7C3AED 50%, #0F52BA 100%);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            text-shadow: 0 0 60px rgba(0, 191, 255, 0.5);
-            animation: floatSmooth 6s ease-in-out infinite;
+        @keyframes slideInUp { to { opacity: 1; transform: translateY(0); } }
+
+        /* 指纹呼吸动效 */
+        .fingerprint-icon {
+            font-size: 1.5rem; color: #6366F1;
+            text-shadow: 0 0 15px rgba(99,102,241,0.5);
+            animation: breathe 2.5s infinite alternate;
+        }
+        @keyframes breathe {
+            0% { transform: scale(0.9); opacity: 0.4; filter: brightness(0.8); }
+            100% { transform: scale(1.1); opacity: 1; filter: brightness(1.2); }
         }
 
-        /* 轮播文字 */
-        .carousel-text {
-            position: absolute;
-            width: 100%;
-            text-align: center;
-            opacity: 0;
-            transform: translateY(-20px);
-            animation: textCarousel 16s linear infinite;
+        /* ================= 第1屏：主场爆发 ================= */
+        #main-screen {
+            position: fixed; inset: 0; z-index: 10;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            padding: 2rem; opacity: 0; transform: scale(1.1);
+            transition: all 1.2s cubic-bezier(0.16, 1, 0.3, 1);
         }
-        .carousel-text:nth-child(2) { animation-delay: 4s; }
-        .carousel-text:nth-child(3) { animation-delay: 8s; }
-        .carousel-text:nth-child(4) { animation-delay: 12s; }
+        #main-screen.active { opacity: 1; transform: scale(1); }
 
-        /* 隐藏第二屏初始状态 */
-        #secondSplash {
-            opacity: 0;
-            pointer-events: none;
+        /* YZCloud 文字流光 */
+        .brand-text {
+            font-family: 'Space Grotesk', sans-serif; font-size: 2.2rem; font-weight: 700;
+            background: linear-gradient(135deg, #fff 0%, #818CF8 100%);
+            -webkit-background-clip: text; color: transparent;
+            margin-top: 1rem; letter-spacing: 2px;
         }
+
+        /* 轮播样式优化 */
+        .feature-carousel { height: 32px; width: 100%; margin-top: 1.5rem; overflow: hidden; position: relative; }
+        .feature-item {
+            position: absolute; width: 100%; text-align: center;
+            font-size: 1rem; color: rgba(255,255,255,0.8);
+            opacity: 0; transform: translateY(20px);
+        }
+        .active .feature-item { animation: carouselMove 16s infinite; }
+        .active .feature-item:nth-child(1) { animation-delay: 0s; }
+        .active .feature-item:nth-child(2) { animation-delay: 4s; }
+        .active .feature-item:nth-child(3) { animation-delay: 8s; }
+        .active .feature-item:nth-child(4) { animation-delay: 12s; }
+        @keyframes carouselMove {
+            0%, 5% { opacity: 0; transform: translateY(20px); }
+            10%, 25% { opacity: 1; transform: translateY(0); }
+            30%, 100% { opacity: 0; transform: translateY(-20px); }
+        }
+
+        /* 招募卡片 */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 24px;
+            padding: 1.5rem; width: 100%; max-width: 340px; margin-top: 2.5rem;
+            transform: translateY(30px); opacity: 0;
+        }
+        .active .glass-card { animation: slideInUp 0.8s forwards 0.5s; }
+
+        /* 点击打断提示 */
+        .bottom-hint {
+            position: absolute; bottom: 8vh; font-size: 0.85rem;
+            color: rgba(255,255,255,0.4); background: rgba(255,255,255,0.05);
+            padding: 8px 24px; border-radius: 100px; border: 1px solid rgba(255,255,255,0.05);
+            opacity: 0; transform: translateY(20px);
+        }
+        .active .bottom-hint { animation: slideInUp 0.8s forwards 1s; }
+
     </style>
 </head>
 
-<body>
-    <!-- 第一阶段开屏动画 - 完整保留原版 -->
-    <div id="splash">
-        <div class="splash-grid-far"></div>
-        <div class="splash-grid-near"></div>
-        <div class="splash-particles" id="splash-particles"></div>
-        
-        <div class="text-center z-10">
-            <div class="title-wrap">
-                <span class="title-letter" style="--x: -150px; --y: -100px; animation-delay: 0.05s">Y</span>
-                <span class="title-letter" style="--x: -100px; --y: 80px; animation-delay: 0.1s">Z</span>
-                <span class="title-letter" style="--x: 100px; --y: -80px; animation-delay: 0.15s">&nbsp;</span>
-                <span class="title-letter" style="--x: 80px; --y: 120px; animation-delay: 0.2s">C</span>
-                <span class="title-letter" style="--x: -60px; --y: -90px; animation-delay: 0.25s">l</span>
-                <span class="title-letter" style="--x: 120px; --y: 60px; animation-delay: 0.3s">o</span>
-                <span class="title-letter" style="--x: -120px; --y: 70px; animation-delay: 0.35s">u</span>
-                <span class="title-letter" style="--x: 150px; --y: -120px; animation-delay: 0.4s">d</span>
-            </div>
-            <p class="splash-subtitle">全国公益航模穿越机资源共享平台</p>
-            <p class="splash-tag">免费高速不限速 · 为模友而生</p>
-        </div>
+<body onclick="handleInteraction()">
 
-        <div class="progress-wrap">
-            <div class="progress-bar"></div>
-        </div>
-        <p id="percent">0.00%</p>
+    <div class="ambient-bg" id="bg-container">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
     </div>
 
-    <!-- 第二阶段开屏动画 - 与第一阶段同款 -->
-    <div id="secondSplash">
-        <div class="splash-grid-far"></div>
-        <div class="splash-grid-near"></div>
-        <div class="splash-particles" id="secondSplash-particles"></div>
-        
-        <div class="text-center z-10">
-            <i class="fas fa-cloud cloud-logo"></i>
-            <p class="splash-subtitle mt-6">欢迎访问安卓端APP</p>
+    <div id="init-screen">
+        <div class="init-title">YZCloud</div>
+        <div class="init-footer">
+            <i class="fas fa-fingerprint fingerprint-icon"></i>
+            <span class="text-sm font-light tracking-[0.3em] text-white/40">EXPLORE UNIVERSE</span>
+        </div>
+    </div>
+
+    <div id="main-screen">
+        <div class="flex flex-col items-center">
+            <i class="fas fa-cloud-bolt text-5xl text-brand"></i>
+            <h1 class="brand-text">YZCloud</h1>
             
-            <!-- 更新内容轮播 -->
-            <div class="mt-12 h-24 relative">
-                <p class="carousel-text text-xl text-white/80">免费高速资源超全</p>
-                <p class="carousel-text text-xl text-white/80">新增70万篇小说 全部免费在线观看</p>
-                <p class="carousel-text text-xl text-white/80">新增70G航模3D打印文件</p>
-                <p class="carousel-text text-xl text-white/80">支持群友上传共享资料 不限大小</p>
+            <div class="feature-carousel">
+                <div class="feature-item">免费高速 · 全球资源共享</div>
+                <div class="feature-item">70万篇小说 · 全站免费畅读</div>
+                <div class="feature-item">航模3D打印 · 70G珍贵资料</div>
+                <div class="feature-item">无限制上传 · 你的云端空间</div>
             </div>
-            
-            <p class="splash-tag mt-8">当前版本：20260424-Beta 后续自动更新</p>
+
+            <div class="glass-card">
+                <div class="flex items-center gap-3 mb-3">
+                    <div class="w-2 h-2 rounded-full bg-green-400 animate-pulse"></div>
+                    <span class="text-xs font-bold text-white/90 uppercase tracking-widest">FLY Z - 招募令</span>
+                </div>
+                <h2 class="text-white font-semibold text-sm mb-2">Flyz远征飞技术团队</h2>
+                <p class="text-xs text-white/50 leading-relaxed mb-4">
+                    寻找热爱前端、梦想不羁的开发者。加入我们，共创 yzbjfpv.top 与 917813.com.cn 的未来。
+                </p>
+                <div class="flex flex-col gap-1">
+                    <div class="text-[10px] font-mono text-brand-accent"># 域名免费托管</div>
+                    <div class="text-[10px] font-mono text-brand-accent"># 综合性网站共建</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="bottom-hint">
+            点击任意位置进入 <i class="fas fa-arrow-right-long ml-2 opacity-50"></i>
         </div>
     </div>
 
     <script>
-        // 背景音乐初始化
-        const bgMusic = new Audio('http://music.163.com/song/media/outer/url?id=2057361029.mp3');
+        let stage = 0;
+        const bgMusic = new Audio('http://music.163.com/song/media/outer/url?id=3368190806.mp3');
         bgMusic.loop = true;
         bgMusic.volume = 0.7;
 
-        // 全局状态
-        let stage = 1; // 1:第一阶段 2:第二阶段
-        let loopInterval = null;
+        function handleInteraction() {
+            if (stage === 0) {
+                // 第一步：触发爆发式动画
+                stage = 1;
+                
+                // 背景强化
+                document.getElementById('bg-container').classList.add('active-bg');
+                
+                // 第0屏移出
+                const init = document.getElementById('init-screen');
+                init.style.opacity = '0';
+                init.style.transform = 'translateY(-20px) scale(0.9)';
+                
+                // 第1屏激活
+                document.getElementById('main-screen').classList.add('active');
+                
+                // 音频播放
+                bgMusic.play().catch(() => {});
+                
+                // 防抖，防止直接跳转
+                window.isLocked = true;
+                setTimeout(() => window.isLocked = false, 800);
 
-        // 生成粒子 - 完整保留原版逻辑
-        function createSplashParticles(containerId) {
-            const container = document.getElementById(containerId);
-            const colors = ['#00BFFF', '#7C3AED', '#0F52BA', '#ffffff'];
-            for(let i=0;i<100;i++){
-                const p = document.createElement('div');
-                p.className = 'splash-particle';
-                const x = Math.random()*window.innerWidth;
-                const y = Math.random()*window.innerHeight;
-                const size = Math.random()*3.5+1;
-                const tx = (Math.random()-0.5)*220;
-                const ty = (Math.random()-0.5)*220;
-                const delay = Math.random()*2.2;
-                const glow = Math.random()*10+2;
-                const color = colors[Math.floor(Math.random()*colors.length)];
-                p.style.setProperty('--x',x+'px');
-                p.style.setProperty('--y',y+'px');
-                p.style.setProperty('--size',size+'px');
-                p.style.setProperty('--tx',tx+'px');
-                p.style.setProperty('--ty',ty+'px');
-                p.style.setProperty('--delay',delay+'s');
-                p.style.setProperty('--glow',glow+'px');
-                p.style.setProperty('--color',color);
-                container.appendChild(p);
+            } else if (stage === 1) {
+                // 第二步：随时打断并跳转
+                if (window.isLocked) return;
+                
+                bgMusic.pause(); // 静音/停止
+                window.open('http://123.56.106.49:54321', '_blank');
             }
         }
 
-        // 第一阶段进度条
-        function initFirstStage() {
-            const percentEl = document.getElementById('percent');
-            const startTime = Date.now();
-            const duration = 2200;
-
-            function updatePercent() {
-                const elapsed = Date.now() - startTime;
-                const progress = Math.min(elapsed / duration, 1);
-                percentEl.textContent = (progress * 100).toFixed(2) + '%';
-                if(progress < 1) {
-                    requestAnimationFrame(updatePercent);
-                } else {
-                    // 第一阶段结束，显示点击提示并播放音乐
-                    showBottomHint('splash', '点击任意位置进入');
-                    bgMusic.play().catch(() => {});
-                    document.body.addEventListener('click', handleFirstClick);
-                }
-            }
-            requestAnimationFrame(updatePercent);
-            createSplashParticles('splash-particles');
-        }
-
-        // 显示底部提示
-        function showBottomHint(parentId, text) {
-            const parent = document.getElementById(parentId);
-            const hint = document.createElement('div');
-            hint.className = 'bottom-hint pulse';
-            hint.textContent = text;
-            parent.appendChild(hint);
-        }
-
-        // 第一阶段点击处理
-        function handleFirstClick() {
-            document.body.removeEventListener('click', handleFirstClick);
-            
-            // 隐藏第一阶段
-            document.getElementById('splash').style.animation = 'splashExit 0.6s ease forwards';
-            setTimeout(() => {
-                document.getElementById('splash').style.display = 'none';
-                
-                // 显示第二阶段
-                stage = 2;
-                const secondSplash = document.getElementById('secondSplash');
-                secondSplash.style.opacity = '1';
-                secondSplash.style.pointerEvents = 'auto';
-                createSplashParticles('secondSplash-particles');
-                
-                // 3秒后显示连接提示
-                setTimeout(() => {
-                    showBottomHint('secondSplash', '点击任意位置连接');
-                    document.body.addEventListener('click', handleSecondClick);
-                    
-                    // 未点击则循环动画
-                    loopInterval = setInterval(() => {
-                        resetSecondSplash();
-                    }, 16000); // 与文字轮播周期一致
-                }, 3000);
-            }, 600);
-        }
-
-        // 重置第二阶段动画
-        function resetSecondSplash() {
-            const secondSplash = document.getElementById('secondSplash');
-            secondSplash.innerHTML = `
-                <div class="splash-grid-far"></div>
-                <div class="splash-grid-near"></div>
-                <div class="splash-particles" id="secondSplash-particles"></div>
-                
-                <div class="text-center z-10">
-                    <i class="fas fa-cloud cloud-logo"></i>
-                    <p class="splash-subtitle mt-6">欢迎访问安卓端APP</p>
-                    
-                    <div class="mt-12 h-24 relative">
-                        <p class="carousel-text text-xl text-white/80">免费高速资源超全</p>
-                        <p class="carousel-text text-xl text-white/80">新增70万篇小说 全部免费在线观看</p>
-                        <p class="carousel-text text-xl text-white/80">新增70G航模3D打印文件</p>
-                        <p class="carousel-text text-xl text-white/80">支持群友上传共享资料 不限大小</p>
-                    </div>
-                    
-                    <p class="splash-tag mt-8">当前版本：20260424-Beta 后续自动更新</p>
-                </div>
-            `;
-            createSplashParticles('secondSplash-particles');
-            
-            setTimeout(() => {
-                showBottomHint('secondSplash', '点击任意位置连接');
-            }, 3000);
-        }
-
-        // 第二阶段点击处理
-        function handleSecondClick() {
-            clearInterval(loopInterval);
-            document.body.removeEventListener('click', handleSecondClick);
-            
-            // 跳转到目标链接
-            window.open('http://123.56.106.49:54321', '_blank');
-        }
-
-        // 页面初始化
-        document.addEventListener('DOMContentLoaded', () => {
-            initFirstStage();
-        });
+        // 页面淡入
+        window.onload = () => {
+            document.body.style.opacity = '1';
+        };
     </script>
 </body>
 </html>
