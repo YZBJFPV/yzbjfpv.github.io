@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>YZWeather Elite - Dynamic Background</title>
+    <script src="https://cdn.staticfile.org/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.staticfile.org/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { background: #000; color: white; overflow: hidden; font-family: "SF Pro Display", -apple-system, sans-serif; }
+        #canvas-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
+        .glass { background: rgba(0, 0, 0, 0.1); backdrop-filter: blur(25px); border: 1px solid rgba(255, 255, 255, 0.05); }
+        .forecast-scroll { overflow-x: auto; scrollbar-width: none; }
+        .forecast-scroll::-webkit-scrollbar { display: none; }
+        .text-glow { text-shadow: 0 0 25px rgba(255,255,255,0.4); }
+        .lang-btn { cursor: pointer; transition: all 0.3s; padding: 4px 8px; border-radius: 8px; }
+        .lang-btn.active { opacity: 1; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); }
+        .lang-btn:not(.active) { opacity: 0.4; }
+    </style>
+</head>
+<body>
+
+    <div id="canvas-container"></div>
+
+    <nav class="relative z-20 p-6 flex justify-between items-start">
+        <div>
+            <div id="ui-location-label" class="text-[10px] uppercase tracking-[0.3em] opacity-40 mb-1">Current Location</div>
+            <p id="location" class="text-lg font-light tracking-tight text-glow">---</p>
+        </div>
+        <div class="flex flex-col items-end">
+            <div class="flex gap-2 mb-2">
+                <span id="btn-zh" class="lang-btn text-xs lang-btn" onclick="setLang('zh')">ZH</span>
+                <span id="btn-en" class="lang-btn text-xs lang-btn" onclick="setLang('en')">EN</span>
+            </div>
+            <p id="sync-time" class="text-[10px] font-mono opacity-30 italic">SYNCING...</p>
+        </div>
+    </nav>
+
+    <main class="relative z-10 flex flex-col items-center pt-6">
+        <div id="condition-icon" class="text-6xl mb-3 text-glow">--</div>
+        <div id="temp" class="text-9xl font-thin tracking-tighter text-glow">--</div>
+        <div id="condition-text" class="text-xs tracking-[0.6em] uppercase mt-4 opacity-70">Scanning Environment</div>
+    </main>
+
+    <section class="relative z-10 px-6 mt-10 grid grid-cols-3 gap-2">
+        <div class="glass rounded-3xl p-4 text-center">
+            <p id="ui-hum" class="text-[9px] opacity-30 uppercase mb-1">Humidity</p>
+            <p id="val-hum" class="text-lg font-light">--</p>
+        </div>
+        <div class="glass rounded-3xl p-4 text-center border-x border-white/5">
+            <p id="ui-wind" class="text-[9px] opacity-30 uppercase mb-1">Wind</p>
+            <p id="val-wind" class="text-lg font-light">--</p>
+        </div>
+        <div class="glass rounded-3xl p-4 text-center">
+            <p id="ui-uv" class="text-[9px] opacity-30 uppercase mb-1">UV Index</p>
+            <p id="val-uv" class="text-lg font-light">--</p>
+        </div>
+    </section>
+
+    <section class="relative z-10 px-6 mt-8 mb-20">
+        <div id="ui-forecast-label" class="text-[10px] opacity-30 uppercase tracking-widest mb-4 ml-2">7-Day Forecast</div>
+        <div id="forecast-container" class="forecast-scroll flex gap-3 pb-4">
+            </div>
+    </section>
+
+    <footer class="fixed bottom-6 w-full text-center z-10 opacity-20 text-[10px] tracking-widest pointer-events-none font-mono">
+        YZWEATHER ELITE SYSTEM :: DYNAMIC BACKGROUND V2
+    </footer>
+
+    <script>
+        // --- 1. 多语言配置 (支持 localStorage) ---
+        const I18N = {
+            zh: {
+                loc: "当前定位", hum: "湿度", wind: "风速", uv: "紫外线", forecast: "7日天气预报",
+                weather: { 0: "晴朗", 1: "大部晴朗", 2: "多云", 3: "阴天", 45: "大雾", 51: "毛毛雨", 61: "小雨", 63: "中雨", 71: "小雪", 73: "中雪", 95: "雷阵雨" },
+                sync: "同步于", today: "今天", unitWind: " km/h"
+            },
+            en: {
+                loc: "Current Location", hum: "Humidity", wind: "Wind", uv: "UV Index", forecast: "7-Day Forecast",
+                weather: { 0: "Clear Sky", 1: "Mainly Clear", 2: "Partly Cloudy", 3: "Overcast", 45: "Foggy", 51: "Drizzle", 61: "Slight Rain", 63: "Rainy", 71: "Snowy", 73: "Snow", 95: "Storm" },
+                sync: "Sync at", today: "Today", unitWind: " km/h"
+            }
+        };
+
+        let currentLang = localStorage.getItem('yz_weather_lang') || 'en';
+
+        function setLang(lang) {
+            currentLang = lang;
+            localStorage.setItem('yz_weather_lang', lang);
+            document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById(`btn-${lang}`).classList.add('active');
+            updateUIStrings();
+            updateWeather(); // 重新加载数据以刷新天气描述
+        }
+
+        function updateUIStrings() {
+            const t = I18N[currentLang];
+            document.getElementById('ui-location-label').innerText = t.loc;
+            document.getElementById('ui-hum').innerText = t.hum;
+            document.getElementById('ui-wind').innerText = t.wind;
+            document.getElementById('ui-uv').innerText = t.uv;
+            document.getElementById('ui-forecast-label').innerText = t.forecast;
+        }
+
+        // --- 2. Three.js 全屏动态天气背景 (移除了球体) ---
+        let scene, camera, renderer, ambientLight, pointLight;
+        let weatherParticles, rainSpashes;
+        let isStorm = false;
+
+        function init3D() {
+            scene = new THREE.Scene();
+            camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
+            renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+            document.getElementById('canvas-container').appendChild(renderer.domElement);
+
+            ambientLight = new THREE.AmbientLight(0x111111, 2);
+            scene.add(ambientLight);
+
+            pointLight = new THREE.PointLight(0xffffff, 5, 50);
+            pointLight.position.set(0, 5, 10);
+            scene.add(pointLight);
+
+            camera.position.z = 15;
+            animate();
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+            const time = Date.now() * 0.001;
+
+            if (weatherParticles) {
+                // 粒子基础动画 (例如旋转或向下移动)
+                weatherParticles.rotation.y += 0.001;
+
+                // 针对不同天气的特殊动画
+                if (weatherParticles.userData.type === 'rain' || weatherParticles.userData.type === 'snow') {
+                    const positions = weatherParticles.geometry.attributes.position.array;
+                    for (let i = 0; i < positions.length; i += 3) {
+                        positions[i+1] -= weatherParticles.userData.speed; // 向下移动
+                        if (positions[i+1] < -20) positions[i+1] = 20; // 回到顶部
+                    }
+                    weatherParticles.geometry.attributes.position.needsUpdate = true;
+                }
+            }
+
+            // 雷雨闪电效果
+            if (isStorm && Math.random() > 0.98) {
+                gsap.to(ambientLight, { intensity: 15, duration: 0.05, yoyo: true, repeat: 1 });
+                gsap.to(pointLight, { intensity: 30, duration: 0.05, yoyo: true, repeat: 1 });
+            }
+
+            renderer.render(scene, camera);
+        }
+
+        // 核心：清理并替换天气粒子系统
+        function updateVisuals(code, temp) {
+            if (weatherParticles) scene.remove(weatherParticles);
+            if (rainSpashes) scene.remove(rainSpashes);
+            isStorm = false;
+
+            let particleCount = 2000;
+            let geometry = new THREE.BufferGeometry();
+            let positions = new Float32Array(particleCount * 3);
+            let colors = new Float32Array(particleCount * 3);
+            let material;
+
+            for (let i = 0; i < particleCount * 3; i++) {
+                positions[i] = (Math.random() - 0.5) * 60; // X, Y, Z
+            }
+
+            let type = 'clear';
+            let speed = 0;
+            let themeColor = 0xffffff;
+
+            if (code <= 1) { // 晴天: 金色粒子漂浮
+                type = 'clear';
+                themeColor = 0xffcc00;
+                material = new THREE.PointsMaterial({ size: 0.1, color: themeColor, transparent: true, opacity: 0.5, blending: THREE.AdditiveBlending });
+            } else if (code <= 3) { // 阴天: 灰蓝色粒子翻滚
+                type = 'cloud';
+                themeColor = 0x556677;
+                particleCount = 500;
+                material = new THREE.PointsMaterial({ size: 2, color: themeColor, transparent: true, opacity: 0.2, blending: THREE.NormalBlending });
+            } else if (code >= 61 && code < 71) { // 雨天: 向下流动的雨滴
+                type = 'rain';
+                themeColor = 0x4488ff;
+                speed = 1.0;
+                material = new THREE.PointsMaterial({ size: 0.15, color: themeColor, transparent: true, opacity: 0.6, blending: THREE.AdditiveBlending });
+            } else if (code >= 71) { // 雪天: 缓慢飘落
+                type = 'snow';
+                themeColor = 0xffffff;
+                speed = 0.1;
+                material = new THREE.PointsMaterial({ size: 0.3, color: themeColor, transparent: true, opacity: 0.8 });
+            } else if (code === 95) { // 雷雨: 雨+闪电
+                type = 'rain';
+                themeColor = 0x0033aa;
+                speed = 1.5;
+                isStorm = true;
+                material = new THREE.PointsMaterial({ size: 0.2, color:themeColor, transparent: true, opacity: 0.7, blending: THREE.AdditiveBlending });
+            }
+
+            geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+            weatherParticles = new THREE.Points(geometry, material);
+            weatherParticles.userData = { type, speed };
+            scene.add(weatherParticles);
+
+            // 平滑过渡环境光和点光源颜色
+            gsap.to(ambientLight.color, { r: new THREE.Color(themeColor).r * 0.5, g: new THREE.Color(themeColor).g * 0.5, b: new THREE.Color(themeColor).b * 0.5, duration: 3 });
+            gsap.to(pointLight.color, { r: new THREE.Color(themeColor).r, g: new THREE.Color(themeColor).g, b: new THREE.Color(themeColor).b, duration: 3 });
+        }
+
+        // --- 3. 天气逻辑 ---
+        async function updateWeather() {
+            navigator.geolocation.getCurrentPosition(async (pos) => {
+                const { latitude, longitude } = pos.coords;
+                // 显示简化版经纬度
+                document.getElementById('location').innerText = `${latitude.toFixed(1)}°N, ${longitude.toFixed(1)}°E`;
+
+                const url = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m,uv_index&daily=weather_code,temperature_2m_max,temperature_2m_min&timezone=auto`;
+                
+                try {
+                    const res = await fetch(url);
+                    const data = await res.json();
+                    renderWeather(data);
+                } catch (e) { console.error("YZWeather: API Error"); }
+            });
+        }
+
+        function renderWeather(data) {
+            const curr = data.current;
+            const t = I18N[currentLang];
+
+            // Current Weather UI
+            document.getElementById('temp').innerText = Math.round(curr.temperature_2m) + "°";
+            document.getElementById('condition-text').innerText = t.weather[curr.weather_code] || t.weather[3];
+            document.getElementById('val-hum').innerText = curr.relative_humidity_2m + "%";
+            document.getElementById('val-wind').innerText = curr.wind_speed_10m + t.unitWind;
+            document.getElementById('val-uv').innerText = curr.uv_index.toFixed(1);
+            document.getElementById('sync-time').innerText = `${t.sync} ${new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}`;
+
+            // Visual Icons (保留图标作为文字的视觉补充)
+            const icons = { 0: "☀️", 1: "🌤️", 2: "⛅", 3: "☁️", 45: "🌫️", 61: "🌧️", 63: "🌧️", 71: "❄️", 73: "❄️", 95: "⛈️" };
+            document.getElementById('condition-icon').innerText = icons[curr.weather_code] || "🌥️";
+
+            // 核心：更新 3D 全屏动态背景
+            updateVisuals(curr.weather_code, curr.temperature_2m);
+
+            // 7-Day Forecast cards
+            const forecastContainer = document.getElementById('forecast-container');
+            forecastContainer.innerHTML = '';
+            data.daily.time.forEach((day, i) => {
+                const date = new Date(day);
+                const dayNameEn = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][date.getDay()];
+                const dayNameZh = ['日','一','二','三','四','五','六'][date.getDay()];
+                const card = document.createElement('div');
+                card.className = 'glass min-w-[105px] rounded-[28px] p-5 flex flex-col items-center';
+                card.innerHTML = `
+                    <p class="text-[10px] opacity-40 mb-3">${i === 0 ? t.today : (currentLang==='zh'?dayNameZh:dayNameEn)}</p>
+                    <span class="text-2xl mb-4">${icons[data.daily.weather_code[i]] || "☁️"}</span>
+                    <p class="text-sm font-medium">${Math.round(data.daily.temperature_2m_max[i])}°</p>
+                    <p class="text-[10px] opacity-30">${Math.round(data.daily.temperature_2m_min[i])}°</p>
+                `;
+                forecastContainer.appendChild(card);
+            });
+        }
+
+        // --- 4. 初始化 ---
+        init3D();
+        setLang(currentLang); // 这步也会触发第一次 updateWeather()
+        
+        setInterval(updateWeather, 300000); // 5 分钟自动刷新一次数据
+
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+    </script>
+</body>
+</html>
