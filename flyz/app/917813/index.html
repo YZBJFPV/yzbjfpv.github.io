@@ -42,515 +42,249 @@
             --safe-area-top: env(safe-area-inset-top, 0px);
         }
 
-        * {
-            -webkit-tap-highlight-color: transparent;
-            box-sizing: border-box;
+        * { -webkit-tap-highlight-color: transparent; box-sizing: border-box; }
+
+        /* 锁死全局回弹，防止主页面晃动 */
+        html, body {
+            margin: 0; padding: 0;
+            width: 100%; height: 100%;
+            overflow: hidden;
+            position: fixed; 
+            overscroll-behavior: none;
+            touch-action: none;
         }
 
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: var(--app-bg-light);
-            color: #1e293b;
-            overflow: hidden; /* 核心：锁死外层滚动，只允许内层视图独立滚动 */
-            overscroll-behavior-y: none;
-            transition: background-color 0.4s ease, color 0.4s ease;
-        }
+        body { font-family: 'Inter', sans-serif; background-color: var(--app-bg-light); transition: background-color 0.4s ease; }
+        body.dark { background-color: var(--app-bg-dark); color: #f1f5f9; }
 
-        body.dark {
-            background-color: var(--app-bg-dark);
-            color: #f1f5f9;
-        }
-
-        /* === 炫酷开屏动画 Splash Screen === */
+        /* Splash Screen */
         #splash-screen {
-            position: fixed;
-            inset: 0;
-            z-index: 99999;
+            position: fixed; inset: 0; z-index: 99999;
             background: var(--app-bg-light);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1), transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1);
         }
         body.dark #splash-screen { background: var(--app-bg-dark); }
-        
-        #splash-screen.fade-out {
-            opacity: 0;
-            transform: scale(1.05);
-            pointer-events: none;
-        }
-
-        .splash-logo-container {
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            animation: splashFloat 3s ease-in-out infinite alternate;
-        }
-
+        #splash-screen.fade-out { opacity: 0; pointer-events: none; }
         .splash-icon {
-            width: 72px;
-            height: 72px;
-            border-radius: 20px;
+            width: 72px; height: 72px; border-radius: 20px;
             background: linear-gradient(135deg, #0ea5e9, #8b5cf6);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 32px;
-            font-weight: bold;
-            font-family: 'Space Grotesk', sans-serif;
-            box-shadow: 0 10px 30px rgba(14, 165, 233, 0.4);
-            margin-bottom: 24px;
+            display: flex; align-items: center; justify-content: center;
+            color: white; font-size: 32px; font-weight: bold; font-family: 'Space Grotesk';
             position: relative;
         }
-        
-        /* 品牌脉冲光环 */
-        .splash-icon::before, .splash-icon::after {
-            content: '';
-            position: absolute;
-            inset: -4px;
-            border-radius: 24px;
-            background: linear-gradient(135deg, #0ea5e9, #8b5cf6, #ec4899);
-            z-index: -1;
-            opacity: 0.5;
-            animation: pulseRing 2s cubic-bezier(0.2, 0.8, 0.2, 1) infinite;
+        .splash-icon::after {
+            content: ''; position: absolute; inset: -5px; border-radius: 24px;
+            background: inherit; filter: blur(10px); opacity: 0.4; z-index: -1;
+            animation: pulse 2s infinite;
         }
-        .splash-icon::after { animation-delay: 1s; inset: -8px; opacity: 0.3; }
+        @keyframes pulse { 0% { transform: scale(1); opacity: 0.4; } 100% { transform: scale(1.4); opacity: 0; } }
 
-        @keyframes pulseRing {
-            0% { transform: scale(0.9); opacity: 0.8; }
-            100% { transform: scale(1.5); opacity: 0; }
-        }
-        @keyframes splashFloat {
-            0% { transform: translateY(0); }
-            100% { transform: translateY(-15px); }
-        }
+        /* Layout */
+        .app-shell { display: flex; height: 100vh; height: 100dvh; width: 100vw; padding-top: var(--safe-area-top); }
 
-
-        /* App 核心布局 */
-        .app-shell {
-            display: flex;
-            height: 100vh;
-            height: 100dvh;
-            width: 100vw;
-            padding-top: var(--safe-area-top);
-        }
-
-        /* 侧边栏 (桌面端) */
         .app-sidebar {
-            display: none;
-            width: 260px;
-            height: 100%;
-            background: var(--glass-light);
-            backdrop-filter: saturate(180%) blur(20px);
-            -webkit-backdrop-filter: saturate(180%) blur(20px);
-            border-right: 1px solid var(--glass-border-light);
-            flex-direction: column;
-            z-index: 50;
+            display: none; width: 260px; height: 100%;
+            background: var(--glass-light); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border-right: 1px solid var(--glass-border-light); flex-direction: column; z-index: 50;
+            touch-action: pan-y;
         }
-        body.dark .app-sidebar {
-            background: var(--glass-dark);
-            border-right: 1px solid var(--glass-border-dark);
-        }
+        body.dark .app-sidebar { background: var(--glass-dark); border-right: 1px solid var(--glass-border-dark); }
 
-        /* 底部导航栏 (移动端) */
         .app-bottom-nav {
-            display: flex;
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: calc(65px + var(--safe-area-bottom));
-            padding-bottom: var(--safe-area-bottom);
-            background: var(--glass-light);
-            backdrop-filter: saturate(180%) blur(20px);
-            -webkit-backdrop-filter: saturate(180%) blur(20px);
-            border-top: 1px solid var(--glass-border-light);
-            z-index: 50;
-            overflow-x: auto;
-            scroll-behavior: smooth;
+            display: flex; position: fixed; bottom: 0; left: 0; right: 0;
+            height: calc(65px + var(--safe-area-bottom)); padding-bottom: var(--safe-area-bottom);
+            background: var(--glass-light); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border-top: 1px solid var(--glass-border-light); z-index: 50;
+            overflow-x: auto; scrollbar-width: none; touch-action: pan-x;
         }
-        body.dark .app-bottom-nav {
-            background: var(--glass-dark);
-            border-top: 1px solid var(--glass-border-dark);
-        }
-        .app-bottom-nav::-webkit-scrollbar { display: none; }
-        .app-bottom-nav { -ms-overflow-style: none; scrollbar-width: none; }
+        body.dark .app-bottom-nav { background: var(--glass-dark); border-top: 1px solid var(--glass-border-dark); }
 
-        /* 主内容区 */
-        .app-main {
-            flex: 1;
-            position: relative;
-            height: 100%;
-            overflow: hidden;
-        }
+        .app-main { flex: 1; position: relative; height: 100%; overflow: hidden; }
 
-        /* 顶部通栏 */
-        .app-header {
-            position: absolute;
-            top: 0; left: 0; right: 0;
-            height: 60px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 20px;
-            z-index: 40;
-            background: transparent;
-        }
-
-        /* 导航按钮 */
         .nav-item {
-            display: flex;
-            align-items: center;
-            color: #64748b;
-            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-            cursor: pointer;
-            border-radius: 12px;
+            display: flex; align-items: center; color: #64748b;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); cursor: pointer; border-radius: 12px;
         }
-        body.dark .nav-item { color: #94a3b8; }
-
         .app-sidebar .nav-item { padding: 12px 16px; margin: 4px 16px; font-size: 0.95rem; font-weight: 500; }
         .app-sidebar .nav-item i { width: 24px; font-size: 1.1rem; }
         .app-sidebar .nav-item.active { background: rgba(14, 165, 233, 0.1); color: #0ea5e9; font-weight: 600; }
 
         .app-bottom-nav .nav-item {
             flex: 0 0 auto; flex-direction: column; justify-content: center; min-width: 72px; height: 100%;
-            font-size: 0.7rem; font-weight: 500; border-radius: 0;
+            font-size: 0.7rem; font-weight: 500;
         }
-        .app-bottom-nav .nav-item i { font-size: 1.2rem; margin-bottom: 4px; transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1); }
+        .app-bottom-nav .nav-item i { font-size: 1.2rem; margin-bottom: 4px; }
         .app-bottom-nav .nav-item.active { color: #0ea5e9; }
-        .app-bottom-nav .nav-item.active i { transform: translateY(-3px) scale(1.1); }
 
-        /* === 视图切换动效 (顶级丝滑弹簧动效) === */
+        /* View Switching */
         .view-container {
-            position: absolute;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            /* 预设隐藏状态：稍微下沉并缩小 */
-            opacity: 0;
-            pointer-events: none;
-            transform: translateY(30px) scale(0.96);
-            /* 采用苹果风格的弹簧缓动曲线 */
-            transition: opacity 0.4s ease, transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
-            overflow-y: auto;
-            -webkit-overflow-scrolling: touch; /* 保证 iOS 内部滑动顺畅 */
+            position: absolute; inset: 0;
+            opacity: 0; pointer-events: none; transform: translateY(20px) scale(0.98);
+            transition: opacity 0.4s ease, transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+            overflow-y: auto; -webkit-overflow-scrolling: touch;
             padding-bottom: calc(65px + var(--safe-area-bottom));
+            touch-action: pan-y;
         }
-        
-        .view-container.active {
-            opacity: 1;
-            pointer-events: auto;
-            transform: translateY(0) scale(1);
-            transition-delay: 0.05s; /* 给消失的视图一点点时间，避免重叠突兀 */
-        }
+        .view-container.active { opacity: 1; pointer-events: auto; transform: translateY(0) scale(1); }
 
-        /* 桌面端无需底部留白 */
-        @media (min-width: 768px) {
-            .view-container { padding-bottom: 0; padding-top: 24px; }
-            #view-home { padding-top: 32px; padding-left: 32px; padding-right: 32px; }
-        }
-
-        /* 仪表盘卡片 */
-        .widget-card {
-            background: rgba(255, 255, 255, 0.6);
-            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.5);
-            border-radius: 24px; padding: 24px;
-            transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.3s ease;
-            cursor: pointer;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
-            display: flex; flex-direction: column;
-        }
-        body.dark .widget-card {
-            background: rgba(30, 41, 59, 0.5); border: 1px solid rgba(255, 255, 255, 0.05);
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-        }
-        .widget-card:active { transform: scale(0.94); } /* 按压时的物理阻尼感 */
-
-        .widget-icon {
-            width: 48px; height: 48px; border-radius: 16px;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 20px; color: white; margin-bottom: 16px;
-            box-shadow: 0 8px 16px -4px currentcolor;
-        }
-
-        /* 主页背景动效 */
-        .bg-blobs { position: absolute; inset: 0; overflow: hidden; pointer-events: none; z-index: -1; }
-        .blob {
-            position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.5;
-            animation: floatBlob 10s ease-in-out infinite alternate;
-        }
-        @keyframes floatBlob { 0% { transform: translate(0, 0) scale(1); } 100% { transform: translate(30px, -30px) scale(1.1); } }
-
-        /* 主题切换按钮 */
-        .theme-btn {
-            width: 40px; height: 40px; border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            background: var(--glass-light); border: 1px solid var(--glass-border-light);
-            color: #475569; transition: all 0.2s;
-            backdrop-filter: blur(10px);
-        }
-        body.dark .theme-btn { background: var(--glass-dark); border-color: var(--glass-border-dark); color: #cbd5e1; }
-
-        /* === Iframe 容器优化 (彻底解决滑动问题) === */
-        .iframe-wrapper {
-            padding: 0 !important; /* 内嵌工具直接铺满，沉浸感拉满 */
-            overflow: hidden; /* 外层禁止滚动，全权交给 iframe 内部 */
-            display: flex;
-            flex-direction: column;
-        }
+        /* Iframe 滑动修复 */
+        .iframe-wrapper { padding: 0 !important; overflow: hidden !important; display: flex; flex-direction: column; height: 100% !important; }
         .iframe-wrapper iframe {
-            flex: 1; /* 撑满剩余高度 */
-            width: 100%; height: 100%;
-            border: none;
-            background: #fff;
-            /* 关键属性：允许 iframe 内部触发 iOS 的动量滚动 */
-            -webkit-overflow-scrolling: touch;
+            width: 100%; height: calc(100% - 65px - var(--safe-area-bottom)) !important;
+            border: none; background: #fff; touch-action: auto;
         }
-        body.dark .iframe-wrapper iframe { background: #1e293b; }
+        body.dark .iframe-wrapper iframe { background: #0f172a; }
 
         @media (min-width: 768px) {
             .app-sidebar { display: flex; }
             .app-bottom-nav { display: none; }
-            .app-header { display: none; }
-            .iframe-wrapper { padding: 24px !important; }
-            .iframe-wrapper iframe { border-radius: 20px; box-shadow: 0 10px 40px rgba(0,0,0,0.08); }
+            .view-container { padding-bottom: 0; }
+            .iframe-wrapper iframe { height: 100% !important; }
         }
 
-        /* 隐藏原生滚动条 */
-        ::-webkit-scrollbar { width: 0px; background: transparent; }
+        /* Widgets */
+        .widget-card {
+            background: rgba(255, 255, 255, 0.6); backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.5); border-radius: 24px; padding: 20px;
+            transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1); cursor: pointer;
+        }
+        body.dark .widget-card { background: rgba(30, 41, 59, 0.5); border: 1px solid rgba(255, 255, 255, 0.05); }
+        .widget-card:active { transform: scale(0.95); }
+        .widget-icon { width: 44px; height: 44px; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 18px; color: white; margin-bottom: 12px; }
     </style>
 </head>
-<body>
+<body class="font-body">
 
     <div id="splash-screen">
-        <div class="splash-logo-container">
-            <div class="splash-icon">9</div>
-            <h1 class="font-display font-bold text-3xl tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-brand-500 to-accent-purple mt-2">917813</h1>
-            <p class="text-sm text-gray-500 dark:text-gray-400 mt-2 tracking-widest uppercase font-semibold">综合工具箱</p>
-        </div>
+        <div class="splash-icon">9</div>
+        <h1 class="font-display font-bold text-2xl mt-4 bg-clip-text text-transparent bg-gradient-to-r from-brand-500 to-accent-purple">917813 工具箱</h1>
     </div>
 
     <div class="app-shell">
-        
         <nav class="app-sidebar py-6">
             <div class="px-6 mb-8 flex items-center gap-3">
-                <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-brand-400 to-accent-purple flex items-center justify-center text-white font-bold text-sm shadow-lg">9</div>
+                <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-brand-400 to-accent-purple flex items-center justify-center text-white font-bold">9</div>
                 <span class="font-display font-bold text-xl tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-brand-500 to-accent-purple">917813</span>
             </div>
             
             <div class="flex-1 overflow-y-auto">
-                <div class="text-xs font-semibold text-gray-400 uppercase tracking-wider px-6 mb-3">Dashboards</div>
                 <div onclick="switchTab('home')" class="nav-item active" data-tab="home"><i class="fas fa-border-all"></i>概览</div>
-                
-                <div class="text-xs font-semibold text-gray-400 uppercase tracking-wider px-6 mt-6 mb-3">Apps</div>
-                <div onclick="switchTab('yzcloud')" class="nav-item" data-tab="yzcloud"><i class="fas fa-cloud"></i>YZCloud</div>
+                <div onclick="switchTab('yzcloud')" class="nav-item" data-tab="yzcloud"><i class="fas fa-cloud"></i>云盘</div>
+                <div onclick="switchTab('yzweather')" class="nav-item" data-tab="yzweather"><i class="fas fa-cloud-sun"></i>天气</div>
                 <div onclick="switchTab('music')" class="nav-item" data-tab="music"><i class="fas fa-music"></i>音乐解析</div>
-                <div onclick="switchTab('htmlview')" class="nav-item" data-tab="htmlview"><i class="fas fa-code"></i>HTML预览</div>
+                <div onclick="switchTab('watchmovie')" class="nav-item" data-tab="watchmovie"><i class="fas fa-play-circle"></i>在线观影</div>
+                <div onclick="switchTab('light')" class="nav-item" data-tab="light"><i class="fas fa-lightbulb"></i>屏幕照明</div>
                 <div onclick="switchTab('length78')" class="nav-item" data-tab="length78"><i class="fas fa-ruler-combined"></i>长度测试</div>
-                <div onclick="switchTab('watchmovie')" class="nav-item" data-tab="watchmovie"><i class="fas fa-film"></i>在线观影</div>
                 <div onclick="switchTab('benchmark')" class="nav-item" data-tab="benchmark"><i class="fas fa-microchip"></i>性能跑分</div>
-                <div onclick="switchTab('fpvrace')" class="nav-item" data-tab="fpvrace"><i class="fas fa-plane-departure"></i>穿越机赛事</div>
+                <div onclick="switchTab('fpvrace')" class="nav-item" data-tab="fpvrace"><i class="fas fa-plane-departure"></i>赛事</div>
             </div>
 
-            <div class="px-6 mt-auto space-y-4">
-                <button onclick="toggleTheme()" class="nav-item w-full justify-between !mx-0 !px-0 bg-transparent hover:bg-transparent">
-                    <span class="flex items-center"><i class="fas fa-moon"></i>暗色模式</span>
-                    <div class="w-10 h-6 bg-gray-200 dark:bg-brand-500 rounded-full relative transition-colors">
-                        <div class="w-4 h-4 bg-white rounded-full absolute top-1 left-1 dark:translate-x-4 transition-transform"></div>
-                    </div>
+            <div class="px-6 mt-auto">
+                <button onclick="toggleTheme()" class="flex items-center gap-2 text-sm opacity-60 hover:opacity-100 transition-opacity">
+                    <i class="fas fa-adjust"></i>主题切换
                 </button>
-                <div class="pt-4 border-t border-gray-200/50 dark:border-gray-700/50">
-                    <p class="text-[11px] text-gray-400 dark:text-gray-500 flex items-center gap-1.5">
-                        <i class="fas fa-bolt text-brand-500"></i> Flyz远征飞 提供技术支持
-                    </p>
-                </div>
             </div>
         </nav>
 
         <main class="app-main">
-            <header class="app-header md:hidden pt-2">
-                <div class="flex items-center gap-2">
-                    <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-brand-400 to-accent-purple flex items-center justify-center text-white font-bold text-sm shadow-md">9</div>
-                    <span class="font-display font-bold text-lg">917813</span>
-                </div>
-                <button onclick="toggleTheme()" class="theme-btn shadow-sm">
-                    <i class="fas fa-moon dark:hidden"></i>
-                    <i class="fas fa-sun hidden dark:block text-brand-400"></i>
-                </button>
-            </header>
-
-            <div class="bg-blobs">
-                <div class="blob w-96 h-96 bg-brand-400/20 top-[-10%] left-[-10%]"></div>
-                <div class="blob w-80 h-80 bg-accent-purple/20 bottom-[10%] right-[-5%]" style="animation-delay: -5s;"></div>
-            </div>
-
-            <div id="view-home" class="view-container active px-5 pt-20 md:px-8 md:pt-8 flex flex-col">
-                <div class="max-w-6xl mx-auto w-full flex-1">
-                    <div class="mb-8 hidden md:block">
-                        <h1 class="text-3xl font-display font-bold mb-1">欢迎回来 👋</h1>
-                        <p class="text-gray-500 dark:text-gray-400">选择一个工具开始今天的工作。</p>
-                    </div>
-                    
-                    <div class="md:hidden mb-6">
-                        <h1 class="text-2xl font-display font-bold">概览</h1>
-                    </div>
-
-                    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
-                        <div onclick="switchTab('yzcloud')" class="widget-card group">
-                            <div class="widget-icon bg-gradient-to-br from-blue-400 to-blue-600 shadow-blue-500/30">
-                                <i class="fas fa-cloud"></i>
-                            </div>
-                            <h3 class="font-semibold text-[15px] mb-1">YZCloud</h3>
-                            <p class="text-xs text-gray-500 dark:text-gray-400 line-clamp-2">私有云存储，极速文件分享与同步。</p>
+            <div id="view-home" class="view-container active px-5 pt-12 md:pt-8">
+                <div class="max-w-6xl mx-auto">
+                    <h1 class="text-3xl font-display font-bold mb-8">全能工具箱</h1>
+                    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                        <div onclick="switchTab('yzcloud')" class="widget-card">
+                            <div class="widget-icon bg-blue-500 shadow-lg shadow-blue-500/20"><i class="fas fa-cloud"></i></div>
+                            <h3 class="font-semibold text-sm">云盘</h3>
+                            <p class="text-[11px] opacity-50 mt-1">云端存储分享</p>
                         </div>
-
-                        <div onclick="switchTab('music')" class="widget-card group">
-                            <div class="widget-icon bg-gradient-to-br from-pink-400 to-rose-500 shadow-pink-500/30">
-                                <i class="fas fa-music"></i>
-                            </div>
-                            <h3 class="font-semibold text-[15px] mb-1">音乐解析</h3>
-                            <p class="text-xs text-gray-500 dark:text-gray-400 line-clamp-2">全网无损音乐源文件一键提取。</p>
+                        <div onclick="switchTab('yzweather')" class="widget-card">
+                            <div class="widget-icon bg-sky-400 shadow-lg shadow-sky-400/20"><i class="fas fa-cloud-sun"></i></div>
+                            <h3 class="font-semibold text-sm">天气</h3>
+                            <p class="text-[11px] opacity-50 mt-1">精准气象预报</p>
                         </div>
-
-                        <div onclick="switchTab('htmlview')" class="widget-card group">
-                            <div class="widget-icon bg-gradient-to-br from-purple-400 to-indigo-600 shadow-purple-500/30">
-                                <i class="fas fa-code"></i>
-                            </div>
-                            <h3 class="font-semibold text-[15px] mb-1">HTML预览</h3>
-                            <p class="text-xs text-gray-500 dark:text-gray-400 line-clamp-2">云端代码编辑器，实时预览效果。</p>
+                        <div onclick="switchTab('music')" class="widget-card">
+                            <div class="widget-icon bg-pink-500 shadow-lg shadow-pink-500/20"><i class="fas fa-music"></i></div>
+                            <h3 class="font-semibold text-sm">音乐解析</h3>
+                            <p class="text-[11px] opacity-50 mt-1">无损音乐解析</p>
                         </div>
-
-                        <div onclick="switchTab('length78')" class="widget-card group">
-                            <div class="widget-icon bg-gradient-to-br from-emerald-400 to-teal-500 shadow-emerald-500/30">
-                                <i class="fas fa-ruler"></i>
-                            </div>
-                            <h3 class="font-semibold text-[15px] mb-1">长度测试</h3>
-                            <p class="text-xs text-gray-500 dark:text-gray-400 line-clamp-2">精准的字符串及编码长度分析器。</p>
+                        <div onclick="switchTab('watchmovie')" class="widget-card">
+                            <div class="widget-icon bg-red-500 shadow-lg shadow-red-500/20"><i class="fas fa-play"></i></div>
+                            <h3 class="font-semibold text-sm">在线观影</h3>
+                            <p class="text-[11px] opacity-50 mt-1">爱看机器人影视</p>
                         </div>
-
-                        <div onclick="switchTab('watchmovie')" class="widget-card group">
-                            <div class="widget-icon bg-gradient-to-br from-red-400 to-rose-600 shadow-red-500/30">
-                                <i class="fas fa-film"></i>
-                            </div>
-                            <h3 class="font-semibold text-[15px] mb-1">在线观影</h3>
-                            <p class="text-xs text-gray-500 dark:text-gray-400 line-clamp-2">高清影视资源，纯净无广播放。</p>
+                        <div onclick="switchTab('light')" class="widget-card">
+                            <div class="widget-icon bg-amber-400 shadow-lg shadow-amber-500/20"><i class="fas fa-lightbulb"></i></div>
+                            <h3 class="font-semibold text-sm">屏幕照明</h3>
+                            <p class="text-[11px] opacity-50 mt-1">摄影补光测试</p>
                         </div>
-
-                        <div onclick="switchTab('benchmark')" class="widget-card group">
-                            <div class="widget-icon bg-gradient-to-br from-orange-400 to-amber-500 shadow-orange-500/30">
-                                <i class="fas fa-tachometer-alt"></i>
-                            </div>
-                            <h3 class="font-semibold text-[15px] mb-1">性能跑分</h3>
-                            <p class="text-xs text-gray-500 dark:text-gray-400 line-clamp-2">设备浏览器内核及运算性能测试。</p>
+                        <div onclick="switchTab('length78')" class="widget-card">
+                            <div class="widget-icon bg-teal-500 shadow-lg shadow-teal-500/20"><i class="fas fa-ruler"></i></div>
+                            <h3 class="font-semibold text-sm">长度测试</h3>
+                            <p class="text-[11px] opacity-50 mt-1">文本长度校验</p>
                         </div>
-                        
-                        <div onclick="switchTab('fpvrace')" class="widget-card group">
-                            <div class="widget-icon bg-gradient-to-br from-cyan-400 to-blue-500 shadow-cyan-500/30">
-                                <i class="fas fa-plane"></i>
-                            </div>
-                            <h3 class="font-semibold text-[15px] mb-1">FPV赛事</h3>
-                            <p class="text-xs text-gray-500 dark:text-gray-400 line-clamp-2">穿越机赛事直播与成绩查询系统。</p>
+                        <div onclick="switchTab('benchmark')" class="widget-card">
+                            <div class="widget-icon bg-orange-500 shadow-lg shadow-orange-500/20"><i class="fas fa-microchip"></i></div>
+                            <h3 class="font-semibold text-sm">性能跑分</h3>
+                            <p class="text-[11px] opacity-50 mt-1">算力性能评估</p>
+                        </div>
+                        <div onclick="switchTab('fpvrace')" class="widget-card">
+                            <div class="widget-icon bg-cyan-600 shadow-lg shadow-cyan-600/20"><i class="fas fa-plane"></i></div>
+                            <h3 class="font-semibold text-sm">赛事</h3>
+                            <p class="text-[11px] opacity-50 mt-1">赛事直播数据</p>
                         </div>
                     </div>
-                </div>
-                
-                <div class="mt-12 mb-6 text-center md:hidden w-full">
-                    <p class="text-xs text-gray-400 dark:text-gray-500 flex items-center justify-center gap-1.5 opacity-70">
-                        <i class="fas fa-bolt text-brand-500"></i> Flyz远征飞 提供技术支持
-                    </p>
                 </div>
             </div>
 
             <div id="view-yzcloud" class="view-container iframe-wrapper"><iframe src="about:blank" data-src="https://yzbjfpv.top/flyz/app/yzcloud"></iframe></div>
+            <div id="view-yzweather" class="view-container iframe-wrapper"><iframe src="about:blank" data-src="https://yzbjfpv.top/flyz/app/yzweather/test"></iframe></div>
             <div id="view-music" class="view-container iframe-wrapper"><iframe src="about:blank" data-src="https://cdn.917813.com.cn/wyymusic/index.html"></iframe></div>
-            <div id="view-htmlview" class="view-container iframe-wrapper"><iframe src="about:blank" data-src="https://cdn.917813.com.cn/htmlview/index.html"></iframe></div>
+            <div id="view-watchmovie" class="view-container iframe-wrapper"><iframe src="about:blank" data-src="https://v.ikanbot.com"></iframe></div>
+            <div id="view-light" class="view-container iframe-wrapper"><iframe src="about:blank" data-src="https://yzbjfpv.top/tools/屏幕照明"></iframe></div>
             <div id="view-length78" class="view-container iframe-wrapper"><iframe src="about:blank" data-src="https://cdn.917813.com.cn/check78long/index.html"></iframe></div>
-            <div id="view-watchmovie" class="view-container iframe-wrapper"><iframe src="about:blank" data-src="https://cdn.917813.com.cn/watchmovie/index.html"></iframe></div>
             <div id="view-benchmark" class="view-container iframe-wrapper"><iframe src="about:blank" data-src="https://cdn.917813.com.cn/benchmark/index.html"></iframe></div>
             <div id="view-fpvrace" class="view-container iframe-wrapper"><iframe src="about:blank" data-src="https://cdn.917813.com.cn/fpvrace/index.html"></iframe></div>
-
         </main>
 
-        <nav class="app-bottom-nav px-2">
-            <div onclick="switchTab('home')" class="nav-item active" data-tab="home">
-                <i class="fas fa-border-all"></i><span>主页</span>
-            </div>
-            <div onclick="switchTab('yzcloud')" class="nav-item" data-tab="yzcloud">
-                <i class="fas fa-cloud"></i><span>YZCloud</span>
-            </div>
-            <div onclick="switchTab('music')" class="nav-item" data-tab="music">
-                <i class="fas fa-music"></i><span>音乐</span>
-            </div>
-            <div onclick="switchTab('watchmovie')" class="nav-item" data-tab="watchmovie">
-                <i class="fas fa-film"></i><span>观影</span>
-            </div>
-            <div onclick="switchTab('htmlview')" class="nav-item" data-tab="htmlview">
-                <i class="fas fa-code"></i><span>HTML</span>
-            </div>
-            <div onclick="switchTab('length78')" class="nav-item" data-tab="length78">
-                <i class="fas fa-ruler"></i><span>测长</span>
-            </div>
-            <div onclick="switchTab('benchmark')" class="nav-item" data-tab="benchmark">
-                <i class="fas fa-microchip"></i><span>跑分</span>
-            </div>
+        <nav class="app-bottom-nav">
+            <div onclick="switchTab('home')" class="nav-item active" data-tab="home"><i class="fas fa-border-all"></i><span>主页</span></div>
+            <div onclick="switchTab('yzcloud')" class="nav-item" data-tab="yzcloud"><i class="fas fa-cloud"></i><span>云盘</span></div>
+            <div onclick="switchTab('yzweather')" class="nav-item" data-tab="yzweather"><i class="fas fa-cloud-sun"></i><span>天气</span></div>
+            <div onclick="switchTab('watchmovie')" class="nav-item" data-tab="watchmovie"><i class="fas fa-play"></i><span>观影</span></div>
+            <div onclick="switchTab('music')" class="nav-item" data-tab="music"><i class="fas fa-music"></i><span>音乐</span></div>
+            <div onclick="switchTab('light')" class="nav-item" data-tab="light"><i class="fas fa-lightbulb"></i><span>照明</span></div>
+            <div onclick="switchTab('benchmark')" class="nav-item" data-tab="benchmark"><i class="fas fa-microchip"></i><span>跑分</span></div>
         </nav>
-
     </div>
 
     <script>
         let currentTab = 'home';
         let loadedIframes = new Set();
 
-        // 开屏动画逻辑
         window.addEventListener('load', () => {
-            // 确保加载完成后再延迟一点点关闭动画，显得更有高级感
             setTimeout(() => {
-                const splash = document.getElementById('splash-screen');
-                splash.classList.add('fade-out');
-                // 动画结束后彻底移除 DOM 以释放内存
-                setTimeout(() => splash.remove(), 800); 
-            }, 1200);
+                document.getElementById('splash-screen').classList.add('fade-out');
+            }, 1000);
         });
 
-        // 检查系统深色模式偏好
-        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-            document.body.classList.add('dark');
-        }
-
-        function toggleTheme() {
-            document.body.classList.toggle('dark');
-        }
+        function toggleTheme() { document.body.classList.toggle('dark'); }
 
         function switchTab(tabName) {
             if (currentTab === tabName) return;
 
-            // 处理导航激活状态 (同时处理 Sidebar 和 Bottom Nav)
             document.querySelectorAll('.nav-item').forEach(el => {
                 if(el.getAttribute('data-tab') === tabName) {
                     el.classList.add('active');
-                    // 移动端：将点击的底部导航自动居中对齐，交互更极致
                     if(el.parentNode.classList.contains('app-bottom-nav')) {
-                        el.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+                        el.scrollIntoView({ behavior: 'smooth', inline: 'center' });
                     }
-                } else {
-                    el.classList.remove('active');
-                }
+                } else el.classList.remove('active');
             });
 
-            // 获取新旧视图容器
-            const oldView = document.getElementById(`view-${currentTab}`);
+            document.getElementById(`view-${currentTab}`).classList.remove('active');
             const newView = document.getElementById(`view-${tabName}`);
-
-            // 移除旧视图激活状态（触发下沉、缩小、淡出动效）
-            oldView.classList.remove('active');
-            
-            // 激活新视图（触发上升、复原、淡入动效）
             newView.classList.add('active');
 
-            // Iframe 懒加载：只有当点击对应栏目时，才将 data-src 赋给 src 真正加载
             if (tabName !== 'home' && !loadedIframes.has(tabName)) {
                 const iframe = newView.querySelector('iframe');
                 if (iframe) {
@@ -558,7 +292,6 @@
                     loadedIframes.add(tabName);
                 }
             }
-
             currentTab = tabName;
         }
     </script>
