@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>YZCloud中国节点</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        display: ['Space Grotesk', 'sans-serif'],
+                        body: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: { light: '#E0E7FF', DEFAULT: '#6366F1', accent: '#A855F7' }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        html, body {
+            width: 100%; height: 100%; background-color: #030509;
+            color: #ffffff; font-family: 'Inter', sans-serif;
+            overflow: hidden; user-select: none; -webkit-user-select: none;
+            cursor: pointer;
+        }
+
+        /* 全局背景流光 (第0屏就存在，但很暗) */
+        .ambient-bg { position: fixed; inset: 0; z-index: 0; overflow: hidden; pointer-events: none; }
+        .orb { position: absolute; border-radius: 50%; filter: blur(100px); opacity: 0.15; transition: all 1.5s ease; }
+        .orb-1 { width: 60vw; height: 60vw; background: #312E81; top: -10%; left: -10%; }
+        .orb-2 { width: 50vw; height: 50vw; background: #4C1D95; bottom: -10%; right: -10%; }
+        
+        /* 激活后的背景增强 */
+        .active-bg .orb { opacity: 0.5; filter: blur(80px); }
+        .active-bg .orb-1 { background: #6366F1; transform: translate(10%, 10%); }
+        .active-bg .orb-2 { background: #A855F7; transform: translate(-10%, -10%); }
+
+        /* ================= 第0屏：初始精致引导 ================= */
+        #init-screen {
+            position: fixed; inset: 0; z-index: 100;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            background-color: transparent;
+            transition: transform 1s cubic-bezier(0.8, 0, 0.2, 1), opacity 0.8s ease;
+        }
+        
+        /* 初始YZ文字划入 */
+        .init-title {
+            font-family: 'Space Grotesk', sans-serif; font-size: 4rem; font-weight: 700;
+            background: linear-gradient(to bottom, #ffffff, rgba(255,255,255,0.2));
+            -webkit-background-clip: text; color: transparent;
+            opacity: 0; transform: translateY(40px);
+            animation: slideInUp 1.2s cubic-bezier(0.2, 1, 0.3, 1) forwards;
+        }
+        
+        /* 初始底部划入 */
+        .init-footer {
+            position: absolute; bottom: 12vh;
+            display: flex; flex-direction: column; align-items: center; gap: 12px;
+            opacity: 0; transform: translateY(30px);
+            animation: slideInUp 1s cubic-bezier(0.2, 1, 0.3, 1) forwards 0.5s;
+        }
+
+        @keyframes slideInUp { to { opacity: 1; transform: translateY(0); } }
+
+        /* 指纹呼吸动效 */
+        .fingerprint-icon {
+            font-size: 1.5rem; color: #6366F1;
+            text-shadow: 0 0 15px rgba(99,102,241,0.5);
+            animation: breathe 2.5s infinite alternate;
+        }
+        @keyframes breathe {
+            0% { transform: scale(0.9); opacity: 0.4; filter: brightness(0.8); }
+            100% { transform: scale(1.1); opacity: 1; filter: brightness(1.2); }
+        }
+
+        /* ================= 第1屏：主场爆发 ================= */
+        #main-screen {
+            position: fixed; inset: 0; z-index: 10;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            padding: 2rem; opacity: 0; transform: scale(1.1);
+            transition: all 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        #main-screen.active { opacity: 1; transform: scale(1); }
+
+        /* YZCloud 文字流光 */
+        .brand-text {
+            font-family: 'Space Grotesk', sans-serif; font-size: 2.2rem; font-weight: 700;
+            background: linear-gradient(135deg, #fff 0%, #818CF8 100%);
+            -webkit-background-clip: text; color: transparent;
+            margin-top: 1rem; letter-spacing: 2px;
+        }
+
+        /* 轮播样式优化 */
+        .feature-carousel { height: 32px; width: 100%; margin-top: 1.5rem; overflow: hidden; position: relative; }
+        .feature-item {
+            position: absolute; width: 100%; text-align: center;
+            font-size: 1rem; color: rgba(255,255,255,0.8);
+            opacity: 0; transform: translateY(20px);
+        }
+        .active .feature-item { animation: carouselMove 16s infinite; }
+        .active .feature-item:nth-child(1) { animation-delay: 0s; }
+        .active .feature-item:nth-child(2) { animation-delay: 4s; }
+        .active .feature-item:nth-child(3) { animation-delay: 8s; }
+        .active .feature-item:nth-child(4) { animation-delay: 12s; }
+        @keyframes carouselMove {
+            0%, 5% { opacity: 0; transform: translateY(20px); }
+            10%, 25% { opacity: 1; transform: translateY(0); }
+            30%, 100% { opacity: 0; transform: translateY(-20px); }
+        }
+
+        /* 招募卡片 */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 24px;
+            padding: 1.5rem; width: 100%; max-width: 340px; margin-top: 2.5rem;
+            transform: translateY(30px); opacity: 0;
+        }
+        .active .glass-card { animation: slideInUp 0.8s forwards 0.5s; }
+
+        /* 点击打断提示 */
+        .bottom-hint {
+            position: absolute; bottom: 8vh; font-size: 0.85rem;
+            color: rgba(255,255,255,0.4); background: rgba(255,255,255,0.05);
+            padding: 8px 24px; border-radius: 100px; border: 1px solid rgba(255,255,255,0.05);
+            opacity: 0; transform: translateY(20px);
+        }
+        .active .bottom-hint { animation: slideInUp 0.8s forwards 1s; }
+
+    </style>
+</head>
+
+<body onclick="handleInteraction()">
+
+    <div class="ambient-bg" id="bg-container">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+    </div>
+
+    <div id="init-screen">
+        <div class="init-title">YZCloud</div>
+        <div class="init-footer">
+            <i class="fas fa-fingerprint fingerprint-icon"></i>
+            <span class="text-sm font-light tracking-[0.3em] text-white/40">EXPLORE UNIVERSE</span>
+        </div>
+    </div>
+
+    <div id="main-screen">
+        <div class="flex flex-col items-center">
+            <i class="fas fa-cloud-bolt text-5xl text-brand"></i>
+            <h1 class="brand-text">YZCloud中国节点</h1>
+            
+            <div class="feature-carousel">
+                <div class="feature-item">免费高速 · 全球资源共享</div>
+                <div class="feature-item">70万篇小说 · 全站免费畅读</div>
+                <div class="feature-item">航模3D打印 · 70G珍贵资料</div>
+                <div class="feature-item">无限制上传 · 你的云端空间</div>
+            </div>
+
+            <div class="glass-card">
+                <div class="flex items-center gap-3 mb-3">
+                    <div class="w-2 h-2 rounded-full bg-green-400 animate-pulse"></div>
+                    <span class="text-xs font-bold text-white/90 uppercase tracking-widest">FLY Z - 招募令</span>
+                </div>
+                <h2 class="text-white font-semibold text-sm mb-2">Flyz远征飞技术团队</h2>
+                <p class="text-xs text-white/50 leading-relaxed mb-4">
+                    寻找热爱前端、梦想不羁的开发者。加入我们，共创 yzbjfpv.top 与 917813.com.cn 的未来。
+                </p>
+                <div class="flex flex-col gap-1">
+                    <div class="text-[10px] font-mono text-brand-accent"># 域名免费托管</div>
+                    <div class="text-[10px] font-mono text-brand-accent"># 综合性网站共建</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="bottom-hint">
+            点击任意位置进入 <i class="fas fa-arrow-right-long ml-2 opacity-50"></i>
+        </div>
+    </div>
+
+    <script>
+        let stage = 0;
+        const bgMusic = new Audio('http://music.163.com/song/media/outer/url?id=3368190806.mp3');
+        bgMusic.loop = true;
+        bgMusic.volume = 0.7;
+
+        function handleInteraction() {
+            if (stage === 0) {
+                // 第一步：触发爆发式动画
+                stage = 1;
+                
+                // 背景强化
+                document.getElementById('bg-container').classList.add('active-bg');
+                
+                // 第0屏移出
+                const init = document.getElementById('init-screen');
+                init.style.opacity = '0';
+                init.style.transform = 'translateY(-20px) scale(0.9)';
+                
+                // 第1屏激活
+                document.getElementById('main-screen').classList.add('active');
+                
+                // 音频播放
+                bgMusic.play().catch(() => {});
+                
+                // 防抖，防止直接跳转
+                window.isLocked = true;
+                setTimeout(() => window.isLocked = false, 800);
+
+            } else if (stage === 1) {
+                // 第二步：随时打断并跳转
+                if (window.isLocked) return;
+                
+                bgMusic.pause(); // 静音/停止
+                window.open('http://123.56.106.49:54321', '_blank');
+            }
+        }
+
+        // 页面淡入
+        window.onload = () => {
+            document.body.style.opacity = '1';
+        };
+    </script>
+</body>
+</html>
