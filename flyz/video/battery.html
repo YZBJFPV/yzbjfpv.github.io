@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YangFPV|PokRC·Flyz远征飞联名电池测评</title>
+    <style>
+        /* 全局样式 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Microsoft Yahei", Arial, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f0f8fb 0%, #e8f4f8 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        /* 提示容器 */
+        .jump-container {
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+            padding: 40px 20px;
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+        }
+
+        /* 标题样式 */
+        .title {
+            font-size: 22px;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        /* 倒计时动画 */
+        .countdown {
+            font-size: 60px;
+            color: #4ca1af;
+            font-weight: 700;
+            margin: 20px 0;
+            animation: pulse 1s ease-in-out infinite alternate;
+        }
+
+        @keyframes pulse {
+            from { transform: scale(1); }
+            to { transform: scale(1.1); }
+        }
+
+        /* 提示文字 */
+        .tips {
+            font-size: 16px;
+            color: #666;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+
+        /* 手动跳转按钮 */
+        .jump-btn {
+            display: inline-block;
+            padding: 12px 30px;
+            background: linear-gradient(135deg, #2c3e50 0%, #4ca1af 100%);
+            color: #fff;
+            text-decoration: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+        }
+
+        .jump-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(76, 161, 175, 0.4);
+        }
+
+        /* 移动端适配 */
+        @media (max-width: 480px) {
+            .jump-container {
+                padding: 30px 15px;
+            }
+            .title {
+                font-size: 18px;
+            }
+            .countdown {
+                font-size: 45px;
+            }
+            .tips {
+                font-size: 14px;
+            }
+            .jump-btn {
+                padding: 10px 25px;
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="jump-container">
+        <h1 class="title">YangFPV|PokRC·Flyz远征飞联名电池测评</h1>
+        <div class="countdown" id="countdown">5</div>
+        <p class="tips">
+            即将为您在新标签页打开视频<br>
+            若未自动跳转，请点击下方按钮手动打开
+        </p>
+        <button class="jump-btn" id="jumpBtn">立即打开视频</button>
+    </div>
+
+    <script>
+        // 视频源链接
+        const videoUrl = "http://123.56.106.49:54321/api/file/rawFile/FlyzPok%E8%81%94%E5%90%8D%E7%94%B5%E6%B1%A0%E6%B5%8B%E8%AF%841080p60fps.mp4?path=RSUzQSU1QyVFNCVCOCU4QiVFOCVCRCVCRCVFNyVBQiU5OSU1QzIwMjYlRTclQkElQkYlRTQlQjglOEFGUFYlRTclQUIlOUUlRTklODAlOUYlRTglQjUlOUIlNUMlRTUlODUlQTglRTYlOUUlODElRTglODAlQjMyMTcwMCVFOCU4MyVCRCVFNiU5QSVCNCVFNSU4QSU5QiVFOSVBMyU5RSVFOCVBMSU4QyVFNSU5MCU5NyVFRiVCQyU5RiVFNCVCRCVBMCVFNiU5NSVBMiVFNyU5NCVBOCVFNSVBRSU4MyVFNiU5QSVCNCVFNSU4QSU5QiVFOSVBMyU5RSVFOCVBMSU4QyVFNSU5MCU5NyVFRiVCQyU5Ri5tcDQ&enc=U2FsdGVkX19R8YYwTLgn4lnkvqSZt%2BLMfV63ttNwaFqKch1TqWSxT517%2FLPg8CBC&iv=U2FsdGVkX18lvdMd10HHgs5MZLxrMt3vOnRf8QsVGKjBdlOgoCCIvdZA5epkUj8y&st=SrwVJ&sp=";
+        
+        // 倒计时逻辑
+        let count = 5;
+        const countdownEl = document.getElementById('countdown');
+        const jumpBtn = document.getElementById('jumpBtn');
+
+        // 倒计时定时器
+        const timer = setInterval(() => {
+            count--;
+            countdownEl.textContent = count;
+            // 倒计时结束跳转
+            if (count <= 0) {
+                clearInterval(timer);
+                openVideo();
+            }
+        }, 1000);
+
+        // 打开视频函数（新标签页）
+        function openVideo() {
+            window.open(videoUrl, '_blank');
+            // 可选：跳转后提示文字修改
+            countdownEl.textContent = "✅";
+            document.querySelector('.tips').textContent = "视频已在新标签页打开，请注意查看！";
+            jumpBtn.textContent = "重新打开视频";
+        }
+
+        // 手动点击按钮跳转
+        jumpBtn.addEventListener('click', openVideo);
+
+        // 防止页面关闭/刷新时重复打开
+        window.addEventListener('beforeunload', () => {
+            clearInterval(timer);
+        });
+    </script>
+</body>
+</html>
