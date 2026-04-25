@@ -2,8 +2,8 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>917813  APPStart</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>917813 - 综合工具箱</title>
     <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
     <meta name="theme-color" content="#0f172a" media="(prefers-color-scheme: dark)">
     
@@ -39,6 +39,7 @@
             --glass-border-light: rgba(255, 255, 255, 0.4);
             --glass-border-dark: rgba(255, 255, 255, 0.05);
             --safe-area-bottom: env(safe-area-inset-bottom, 20px);
+            --safe-area-top: env(safe-area-inset-top, 0px);
         }
 
         * {
@@ -50,9 +51,9 @@
             font-family: 'Inter', sans-serif;
             background-color: var(--app-bg-light);
             color: #1e293b;
-            overflow: hidden; /* 防止原生滚动，使用内部滚动 */
+            overflow: hidden; /* 核心：锁死外层滚动，只允许内层视图独立滚动 */
             overscroll-behavior-y: none;
-            transition: background-color 0.3s ease, color 0.3s ease;
+            transition: background-color 0.4s ease, color 0.4s ease;
         }
 
         body.dark {
@@ -60,15 +61,84 @@
             color: #f1f5f9;
         }
 
+        /* === 炫酷开屏动画 Splash Screen === */
+        #splash-screen {
+            position: fixed;
+            inset: 0;
+            z-index: 99999;
+            background: var(--app-bg-light);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1), transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        body.dark #splash-screen { background: var(--app-bg-dark); }
+        
+        #splash-screen.fade-out {
+            opacity: 0;
+            transform: scale(1.05);
+            pointer-events: none;
+        }
+
+        .splash-logo-container {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            animation: splashFloat 3s ease-in-out infinite alternate;
+        }
+
+        .splash-icon {
+            width: 72px;
+            height: 72px;
+            border-radius: 20px;
+            background: linear-gradient(135deg, #0ea5e9, #8b5cf6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 32px;
+            font-weight: bold;
+            font-family: 'Space Grotesk', sans-serif;
+            box-shadow: 0 10px 30px rgba(14, 165, 233, 0.4);
+            margin-bottom: 24px;
+            position: relative;
+        }
+        
+        /* 品牌脉冲光环 */
+        .splash-icon::before, .splash-icon::after {
+            content: '';
+            position: absolute;
+            inset: -4px;
+            border-radius: 24px;
+            background: linear-gradient(135deg, #0ea5e9, #8b5cf6, #ec4899);
+            z-index: -1;
+            opacity: 0.5;
+            animation: pulseRing 2s cubic-bezier(0.2, 0.8, 0.2, 1) infinite;
+        }
+        .splash-icon::after { animation-delay: 1s; inset: -8px; opacity: 0.3; }
+
+        @keyframes pulseRing {
+            0% { transform: scale(0.9); opacity: 0.8; }
+            100% { transform: scale(1.5); opacity: 0; }
+        }
+        @keyframes splashFloat {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(-15px); }
+        }
+
+
         /* App 核心布局 */
         .app-shell {
             display: flex;
             height: 100vh;
-            height: 100dvh; /* 适配移动端浏览器底部栏 */
+            height: 100dvh;
             width: 100vw;
+            padding-top: var(--safe-area-top);
         }
 
-        /* 桌面端侧边栏 */
+        /* 侧边栏 (桌面端) */
         .app-sidebar {
             display: none;
             width: 260px;
@@ -80,13 +150,12 @@
             flex-direction: column;
             z-index: 50;
         }
-        
         body.dark .app-sidebar {
             background: var(--glass-dark);
             border-right: 1px solid var(--glass-border-dark);
         }
 
-        /* 移动端底部导航栏 */
+        /* 底部导航栏 (移动端) */
         .app-bottom-nav {
             display: flex;
             position: fixed;
@@ -103,38 +172,35 @@
             overflow-x: auto;
             scroll-behavior: smooth;
         }
-
         body.dark .app-bottom-nav {
             background: var(--glass-dark);
             border-top: 1px solid var(--glass-border-dark);
         }
-
-        /* 隐藏底部导航滚动条 */
         .app-bottom-nav::-webkit-scrollbar { display: none; }
         .app-bottom-nav { -ms-overflow-style: none; scrollbar-width: none; }
 
         /* 主内容区 */
         .app-main {
             flex: 1;
-            display: flex;
-            flex-direction: column;
             position: relative;
             height: 100%;
             overflow: hidden;
         }
 
-        /* 顶部通栏 (仅移动端或带标题栏) */
+        /* 顶部通栏 */
         .app-header {
+            position: absolute;
+            top: 0; left: 0; right: 0;
             height: 60px;
             display: flex;
             align-items: center;
             justify-content: space-between;
             padding: 0 20px;
-            background: transparent;
             z-index: 40;
+            background: transparent;
         }
 
-        /* 导航按钮样式 (Sidebar & Bottom Nav) */
+        /* 导航按钮 */
         .nav-item {
             display: flex;
             align-items: center;
@@ -143,165 +209,114 @@
             cursor: pointer;
             border-radius: 12px;
         }
-
         body.dark .nav-item { color: #94a3b8; }
 
-        /* 侧边栏按钮 */
-        .app-sidebar .nav-item {
-            padding: 12px 16px;
-            margin: 4px 16px;
-            font-size: 0.95rem;
-            font-weight: 500;
-        }
+        .app-sidebar .nav-item { padding: 12px 16px; margin: 4px 16px; font-size: 0.95rem; font-weight: 500; }
         .app-sidebar .nav-item i { width: 24px; font-size: 1.1rem; }
-        .app-sidebar .nav-item.active {
-            background: rgba(14, 165, 233, 0.1);
-            color: #0ea5e9;
-            font-weight: 600;
-        }
+        .app-sidebar .nav-item.active { background: rgba(14, 165, 233, 0.1); color: #0ea5e9; font-weight: 600; }
 
-        /* 底部按钮 */
         .app-bottom-nav .nav-item {
-            flex: 0 0 auto;
-            flex-direction: column;
-            justify-content: center;
-            min-width: 72px;
-            height: 100%;
-            font-size: 0.7rem;
-            font-weight: 500;
-            border-radius: 0;
+            flex: 0 0 auto; flex-direction: column; justify-content: center; min-width: 72px; height: 100%;
+            font-size: 0.7rem; font-weight: 500; border-radius: 0;
         }
-        .app-bottom-nav .nav-item i {
-            font-size: 1.2rem;
-            margin-bottom: 4px;
-            transition: transform 0.2s;
-        }
-        .app-bottom-nav .nav-item.active {
-            color: #0ea5e9;
-        }
-        .app-bottom-nav .nav-item.active i {
-            transform: translateY(-2px);
-        }
+        .app-bottom-nav .nav-item i { font-size: 1.2rem; margin-bottom: 4px; transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1); }
+        .app-bottom-nav .nav-item.active { color: #0ea5e9; }
+        .app-bottom-nav .nav-item.active i { transform: translateY(-3px) scale(1.1); }
 
-        /* 内容视图切换动效 */
+        /* === 视图切换动效 (顶级丝滑弹簧动效) === */
         .view-container {
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            /* 预设隐藏状态：稍微下沉并缩小 */
             opacity: 0;
             pointer-events: none;
-            transform: scale(0.98) translateY(10px);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transform: translateY(30px) scale(0.96);
+            /* 采用苹果风格的弹簧缓动曲线 */
+            transition: opacity 0.4s ease, transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
             overflow-y: auto;
-            padding-bottom: calc(80px + var(--safe-area-bottom)); /* 为底部导航留白 */
+            -webkit-overflow-scrolling: touch; /* 保证 iOS 内部滑动顺畅 */
+            padding-bottom: calc(65px + var(--safe-area-bottom));
         }
         
-        @media (min-width: 768px) {
-            .view-container { padding-bottom: 20px; }
-        }
-
         .view-container.active {
             opacity: 1;
             pointer-events: auto;
-            transform: scale(1) translateY(0);
+            transform: translateY(0) scale(1);
+            transition-delay: 0.05s; /* 给消失的视图一点点时间，避免重叠突兀 */
         }
 
-        /* 仪表盘卡片 (iOS Widget 风格) */
+        /* 桌面端无需底部留白 */
+        @media (min-width: 768px) {
+            .view-container { padding-bottom: 0; padding-top: 24px; }
+            #view-home { padding-top: 32px; padding-left: 32px; padding-right: 32px; }
+        }
+
+        /* 仪表盘卡片 */
         .widget-card {
             background: rgba(255, 255, 255, 0.6);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
             border: 1px solid rgba(255, 255, 255, 0.5);
-            border-radius: 24px;
-            padding: 24px;
-            transition: transform 0.2s, box-shadow 0.2s;
+            border-radius: 24px; padding: 24px;
+            transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.3s ease;
             cursor: pointer;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
-            display: flex;
-            flex-direction: column;
+            display: flex; flex-direction: column;
         }
-
         body.dark .widget-card {
-            background: rgba(30, 41, 59, 0.5);
-            border: 1px solid rgba(255, 255, 255, 0.05);
+            background: rgba(30, 41, 59, 0.5); border: 1px solid rgba(255, 255, 255, 0.05);
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
         }
-
-        .widget-card:active {
-            transform: scale(0.96);
-        }
+        .widget-card:active { transform: scale(0.94); } /* 按压时的物理阻尼感 */
 
         .widget-icon {
-            width: 48px;
-            height: 48px;
-            border-radius: 16px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 20px;
-            color: white;
-            margin-bottom: 16px;
+            width: 48px; height: 48px; border-radius: 16px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 20px; color: white; margin-bottom: 16px;
             box-shadow: 0 8px 16px -4px currentcolor;
         }
 
         /* 主页背景动效 */
-        .bg-blobs {
-            position: absolute;
-            inset: 0;
-            overflow: hidden;
-            pointer-events: none;
-            z-index: -1;
-        }
+        .bg-blobs { position: absolute; inset: 0; overflow: hidden; pointer-events: none; z-index: -1; }
         .blob {
-            position: absolute;
-            border-radius: 50%;
-            filter: blur(80px);
-            opacity: 0.5;
-            animation: float 10s ease-in-out infinite alternate;
+            position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.5;
+            animation: floatBlob 10s ease-in-out infinite alternate;
         }
-
-        @keyframes float {
-            0% { transform: translate(0, 0) scale(1); }
-            100% { transform: translate(30px, -30px) scale(1.1); }
-        }
+        @keyframes floatBlob { 0% { transform: translate(0, 0) scale(1); } 100% { transform: translate(30px, -30px) scale(1.1); } }
 
         /* 主题切换按钮 */
         .theme-btn {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: var(--glass-light);
-            border: 1px solid var(--glass-border-light);
-            color: #475569;
-            transition: all 0.2s;
+            width: 40px; height: 40px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            background: var(--glass-light); border: 1px solid var(--glass-border-light);
+            color: #475569; transition: all 0.2s;
+            backdrop-filter: blur(10px);
         }
-        body.dark .theme-btn {
-            background: var(--glass-dark);
-            border-color: var(--glass-border-dark);
-            color: #cbd5e1;
-        }
+        body.dark .theme-btn { background: var(--glass-dark); border-color: var(--glass-border-dark); color: #cbd5e1; }
 
-        /* Iframe 样式 */
+        /* === Iframe 容器优化 (彻底解决滑动问题) === */
+        .iframe-wrapper {
+            padding: 0 !important; /* 内嵌工具直接铺满，沉浸感拉满 */
+            overflow: hidden; /* 外层禁止滚动，全权交给 iframe 内部 */
+            display: flex;
+            flex-direction: column;
+        }
         .iframe-wrapper iframe {
-            width: 100%;
-            height: 100%;
+            flex: 1; /* 撑满剩余高度 */
+            width: 100%; height: 100%;
             border: none;
-            border-radius: 16px;
             background: #fff;
+            /* 关键属性：允许 iframe 内部触发 iOS 的动量滚动 */
+            -webkit-overflow-scrolling: touch;
         }
         body.dark .iframe-wrapper iframe { background: #1e293b; }
 
         @media (min-width: 768px) {
             .app-sidebar { display: flex; }
             .app-bottom-nav { display: none; }
-            .app-header { display: none; } /* 桌面端头部可隐藏，或移入内容区 */
-            .view-container { height: 100%; padding: 24px; }
-            .iframe-wrapper iframe { box-shadow: 0 4px 24px rgba(0,0,0,0.05); }
+            .app-header { display: none; }
+            .iframe-wrapper { padding: 24px !important; }
+            .iframe-wrapper iframe { border-radius: 20px; box-shadow: 0 10px 40px rgba(0,0,0,0.08); }
         }
 
         /* 隐藏原生滚动条 */
@@ -309,6 +324,14 @@
     </style>
 </head>
 <body>
+
+    <div id="splash-screen">
+        <div class="splash-logo-container">
+            <div class="splash-icon">9</div>
+            <h1 class="font-display font-bold text-3xl tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-brand-500 to-accent-purple mt-2">917813</h1>
+            <p class="text-sm text-gray-500 dark:text-gray-400 mt-2 tracking-widest uppercase font-semibold">综合工具箱</p>
+        </div>
+    </div>
 
     <div class="app-shell">
         
@@ -332,18 +355,23 @@
                 <div onclick="switchTab('fpvrace')" class="nav-item" data-tab="fpvrace"><i class="fas fa-plane-departure"></i>穿越机赛事</div>
             </div>
 
-            <div class="px-6 mt-auto">
+            <div class="px-6 mt-auto space-y-4">
                 <button onclick="toggleTheme()" class="nav-item w-full justify-between !mx-0 !px-0 bg-transparent hover:bg-transparent">
                     <span class="flex items-center"><i class="fas fa-moon"></i>暗色模式</span>
                     <div class="w-10 h-6 bg-gray-200 dark:bg-brand-500 rounded-full relative transition-colors">
                         <div class="w-4 h-4 bg-white rounded-full absolute top-1 left-1 dark:translate-x-4 transition-transform"></div>
                     </div>
                 </button>
+                <div class="pt-4 border-t border-gray-200/50 dark:border-gray-700/50">
+                    <p class="text-[11px] text-gray-400 dark:text-gray-500 flex items-center gap-1.5">
+                        <i class="fas fa-bolt text-brand-500"></i> Flyz远征飞 提供技术支持
+                    </p>
+                </div>
             </div>
         </nav>
 
         <main class="app-main">
-            <header class="app-header md:hidden">
+            <header class="app-header md:hidden pt-2">
                 <div class="flex items-center gap-2">
                     <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-brand-400 to-accent-purple flex items-center justify-center text-white font-bold text-sm shadow-md">9</div>
                     <span class="font-display font-bold text-lg">917813</span>
@@ -359,13 +387,15 @@
                 <div class="blob w-80 h-80 bg-accent-purple/20 bottom-[10%] right-[-5%]" style="animation-delay: -5s;"></div>
             </div>
 
-            <div id="view-home" class="view-container active px-5 pt-4 md:px-8 md:pt-8">
-                <div class="max-w-6xl mx-auto">
-                    <div class="mb-8 hidden md:flex items-center justify-between">
-                        <div>
-                            <h1 class="text-3xl font-display font-bold mb-1">欢迎回来 👋</h1>
-                            <p class="text-gray-500 dark:text-gray-400">选择一个工具开始今天的工作。</p>
-                        </div>
+            <div id="view-home" class="view-container active px-5 pt-20 md:px-8 md:pt-8 flex flex-col">
+                <div class="max-w-6xl mx-auto w-full flex-1">
+                    <div class="mb-8 hidden md:block">
+                        <h1 class="text-3xl font-display font-bold mb-1">欢迎回来 👋</h1>
+                        <p class="text-gray-500 dark:text-gray-400">选择一个工具开始今天的工作。</p>
+                    </div>
+                    
+                    <div class="md:hidden mb-6">
+                        <h1 class="text-2xl font-display font-bold">概览</h1>
                     </div>
 
                     <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
@@ -426,15 +456,21 @@
                         </div>
                     </div>
                 </div>
+                
+                <div class="mt-12 mb-6 text-center md:hidden w-full">
+                    <p class="text-xs text-gray-400 dark:text-gray-500 flex items-center justify-center gap-1.5 opacity-70">
+                        <i class="fas fa-bolt text-brand-500"></i> Flyz远征飞 提供技术支持
+                    </p>
+                </div>
             </div>
 
-            <div id="view-yzcloud" class="view-container iframe-wrapper px-0 md:px-6"><iframe src="about:blank" data-src="https://cdn.917813.com.cn/yzcloud/index.html"></iframe></div>
-            <div id="view-music" class="view-container iframe-wrapper px-0 md:px-6"><iframe src="about:blank" data-src="https://cdn.917813.com.cn/wyymusic/index.html"></iframe></div>
-            <div id="view-htmlview" class="view-container iframe-wrapper px-0 md:px-6"><iframe src="about:blank" data-src="https://cdn.917813.com.cn/htmlview/index.html"></iframe></div>
-            <div id="view-length78" class="view-container iframe-wrapper px-0 md:px-6"><iframe src="about:blank" data-src="https://cdn.917813.com.cn/check78long/index.html"></iframe></div>
-            <div id="view-watchmovie" class="view-container iframe-wrapper px-0 md:px-6"><iframe src="about:blank" data-src="https://cdn.917813.com.cn/watchmovie/index.html"></iframe></div>
-            <div id="view-benchmark" class="view-container iframe-wrapper px-0 md:px-6"><iframe src="about:blank" data-src="https://cdn.917813.com.cn/benchmark/index.html"></iframe></div>
-            <div id="view-fpvrace" class="view-container iframe-wrapper px-0 md:px-6"><iframe src="about:blank" data-src="https://cdn.917813.com.cn/fpvrace/index.html"></iframe></div>
+            <div id="view-yzcloud" class="view-container iframe-wrapper"><iframe src="about:blank" data-src="https://yzbjfpv.top/flyz/app/yzcloud"></iframe></div>
+            <div id="view-music" class="view-container iframe-wrapper"><iframe src="about:blank" data-src="https://cdn.917813.com.cn/wyymusic/index.html"></iframe></div>
+            <div id="view-htmlview" class="view-container iframe-wrapper"><iframe src="about:blank" data-src="https://cdn.917813.com.cn/htmlview/index.html"></iframe></div>
+            <div id="view-length78" class="view-container iframe-wrapper"><iframe src="about:blank" data-src="https://cdn.917813.com.cn/check78long/index.html"></iframe></div>
+            <div id="view-watchmovie" class="view-container iframe-wrapper"><iframe src="about:blank" data-src="https://cdn.917813.com.cn/watchmovie/index.html"></iframe></div>
+            <div id="view-benchmark" class="view-container iframe-wrapper"><iframe src="about:blank" data-src="https://cdn.917813.com.cn/benchmark/index.html"></iframe></div>
+            <div id="view-fpvrace" class="view-container iframe-wrapper"><iframe src="about:blank" data-src="https://cdn.917813.com.cn/fpvrace/index.html"></iframe></div>
 
         </main>
 
@@ -468,6 +504,17 @@
         let currentTab = 'home';
         let loadedIframes = new Set();
 
+        // 开屏动画逻辑
+        window.addEventListener('load', () => {
+            // 确保加载完成后再延迟一点点关闭动画，显得更有高级感
+            setTimeout(() => {
+                const splash = document.getElementById('splash-screen');
+                splash.classList.add('fade-out');
+                // 动画结束后彻底移除 DOM 以释放内存
+                setTimeout(() => splash.remove(), 800); 
+            }, 1200);
+        });
+
         // 检查系统深色模式偏好
         if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
             document.body.classList.add('dark');
@@ -480,11 +527,11 @@
         function switchTab(tabName) {
             if (currentTab === tabName) return;
 
-            // 处理导航激活状态 (Sidebar & Bottom Nav)
+            // 处理导航激活状态 (同时处理 Sidebar 和 Bottom Nav)
             document.querySelectorAll('.nav-item').forEach(el => {
                 if(el.getAttribute('data-tab') === tabName) {
                     el.classList.add('active');
-                    // 移动端底部导航自动滚动到可见区域
+                    // 移动端：将点击的底部导航自动居中对齐，交互更极致
                     if(el.parentNode.classList.contains('app-bottom-nav')) {
                         el.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
                     }
@@ -493,14 +540,17 @@
                 }
             });
 
-            // 处理视图切换与动画
+            // 获取新旧视图容器
             const oldView = document.getElementById(`view-${currentTab}`);
             const newView = document.getElementById(`view-${tabName}`);
 
+            // 移除旧视图激活状态（触发下沉、缩小、淡出动效）
             oldView.classList.remove('active');
+            
+            // 激活新视图（触发上升、复原、淡入动效）
             newView.classList.add('active');
 
-            // 延迟加载 iframe 提升初次渲染性能
+            // Iframe 懒加载：只有当点击对应栏目时，才将 data-src 赋给 src 真正加载
             if (tabName !== 'home' && !loadedIframes.has(tabName)) {
                 const iframe = newView.querySelector('iframe');
                 if (iframe) {
