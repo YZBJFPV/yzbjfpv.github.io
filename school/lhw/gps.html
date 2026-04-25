@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>高精度设备定位</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+        body {
+            max-width: 500px;
+            margin: 30px auto;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        .card {
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h2 {
+            margin-bottom: 20px;
+            color: #2c3e50;
+        }
+        .location-input {
+            width: 100%;
+            padding: 12px 15px;
+            font-size: 16px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            margin-bottom: 25px;
+        }
+        .info-box {
+            background: #f8f9fa;
+            padding: 18px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+        .label {
+            font-weight: bold;
+            color: #34495e;
+        }
+        .refresh {
+            color: #666;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h2>📌 高精度设备定位</h2>
+
+        <!-- 自定义地点输入框 -->
+        <input 
+            type="text" 
+            class="location-input" 
+            placeholder="请输入自定义地点（如：公司、家、商场）"
+        >
+
+        <!-- 定位信息展示区 -->
+        <div class="info-box">
+            <p><span class="label">精准纬度：</span> <span id="lat">等待定位...</span></p>
+            <p><span class="label">精准经度：</span> <span id="lng">等待定位...</span></p>
+            <p><span class="label">定位精度：</span> <span id="accuracy">米</span></p>
+        </div>
+
+        <p class="refresh">🔄 定位每 2 秒自动刷新一次</p>
+    </div>
+
+    <script>
+        // 元素获取
+        const latEl = document.getElementById('lat');
+        const lngEl = document.getElementById('lng');
+        const accuracyEl = document.getElementById('accuracy');
+
+        // 定位配置：开启最高精度模式
+        const options = {
+            enableHighAccuracy: true,   // 最精准定位
+            maximumAge: 0,              // 不使用缓存定位
+            timeout: 5000               // 超时时间
+        };
+
+        // 单次定位更新函数
+        function updateLocation() {
+            if (!navigator.geolocation) {
+                latEl.textContent = "不支持定位";
+                lngEl.textContent = "不支持定位";
+                return;
+            }
+
+            navigator.geolocation.getCurrentPosition(
+                (pos) => {
+                    // 纬度、经度、精度（米）
+                    const lat = pos.coords.latitude;
+                    const lng = pos.coords.longitude;
+                    const accuracy = pos.coords.accuracy;
+
+                    // 更新页面
+                    latEl.textContent = lat.toFixed(8);
+                    lngEl.textContent = lng.toFixed(8);
+                    accuracyEl.textContent = accuracy + ' 米';
+                },
+                (err) => {
+                    // 定位失败提示
+                    latEl.textContent = "定位失败";
+                    lngEl.textContent = "请允许权限";
+                    console.error(err);
+                },
+                options
+            );
+        }
+
+        // 立即执行一次 + 每 2 秒刷新
+        updateLocation();
+        setInterval(updateLocation, 2000);
+    </script>
+</body>
+</html>
