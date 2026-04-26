@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>FlyzWorkSpace - 综合工具箱</title>
+    <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#0f172a" media="(prefers-color-scheme: dark)">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        display: ['Space Grotesk', 'sans-serif'],
+                        body: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: { 400: '#38bdf8', 500: '#0ea5e9', 600: '#0284c7' },
+                        accent: { purple: '#8b5cf6', pink: '#ec4899', orange: '#f97316' }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        :root {
+            --app-bg-light: #f8fafc;
+            --app-bg-dark: #0f172a;
+            --glass-light: rgba(255, 255, 255, 0.75);
+            --glass-dark: rgba15, 23, 42, 0.75;
+            --glass-border-light: rgba(255, 255, 255, 0.4);
+            --glass-border-dark: rgba(255, 255, 255, 0.05);
+            --safe-area-bottom: env(safe-area-inset-bottom, 20px);
+            --safe-area-top: env(safe-area-inset-top, 0px);
+        }
+
+        * { -webkit-tap-highlight-color: transparent; box-sizing: border-box; }
+
+        /* 锁死全局回弹，防止主页面晃动 */
+        html, body {
+            margin: 0; padding: 0;
+            width: 100%; height: 100%;
+            overflow: hidden;
+            position: fixed; 
+            overscroll-behavior: none;
+            touch-action: none;
+        }
+
+        body { font-family: 'Inter', sans-serif; background-color: var(--app-bg-light); transition: background-color 0.4s ease; }
+        body.dark { background-color: var(--app-bg-dark); color: #f1f5f9; }
+
+        /* Splash Screen */
+        #splash-screen {
+            position: fixed; inset: 0; z-index: 99999;
+            background: var(--app-bg-light);
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        body.dark #splash-screen { background: var(--app-bg-dark); }
+        #splash-screen.fade-out { opacity: 0; pointer-events: none; }
+        .splash-icon {
+            width: 72px; height: 72px; border-radius: 20px;
+            background: linear-gradient(135deg, #0ea5e9, #8b5cf6);
+            display: flex; align-items: center; justify-content: center;
+            color: white; font-size: 32px; font-weight: bold; font-family: 'Space Grotesk';
+            position: relative;
+        }
+        .splash-icon::after {
+            content: ''; position: absolute; inset: -5px; border-radius: 24px;
+            background: inherit; filter: blur(10px); opacity: 0.4; z-index: -1;
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse { 0% { transform: scale(1); opacity: 0.4; } 100% { transform: scale(1.4); opacity: 0; } }
+
+        /* Layout */
+        .app-shell { display: flex; height: 100vh; height: 100dvh; width: 100vw; padding-top: var(--safe-area-top); }
+
+        .app-sidebar {
+            display: none; width: 260px; height: 100%;
+            background: var(--glass-light); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border-right: 1px solid var(--glass-border-light); flex-direction: column; z-index: 50;
+            touch-action: pan-y;
+        }
+        body.dark .app-sidebar { background: var(--glass-dark); border-right: 1px solid var(--glass-border-dark); }
+
+        .app-bottom-nav {
+            display: flex; position: fixed; bottom: 0; left: 0; right: 0;
+            height: calc(65px + var(--safe-area-bottom)); padding-bottom: var(--safe-area-bottom);
+            background: var(--glass-light); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border-top: 1px solid var(--glass-border-light); z-index: 50;
+            overflow-x: auto; scrollbar-width: none; touch-action: pan-x;
+        }
+        body.dark .app-bottom-nav { background: var(--glass-dark); border-top: 1px solid var(--glass-border-dark); }
+
+        .app-main { flex: 1; position: relative; height: 100%; overflow: hidden; }
+
+        .nav-item {
+            display: flex; align-items: center; color: #64748b;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); cursor: pointer; border-radius: 12px;
+        }
+        .app-sidebar .nav-item { padding: 12px 16px; margin: 4px 16px; font-size: 0.95rem; font-weight: 500; }
+        .app-sidebar .nav-item i { width: 24px; font-size: 1.1rem; }
+        .app-sidebar .nav-item.active { background: rgba(14, 165, 233, 0.1); color: #0ea5e9; font-weight: 600; }
+
+        .app-bottom-nav .nav-item {
+            flex: 0 0 auto; flex-direction: column; justify-content: center; min-width: 72px; height: 100%;
+            font-size: 0.7rem; font-weight: 500;
+        }
+        .app-bottom-nav .nav-item i { font-size: 1.2rem; margin-bottom: 4px; }
+        .app-bottom-nav .nav-item.active { color: #0ea5e9; }
+
+        /* View Switching */
+        .view-container {
+            position: absolute; inset: 0;
+            opacity: 0; pointer-events: none; transform: translateY(20px) scale(0.98);
+            transition: opacity 0.4s ease, transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+            overflow-y: auto; -webkit-overflow-scrolling: touch;
+            padding-bottom: calc(65px + var(--safe-area-bottom));
+            touch-action: pan-y;
+        }
+        .view-container.active { opacity: 1; pointer-events: auto; transform: translateY(0) scale(1); }
+
+        /* Iframe 滑动修复 */
+        .iframe-wrapper { padding: 0 !important; overflow: hidden !important; display: flex; flex-direction: column; height: 100% !important; }
+        .iframe-wrapper iframe {
+            width: 100%; height: calc(100% - 65px - var(--safe-area-bottom)) !important;
+            border: none; background: #fff; touch-action: auto;
+        }
+        body.dark .iframe-wrapper iframe { background: #0f172a; }
+
+        @media (min-width: 768px) {
+            .app-sidebar { display: flex; }
+            .app-bottom-nav { display: none; }
+            .view-container { padding-bottom: 0; }
+            .iframe-wrapper iframe { height: 100% !important; }
+        }
+
+        /* Widgets */
+        .widget-card {
+            background: rgba(255, 255, 255, 0.6); backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.5); border-radius: 24px; padding: 20px;
+            transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1); cursor: pointer;
+        }
+        body.dark .widget-card { background: rgba(30, 41, 59, 0.5); border: 1px solid rgba(255, 255, 255, 0.05); }
+        .widget-card:active { transform: scale(0.95); }
+        .widget-icon { width: 44px; height: 44px; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 18px; color: white; margin-bottom: 12px; }
+    </style>
+</head>
+<body class="font-body">
+
+    <div id="splash-screen">
+        <div class="splash-icon">F</div>
+        <h1 class="font-display font-bold text-2xl mt-4 bg-clip-text text-transparent bg-gradient-to-r from-brand-500 to-accent-purple">FlyzWorkSpace 工具箱</h1>
+    </div>
+
+    <div class="app-shell">
+        <nav class="app-sidebar py-6">
+            <div class="px-6 mb-8 flex items-center gap-3">
+                <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-brand-400 to-accent-purple flex items-center justify-center text-white font-bold">F</div>
+                <span class="font-display font-bold text-xl tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-brand-500 to-accent-purple">FlyzWorkSpace</span>
+            </div>
+            
+            <div class="flex-1 overflow-y-auto">
+                <div onclick="switchTab('home')" class="nav-item active" data-tab="home"><i class="fas fa-border-all"></i>概览</div>
+                <div onclick="switchTab('yzcloud')" class="nav-item" data-tab="yzcloud"><i class="fas fa-cloud"></i>云盘</div>
+                <div onclick="switchTab('yzweather')" class="nav-item" data-tab="yzweather"><i class="fas fa-cloud-sun"></i>天气</div>
+                <div onclick="switchTab('music')" class="nav-item" data-tab="music"><i class="fas fa-music"></i>音乐解析</div>
+                <div onclick="switchTab('watchmovie')" class="nav-item" data-tab="watchmovie"><i class="fas fa-play-circle"></i>在线观影</div>
+                <div onclick="switchTab('light')" class="nav-item" data-tab="light"><i class="fas fa-lightbulb"></i>屏幕照明</div>
+                <div onclick="switchTab('length78')" class="nav-item" data-tab="length78"><i class="fas fa-ruler-combined"></i>长度测试</div>
+                <div onclick="switchTab('benchmark')" class="nav-item" data-tab="benchmark"><i class="fas fa-microchip"></i>性能跑分</div>
+                <div onclick="switchTab('fpvrace')" class="nav-item" data-tab="fpvrace"><i class="fas fa-plane-departure"></i>赛事</div>
+            </div>
+
+            <div class="px-6 mt-auto">
+                <button onclick="toggleTheme()" class="flex items-center gap-2 text-sm opacity-60 hover:opacity-100 transition-opacity">
+                    <i class="fas fa-adjust"></i>主题切换
+                </button>
+            </div>
+        </nav>
+
+        <main class="app-main">
+            <div id="view-home" class="view-container active px-5 pt-12 md:pt-8">
+                <div class="max-w-6xl mx-auto">
+                    <h1 class="text-3xl font-display font-bold mb-8">FlyzWorkSpace 全能工具箱</h1>
+                    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                        <div onclick="switchTab('yzcloud')" class="widget-card">
+                            <div class="widget-icon bg-blue-500 shadow-lg shadow-blue-500/20"><i class="fas fa-cloud"></i></div>
+                            <h3 class="font-semibold text-sm">云盘</h3>
+                            <p class="text-[11px] opacity-50 mt-1">云端存储分享</p>
+                        </div>
+                        <div onclick="switchTab('yzweather')" class="widget-card">
+                            <div class="widget-icon bg-sky-400 shadow-lg shadow-sky-400/20"><i class="fas fa-cloud-sun"></i></div>
+                            <h3 class="font-semibold text-sm">天气</h3>
+                            <p class="text-[11px] opacity-50 mt-1">精准气象预报</p>
+                        </div>
+                        <div onclick="switchTab('music')" class="widget-card">
+                            <div class="widget-icon bg-pink-500 shadow-lg shadow-pink-500/20"><i class="fas fa-music"></i></div>
+                            <h3 class="font-semibold text-sm">音乐解析</h3>
+                            <p class="text-[11px] opacity-50 mt-1">无损音乐解析</p>
+                        </div>
+                        <div onclick="switchTab('watchmovie')" class="widget-card">
+                            <div class="widget-icon bg-red-500 shadow-lg shadow-red-500/20"><i class="fas fa-play"></i></div>
+                            <h3 class="font-semibold text-sm">在线观影</h3>
+                            <p class="text-[11px] opacity-50 mt-1">爱看机器人影视</p>
+                        </div>
+                        <div onclick="switchTab('light')" class="widget-card">
+                            <div class="widget-icon bg-amber-400 shadow-lg shadow-amber-500/20"><i class="fas fa-lightbulb"></i></div>
+                            <h3 class="font-semibold text-sm">屏幕照明</h3>
+                            <p class="text-[11px] opacity-50 mt-1">摄影补光测试</p>
+                        </div>
+                        <div onclick="switchTab('length78')" class="widget-card">
+                            <div class="widget-icon bg-teal-500 shadow-lg shadow-teal-500/20"><i class="fas fa-ruler"></i></div>
+                            <h3 class="font-semibold text-sm">长度测试</h3>
+                            <p class="text-[11px] opacity-50 mt-1">文本长度校验</p>
+                        </div>
+                        <div onclick="switchTab('benchmark')" class="widget-card">
+                            <div class="widget-icon bg-orange-500 shadow-lg shadow-orange-500/20"><i class="fas fa-microchip"></i></div>
+                            <h3 class="font-semibold text-sm">性能跑分</h3>
+                            <p class="text-[11px] opacity-50 mt-1">算力性能评估</p>
+                        </div>
+                        <div onclick="switchTab('fpvrace')" class="widget-card">
+                            <div class="widget-icon bg-cyan-600 shadow-lg shadow-cyan-600/20"><i class="fas fa-plane"></i></div>
+                            <h3 class="font-semibold text-sm">赛事</h3>
+                            <p class="text-[11px] opacity-50 mt-1">赛事直播数据</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="view-yzcloud" class="view-container iframe-wrapper"><iframe src="about:blank" data-src="https://yzbjfpv.top/flyz/app/yzcloud"></iframe></div>
+            <div id="view-yzweather" class="view-container iframe-wrapper"><iframe src="about:blank" data-src="https://yzbjfpv.top/flyz/app/yzweather/test"></iframe></div>
+            <div id="view-music" class="view-container iframe-wrapper"><iframe src="about:blank" data-src="https://cdn.917813.com.cn/wyymusic/index.html"></iframe></div>
+            <div id="view-watchmovie" class="view-container iframe-wrapper"><iframe src="about:blank" data-src="https://v.ikanbot.com"></iframe></div>
+            <div id="view-light" class="view-container iframe-wrapper"><iframe src="about:blank" data-src="httpsyzbjfpv.top/tools/屏幕照明"></iframe></div>
+            <div id="view-length78" class="view-container iframe-wrapper"><iframe src="about:blank" data-src="https://cdn.917813.com.cn/check78long/index.html"></iframe></div>
+            <div id="view-benchmark" class="view-container iframe-wrapper"><iframe src="about:blank" data-src="https://cdn.917813.com.cn/benchmark/index.html"></iframe></div>
+            <div id="view-fpvrace" class="view-container iframe-wrapper"><iframe src="about:blank" data-src="https://cdn.917813.com.cn/fpvrace/index.html"></iframe></div>
+        </main>
+
+        <nav class="app-bottom-nav">
+            <div onclick="switchTab('home')" class="nav-item active" data-tab="home"><i class="fas fa-border-all"></i><span>主页</span></div>
+            <div onclick="switchTab('yzcloud')" class="nav-item" data-tab="yzcloud"><i class="fas fa-cloud"></i><span>云盘</span></div>
+            <div onclick="switchTab('yzweather')" class="nav-item" data-tab="yzweather"><i class="fas fa-cloud-sun"></i><span>天气</span></div>
+            <div onclick="switchTab('watchmovie')" class="nav-item" data-tab="watchmovie"><i class="fas fa-play"></i><span>观影</span></div>
+            <div onclick="switchTab('music')" class="nav-item" data-tab="music"><i class="fas fa-music"></i><span>音乐</span></div>
+            <div onclick="switchTab('light')" class="nav-item" data-tab="light"><i class="fas fa-lightbulb"></i><span>照明</span></div>
+            <div onclick="switchTab('benchmark')" class="nav-item" data-tab="benchmark"><i class="fas fa-microchip"></i><span>跑分</span></div>
+        </nav>
+    </div>
+
+    <script>
+        let currentTab = 'home';
+        let loadedIframes = new Set();
+
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                document.getElementById('splash-screen').classList.add('fade-out');
+            }, 1000);
+        });
+
+        function toggleTheme() { document.body.classList.toggle('dark'); }
+
+        function switchTab(tabName) {
+            if (currentTab === tabName) return;
+
+            document.querySelectorAll('.nav-item').forEach(el => {
+                if(el.getAttribute('data-tab') === tabName) {
+                    el.classList.add('active');
+                    if(el.parentNode.classList.contains('app-bottom-nav')) {
+                        el.scrollIntoView({ behavior: 'smooth', inline: 'center' });
+                    }
+                } else el.classList.remove('active');
+            });
+
+            document.getElementById(`view-${currentTab}`).classList.remove('active');
+            const newView = document.getElementById(`view-${tabName}`);
+            newView.classList.add('active');
+
+            if (tabName !== 'home' && !loadedIframes.has(tabName)) {
+                const iframe = newView.querySelector('iframe');
+                if (iframe) {
+                    iframe.src = iframe.getAttribute('data-src');
+                    loadedIframes.add(tabName);
+                }
+            }
+            currentTab = tabName;
+        }
+    </script>
+</body>
+</html>
