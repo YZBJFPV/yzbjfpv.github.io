@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flyz远征飞超高速服务器</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+        }
+        /* 仿微信顶部导航栏 */
+        .fake-nav {
+            height: 44px;
+            background: #f7f7f7;
+            display: flex;
+            align-items: center;
+            padding: 0 12px;
+            border-bottom: 1px solid #e5e5e5;
+        }
+        .back-btn {
+            font-size: 14px;
+            color: #007aff;
+            background: none;
+            border: none;
+            padding: 4px 8px;
+            cursor: pointer;
+        }
+        .nav-title {
+            flex: 1;
+            text-align: center;
+            font-size: 16px;
+            color: #333;
+            font-weight: 500;
+        }
+        /* iframe 占满剩余全部高度 */
+        #iframe-box {
+            width: 100%;
+            height: calc(100vh - 44px);
+            border: none;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <!-- 假导航栏 -->
+    <div class="fake-nav">
+        <button class="back-btn" onclick="history.back()">返回</button>
+        <div class="nav-title">Flyz远征飞超高速服务器</div>
+        <div style="width: 50px;"></div>
+    </div>
+
+    <!-- 内嵌页面 + 拦截新标签跳转 -->
+    <iframe 
+        id="mainIframe"
+        src="http://123.56.106.49:9178"
+        frameborder="0"
+        allowfullscreen
+    ></iframe>
+
+    <script>
+        const iframe = document.getElementById('mainIframe');
+        // 强制所有链接、跳转在iframe内部打开，禁止新开页面
+        iframe.addEventListener('load', function() {
+            try {
+                const doc = iframe.contentDocument || iframe.contentWindow.document;
+                // 拦截a标签新窗口跳转
+                const allA = doc.querySelectorAll('a');
+                allA.forEach(a => {
+                    a.target = '_self';
+                });
+                // 拦截表单提交新开页面
+                const formList = doc.querySelectorAll('form');
+                formList.forEach(form => {
+                    form.target = '_self';
+                });
+            } catch (e) {
+                // 跨域限制静默捕获，不影响使用
+            }
+        });
+    </script>
+</body>
+</html>
