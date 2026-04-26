@@ -3,95 +3,121 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>怀念杜江官方网站</title>
+    <title>怀念杜江 | 官方网站</title>
     <style>
+        :root {
+            --accent: #ffffff;
+            --bg: #0a0a0a;
+        }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
-            /* 更有深度的径向渐变背景 */
-            background: radial-gradient(circle at top, #162032, #050710);
-            font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
-            color: #fff;
-            overflow: hidden;
+            background-color: var(--bg);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            color: var(--accent);
         }
-        .card {
-            background: rgba(18, 24, 40, 0.4);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(148, 198, 255, 0.1);
-            padding: 50px;
-            border-radius: 24px;
+
+        .container {
             text-align: center;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
-            /* 卡片入场动效：丝滑上浮并淡入 */
-            animation: slideUp 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
-            opacity: 0;
-            transform: translateY(20px);
-            min-width: 480px;
+            width: 90%;
+            max-width: 400px;
+            padding: 20px;
         }
-        @keyframes slideUp { to { opacity: 1; transform: translateY(0); } }
-        
+
         h1 {
-            font-size: 32px;
-            letter-spacing: 8px;
-            background: linear-gradient(90deg, #38bdf8, #a78bfa, #38bdf8);
-            background-size: 200% auto;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            /* 标题流光加速，适应1.5秒短停留 */
-            animation: flow 1.5s linear infinite;
-            margin-bottom: 24px;
+            font-size: 24px;
+            font-weight: 300;
+            letter-spacing: 0.5em;
+            margin-bottom: 40px;
+            opacity: 0;
+            animation: fadeIn 1s ease forwards;
         }
-        @keyframes flow { to { background-position: 200% center; } }
-        
-        .info { color: #94a3b8; font-size: 14px; line-height: 1.8; letter-spacing: 1px; }
-        .domain { color: #38bdf8; margin: 0 5px; font-weight: bold; }
-        
-        .status {
-            margin: 30px 0 20px;
-            padding: 15px;
-            border-radius: 12px;
-            background: rgba(56, 189, 248, 0.05);
-            border: 1px solid rgba(56, 189, 248, 0.15);
+
+        /* 极简进度条 */
+        .loader-wrapper {
+            width: 100%;
+            height: 1px;
+            background: rgba(255,255,255,0.1);
+            position: relative;
+            margin-bottom: 20px;
         }
-        .status p { color: #cbd5e1; font-size: 14px; margin-bottom: 4px; }
-        .status small { color: #64748b; font-size: 12px; }
-        
-        .v { font-size: 12px; color: #475569; margin-bottom: 20px; }
-        
-        .track { height: 4px; background: rgba(255,255,255,0.05); border-radius: 4px; overflow: hidden; }
-        .bar {
+        .loader-bar {
+            position: absolute;
+            left: 0;
+            top: 0;
             height: 100%;
             width: 0%;
-            background: linear-gradient(90deg, #38bdf8, #a78bfa);
-            box-shadow: 0 0 10px rgba(56, 189, 248, 0.8);
-            /* 进度条严格执行1.5秒动画 */
-            animation: load 1.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+            background: var(--accent);
+            box-shadow: 0 0 15px rgba(255,255,255,0.5);
+            animation: load 1.5s cubic-bezier(0.65, 0, 0.35, 1) forwards;
         }
+
+        .footer-info {
+            font-size: 11px;
+            color: #666;
+            letter-spacing: 1px;
+            line-height: 2;
+            opacity: 0;
+            animation: fadeIn 1s ease 0.5s forwards;
+        }
+
+        /* 手动跳转链接 - 默认隐藏 */
+        #retry-btn {
+            display: none;
+            margin-top: 30px;
+            color: var(--accent);
+            text-decoration: none;
+            font-size: 13px;
+            border: 1px solid rgba(255,255,255,0.3);
+            padding: 8px 20px;
+            border-radius: 20px;
+            transition: all 0.3s;
+        }
+        #retry-btn:hover {
+            background: #fff;
+            color: #000;
+        }
+
         @keyframes load { to { width: 100%; } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
-    <div class="card">
-        <h1>怀念杜江官网</h1>
-        <div class="info">
-            制作：九年级六班 李沅臻 &nbsp;|&nbsp; 技术：Flyz远征飞<br>
-            <span class="domain">917813.com.cn</span> • <span class="domain">yzbjfpv.top</span>
+
+    <div class="container">
+        <h1 id="title">怀念杜江</h1>
+        
+        <div class="loader-wrapper">
+            <div class="loader-bar"></div>
         </div>
-        <div class="status">
-            <p>⚡ 正在连接 Flyz远征飞 超高速节点</p>
-            <small>显示 IP 地址属正常现象</small>
+
+        <div class="footer-info">
+            FLY PLANET • 20260426<br>
+            九年级六班 李沅臻
         </div>
-        <div class="v">版本信息：20260426-V1.0.6</div>
-        <div class="track"><div class="bar"></div></div>
+
+        <a href="http://123.56.106.49:9090/dj/" id="retry-btn" target="_blank">点击此处手动进入</a>
     </div>
 
     <script>
-        // 严格 1.5 秒（1500毫秒）后跳转，与进度条动画时间完全同步
+        const targetUrl = "http://123.56.106.49:9090/dj/";
+        
+        // 1.5秒后尝试跳转
         setTimeout(() => {
-            location.replace("http://123.56.106.49:6666/dj/");
+            document.getElementById('title').innerText = "正在前往";
+            
+            // 尝试在新标签页打开
+            const newWindow = window.open(targetUrl, '_blank');
+            
+            // 浏览器安全策略可能会拦截非用户触发的 window.open
+            // 如果跳转失败（newWindow 为空），则显示手动进入按钮
+            if (!newWindow || newWindow.closed || typeof newWindow.closed === 'undefined') {
+                document.getElementById('retry-btn').style.display = 'inline-block';
+                document.getElementById('title').innerText = "请点击下方链接";
+            }
         }, 1500);
     </script>
 </body>
