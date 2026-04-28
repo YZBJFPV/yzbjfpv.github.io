@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>怀念杜江 | 官方网站</title>
+    <style>
+        :root {
+            --accent: #ffffff;
+            --bg: #0a0a0a;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: var(--bg);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            color: var(--accent);
+        }
+
+        .container {
+            text-align: center;
+            width: 90%;
+            max-width: 400px;
+            padding: 20px;
+        }
+
+        h1 {
+            font-size: 24px;
+            font-weight: 300;
+            letter-spacing: 0.5em;
+            margin-bottom: 40px;
+            opacity: 0;
+            animation: fadeIn 1s ease forwards;
+        }
+
+        /* 极简进度条 */
+        .loader-wrapper {
+            width: 100%;
+            height: 1px;
+            background: rgba(255,255,255,0.1);
+            position: relative;
+            margin-bottom: 20px;
+        }
+        .loader-bar {
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 0%;
+            background: var(--accent);
+            box-shadow: 0 0 15px rgba(255,255,255,0.5);
+            animation: load 1.5s cubic-bezier(0.65, 0, 0.35, 1) forwards;
+        }
+
+        .footer-info {
+            font-size: 11px;
+            color: #666;
+            letter-spacing: 1px;
+            line-height: 2;
+            opacity: 0;
+            animation: fadeIn 1s ease 0.5s forwards;
+        }
+
+        /* 手动跳转链接 - 默认隐藏 */
+        #retry-btn {
+            display: none;
+            margin-top: 30px;
+            color: var(--accent);
+            text-decoration: none;
+            font-size: 13px;
+            border: 1px solid rgba(255,255,255,0.3);
+            padding: 8px 20px;
+            border-radius: 20px;
+            transition: all 0.3s;
+        }
+        #retry-btn:hover {
+            background: #fff;
+            color: #000;
+        }
+
+        @keyframes load { to { width: 100%; } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1 id="title">嘟嘟电池官方网站</h1>
+        
+        <div class="loader-wrapper">
+            <div class="loader-bar"></div>
+        </div>
+
+        <div class="footer-info">
+            FLY HZHB • 20260428<br>
+            Flyz远征飞官方
+        </div>
+
+        <a href="http://123.56.106.49:9090/dudu/index.html" id="retry-btn" target="_blank">点击此处手动进入</a>
+    </div>
+
+    <script>
+        const targetUrl = "http://123.56.106.49:9090/dudu/index.html";
+        
+        // 1.5秒后尝试跳转
+        setTimeout(() => {
+            document.getElementById('title').innerText = "正在前往";
+            
+            // 尝试在新标签页打开
+            const newWindow = window.open(targetUrl, '_blank');
+            
+            // 浏览器安全策略可能会拦截非用户触发的 window.open
+            // 如果跳转失败（newWindow 为空），则显示手动进入按钮
+            if (!newWindow || newWindow.closed || typeof newWindow.closed === 'undefined') {
+                document.getElementById('retry-btn').style.display = 'inline-block';
+                document.getElementById('title').innerText = "请点击下方链接";
+            }
+        }, 1500);
+    </script>
+</body>
+</html>
