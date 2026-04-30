@@ -5,74 +5,145 @@
     <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no,viewport-fit=cover">
     <title>Flyz远征飞｜综合工具箱 - 5.1劳动节特别版</title>
     <meta name="description" content="全国综合性航模公益服务平台 下载站支持高速免费免登录直接下载飞行模拟 3D打印等各类航模文件 欢迎加入我们 微信号:YGWFK2024" />
-    <meta name="keywords" content="航模,飞行模拟,3D打印,免费下载,公益服务,劳动节" />
+    <meta name="keywords" content="航模,飞行模拟,3D打印,免费下载,公益服务,劳动节,五一" />
     <meta name="robots" content="index,follow">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        html, body { width: 100%; height: 100%; overflow: hidden; background: #0f172a; }
+        html, body { width: 100%; height: 100%; overflow: hidden; background: #fff; font-family: sans-serif; }
         iframe { width: 100vw; height: 100vh; border: 0; display: block; position: relative; z-index: 1; }
 
-        /* 极简高级加载层 */
-        #loading {
-            position: fixed; inset: 0; z-index: 9999;
-            background: #0f172a;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            transition: opacity 0.8s ease, transform 0.8s ease, visibility 0.8s;
+        /* ================= 震撼开门红加载层 ================= */
+        #loading-container {
+            position: fixed; inset: 0; z-index: 99999;
+            perspective: 2000px; /* 为大门打开提供 3D 视距 */
+            overflow: hidden;
+            visibility: visible;
+            opacity: 1;
+            transition: visibility 0.8s, opacity 0.8s;
         }
 
-        /* 节日排版 */
-        .festival-text {
-            text-align: center;
-            margin-bottom: 40px;
+        /* 黄金碎屑雨 (Festive Confetti) */
+        .confetti-wrapper {
+            position: absolute; inset: 0; z-index: 2; pointer-events: none;
         }
-        .festival-text h1 {
-            font-size: 48px;
-            font-weight: 900;
-            background: linear-gradient(135deg, #ff4b2b, #ff416c, #ffb88c);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 10px;
-            letter-spacing: 2px;
-            animation: breathe 2s ease-in-out infinite alternate;
+        .confetti {
+            position: absolute; width: 10px; height: 10px; background: #ffd700;
+            top: -20px; border-radius: 2px;
+            animation: confetti-fall linear infinite;
         }
-        .festival-text p {
-            color: #94a3b8;
-            font-size: 14px;
-            letter-spacing: 4px;
-            text-transform: uppercase;
+        /* 生成不同位置和延迟的碎屑，拉满氛围 */
+        .confetti:nth-child(1) { left: 10%; width: 8px; height: 12px; animation-duration: 4s; animation-delay: 0s; background: #ffd700; }
+        .confetti:nth-child(2) { left: 25%; width: 10px; height: 10px; animation-duration: 5s; animation-delay: 1s; background: #fff; }
+        .confetti:nth-child(3) { left: 40%; width: 12px; height: 8px; animation-duration: 3.5s; animation-delay: 1.5s; background: #ffaa00; }
+        .confetti:nth-child(4) { left: 60%; width: 8px; height: 8px; animation-duration: 6s; animation-delay: 0.5s; background: #ffd700; }
+        .confetti:nth-child(5) { left: 75%; width: 10px; height: 12px; animation-duration: 4.5s; animation-delay: 2s; background: #fff; }
+        .confetti:nth-child(6) { left: 90%; width: 12px; height: 10px; animation-duration: 5.5s; animation-delay: 1.2s; background: #ff8c00; }
+        
+        @keyframes confetti-fall {
+            0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+        }
+
+        /* 喜庆大门 (双门板) - 完美无缝 */
+        .door-panel {
+            position: absolute; top: 0; width: 50.5%; height: 100%; /* 0.5% 的微小重叠彻底消除门缝 */
+            background: linear-gradient(135deg, #a50000 0%, #e60000 50%, #bd0000 100%);
+            z-index: 1;
+            box-shadow: 0 0 60px rgba(0,0,0,0.6) inset;
+            transition: transform 1.2s cubic-bezier(0.7, 0, 0.3, 1);
+            backface-visibility: hidden;
+        }
+        .door-left { left: 0; transform-origin: left center; border-right: 1px solid rgba(255, 215, 0, 0.3); }
+        .door-right { right: 0; transform-origin: right center; border-left: 1px solid rgba(255, 215, 0, 0.3); }
+
+        /* 居中内容区 (在门板之上) */
+        .main-content {
+            position: absolute; inset: 0; z-index: 3;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            pointer-events: none; /* 初始不干扰点击，开门后彻底消失 */
+            transition: all 1s cubic-bezier(0.7, 0, 0.3, 1);
+        }
+
+        /* 3D立体节庆文字 */
+        .festive-title-box {
+            position: relative; text-align: center; margin-bottom: 20px;
+        }
+        /* 文字背景的爆发光晕 */
+        .light-burst {
+            position: absolute; inset: -50px;
+            background: radial-gradient(circle, rgba(255,255,255,0.8) 0%, rgba(255,215,0,0.4) 30%, rgba(255,0,0,0) 70%);
+            animation: burst 2s ease-out infinite alternate;
+            z-index: -1;
+        }
+
+        .festive-title {
+            font-size: 64px; font-weight: 900; color: #fff;
+            letter-spacing: 5px; text-transform: uppercase;
+            /* 3D 黄金立体字效果 */
+            text-shadow: 
+                0 1px 0 #ccc, 0 2px 0 #c9c9c9, 0 3px 0 #bbb, 0 4px 0 #b9b9b9, 0 5px 0 #aaa,
+                0 6px 1px rgba(0,0,0,.1), 0 0 5px rgba(0,0,0,.1), 0 1px 3px rgba(0,0,0,.3),
+                0 3px 5px rgba(0,0,0,.2), 0 5px 10px rgba(0,0,0,.25), 0 10px 10px rgba(0,0,0,.2),
+                0 20px 20px rgba(0,0,0,.15),
+                0 0 15px #ffd700, 0 0 30px #ffd700; /* 金色光晕 */
+            animation: text-pulse 1.5s ease-in-out infinite alternate;
+        }
+        .festive-subtitle {
+            font-size: 16px; color: #ffcccc; letter-spacing: 3px;
+            margin-top: 10px; font-weight: bold;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
         }
 
         /* 极简环形进度 */
         .spinner {
-            width: 50px; height: 50px;
-            border: 3px solid rgba(255, 65, 108, 0.1);
-            border-top: 3px solid #ff416c;
+            width: 40px; height: 40px; margin-top: 30px;
+            border: 3px solid rgba(255, 255, 255, 0.2);
+            border-top: 3px solid #ffd700;
             border-radius: 50%;
             animation: spin 1s linear infinite;
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
         }
 
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        @keyframes breathe {
-            0% { filter: drop-shadow(0 0 5px rgba(255,65,108,0.2)); }
-            100% { filter: drop-shadow(0 0 20px rgba(255,65,108,0.8)); }
-        }
+        /* 动画关键帧 */
+        @keyframes spin { to { transform: rotate(360deg); } }
+        @keyframes text-pulse { 0% { transform: scale(1); } 100% { transform: scale(1.03); } }
+        @keyframes burst { 0% { opacity: 0.5; transform: scale(0.8); } 100% { opacity: 1; transform: scale(1.1); } }
 
-        /* 隐藏动画：淡出并稍微放大 */
-        #loading.hide {
-            opacity: 0;
-            transform: scale(1.1);
+        /* ================= 离开动画状态 (隐藏时) ================= */
+        #loading-container.hide {
             visibility: hidden;
+            opacity: 0;
             pointer-events: none;
+        }
+        /* 门板向两侧 3D 翻转打开 */
+        #loading-container.hide .door-left { transform: rotateY(-90deg); opacity: 0; }
+        #loading-container.hide .door-right { transform: rotateY(90deg); opacity: 0; }
+        /* 文字向用户飞来并淡出 */
+        #loading-container.hide .main-content {
+            opacity: 0;
+            transform: translateZ(500px) scale(2);
         }
     </style>
 </head>
 <body>
-    <div id="loading">
-        <div class="festival-text">
-            <h1>5.1</h1>
-            <p>劳动节特别版 · 致敬奋斗者</p>
+    
+    <div id="loading-container">
+        <div class="confetti-wrapper">
+            <div class="confetti"></div><div class="confetti"></div>
+            <div class="confetti"></div><div class="confetti"></div>
+            <div class="confetti"></div><div class="confetti"></div>
+            <div class="confetti"></div><div class="confetti"></div> </div>
+
+        <div class="door-panel door-left"></div>
+        <div class="door-panel door-right"></div>
+
+        <div class="main-content">
+            <div class="festive-title-box">
+                <div class="light-burst"></div> <h1 class="festive-title">五一快乐</h1>
+                <p class="festive-subtitle">Flyz远征飞 · 致敬奋斗者</p>
+            </div>
+            <div class="spinner"></div>
         </div>
-        <div class="spinner"></div>
     </div>
 
     <iframe src="/flyz/202604"></iframe>
@@ -80,25 +151,33 @@
     <script>
         document.addEventListener("DOMContentLoaded", () => {
             const iframe = document.querySelector("iframe");
-            const loading = document.getElementById("loading");
+            const container = document.getElementById("loading-container");
             
-            let isLoaded = false;
-            let timeUp = false;
+            let isIframeLoaded = false;
+            let isMinTimeReached = false;
 
-            // 保证加载动画至少显示 1.2 秒
+            // 强制加载动画至少播放 2.2 秒，让用户充分感受喜庆氛围和黄金雨
             setTimeout(() => {
-                timeUp = true;
-                hideIfReady();
-            }, 1200);
+                isMinTimeReached = true;
+                checkAndHideLoading();
+            }, 2200);
 
+            // 监听 iframe 加载完毕
             iframe.onload = () => {
-                isLoaded = true;
-                hideIfReady();
+                isIframeLoaded = true;
+                checkAndHideLoading();
             };
 
-            function hideIfReady() {
-                if (isLoaded && timeUp) {
-                    loading.classList.add("hide");
+            // 检查两个条件：时间够了 && 页面加载完了
+            function checkAndHideLoading() {
+                if (isIframeLoaded && isMinTimeReached) {
+                    // 添加隐藏类，触发 CSS 3D 开门和文字飞散动画
+                    container.classList.add("hide");
+                    
+                    // 等待动画结束后彻底移除元素，节约系统资源
+                    setTimeout(() => {
+                        container.style.display = "none";
+                    }, 1500); // 比 CSS 动画时间略长
                 }
             }
         });
