@@ -3,29 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>FlyzWorkSpace - 综合工具箱 (5.1特别版)</title>
-    <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
-    <meta name="theme-color" content="#0f172a" media="(prefers-color-scheme: dark)">
+    <title>FlyzWorkSpace - 5.1劳动节限定版</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=ZCOOL+XiaoWei&family=Inter:wght@400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
     <script src="https://cdn.tailwindcss.com"></script>
     
     <script>
         tailwind.config = {
-            darkMode: 'class',
             theme: {
                 extend: {
-                    fontFamily: {
-                        display: ['Space Grotesk', 'sans-serif'],
-                        body: ['Inter', 'sans-serif'],
-                    },
                     colors: {
-                        brand: { 400: '#38bdf8', 500: '#0ea5e9', 600: '#0284c7' },
-                        accent: { purple: '#8b5cf6', pink: '#ec4899', orange: '#f97316', red: '#ef4444' },
-                        festival: { 400: '#f87171', 500: '#ef4444', 600: '#dc2626', gold: '#fbbf24' }
+                        festive: {
+                            deep: '#7e0a0a',   /* 深宫红 */
+                            bright: '#dc2626', /* 节日红 */
+                            gold: '#fbbf24',   /* 琉璃金 */
+                            accent: '#fde68a'  /* 浅金 */
+                        }
                     }
                 }
             }
@@ -33,281 +29,193 @@
     </script>
     <style>
         :root {
-            --app-bg-light: #f8fafc;
-            --app-bg-dark: #0f172a;
-            --glass-light: rgba(255, 255, 255, 0.75);
-            --glass-dark: rgba(15, 23, 42, 0.75); /* 修复了原代码少个括号的问题 */
-            --glass-border-light: rgba(255, 255, 255, 0.4);
-            --glass-border-dark: rgba(255, 255, 255, 0.05);
             --safe-area-bottom: env(safe-area-inset-bottom, 20px);
             --safe-area-top: env(safe-area-inset-top, 0px);
         }
 
         * { -webkit-tap-highlight-color: transparent; box-sizing: border-box; }
 
-        html, body {
+        /* 全局背景：动态流动的红绸感 */
+        body {
             margin: 0; padding: 0; width: 100%; height: 100%;
-            overflow: hidden; position: fixed; 
-            overscroll-behavior: none; touch-action: none;
+            overflow: hidden; position: fixed;
+            font-family: 'Inter', sans-serif;
+            background: radial-gradient(circle at 50% 50%, #b91c1c 0%, #7e0a0a 100%);
+            color: #fff;
         }
 
-        body { font-family: 'Inter', sans-serif; background-color: var(--app-bg-light); transition: background-color 0.4s ease; }
-        body.dark { background-color: var(--app-bg-dark); color: #f1f5f9; }
-
-        /* Splash Screen 节日版 */
-        #splash-screen {
-            position: fixed; inset: 0; z-index: 99999;
-            background: var(--app-bg-light);
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        /* 动态背景光影 */
+        body::before {
+            content: ''; position: absolute; inset: 0;
+            background: linear-gradient(125deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.05) 50%, rgba(255,255,255,0) 100%);
+            background-size: 200% 200%;
+            animation: wave 8s infinite linear;
+            pointer-events: none;
         }
-        body.dark #splash-screen { background: var(--app-bg-dark); }
-        #splash-screen.fade-out { opacity: 0; pointer-events: none; }
-        .splash-icon {
-            width: 80px; height: 80px; border-radius: 24px;
-            background: linear-gradient(135deg, #ef4444, #f97316, #fbbf24);
-            display: flex; align-items: center; justify-content: center;
-            color: white; font-size: 36px; font-weight: bold; font-family: 'Space Grotesk';
-            position: relative; box-shadow: 0 10px 30px rgba(239, 68, 68, 0.4);
-        }
-        .splash-icon::after {
-            content: ''; position: absolute; inset: -5px; border-radius: 30px;
-            background: inherit; filter: blur(15px); opacity: 0.6; z-index: -1;
-            animation: pulse-fest 2s infinite;
-        }
-        @keyframes pulse-fest { 0% { transform: scale(1); opacity: 0.6; } 100% { transform: scale(1.3); opacity: 0; } }
+        @keyframes wave { 0% { background-position: -200% -200%; } 100% { background-position: 200% 200%; } }
 
-        /* Layout */
-        .app-shell { display: flex; height: 100vh; height: 100dvh; width: 100vw; padding-top: var(--safe-area-top); }
-
-        .app-sidebar {
-            display: none; width: 260px; height: 100%;
-            background: var(--glass-light); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-            border-right: 1px solid var(--glass-border-light); flex-direction: column; z-index: 50; touch-action: pan-y;
+        /* 祥云装饰 */
+        .cloud-decor {
+            position: absolute; width: 200px; height: 100px; opacity: 0.15; pointer-events: none;
+            background: radial-gradient(ellipse at center, #fff 0%, transparent 70%);
+            filter: blur(20px);
         }
-        body.dark .app-sidebar { background: var(--glass-dark); border-right: 1px solid var(--glass-border-dark); }
 
+        /* 导航栏：磨砂金质感 */
         .app-bottom-nav {
             display: flex; position: fixed; bottom: 0; left: 0; right: 0;
             height: calc(65px + var(--safe-area-bottom)); padding-bottom: var(--safe-area-bottom);
-            background: var(--glass-light); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-            border-top: 1px solid var(--glass-border-light); z-index: 50;
-            overflow-x: auto; scrollbar-width: none; touch-action: pan-x;
+            background: rgba(126, 10, 10, 0.8); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border-top: 1px solid rgba(251, 191, 36, 0.3); z-index: 50;
         }
-        body.dark .app-bottom-nav { background: var(--glass-dark); border-top: 1px solid var(--glass-border-dark); }
-
-        .app-main { flex: 1; position: relative; height: 100%; overflow: hidden; }
 
         .nav-item {
-            display: flex; align-items: center; color: #64748b;
-            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); cursor: pointer; border-radius: 12px;
+            flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
+            color: rgba(255, 255, 255, 0.6); transition: all 0.3s ease;
         }
-        .app-sidebar .nav-item { padding: 12px 16px; margin: 4px 16px; font-size: 0.95rem; font-weight: 500; }
-        .app-sidebar .nav-item i { width: 24px; font-size: 1.1rem; }
-        .app-sidebar .nav-item.active { background: rgba(239, 68, 68, 0.1); color: #ef4444; font-weight: 600; }
+        .nav-item.active { color: #fbbf24; transform: translateY(-3px); }
+        .nav-item i { font-size: 1.2rem; margin-bottom: 4px; }
+        .nav-item span { font-size: 0.7rem; font-weight: 600; }
 
-        .app-bottom-nav .nav-item {
-            flex: 0 0 auto; flex-direction: column; justify-content: center; min-width: 72px; height: 100%;
-            font-size: 0.7rem; font-weight: 500;
-        }
-        .app-bottom-nav .nav-item i { font-size: 1.2rem; margin-bottom: 4px; }
-        .app-bottom-nav .nav-item.active { color: #ef4444; }
-
-        /* View Switching */
-        .view-container {
-            position: absolute; inset: 0; opacity: 0; pointer-events: none; transform: translateY(20px) scale(0.98);
-            transition: opacity 0.4s ease, transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
-            overflow-y: auto; -webkit-overflow-scrolling: touch;
-            padding-bottom: calc(65px + var(--safe-area-bottom)); touch-action: pan-y;
-        }
-        .view-container.active { opacity: 1; pointer-events: auto; transform: translateY(0) scale(1); }
-
-        /* Iframe */
-        .iframe-wrapper { padding: 0 !important; overflow: hidden !important; display: flex; flex-direction: column; height: 100% !important; }
-        .iframe-wrapper iframe { width: 100%; height: calc(100% - 65px - var(--safe-area-bottom)) !important; border: none; background: #fff; touch-action: auto; }
-        body.dark .iframe-wrapper iframe { background: #0f172a; }
-
-        @media (min-width: 768px) {
-            .app-sidebar { display: flex; }
-            .app-bottom-nav { display: none; }
-            .view-container { padding-bottom: 0; }
-            .iframe-wrapper iframe { height: 100% !important; }
-        }
-
-        /* Widgets */
+        /* 工具卡片：黄金浮雕效果 */
         .widget-card {
-            background: rgba(255, 255, 255, 0.6); backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.5); border-radius: 24px; padding: 20px;
-            transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1); cursor: pointer;
+            background: linear-gradient(145deg, rgba(251, 191, 36, 0.15), rgba(251, 191, 36, 0.05));
+            border: 1px solid rgba(251, 191, 36, 0.4);
+            border-radius: 20px; padding: 20px;
+            text-align: center; transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            position: relative; overflow: hidden;
         }
-        body.dark .widget-card { background: rgba(30, 41, 59, 0.5); border: 1px solid rgba(255, 255, 255, 0.05); }
-        .widget-card:active { transform: scale(0.95); }
-        .widget-icon { width: 44px; height: 44px; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 18px; color: white; margin-bottom: 12px; }
+        .widget-card::after {
+            content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.1), transparent);
+            transform: rotate(45deg); transition: 0.6s;
+        }
+        .widget-card:hover { transform: translateY(-5px); border-color: #fbbf24; box-shadow: 0 10px 25px rgba(251, 191, 36, 0.2); }
+        .widget-card:hover::after { left: 100%; }
 
-        /* 节日背景漂浮物 */
-        .festive-bg {
-            position: absolute; inset: 0; pointer-events: none; z-index: -1; overflow: hidden; opacity: 0.5;
+        .widget-icon {
+            width: 50px; height: 50px; border-radius: 15px; margin: 0 auto 12px;
+            display: flex; align-items: center; justify-content: center;
+            background: #fbbf24; color: #7e0a0a; font-size: 20px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
         }
-        .orb {
-            position: absolute; border-radius: 50%; filter: blur(40px);
-            animation: float 10s ease-in-out infinite alternate;
+
+        /* 视图切换 */
+        .view-container {
+            position: absolute; inset: 0; opacity: 0; pointer-events: none;
+            transform: scale(0.95); transition: all 0.5s ease;
+            overflow-y: auto; padding-bottom: 100px; padding-top: var(--safe-area-top);
         }
-        .orb-1 { width: 150px; height: 150px; background: rgba(239, 68, 68, 0.2); top: 10%; left: 10%; }
-        .orb-2 { width: 200px; height: 200px; background: rgba(249, 115, 22, 0.15); bottom: 20%; right: 5%; animation-delay: -5s; }
-        @keyframes float { 0% { transform: translateY(0) scale(1); } 100% { transform: translateY(-30px) scale(1.1); } }
+        .view-container.active { opacity: 1; pointer-events: auto; transform: scale(1); }
+
+        /* Iframe 适配 */
+        .iframe-wrapper { padding: 0 !important; }
+        .iframe-wrapper iframe { width: 100%; height: 100%; border: none; background: #fff; }
+
+        /* 顶部标题装饰 */
+        .festive-header {
+            text-align: center; margin-top: 40px; margin-bottom: 30px;
+        }
+        .festive-header h1 {
+            font-family: 'ZCOOL XiaoWei', serif; font-size: 2.5rem;
+            color: #fbbf24; text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+            letter-spacing: 2px;
+        }
     </style>
 </head>
-<body class="font-body dark"> <div id="splash-screen">
-        <div class="splash-icon">F</div>
-        <h1 class="font-display font-bold text-2xl mt-5 bg-clip-text text-transparent bg-gradient-to-r from-festival-500 to-festival-gold">FlyzWorkSpace</h1>
-        <p class="mt-2 text-sm font-bold tracking-[0.2em] text-festival-500 bg-red-100 dark:bg-red-900/30 px-3 py-1 rounded-full">5.1 劳动节特别版</p>
-    </div>
+<body>
 
-    <div class="app-shell">
-        <nav class="app-sidebar py-6">
-            <div class="px-6 mb-8 flex items-center gap-3">
-                <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-festival-500 to-orange-500 flex items-center justify-center text-white font-bold">F</div>
-                <div class="flex flex-col">
-                    <span class="font-display font-bold text-lg tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-festival-500 to-orange-500">FlyzWorkSpace</span>
-                    <span class="text-[10px] bg-red-500 text-white px-2 py-0.5 rounded text-center w-fit animate-pulse">5.1 特别版</span>
-                </div>
-            </div>
-            
-            <div class="flex-1 overflow-y-auto">
-                <div onclick="switchTab('home')" class="nav-item active" data-tab="home"><i class="fas fa-border-all"></i>概览</div>
-                <div onclick="switchTab('yzcloud')" class="nav-item" data-tab="yzcloud"><i class="fas fa-cloud"></i>云盘</div>
-                <div onclick="switchTab('yzweather')" class="nav-item" data-tab="yzweather"><i class="fas fa-cloud-sun"></i>天气</div>
-                <div onclick="switchTab('music')" class="nav-item" data-tab="music"><i class="fas fa-music"></i>音乐解析</div>
-                <div onclick="switchTab('watchmovie')" class="nav-item" data-tab="watchmovie"><i class="fas fa-play-circle"></i>在线观影</div>
-                <div onclick="switchTab('light')" class="nav-item" data-tab="light"><i class="fas fa-lightbulb"></i>屏幕照明</div>
-                <div onclick="switchTab('length78')" class="nav-item" data-tab="length78"><i class="fas fa-ruler-combined"></i>长度测试</div>
-                <div onclick="switchTab('benchmark')" class="nav-item" data-tab="benchmark"><i class="fas fa-microchip"></i>性能跑分</div>
-                <div onclick="switchTab('fpvrace')" class="nav-item" data-tab="fpvrace"><i class="fas fa-plane-departure"></i>赛事</div>
-            </div>
+    <div class="cloud-decor" style="top: 5%; left: -5%;"></div>
+    <div class="cloud-decor" style="bottom: 15%; right: -5%;"></div>
 
-            <div class="px-6 mt-auto">
-                <button onclick="toggleTheme()" class="flex items-center gap-2 text-sm opacity-60 hover:opacity-100 transition-opacity">
-                    <i class="fas fa-adjust"></i>主题切换
-                </button>
-            </div>
-        </nav>
-
-        <main class="app-main">
-            <div id="view-home" class="view-container active px-5 pt-6 md:pt-8 relative">
-                <div class="festive-bg"><div class="orb orb-1"></div><div class="orb orb-2"></div></div>
-
-                <div class="max-w-6xl mx-auto">
-                    
-                    <div class="flex items-center gap-3 mb-6">
-                        <h1 class="text-3xl font-display font-bold">全能工具箱</h1>
-                        <span class="md:hidden text-xs bg-red-500 text-white px-2 py-1 rounded-full shadow-lg shadow-red-500/30 animate-pulse">5.1版</span>
-                    </div>
-
-                    <div class="mb-8 p-5 rounded-2xl bg-gradient-to-r from-red-500 via-orange-500 to-amber-500 text-white shadow-xl shadow-red-500/20 relative overflow-hidden">
-                        <div class="relative z-10">
-                            <h2 class="text-xl font-bold mb-1 flex items-center gap-2">
-                                <i class="fas fa-award"></i> 致敬每一位起飞的奋斗者！
-                            </h2>
-                            <p class="text-sm opacity-90">FlyzWorkSpace 祝您五一劳动节快乐。假期也不要停止探索哦～</p>
-                        </div>
-                        <i class="fas fa-tools text-6xl opacity-20 absolute -right-4 -bottom-4 transform rotate-12 z-0"></i>
-                    </div>
-
-                    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                        <div onclick="switchTab('yzcloud')" class="widget-card">
-                            <div class="widget-icon bg-blue-500 shadow-lg shadow-blue-500/20"><i class="fas fa-cloud"></i></div>
-                            <h3 class="font-semibold text-sm">云盘</h3>
-                            <p class="text-[11px] opacity-50 mt-1">云端存储分享</p>
-                        </div>
-                        <div onclick="switchTab('yzweather')" class="widget-card">
-                            <div class="widget-icon bg-sky-400 shadow-lg shadow-sky-400/20"><i class="fas fa-cloud-sun"></i></div>
-                            <h3 class="font-semibold text-sm">天气</h3>
-                            <p class="text-[11px] opacity-50 mt-1">精准气象预报</p>
-                        </div>
-                        <div onclick="switchTab('music')" class="widget-card">
-                            <div class="widget-icon bg-pink-500 shadow-lg shadow-pink-500/20"><i class="fas fa-music"></i></div>
-                            <h3 class="font-semibold text-sm">音乐解析</h3>
-                            <p class="text-[11px] opacity-50 mt-1">无损音乐解析</p>
-                        </div>
-                        <div onclick="switchTab('watchmovie')" class="widget-card">
-                            <div class="widget-icon bg-red-500 shadow-lg shadow-red-500/20"><i class="fas fa-play"></i></div>
-                            <h3 class="font-semibold text-sm">在线观影</h3>
-                            <p class="text-[11px] opacity-50 mt-1">YZMovie影视</p>
-                        </div>
-                        <div onclick="switchTab('light')" class="widget-card">
-                            <div class="widget-icon bg-amber-400 shadow-lg shadow-amber-500/20"><i class="fas fa-lightbulb"></i></div>
-                            <h3 class="font-semibold text-sm">屏幕照明</h3>
-                            <p class="text-[11px] opacity-50 mt-1">摄影补光测试</p>
-                        </div>
-                        <div onclick="switchTab('length78')" class="widget-card">
-                            <div class="widget-icon bg-teal-500 shadow-lg shadow-teal-500/20"><i class="fas fa-ruler"></i></div>
-                            <h3 class="font-semibold text-sm">长度测试</h3>
-                            <p class="text-[11px] opacity-50 mt-1">文本长度校验</p>
-                        </div>
-                        <div onclick="switchTab('benchmark')" class="widget-card">
-                            <div class="widget-icon bg-orange-500 shadow-lg shadow-orange-500/20"><i class="fas fa-microchip"></i></div>
-                            <h3 class="font-semibold text-sm">性能跑分</h3>
-                            <p class="text-[11px] opacity-50 mt-1">算力性能评估</p>
-                        </div>
-                        <div onclick="switchTab('fpvrace')" class="widget-card">
-                            <div class="widget-icon bg-cyan-600 shadow-lg shadow-cyan-600/20"><i class="fas fa-plane"></i></div>
-                            <h3 class="font-semibold text-sm">赛事</h3>
-                            <p class="text-[11px] opacity-50 mt-1">赛事活动中心</p>
-                        </div>
-                    </div>
+    <main class="app-shell">
+        <div id="view-home" class="view-container active px-6">
+            <div class="festive-header">
+                <p class="text-festive-accent text-xs tracking-widest uppercase mb-1 opacity-80">FlyzWorkSpace · 2026</p>
+                <h1>劳动节特别版</h1>
+                <div class="flex items-center justify-center gap-2 mt-2">
+                    <span class="h-[1px] w-8 bg-festive-gold"></span>
+                    <i class="fas fa-star text-festive-gold text-xs"></i>
+                    <span class="h-[1px] w-8 bg-festive-gold"></span>
                 </div>
             </div>
 
-            <div id="view-yzcloud" class="view-container iframe-wrapper"><iframe src="about:blank" data-src="https://yzbjfpv.top/flyz/app/yzcloud"></iframe></div>
-            <div id="view-yzweather" class="view-container iframe-wrapper"><iframe src="about:blank" data-src="https://yzbjfpv.top/flyz/app/yzweather/test"></iframe></div>
-            <div id="view-music" class="view-container iframe-wrapper"><iframe src="about:blank" data-src="https://cdn.917813.com.cn/wyymusic/index.html"></iframe></div>
-            <div id="view-watchmovie" class="view-container iframe-wrapper"><iframe src="about:blank" data-src="https://cdn.917813.com.cn/watchmovie"></iframe></div>
-            <div id="view-light" class="view-container iframe-wrapper"><iframe src="about:blank" data-src="https://yzbjfpv.top/tools/屏幕照明"></iframe></div>
-            <div id="view-length78" class="view-container iframe-wrapper"><iframe src="about:blank" data-src="https://cdn.917813.com.cn/check78long/index.html"></iframe></div>
-            <div id="view-benchmark" class="view-container iframe-wrapper"><iframe src="about:blank" data-src="https://cdn.917813.com.cn/benchmark/index.html"></iframe></div>
-            <div id="view-fpvrace" class="view-container iframe-wrapper"><iframe src="about:blank" data-src="https://cdn.917813.com.cn/fpvrace/index.html"></iframe></div>
-        </main>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-5xl mx-auto">
+                <div onclick="switchTab('yzcloud')" class="widget-card">
+                    <div class="widget-icon"><i class="fas fa-cloud"></i></div>
+                    <h3 class="font-bold text-sm text-festive-accent">云盘</h3>
+                </div>
+                <div onclick="switchTab('yzweather')" class="widget-card">
+                    <div class="widget-icon"><i class="fas fa-sun"></i></div>
+                    <h3 class="font-bold text-sm text-festive-accent">天气</h3>
+                </div>
+                <div onclick="switchTab('music')" class="widget-card">
+                    <div class="widget-icon"><i class="fas fa-music"></i></div>
+                    <h3 class="font-bold text-sm text-festive-accent">音乐解析</h3>
+                </div>
+                <div onclick="switchTab('watchmovie')" class="widget-card">
+                    <div class="widget-icon"><i class="fas fa-film"></i></div>
+                    <h3 class="font-bold text-sm text-festive-accent">在线观影</h3>
+                </div>
+                <div onclick="switchTab('light')" class="widget-card">
+                    <div class="widget-icon"><i class="fas fa-lightbulb"></i></div>
+                    <h3 class="font-bold text-sm text-festive-accent">屏幕照明</h3>
+                </div>
+                <div onclick="switchTab('benchmark')" class="widget-card">
+                    <div class="widget-icon"><i class="fas fa-bolt"></i></div>
+                    <h3 class="font-bold text-sm text-festive-accent">性能跑分</h3>
+                </div>
+                <div onclick="switchTab('fpvrace')" class="widget-card">
+                    <div class="widget-icon"><i class="fas fa-trophy"></i></div>
+                    <h3 class="font-bold text-sm text-festive-accent">赛事中心</h3>
+                </div>
+                <div onclick="location.reload()" class="widget-card">
+                    <div class="widget-icon"><i class="fas fa-sync"></i></div>
+                    <h3 class="font-bold text-sm text-festive-accent">刷新页面</h3>
+                </div>
+            </div>
 
-        <nav class="app-bottom-nav">
-            <div onclick="switchTab('home')" class="nav-item active" data-tab="home"><i class="fas fa-border-all"></i><span>主页</span></div>
-            <div onclick="switchTab('yzcloud')" class="nav-item" data-tab="yzcloud"><i class="fas fa-cloud"></i><span>云盘</span></div>
-            <div onclick="switchTab('yzweather')" class="nav-item" data-tab="yzweather"><i class="fas fa-cloud-sun"></i><span>天气</span></div>
-            <div onclick="switchTab('watchmovie')" class="nav-item" data-tab="watchmovie"><i class="fas fa-play"></i><span>观影</span></div>
-            <div onclick="switchTab('music')" class="nav-item" data-tab="music"><i class="fas fa-music"></i><span>音乐</span></div>
-            <div onclick="switchTab('light')" class="nav-item" data-tab="light"><i class="fas fa-lightbulb"></i><span>照明</span></div>
-            <div onclick="switchTab('benchmark')" class="nav-item" data-tab="benchmark"><i class="fas fa-microchip"></i><span>跑分</span></div>
-        </nav>
-    </div>
+            <div class="text-center mt-12 opacity-60 italic text-xs">
+                致敬每一位为梦想而奋斗的人
+            </div>
+        </div>
+
+        <div id="view-yzcloud" class="view-container iframe-wrapper"><iframe src="about:blank" data-src="https://yzbjfpv.top/flyz/app/yzcloud"></iframe></div>
+        <div id="view-yzweather" class="view-container iframe-wrapper"><iframe src="about:blank" data-src="https://yzbjfpv.top/flyz/app/yzweather/test"></iframe></div>
+        <div id="view-music" class="view-container iframe-wrapper"><iframe src="about:blank" data-src="https://cdn.917813.com.cn/wyymusic/index.html"></iframe></div>
+        <div id="view-watchmovie" class="view-container iframe-wrapper"><iframe src="about:blank" data-src="https://cdn.917813.com.cn/watchmovie"></iframe></div>
+        <div id="view-light" class="view-container iframe-wrapper"><iframe src="about:blank" data-src="https://yzbjfpv.top/tools/屏幕照明"></iframe></div>
+        <div id="view-benchmark" class="view-container iframe-wrapper"><iframe src="about:blank" data-src="https://cdn.917813.com.cn/benchmark/index.html"></iframe></div>
+        <div id="view-fpvrace" class="view-container iframe-wrapper"><iframe src="about:blank" data-src="https://cdn.917813.com.cn/fpvrace/index.html"></iframe></div>
+    </main>
+
+    <nav class="app-bottom-nav">
+        <div onclick="switchTab('home')" class="nav-item active" data-tab="home"><i class="fas fa-home"></i><span>主页</span></div>
+        <div onclick="switchTab('yzcloud')" class="nav-item" data-tab="yzcloud"><i class="fas fa-cloud"></i><span>云盘</span></div>
+        <div onclick="switchTab('watchmovie')" class="nav-item" data-tab="watchmovie"><i class="fas fa-film"></i><span>观影</span></div>
+        <div onclick="switchTab('music')" class="nav-item" data-tab="music"><i class="fas fa-music"></i><span>音乐</span></div>
+        <div onclick="switchTab('fpvrace')" class="nav-item" data-tab="fpvrace"><i class="fas fa-trophy"></i><span>赛事</span></div>
+    </nav>
 
     <script>
         let currentTab = 'home';
         let loadedIframes = new Set();
 
-        window.addEventListener('load', () => {
-            // 加长了一点启动屏时间，让用户看清“特别版”
-            setTimeout(() => {
-                document.getElementById('splash-screen').classList.add('fade-out');
-            }, 1500);
-        });
-
-        function toggleTheme() { document.body.classList.toggle('dark'); }
-
         function switchTab(tabName) {
             if (currentTab === tabName) return;
 
+            // 更新导航栏 UI
             document.querySelectorAll('.nav-item').forEach(el => {
-                if(el.getAttribute('data-tab') === tabName) {
-                    el.classList.add('active');
-                    if(el.parentNode.classList.contains('app-bottom-nav')) {
-                        el.scrollIntoView({ behavior: 'smooth', inline: 'center' });
-                    }
-                } else el.classList.remove('active');
+                el.classList.toggle('active', el.getAttribute('data-tab') === tabName);
             });
 
+            // 切换视图
             document.getElementById(`view-${currentTab}`).classList.remove('active');
             const newView = document.getElementById(`view-${tabName}`);
             newView.classList.add('active');
 
+            // 懒加载 iframe
             if (tabName !== 'home' && !loadedIframes.has(tabName)) {
                 const iframe = newView.querySelector('iframe');
                 if (iframe) {
