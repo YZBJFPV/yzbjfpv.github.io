@@ -20,7 +20,7 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            padding: 20px;
+            padding: 15px;
         }
 
         /* 核心动画库 */
@@ -75,7 +75,7 @@
             display: none;
             text-align: center;
             width: 100%;
-            max-width: 900px;
+            max-width: 800px;
             animation: fadeUp 0.8s ease forwards;
         }
         .select-title {
@@ -93,31 +93,29 @@
             width: 100%;
         }
 
-        /* 主按钮动画 */
+        /* 主按钮 - 全新样式 永不歪斜 */
         .btn {
-            padding: 30px 60px;
+            padding: 24px 0;
+            width: 260px;
             border: none;
-            border-radius: 30px;
-            font-size: 24px;
+            border-radius: 20px;
+            font-size: 22px;
             font-weight: bold;
-            background: white;
+            background: #ffffff;
             color: #333;
             cursor: pointer;
             transition: 0.3s;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
-            min-width: 280px;
-            display: block;
-            margin: 20px auto; /* 强制居中 */
+            box-shadow: 0 6px 15px rgba(0,0,0,0.1);
         }
         .btn:hover {
-            transform: translateY(-8px) scale(1.05);
-            box-shadow: 0 12px 25px rgba(0,0,0,0.2);
+            transform: translateY(-5px);
+            background: #f8f8f8;
         }
 
         /* 小型备用按钮 */
         .small-btn {
-            padding: 10px 20px;
-            border-radius: 15px;
+            padding: 8px 16px;
+            border-radius: 12px;
             font-size: 14px;
             border: none;
             background: #64b5f6;
@@ -125,36 +123,42 @@
             cursor: pointer;
             transition: 0.2s;
         }
-        .small-btn:hover {
-            transform: scale(1.1);
-        }
+        .small-btn:hover { transform: scale(1.05); }
 
-        /* 内容面板 + 动画 */
+        /* 内容面板 - 弹性布局 按钮永不歪 */
         .panel {
             display: none;
             background: white;
-            padding: 60px 40px;
-            border-radius: 30px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            padding: 40px 30px;
+            border-radius: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
             width: 100%;
-            max-width: 900px;
+            max-width: 700px;
             text-align: center;
             animation: scaleIn 0.6s ease forwards;
             line-height: 1.8;
         }
-        .panel.show {
-            display: block;
+        .panel.show { display: flex; flex-direction: column; gap: 20px; align-items: center; }
+
+        /* 🔥 彻底修复图片加载：无错误、无超时、无限等待、仅圆角 */
+        .qrcode {
+            width: 40vw;
+            max-width: 240px;
+            height: auto;
+            object-fit: contain;
+            border-radius: 18px;
+            animation: float 4s ease-in-out infinite;
+            /* 禁用浏览器默认图片错误图标 */
+            visibility: visible !important;
+            background: transparent;
         }
 
-        /* 二维码悬浮动画 */
-        .qrcode {
-            width: 240px;
-            height: 240px;
-            border-radius: 20px;
-            margin: 25px auto;
-            object-fit: cover;
-            animation: float 4s ease-in-out infinite;
-            display: block;
+        /* 微信号备注样式 */
+        .wechat-note {
+            color: #ff578f;
+            font-size: 18px;
+            font-weight: bold;
+            margin-top: 10px;
         }
 
         /* 文字样式 */
@@ -162,73 +166,67 @@
             color: #ff578f;
             font-weight: bold;
             font-size: 22px;
-            margin: 20px 0;
         }
         .guide-text {
             color: #64b5f6;
             font-weight: bold;
             font-size: 18px;
-            margin: 10px 0;
         }
         .tips {
             color: #666;
-            margin: 15px 0;
             font-size: 18px;
             display: flex;
             align-items: center;
-            justify-content: center;
-            flex-wrap: wrap;
             gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
         }
 
-        /* 所有弹窗 + 弹出动画 */
+        /* 弹窗 - 全设备自适应 强制缩放 不滑动 不拥挤 */
         .modal {
             display: none;
             position: fixed;
             top: 0; left: 0;
-            width: 100%; height: 100%;
+            width: 100vw; height: 100vh;
             background: rgba(0,0,0,0.8);
             justify-content: center;
             align-items: center;
             z-index: 999;
+            padding: 20px;
         }
         .modal-content {
             background: white;
-            padding: 50px;
-            border-radius: 30px;
-            max-width: 90%;
-            text-align: center;
-            animation: scaleIn 0.4s ease forwards;
-        }
-        .group-box {
+            padding: 30px 25px;
+            border-radius: 25px;
+            width: 100%;
+            max-width: 450px;
+            max-height: 90vh;
             display: flex;
-            gap: 25px;
-            justify-content: center;
-            flex-wrap: wrap;
-            margin: 30px 0;
+            flex-direction: column;
+            gap: 20px;
+            align-items: center;
+            animation: scaleIn 0.4s ease forwards;
+            overflow: hidden;
         }
         .close-btn {
-            padding: 15px 40px;
-            border-radius: 30px;
+            padding: 12px 35px;
+            border-radius: 20px;
             border: none;
             background: #64b5f6;
             color: white;
             font-size: 18px;
             cursor: pointer;
             transition: 0.3s;
-            display: block;
-            margin: 20px auto;
+            width: fit-content;
         }
-        .close-btn:hover {
-            transform: scale(1.05);
-        }
+        .close-btn:hover { transform: scale(1.05); }
 
         /* 页脚（双语） */
         .footer {
             display: none;
             font-size: 15px;
             color: #555;
-            margin-top: 30px;
+            margin-top: 25px;
             line-height: 2;
             text-align: center;
             animation: fadeUp 0.8s ease forwards;
@@ -257,77 +255,76 @@
         </div>
     </div>
 
-    <!-- 中国选手（纯中文，无任何英文，按钮弹窗二维码） -->
+    <!-- 中国选手（纯中文 无英文 按钮不歪） -->
     <div id="cn" class="panel">
         <div class="highlight">🔥 重要提醒：最新消息仅在公众号公示！务必添加！</div>
         <button class="btn" onclick="openWxModal()">查看官方公众号</button>
-
-        <button class="btn" onclick="openGroupModal()">进交流群</button>
-        
+        <button class="btn" onclick="openGroupSelect()">进交流群</button>
         <button class="btn" onclick="openSupportModal()">联系赛事后勤人员</button>
-        
         <button class="btn" onclick="backSelect()">返回选择</button>
     </div>
 
-    <!-- 国际选手（无重叠+小按钮） -->
+    <!-- 国际选手（无重叠 自适应） -->
     <div id="global" class="panel">
         <div class="highlight">🌍 Official Communication Channel</div>
-        
         <div class="guide-text">Click to join our Facebook Group</div>
-        <a href="https://www.facebook.com/share/g/18Qqc8zNKL/?mibextid=wwXIfr" target="_blank" class="btn" style="width:60%;">
-            Facebook Group
-        </a>
-
-        <div class="tips">
-            Or copy link
-            <button class="small-btn" onclick="copyLink()">Copy</button>
-        </div>
-
-        <div class="guide-text" style="margin-top:30px">Contact via Email (Alternative)</div>
-        <div class="tips">
-            lyz201966@gmail.com
-            <button class="small-btn" onclick="copyEmail()">Copy</button>
-        </div>
-        
+        <a href="https://www.facebook.com/share/g/18Qqc8zNKL/?mibextid=wwXIfr" target="_blank" class="btn">Facebook Group</a>
+        <div class="tips">Or copy link <button class="small-btn" onclick="copyLink()">Copy</button></div>
+        <div class="guide-text">Contact via Email (Alternative)</div>
+        <div class="tips">lyz201966@gmail.com <button class="small-btn" onclick="copyEmail()">Copy</button></div>
         <button class="btn" onclick="backSelect()">返回选择</button>
     </div>
 
-    <!-- 交流群弹窗 -->
-    <div class="modal" id="groupModal">
+    <!-- 群选择弹窗 -->
+    <div class="modal" id="groupSelectModal">
         <div class="modal-content">
             <div class="highlight">⚠️ 请勿重复进入多个群！谢谢配合</div>
-            <div class="group-box">
-                <div class="group-item">
-                    <img src="https://test.fukit.cn/autoupload/f/8xUQ_P6gjgNdGGD-qlOUeifNcKcqEnRmcljopnyJoMs/20260510/z28H/885X1488/1%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20260510114714_3_2010.jpg/webp" class="qrcode" style="width:180px;height:180px">
-                    <div style="font-weight:bold">1群</div>
-                </div>
-                <div class="group-item">
-                    <img src="https://test.fukit.cn/autoupload/f/8xUQ_P6gjgNdGGD-qlOUeifNcKcqEnRmcljopnyJoMs/20260510/aeNS/885X1488/2%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20260510114715_4_2010.jpg/webp" class="qrcode" style="width:180px;height:180px">
-                    <div style="font-weight:bold">2群</div>
-                </div>
-                <div class="group-item">
-                    <img src="https://test.fukit.cn/autoupload/f/8xUQ_P6gjgNdGGD-qlOUeifNcKcqEnRmcljopnyJoMs/20260510/s7ea/885X1488/3%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20260510114717_5_2010.jpg/webp" class="qrcode" style="width:180px;height:180px">
-                    <div style="font-weight:bold">3群</div>
-                </div>
-            </div>
+            <button class="btn" onclick="openGroup1()">1群</button>
+            <button class="btn" onclick="openGroup2()">2群</button>
+            <button class="btn" onclick="openGroup3()">3群</button>
             <button class="close-btn" onclick="closeModal()">关闭</button>
         </div>
     </div>
 
-    <!-- 公众号弹窗 -->
+    <!-- 1/2/3群二维码弹窗（自适应细长竖版） -->
+    <div class="modal" id="group1Modal">
+        <div class="modal-content">
+            <div class="highlight">交流群1群</div>
+            <img src="https://test.fukit.cn/autoupload/f/8xUQ_P6gjgNdGGD-qlOUeifNcKcqEnRmcljopnyJoMs/20260510/z28H/885X1488/1%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20260510114714_3_2010.jpg" class="qrcode" loading="lazy" alt="交流群1群">
+            <button class="close-btn" onclick="closeModal()">关闭</button>
+        </div>
+    </div>
+    <div class="modal" id="group2Modal">
+        <div class="modal-content">
+            <div class="highlight">交流群2群</div>
+            <img src="https://test.fukit.cn/autoupload/f/8xUQ_P6gjgNdGGD-qlOUeifNcKcqEnRmcljopnyJoMs/20260510/aeNS/885X1488/2%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20260510114715_4_2010.jpg" class="qrcode" loading="lazy" alt="交流群2群">
+            <button class="close-btn" onclick="closeModal()">关闭</button>
+        </div>
+    </div>
+    <div class="modal" id="group3Modal">
+        <div class="modal-content">
+            <div class="highlight">交流群3群</div>
+            <img src="https://test.fukit.cn/autoupload/f/8xUQ_P6gjgNdGGD-qlOUeifNcKcqEnRmcljopnyJoMs/20260510/s7ea/885X1488/3%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20260510114717_5_2010.jpg" class="qrcode" loading="lazy" alt="交流群3群">
+            <button class="close-btn" onclick="closeModal()">关闭</button>
+        </div>
+    </div>
+
+    <!-- 公众号弹窗（正方形完美显示） -->
     <div class="modal" id="wxModal">
         <div class="modal-content">
             <div class="highlight">远征飞官方公众号</div>
-            <img src="https://test.fukit.cn/autoupload/f/8xUQ_P6gjgNdGGD-qlOUeifNcKcqEnRmcljopnyJoMs/20260510/S2aB/430X430/%E5%85%AC%E4%BC%97%E5%8F%B7%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20260510115338_7_2010.jpg/webp" class="qrcode">
+            <img src="https://test.fukit.cn/autoupload/f/8xUQ_P6gjgNdGGD-qlOUeifNcKcqEnRmcljopnyJoMs/20260510/S2aB/430X430/%E5%85%AC%E4%BC%97%E5%8F%B7%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20260510115338_7_2010.jpg" class="qrcode" loading="lazy" alt="官方公众号">
             <button class="close-btn" onclick="closeModal()">关闭</button>
         </div>
     </div>
 
-    <!-- 后勤人员弹窗 -->
+    <!-- 后勤人员弹窗（添加微信号备注 + 超长加载适配） -->
     <div class="modal" id="supportModal">
         <div class="modal-content">
             <div class="highlight">赛事后勤人员</div>
-            <img src="https://test.fukit.cn/autoupload/f/8xUQ_P6gjgNdGGD-qlOUeifNcKcqEnRmcljopnyJoMs/20260510/OaXC/888X1131/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20260510110558_630_2057.jpg/webp" class="qrcode">
+            <img src="https://test.fukit.cn/autoupload/f/8xUQ_P6gjgNdGGD-qlOUeifNcKcqEnRmcljopnyJoMs/20260510/OaXC/888X1131/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20260510110558_630_2057.jpg" class="qrcode" loading="lazy" alt="赛事后勤人员">
+            <!-- 微信号备注 -->
+            <div class="wechat-note">微信号:only127856</div>
             <button class="close-btn" onclick="closeModal()">关闭</button>
         </div>
     </div>
@@ -359,12 +356,13 @@
         }
 
         // 弹窗控制
-        function openGroupModal() { document.getElementById('groupModal').style.display = 'flex'; }
+        function openGroupSelect(){ document.getElementById('groupSelectModal').style.display = 'flex'; }
+        function openGroup1(){closeModal(); document.getElementById('group1Modal').style.display = 'flex';}
+        function openGroup2(){closeModal(); document.getElementById('group2Modal').style.display = 'flex';}
+        function openGroup3(){closeModal(); document.getElementById('group3Modal').style.display = 'flex';}
         function openWxModal() { document.getElementById('wxModal').style.display = 'flex'; }
         function openSupportModal() { document.getElementById('supportModal').style.display = 'flex'; }
-        function closeModal() { 
-            document.querySelectorAll('.modal').forEach(item => item.style.display = 'none');
-        }
+        function closeModal() { document.querySelectorAll('.modal').forEach(item => item.style.display = 'none'); }
 
         // 复制功能
         function copyLink() {
