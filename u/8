@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>DCT2026线上FPV竞速赛</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Microsoft YaHei", sans-serif;
+        }
+
+        /* 粉蓝渐变背景 */
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #ffc0d5 0%, #91d3ff 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        /* 核心动画库 */
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        @keyframes float {
+            0% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+            100% { transform: translateY(0); }
+        }
+        @keyframes scaleIn {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        /* 开屏区域（双语） */
+        .header {
+            text-align: center;
+            animation: fadeUp 0.8s ease forwards;
+        }
+        .title {
+            font-size: 32px;
+            color: #2d2d2d;
+            margin: 15px 0;
+            font-weight: bold;
+            line-height: 1.5;
+        }
+        .support {
+            font-size: 18px;
+            color: #555;
+            animation: fadeUp 0.8s ease 0.2s forwards;
+            opacity: 0;
+        }
+        .loading {
+            width: 50px;
+            height: 50px;
+            border: 5px solid rgba(255,255,255,0.5);
+            border-top: 5px solid #ff578f;
+            border-radius: 50%;
+            animation: rotate 1s linear infinite;
+            margin: 40px auto;
+        }
+
+        /* 选择区域（双语） */
+        .select-box {
+            display: none;
+            text-align: center;
+            width: 100%;
+            max-width: 900px;
+            animation: fadeUp 0.8s ease forwards;
+        }
+        .select-title {
+            font-size: 26px;
+            margin-bottom: 40px;
+            color: #333;
+            font-weight: bold;
+            animation: float 3s ease-in-out infinite;
+        }
+        .btn-group {
+            display: flex;
+            gap: 30px;
+            justify-content: center;
+            flex-wrap: wrap;
+            width: 100%;
+        }
+
+        /* 主按钮动画 */
+        .btn {
+            padding: 30px 60px;
+            border: none;
+            border-radius: 30px;
+            font-size: 24px;
+            font-weight: bold;
+            background: white;
+            color: #333;
+            cursor: pointer;
+            transition: 0.3s;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+            min-width: 280px;
+            display: block;
+            margin: 20px auto; /* 强制居中 */
+        }
+        .btn:hover {
+            transform: translateY(-8px) scale(1.05);
+            box-shadow: 0 12px 25px rgba(0,0,0,0.2);
+        }
+
+        /* 小型备用按钮 */
+        .small-btn {
+            padding: 10px 20px;
+            border-radius: 15px;
+            font-size: 14px;
+            border: none;
+            background: #64b5f6;
+            color: white;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .small-btn:hover {
+            transform: scale(1.1);
+        }
+
+        /* 内容面板 + 动画 */
+        .panel {
+            display: none;
+            background: white;
+            padding: 60px 40px;
+            border-radius: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            width: 100%;
+            max-width: 900px;
+            text-align: center;
+            animation: scaleIn 0.6s ease forwards;
+            line-height: 1.8;
+        }
+        .panel.show {
+            display: block;
+        }
+
+        /* 二维码悬浮动画 */
+        .qrcode {
+            width: 240px;
+            height: 240px;
+            border-radius: 20px;
+            margin: 25px auto;
+            object-fit: cover;
+            animation: float 4s ease-in-out infinite;
+            display: block;
+        }
+
+        /* 文字样式 */
+        .highlight {
+            color: #ff578f;
+            font-weight: bold;
+            font-size: 22px;
+            margin: 20px 0;
+        }
+        .guide-text {
+            color: #64b5f6;
+            font-weight: bold;
+            font-size: 18px;
+            margin: 10px 0;
+        }
+        .tips {
+            color: #666;
+            margin: 15px 0;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        /* 所有弹窗 + 弹出动画 */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8);
+            justify-content: center;
+            align-items: center;
+            z-index: 999;
+        }
+        .modal-content {
+            background: white;
+            padding: 50px;
+            border-radius: 30px;
+            max-width: 90%;
+            text-align: center;
+            animation: scaleIn 0.4s ease forwards;
+        }
+        .group-box {
+            display: flex;
+            gap: 25px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin: 30px 0;
+        }
+        .close-btn {
+            padding: 15px 40px;
+            border-radius: 30px;
+            border: none;
+            background: #64b5f6;
+            color: white;
+            font-size: 18px;
+            cursor: pointer;
+            transition: 0.3s;
+            display: block;
+            margin: 20px auto;
+        }
+        .close-btn:hover {
+            transform: scale(1.05);
+        }
+
+        /* 页脚（双语） */
+        .footer {
+            display: none;
+            font-size: 15px;
+            color: #555;
+            margin-top: 30px;
+            line-height: 2;
+            text-align: center;
+            animation: fadeUp 0.8s ease forwards;
+        }
+        a {
+            color: #64b5f6;
+            text-decoration: none;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <!-- 开屏（纯双语） -->
+    <div class="header" id="header">
+        <div class="title">欢迎参加DCT2026线上FPV竞速赛<br>Welcome to DCT2026 Online FPV Racing</div>
+        <div class="support">Flyz远征飞提供技术支持 | Powered by Flyz Expedition</div>
+        <div class="loading"></div>
+    </div>
+
+    <!-- 选择界面（双语） -->
+    <div class="select-box" id="selectBox">
+        <div class="select-title">请选择参赛信息 | Select Your Region</div>
+        <div class="btn-group">
+            <button class="btn" onclick="showPanel('cn')">中国选手</button>
+            <button class="btn" onclick="showPanel('global')">International</button>
+        </div>
+    </div>
+
+    <!-- 中国选手（纯中文，无任何英文，按钮弹窗二维码） -->
+    <div id="cn" class="panel">
+        <div class="highlight">🔥 重要提醒：最新消息仅在公众号公示！务必添加！</div>
+        <button class="btn" onclick="openWxModal()">查看官方公众号</button>
+
+        <button class="btn" onclick="openGroupModal()">进交流群</button>
+        
+        <button class="btn" onclick="openSupportModal()">联系赛事后勤人员</button>
+        
+        <button class="btn" onclick="backSelect()">返回选择</button>
+    </div>
+
+    <!-- 国际选手（无重叠+小按钮） -->
+    <div id="global" class="panel">
+        <div class="highlight">🌍 Official Communication Channel</div>
+        
+        <div class="guide-text">Click to join our Facebook Group</div>
+        <a href="https://www.facebook.com/share/g/18Qqc8zNKL/?mibextid=wwXIfr" target="_blank" class="btn" style="width:60%;">
+            Facebook Group
+        </a>
+
+        <div class="tips">
+            Or copy link
+            <button class="small-btn" onclick="copyLink()">Copy</button>
+        </div>
+
+        <div class="guide-text" style="margin-top:30px">Contact via Email (Alternative)</div>
+        <div class="tips">
+            lyz201966@gmail.com
+            <button class="small-btn" onclick="copyEmail()">Copy</button>
+        </div>
+        
+        <button class="btn" onclick="backSelect()">返回选择</button>
+    </div>
+
+    <!-- 交流群弹窗 -->
+    <div class="modal" id="groupModal">
+        <div class="modal-content">
+            <div class="highlight">⚠️ 请勿重复进入多个群！谢谢配合</div>
+            <div class="group-box">
+                <div class="group-item">
+                    <img src="https://test.fukit.cn/autoupload/f/8xUQ_P6gjgNdGGD-qlOUeifNcKcqEnRmcljopnyJoMs/20260510/z28H/885X1488/1%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20260510114714_3_2010.jpg/webp" class="qrcode" style="width:180px;height:180px">
+                    <div style="font-weight:bold">1群</div>
+                </div>
+                <div class="group-item">
+                    <img src="https://test.fukit.cn/autoupload/f/8xUQ_P6gjgNdGGD-qlOUeifNcKcqEnRmcljopnyJoMs/20260510/aeNS/885X1488/2%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20260510114715_4_2010.jpg/webp" class="qrcode" style="width:180px;height:180px">
+                    <div style="font-weight:bold">2群</div>
+                </div>
+                <div class="group-item">
+                    <img src="https://test.fukit.cn/autoupload/f/8xUQ_P6gjgNdGGD-qlOUeifNcKcqEnRmcljopnyJoMs/20260510/s7ea/885X1488/3%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20260510114717_5_2010.jpg/webp" class="qrcode" style="width:180px;height:180px">
+                    <div style="font-weight:bold">3群</div>
+                </div>
+            </div>
+            <button class="close-btn" onclick="closeModal()">关闭</button>
+        </div>
+    </div>
+
+    <!-- 公众号弹窗 -->
+    <div class="modal" id="wxModal">
+        <div class="modal-content">
+            <div class="highlight">远征飞官方公众号</div>
+            <img src="https://test.fukit.cn/autoupload/f/8xUQ_P6gjgNdGGD-qlOUeifNcKcqEnRmcljopnyJoMs/20260510/S2aB/430X430/%E5%85%AC%E4%BC%97%E5%8F%B7%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20260510115338_7_2010.jpg/webp" class="qrcode">
+            <button class="close-btn" onclick="closeModal()">关闭</button>
+        </div>
+    </div>
+
+    <!-- 后勤人员弹窗 -->
+    <div class="modal" id="supportModal">
+        <div class="modal-content">
+            <div class="highlight">赛事后勤人员</div>
+            <img src="https://test.fukit.cn/autoupload/f/8xUQ_P6gjgNdGGD-qlOUeifNcKcqEnRmcljopnyJoMs/20260510/OaXC/888X1131/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20260510110558_630_2057.jpg/webp" class="qrcode">
+            <button class="close-btn" onclick="closeModal()">关闭</button>
+        </div>
+    </div>
+
+    <!-- 页脚（双语） -->
+    <div class="footer" id="footer">
+        📅 比赛时间：2026年7月底 | 奖品丰厚<br>
+        Event Date: Late July 2026 | Great Prizes<br>
+        赛事网站：<a href="https://cdn.917813.com.cn/" target="_blank">https://cdn.917813.com.cn/</a>
+    </div>
+
+    <script>
+        // 3秒后切换界面
+        setTimeout(() => {
+            document.getElementById('header').style.display = 'none';
+            document.getElementById('selectBox').style.display = 'block';
+            document.getElementById('footer').style.display = 'block';
+        }, 3000);
+
+        // 面板切换
+        function showPanel(type) {
+            document.getElementById('selectBox').style.display = 'none';
+            document.querySelectorAll('.panel').forEach(item => item.classList.remove('show'));
+            document.getElementById(type).classList.add('show');
+        }
+        function backSelect() {
+            document.querySelectorAll('.panel').forEach(item => item.classList.remove('show'));
+            document.getElementById('selectBox').style.display = 'block';
+        }
+
+        // 弹窗控制
+        function openGroupModal() { document.getElementById('groupModal').style.display = 'flex'; }
+        function openWxModal() { document.getElementById('wxModal').style.display = 'flex'; }
+        function openSupportModal() { document.getElementById('supportModal').style.display = 'flex'; }
+        function closeModal() { 
+            document.querySelectorAll('.modal').forEach(item => item.style.display = 'none');
+        }
+
+        // 复制功能
+        function copyLink() {
+            navigator.clipboard.writeText("https://www.facebook.com/share/g/18Qqc8zNKL/?mibextid=wwXIfr")
+            .then(()=>alert("Copied!")).catch(()=>alert("Failed!"));
+        }
+        function copyEmail() {
+            navigator.clipboard.writeText("lyz201966@gmail.com")
+            .then(()=>alert("Copied!")).catch(()=>alert("Failed!"));
+        }
+    </script>
+</body>
+</html>
