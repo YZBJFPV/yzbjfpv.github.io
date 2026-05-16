@@ -60,10 +60,11 @@
             position: fixed; inset: 0; z-index: 99999;
             background: var(--app-bg-light);
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-            transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: opacity 0.4s ease;
         }
         body.dark #splash-screen { background: var(--app-bg-dark); }
         #splash-screen.fade-out { opacity: 0; pointer-events: none; }
+        
         .splash-icon {
             width: 72px; height: 72px; border-radius: 20px;
             background: linear-gradient(135deg, #0ea5e9, #8b5cf6);
@@ -71,12 +72,6 @@
             color: white; font-size: 32px; font-weight: bold; font-family: 'Space Grotesk';
             position: relative;
         }
-        .splash-icon::after {
-            content: ''; position: absolute; inset: -5px; border-radius: 24px;
-            background: inherit; filter: blur(10px); opacity: 0.4; z-index: -1;
-            animation: pulse 2s infinite;
-        }
-        @keyframes pulse { 0% { transform: scale(1); opacity: 0.4; } 100% { transform: scale(1.4); opacity: 0; } }
 
         /* Layout */
         .app-shell { display: flex; height: 100vh; height: 100dvh; width: 100vw; padding-top: var(--safe-area-top); }
@@ -116,57 +111,45 @@
         .app-bottom-nav .nav-item i { font-size: 1.2rem; margin-bottom: 4px; }
         .app-bottom-nav .nav-item.active { color: #0ea5e9; }
 
-        /* 红点样式与呼吸灯特效 */
         .badge-dot {
             position: absolute; top: 10px; right: 22px;
             width: 8px; height: 8px; background-color: #ef4444; border-radius: 50%;
         }
-        .badge-dot::after {
-            content: ''; position: absolute; inset: 0; border-radius: 50%;
-            background-color: #ef4444; animation: badgePulse 1.8s infinite ease-in-out;
-        }
-        @keyframes badgePulse {
-            0% { transform: scale(1); opacity: 1; }
-            100% { transform: scale(2.5); opacity: 0; }
-        }
 
-        /* View Switching */
+        /* View Containers */
         .view-container {
             position: absolute; inset: 0;
-            opacity: 0; pointer-events: none; transform: translateY(20px) scale(0.98);
-            transition: opacity 0.4s ease, transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+            opacity: 0; pointer-events: none; transform: translateY(15px);
+            transition: opacity 0.3s ease, transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
             overflow-y: auto; -webkit-overflow-scrolling: touch;
             padding-bottom: calc(85px + var(--safe-area-bottom));
         }
-        .view-container.active { opacity: 1; pointer-events: auto; transform: translateY(0) scale(1); }
+        .view-container.active { opacity: 1; pointer-events: auto; transform: translateY(0); }
 
-        /* Iframe 容器修复 */
-        .iframe-wrapper { padding: 0 !important; overflow: hidden !important; display: flex; flex-direction: column; height: 100% !important; position: relative; }
+        /* Iframe Styles */
+        .iframe-wrapper { padding: 0 !important; overflow: hidden !important; display: flex; flex-direction: column; height: 100% !important; }
         .iframe-wrapper iframe {
             width: 100%; height: calc(100% - 65px - var(--safe-area-bottom)) !important;
-            border: none; background: #fff; opacity: 0; transition: opacity 0.3s ease;
+            border: none; background: transparent;
         }
-        body.dark .iframe-wrapper iframe { background: #0f172a; }
-        
-        /* 变为 loaded 状态后显示 iframe */
-        .iframe-wrapper.loaded iframe { opacity: 1; }
 
-        /* 【优化】全新容错型内部遮罩 */
+        /* 【重构】强制置顶、独立运作的加载遮罩 */
         .inner-loader {
             position: absolute; inset: 0; 
             background-color: var(--app-bg-light);
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-            z-index: 100; opacity: 1; transform: scale(1);
-            transition: opacity 0.3s ease, transform 0.3s ease;
-            pointer-events: none;
+            z-index: 9999; /* 确保层级绝对高过 iframe 和其他白底 */
+            opacity: 1;
+            transition: opacity 0.25s ease;
             height: calc(100% - 65px - var(--safe-area-bottom)) !important;
+            pointer-events: all; /* 阻止加载时用户乱点 */
         }
         body.dark .inner-loader { background-color: var(--app-bg-dark); }
         
-        /* 隐藏动画遮罩 */
-        .iframe-wrapper.loaded .inner-loader { opacity: 0; transform: scale(1.02); pointer-events: none; }
+        /* 隐藏类 */
+        .inner-loader.hide { opacity: 0; pointer-events: none; }
 
-        /* 双环旋转简易 CSS 动画 */
+        /* 旋转菊花动画 */
         .spinner {
             width: 36px; height: 36px; border-radius: 50%;
             border: 3px solid transparent; border-top-color: #0ea5e9;
@@ -188,7 +171,6 @@
             .inner-loader { height: 100% !important; }
         }
 
-        /* Widgets */
         .widget-card {
             background: rgba(255, 255, 255, 0.6); backdrop-filter: blur(20px);
             border: 1px solid rgba(255, 255, 255, 0.5); border-radius: 24px; padding: 20px;
@@ -281,49 +263,44 @@
                 </div>
             </div>
 
+            <!-- 每个含有 iframe 的视图都有一个独立的、绝对高层级的 inner-loader -->
             <div id="view-yzcloud" class="view-container iframe-wrapper">
-                <div class="inner-loader"><div class="spinner"></div></div>
+                <div class="inner-loader" id="loader-yzcloud"><div class="spinner"></div></div>
                 <iframe src="about:blank" data-src="https://yzbjfpv.top/flyz/app/yzcloud"></iframe>
             </div>
             <div id="view-yzweather" class="view-container iframe-wrapper">
-                <div class="inner-loader"><div class="spinner"></div></div>
+                <div class="inner-loader" id="loader-yzweather"><div class="spinner"></div></div>
                 <iframe src="about:blank" data-src="https://yzbjfpv.top/flyz/app/yzweather/test"></iframe>
             </div>
             <div id="view-music" class="view-container iframe-wrapper">
-                <div class="inner-loader"><div class="spinner"></div></div>
+                <div class="inner-loader" id="loader-music"><div class="spinner"></div></div>
                 <iframe src="about:blank" data-src="https://cdn.917813.com.cn/wyymusic/index.html"></iframe>
             </div>
             <div id="view-watchmovie" class="view-container iframe-wrapper">
-                <div class="inner-loader"><div class="spinner"></div></div>
+                <div class="inner-loader" id="loader-watchmovie"><div class="spinner"></div></div>
                 <iframe src="about:blank" data-src="https://v.ikanbot.com"></iframe>
             </div>
             <div id="view-light" class="view-container iframe-wrapper">
-                <div class="inner-loader"><div class="spinner"></div></div>
+                <div class="inner-loader" id="loader-light"><div class="spinner"></div></div>
                 <iframe src="about:blank" data-src="https://yzbjfpv.top/tools/屏幕照明"></iframe>
             </div>
             <div id="view-length78" class="view-container iframe-wrapper">
-                <div class="inner-loader"><div class="spinner"></div></div>
+                <div class="inner-loader" id="loader-length78"><div class="spinner"></div></div>
                 <iframe src="about:blank" data-src="https://cdn.917813.com.cn/check78long/index.html"></iframe>
             </div>
             <div id="view-benchmark" class="view-container iframe-wrapper">
-                <div class="inner-loader"><div class="spinner"></div></div>
+                <div class="inner-loader" id="loader-benchmark"><div class="spinner"></div></div>
                 <iframe src="about:blank" data-src="https://cdn.917813.com.cn/benchmark/index.html"></iframe>
             </div>
             <div id="view-fpvrace" class="view-container iframe-wrapper">
-                <div class="inner-loader"><div class="spinner"></div></div>
+                <div class="inner-loader" id="loader-fpvrace"><div class="spinner"></div></div>
                 <iframe src="about:blank" data-src="https://yzbjfpv.top/u/8/"></iframe>
             </div>
         </main>
 
         <nav class="app-bottom-nav">
             <div onclick="switchTab('home')" class="nav-item active" data-tab="home"><i class="fas fa-border-all"></i><span>主页</span></div>
-            
-            <div onclick="switchTab('fpvrace')" class="nav-item" data-tab="fpvrace">
-                <div class="badge-dot"></div>
-                <i class="fas fa-plane-departure text-cyan-500"></i>
-                <span class="text-center truncate max-w-[85px]">2026DCT线上FPV竞速赛</span>
-            </div>
-
+            <div onclick="switchTab('fpvrace')" class="nav-item" data-tab="fpvrace"><div class="badge-dot"></div><i class="fas fa-plane-departure text-cyan-500"></i><span>赛事</span></div>
             <div onclick="switchTab('yzcloud')" class="nav-item" data-tab="yzcloud"><i class="fas fa-cloud"></i><span>云盘</span></div>
             <div onclick="switchTab('yzweather')" class="nav-item" data-tab="yzweather"><i class="fas fa-cloud-sun"></i><span>天气</span></div>
             <div onclick="switchTab('watchmovie')" class="nav-item" data-tab="watchmovie"><i class="fas fa-play"></i><span>观影</span></div>
@@ -337,21 +314,18 @@
         let currentTab = 'home';
         let loadedIframes = new Set();
 
-        // 顶层开屏安全动画淡出
+        // 顶层大数字开屏淡出
         setTimeout(() => {
             const splash = document.getElementById('splash-screen');
             if(splash) splash.classList.add('fade-out');
-        }, 800);
+        }, 600);
 
         function toggleTheme() { document.body.classList.toggle('dark'); }
-
-        function hideLoader(viewEl) {
-            viewEl.classList.add('loaded');
-        }
 
         function switchTab(tabName) {
             if (currentTab === tabName) return;
 
+            // 1. 切换导航高亮
             document.querySelectorAll('.nav-item').forEach(el => {
                 if(el.getAttribute('data-tab') === tabName) {
                     el.classList.add('active');
@@ -361,30 +335,37 @@
                 } else el.classList.remove('active');
             });
 
+            // 2. 隐藏旧视图，显示新视图
             document.getElementById(`view-${currentTab}`).classList.remove('active');
             const newView = document.getElementById(`view-${tabName}`);
             newView.classList.add('active');
 
+            // 3. 处理 iframe 加载及动画控制
             if (tabName !== 'home') {
                 const iframe = newView.querySelector('iframe');
-                if (iframe && !loadedIframes.has(tabName)) {
-                    
-                    // 核心修复逻辑 1：双向事件监听机制
-                    iframe.onload = function() {
-                        hideLoader(newView);
-                    };
+                const loader = document.getElementById(`loader-${tabName}`);
+                
+                if (iframe) {
+                    // 无论以前有没有加载过，切换过来时立刻“无条件强行展现”动画遮罩
+                    if(loader) loader.classList.remove('hide');
 
-                    iframe.src = iframe.getAttribute('data-src');
-                    loadedIframes.add(tabName);
-
-                    // 核心修复逻辑 2：加入 1.5 秒无视状态强行淡出遮罩机制，防止原生内核把加载动画卡死
-                    setTimeout(() => {
-                        hideLoader(newView);
-                    }, 1500);
-
-                } else if (iframe && loadedIframes.has(tabName)) {
-                    // 如果以前加载过，切换回来时直接确保动画完全移除
-                    hideLoader(newView);
+                    if (!loadedIframes.has(tabName)) {
+                        // 首次载入，绑定真正的 onload 事件
+                        iframe.onload = function() {
+                            // 针对同源同服务器优化：确保只有真实页面载入时才撤销动画
+                            if (iframe.src !== 'about:blank') {
+                                if(loader) loader.classList.add('hide');
+                            }
+                        };
+                        // 赋予真实路径，开始请求
+                        iframe.src = iframe.getAttribute('data-src');
+                        loadedIframes.add(tabName);
+                    } else {
+                        // 如果以前已经缓存在后台了，点击时动画闪烁一下（300ms）后迅速撤销，体验极佳
+                        setTimeout(() => {
+                            if(loader) loader.classList.add('hide');
+                        }, 300);
+                    }
                 }
             }
             currentTab = tabName;
