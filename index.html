@@ -8,72 +8,79 @@
     <meta name="keywords" content="航模,飞行模拟,3D打印,免费下载,公益服务,五一劳动节" />
     <meta name="robots" content="index,follow">
     <style>
-        *{margin:0;padding:0;box-sizing:border-box;font-family:Microsoft YaHei,sans-serif;}
+        *{margin:0;padding:0;box-sizing:border-box;font-family:"Microsoft YaHei",sans-serif;}
         body{
             width:100vw;
             height:100vh;
-            display:flex;
-            flex-direction:column;
-            align-items:center;
-            justify-content:center;
-            background:#121218;
-            color:#fff;
-            overflow:hidden;
+            background: linear-gradient(145deg,#ff99cc,#66b3ff);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
         }
-        .main-box{
-            text-align:center;
-            padding:20px;
+        .wrap{
+            text-align: center;
         }
-        .title{
-            font-size:32px;
-            margin-bottom:25px;
-            color:#409eff;
+        .main-title{
+            font-size: 32px;
+            color: #fff;
+            letter-spacing: 1px;
+            margin-bottom: 22px;
+            text-shadow: 0 2px 6px rgba(0,0,0,0.15);
         }
-        .text-info{
-            font-size:18px;
-            color:#ccc;
-            margin:12px 0;
+        .desc-text{
+            font-size: 17px;
+            color: #ffffff;
+            margin: 12px 0;
         }
-        .jump-url{
-            font-size:20px;
-            color:#67c23a;
-            margin:15px 0;
+        .jump-link{
+            font-size: 24px;
+            color: #ffffff;
+            font-weight: bold;
+            margin: 28px 0;
         }
-        .btn-box{
-            margin-top:40px;
+        .count{
+            color: #fff;
+            font-size: 16px;
+            margin-bottom: 40px;
         }
-        .backup-btn{
-            padding:14px 45px;
-            background:#409eff;
-            color:#fff;
-            border:none;
-            border-radius:6px;
-            font-size:17px;
-            cursor:pointer;
-            text-decoration:none;
-            transition:0.3s;
+        .reserve-btn{
+            display: inline-block;
+            padding: 14px 42px;
+            background: #ffffff;
+            color: #ff66aa;
+            text-decoration: none;
+            border-radius: 999px;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s ease;
         }
-        .backup-btn:hover{
-            background:#2979cd;
+        .reserve-btn:hover{
+            background: #f0f0f0;
         }
     </style>
 </head>
 <body>
-    <div class="main-box">
-        <h2 class="title">学业繁忙 本站暂停更新</h2>
-        <p class="text-info">正在自动跳转访问</p>
-        <p class="jump-url">917813.com.cn</p>
-        <p class="text-info">若自动跳转失败，请点击下方备用入口</p>
-        <div class="btn-box">
-            <a href="https://917813.com.cn" class="backup-btn">备用访问入口</a>
-        </div>
+    <div class="wrap">
+        <h2 class="main-title">学业繁忙 本站暂停更新</h2>
+        <p class="desc-text">页面即将自动跳转至目标站点</p>
+        <p class="jump-link">917813.com.cn</p>
+        <p class="count">3秒后自动跳转</p>
+        <a href="https://917813.com.cn" class="reserve-btn">跳转失败 · 点击备用访问</a>
     </div>
 
 <script>
-// 3秒自动跳转
-setTimeout(function(){
-    location.href="https://917813.com.cn";
-},3000);
+let time = 3;
+const dom = document.querySelector('.count');
+dom.innerText = `${time}秒后自动跳转`;
+let timer = setInterval(()=>{
+    time--;
+    dom.innerText = `${time}秒后自动跳转`;
+    if(time <= 0){
+        clearInterval(timer);
+        location.href = "https://917813.com.cn";
+    }
+},1000)
 </script>
 </body>
 </html>
