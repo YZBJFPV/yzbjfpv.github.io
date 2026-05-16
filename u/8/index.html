@@ -83,6 +83,7 @@
             margin-bottom: 40px;
             color: #333;
             font-weight: bold;
+            line-height: 1.6;
             animation: float 3s ease-in-out infinite;
         }
         .btn-group {
@@ -110,6 +111,20 @@
         .btn:hover {
             transform: translateY(-5px);
             background: #f8f8f8;
+        }
+
+        /* 赞助商专属按钮样式（突出设计） */
+        .btn-sponsor {
+            background: #ff578f;
+            color: white;
+            font-size: 20px;
+            width: 550px; /* 较宽，可自适应手机屏 */
+            max-width: 100%;
+            margin-top: 15px;
+        }
+        .btn-sponsor:hover {
+            background: #ff3e7b;
+            color: white;
         }
 
         /* 小型备用按钮 */
@@ -140,7 +155,7 @@
         }
         .panel.show { display: flex; flex-direction: column; gap: 20px; align-items: center; }
 
-        /* 🔥 彻底修复图片加载：无错误、无超时、无限等待、仅圆角 */
+        /* 彻底修复图片加载：无错误、无超时、无限等待、仅圆角 */
         .qrcode {
             width: 40vw;
             max-width: 240px;
@@ -148,17 +163,8 @@
             object-fit: contain;
             border-radius: 18px;
             animation: float 4s ease-in-out infinite;
-            /* 禁用浏览器默认图片错误图标 */
             visibility: visible !important;
             background: transparent;
-        }
-
-        /* 微信号备注样式 */
-        .wechat-note {
-            color: #ff578f;
-            font-size: 18px;
-            font-weight: bold;
-            margin-top: 10px;
         }
 
         /* 文字样式 */
@@ -181,8 +187,12 @@
             flex-wrap: wrap;
             justify-content: center;
         }
+        .remind-text{
+            color:#333;
+            font-size:17px;
+        }
 
-        /* 弹窗 - 全设备自适应 强制缩放 不滑动 不拥挤 */
+        /* 弹窗 - 全设备自适应 */
         .modal {
             display: none;
             position: fixed;
@@ -221,7 +231,58 @@
         }
         .close-btn:hover { transform: scale(1.05); }
 
-        /* 页脚（双语） */
+        /* 全屏内嵌页面承载器 */
+        .full-embed-container {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            background: #fff;
+            z-index: 1000;
+            animation: scaleIn 0.4s ease forwards;
+        }
+        .full-embed-iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            display: block;
+        }
+        /* 内嵌页面的返回按钮 */
+        .embed-back-btn {
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            z-index: 1002;
+            padding: 12px 25px;
+            background: rgba(0, 0, 0, 0.75);
+            color: #fff;
+            border: none;
+            border-radius: 50px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            backdrop-filter: blur(5px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            transition: 0.3s;
+        }
+        .embed-back-btn:hover {
+            transform: scale(1.05);
+            background: rgba(0, 0, 0, 0.9);
+        }
+        /* 内嵌网页专用加载动画占位符 */
+        .embed-loader {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: #ffffff;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1001;
+        }
+
+        /* 页脚 */
         .footer {
             display: none;
             font-size: 15px;
@@ -239,6 +300,9 @@
     </style>
 </head>
 <body>
+    <!-- 音频隐藏标签 -->
+    <audio id="bgMusic" loop></audio>
+
     <!-- 开屏（纯双语） -->
     <div class="header" id="header">
         <div class="title">欢迎参加DCT2026线上FPV竞速赛<br>Welcome to DCT2026 Online FPV Racing</div>
@@ -246,25 +310,26 @@
         <div class="loading"></div>
     </div>
 
-    <!-- 选择界面（双语） -->
+    <!-- 选择界面（双语优化） -->
     <div class="select-box" id="selectBox">
-        <div class="select-title">请选择参赛信息 | Select Your Region</div>
+        <div class="select-title">请选择赛区<br>Select Your Region</div>
         <div class="btn-group">
             <button class="btn" onclick="showPanel('cn')">中国选手</button>
             <button class="btn" onclick="showPanel('global')">International</button>
+            <!-- 新增：招赞助商按钮 -->
+            <button class="btn btn-sponsor" onclick="openEmbedPage()">招赛事赞助商 | Sponsor Us</button>
         </div>
     </div>
 
-    <!-- 中国选手（纯中文 无英文 按钮不歪） -->
+    <!-- 中国选手（精简版，仅保留公众号） -->
     <div id="cn" class="panel">
-        <div class="highlight">🔥 重要提醒：最新消息仅在公众号公示！务必添加！</div>
+        <div class="highlight">🔥 参赛唯一正规渠道</div>
+        <div class="remind-text">请关注官方公众号，按照公众号内指引完成报名与参赛流程</div>
         <button class="btn" onclick="openWxModal()">查看官方公众号</button>
-        <button class="btn" onclick="openGroupSelect()">进交流群</button>
-        <button class="btn" onclick="openSupportModal()">联系赛事后勤人员</button>
         <button class="btn" onclick="backSelect()">返回选择</button>
     </div>
 
-    <!-- 国际选手（无重叠 自适应） -->
+    <!-- 国际选手 -->
     <div id="global" class="panel">
         <div class="highlight">🌍 Official Communication Channel</div>
         <div class="guide-text">Click to join our Facebook Group</div>
@@ -275,68 +340,47 @@
         <button class="btn" onclick="backSelect()">返回选择</button>
     </div>
 
-    <!-- 群选择弹窗 -->
-    <div class="modal" id="groupSelectModal">
-        <div class="modal-content">
-            <div class="highlight">⚠️ 请勿重复进入多个群！谢谢配合</div>
-            <button class="btn" onclick="openGroup1()">1群</button>
-            <button class="btn" onclick="openGroup2()">2群</button>
-            <button class="btn" onclick="openGroup3()">3群</button>
-            <button class="close-btn" onclick="closeModal()">关闭</button>
-        </div>
-    </div>
-
-    <!-- 1/2/3群二维码弹窗（自适应细长竖版） -->
-    <div class="modal" id="group1Modal">
-        <div class="modal-content">
-            <div class="highlight">交流群1群</div>
-            <img src="https://z.wiki/u/m3MdaRedT" class="qrcode" loading="lazy" alt="交流群1群">
-            <button class="close-btn" onclick="closeModal()">关闭</button>
-        </div>
-    </div>
-    <div class="modal" id="group2Modal">
-        <div class="modal-content">
-            <div class="highlight">交流群2群</div>
-            <img src="https://z.wiki/u/HY8jzQ2Vm" class="qrcode" loading="lazy" alt="交流群2群">
-            <button class="close-btn" onclick="closeModal()">关闭</button>
-        </div>
-    </div>
-    <div class="modal" id="group3Modal">
-        <div class="modal-content">
-            <div class="highlight">交流群3群</div>
-            <img src="https://z.wiki/u/jwxRAAnhS" class="qrcode" loading="lazy" alt="交流群3群">
-            <button class="close-btn" onclick="closeModal()">关闭</button>
-        </div>
-    </div>
-
-    <!-- 公众号弹窗（正方形完美显示） -->
+    <!-- 公众号弹窗 -->
     <div class="modal" id="wxModal">
         <div class="modal-content">
             <div class="highlight">远征飞官方公众号</div>
-            <img src="https://z.wiki/u/wVwJ9Dxzo" class="qrcode" loading="lazy" alt="官方公众号">
+            <img src="https://z.wiki/u/wVwJ9Dxzo" class="qrcode" id="qrImage" alt="官方公众号">
             <button class="close-btn" onclick="closeModal()">关闭</button>
         </div>
     </div>
 
-    <!-- 后勤人员弹窗（添加微信号备注 + 超长加载适配） -->
-    <div class="modal" id="supportModal">
-        <div class="modal-content">
-            <div class="highlight">赛事后勤人员</div>
-            <img src="https://z.wiki/u/3yVGcZdXo" class="qrcode" loading="lazy" alt="赛事后勤人员">
-            <!-- 微信号备注 -->
-            <div class="wechat-note">微信号:only127856</div>
-            <button class="close-btn" onclick="closeModal()">关闭</button>
+    <!-- 全屏内嵌网页层（带加载动画） -->
+    <div class="full-embed-container" id="embedContainer">
+        <div class="embed-loader" id="embedLoader">
+            <div class="loading"></div>
+            <div style="color: #666; font-size: 16px; margin-top: -20px;">正在加载赞助页面...</div>
         </div>
+        <button class="embed-back-btn" onclick="closeEmbedPage()">返回赛事页 Return</button>
+        <iframe class="full-embed-iframe" id="embedIframe" src=""></iframe>
     </div>
 
-    <!-- 页脚（双语） -->
+    <!-- 页脚（已修改为英文技术支持） -->
     <div class="footer" id="footer">
         📅 比赛时间：2026年7月底 | 奖品丰厚<br>
         Event Date: Late July 2026 | Great Prizes<br>
-        赛事网站：<a href="https://cdn.917813.com.cn/" target="_blank">https://cdn.917813.com.cn/</a>
+        Technical Support: <a href="http://yzbjfpv.top" target="_blank">Flyz远征飞</a>
     </div>
 
     <script>
+        // 音乐地址配置
+        const musicUrls = {
+            cn: "https://music.163.com/song/media/outer/url?id=3378471678.mp3",
+            global: "https://music.163.com/song/media/outer/url?id=34380473.mp3"
+        };
+        const audio = document.getElementById('bgMusic');
+
+        // 状态锁
+        let currentPlayType = null;
+
+        // 图片预加载
+        const qrPreload = new Image();
+        qrPreload.src = "https://z.wiki/u/wVwJ9Dxzo";
+
         // 3秒后切换界面
         setTimeout(() => {
             document.getElementById('header').style.display = 'none';
@@ -344,25 +388,53 @@
             document.getElementById('footer').style.display = 'block';
         }, 3000);
 
-        // 面板切换
+        // 面板切换 + 智能音乐处理
         function showPanel(type) {
             document.getElementById('selectBox').style.display = 'none';
             document.querySelectorAll('.panel').forEach(item => item.classList.remove('show'));
             document.getElementById(type).classList.add('show');
+            
+            if (musicUrls[type]) {
+                if (currentPlayType !== type) {
+                    audio.src = musicUrls[type]; 
+                    currentPlayType = type;
+                }
+                audio.play().catch(err => {
+                    console.log("播放被拦截:", err);
+                });
+            }
         }
+        
         function backSelect() {
             document.querySelectorAll('.panel').forEach(item => item.classList.remove('show'));
             document.getElementById('selectBox').style.display = 'block';
         }
 
         // 弹窗控制
-        function openGroupSelect(){ document.getElementById('groupSelectModal').style.display = 'flex'; }
-        function openGroup1(){closeModal(); document.getElementById('group1Modal').style.display = 'flex';}
-        function openGroup2(){closeModal(); document.getElementById('group2Modal').style.display = 'flex';}
-        function openGroup3(){closeModal(); document.getElementById('group3Modal').style.display = 'flex';}
         function openWxModal() { document.getElementById('wxModal').style.display = 'flex'; }
-        function openSupportModal() { document.getElementById('supportModal').style.display = 'flex'; }
         function closeModal() { document.querySelectorAll('.modal').forEach(item => item.style.display = 'none'); }
+
+        // 🔥 打开赞助全屏内嵌页
+        function openEmbedPage() {
+            const container = document.getElementById('embedContainer');
+            const iframe = document.getElementById('embedIframe');
+            const loader = document.getElementById('embedLoader');
+            
+            loader.style.display = 'flex'; // 显示加载动画
+            container.style.display = 'block'; // 打开容器
+            iframe.src = "https://917813.com.cn/fpv/2026dctrace/zz.html"; // 开始加载动态网页
+            
+            // 监听 iframe 加载完成事件
+            iframe.onload = function() {
+                loader.style.display = 'none'; // 网页加载完毕后，隐藏加载动画
+            };
+        }
+
+        // 关全屏内嵌页
+        function closeEmbedPage() {
+            document.getElementById('embedContainer').style.display = 'none';
+            document.getElementById('embedIframe').src = ""; // 退出时清空地址，节省流量并停止内嵌页运行
+        }
 
         // 复制功能
         function copyLink() {
