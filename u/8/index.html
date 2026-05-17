@@ -2,449 +2,640 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>DCT2026线上FPV竞速赛</title>
     <style>
+        :root {
+            --bg-dark: #020408;
+            --panel-bg: rgba(6, 11, 22, 0.75);
+            --primary-neon: #00f0ff;
+            --secondary-neon: #ff007f;
+            --purple-glow: #7928ca;
+            --text-main: #f0f5fa;
+            --text-muted: #4b5563;
+            --bezier-kinetic: cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
         * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: "Microsoft YaHei", sans-serif;
+            margin: 0; padding: 0; box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Helvetica Neue", sans-serif;
+            -webkit-font-smoothing: antialiased; -webkit-tap-highlight-color: transparent;
         }
 
-        /* 粉蓝渐变背景 */
         body {
-            min-height: 100vh;
-            background: linear-gradient(135deg, #ffc0d5 0%, #91d3ff 100%);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 15px;
+            width: 100vw; height: 100vh; height: 100dvh;
+            background-color: var(--bg-dark);
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            padding: 14px; overflow: hidden; perspective: 1000px; color: var(--text-main);
         }
 
-        /* 核心动画库 */
-        @keyframes fadeUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes rotate {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        @keyframes float {
-            0% { transform: translateY(0); }
-            50% { transform: translateY(-5px); }
-            100% { transform: translateY(0); }
-        }
-        @keyframes scaleIn {
-            from { opacity: 0; transform: scale(0.9); }
-            to { opacity: 1; transform: scale(1); }
-        }
-
-        /* 开屏区域（双语） */
-        .header {
-            text-align: center;
-            animation: fadeUp 0.8s ease forwards;
-        }
-        .title {
-            font-size: 32px;
-            color: #2d2d2d;
-            margin: 15px 0;
-            font-weight: bold;
-            line-height: 1.5;
-        }
-        .support {
-            font-size: 18px;
-            color: #555;
-            animation: fadeUp 0.8s ease 0.2s forwards;
-            opacity: 0;
-        }
-        .loading {
-            width: 50px;
-            height: 50px;
-            border: 5px solid rgba(255,255,255,0.5);
-            border-top: 5px solid #ff578f;
-            border-radius: 50%;
-            animation: rotate 1s linear infinite;
-            margin: 40px auto;
-        }
-
-        /* 选择区域（双语） */
-        .select-box {
-            display: none;
-            text-align: center;
-            width: 100%;
-            max-width: 800px;
-            animation: fadeUp 0.8s ease forwards;
-        }
-        .select-title {
-            font-size: 26px;
-            margin-bottom: 40px;
-            color: #333;
-            font-weight: bold;
-            line-height: 1.6;
-            animation: float 3s ease-in-out infinite;
-        }
-        .btn-group {
-            display: flex;
-            gap: 30px;
-            justify-content: center;
-            flex-wrap: wrap;
-            width: 100%;
-        }
-
-        /* 主按钮 - 全新样式 永不歪斜 */
-        .btn {
-            padding: 24px 0;
-            width: 260px;
-            border: none;
-            border-radius: 20px;
-            font-size: 22px;
-            font-weight: bold;
-            background: #ffffff;
-            color: #333;
-            cursor: pointer;
-            transition: 0.3s;
-            box-shadow: 0 6px 15px rgba(0,0,0,0.1);
-        }
-        .btn:hover {
-            transform: translateY(-5px);
-            background: #f8f8f8;
-        }
-
-        /* 赞助商专属按钮样式（突出设计） */
-        .btn-sponsor {
-            background: #ff578f;
-            color: white;
-            font-size: 20px;
-            width: 550px; /* 较宽，可自适应手机屏 */
-            max-width: 100%;
-            margin-top: 15px;
-        }
-        .btn-sponsor:hover {
-            background: #ff3e7b;
-            color: white;
-        }
-
-        /* 小型备用按钮 */
-        .small-btn {
-            padding: 8px 16px;
-            border-radius: 12px;
-            font-size: 14px;
-            border: none;
-            background: #64b5f6;
-            color: white;
-            cursor: pointer;
-            transition: 0.2s;
-        }
-        .small-btn:hover { transform: scale(1.05); }
-
-        /* 内容面板 - 弹性布局 按钮永不歪 */
-        .panel {
-            display: none;
-            background: white;
-            padding: 40px 30px;
-            border-radius: 25px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-            width: 100%;
-            max-width: 700px;
-            text-align: center;
-            animation: scaleIn 0.6s ease forwards;
-            line-height: 1.8;
-        }
-        .panel.show { display: flex; flex-direction: column; gap: 20px; align-items: center; }
-
-        /* 彻底修复图片加载：无错误、无超时、无限等待、仅圆角 */
-        .qrcode {
-            width: 40vw;
-            max-width: 240px;
-            height: auto;
-            object-fit: contain;
-            border-radius: 18px;
-            animation: float 4s ease-in-out infinite;
-            visibility: visible !important;
-            background: transparent;
-        }
-
-        /* 文字样式 */
-        .highlight {
-            color: #ff578f;
-            font-weight: bold;
-            font-size: 22px;
-        }
-        .guide-text {
-            color: #64b5f6;
-            font-weight: bold;
-            font-size: 18px;
-        }
-        .tips {
-            color: #666;
-            font-size: 18px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            flex-wrap: wrap;
-            justify-content: center;
-        }
-        .remind-text{
-            color:#333;
-            font-size:17px;
-        }
-
-        /* 弹窗 - 全设备自适应 */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0; left: 0;
-            width: 100vw; height: 100vh;
-            background: rgba(0,0,0,0.8);
-            justify-content: center;
-            align-items: center;
-            z-index: 999;
-            padding: 20px;
-        }
-        .modal-content {
-            background: white;
-            padding: 30px 25px;
-            border-radius: 25px;
-            width: 100%;
-            max-width: 450px;
-            max-height: 90vh;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-            align-items: center;
-            animation: scaleIn 0.4s ease forwards;
+        /* ================= ✨ 史诗级光效背景环境 ================= */
+        .cyber-ambient {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none;
             overflow: hidden;
+            background: #020306;
         }
-        .close-btn {
-            padding: 12px 35px;
-            border-radius: 20px;
-            border: none;
-            background: #64b5f6;
-            color: white;
-            font-size: 18px;
-            cursor: pointer;
-            transition: 0.3s;
-            width: fit-content;
+        /* 巨大色彩霓虹晕染 - 彻底打破纯黑 */
+        .ambient-flare-1 {
+            position: absolute; top: -10%; left: -10%; width: 60vw; height: 60vw;
+            background: radial-gradient(circle, rgba(0, 240, 255, 0.12) 0%, transparent 70%);
+            filter: blur(80px); animation: flareFloat 12s ease-in-out infinite alternate;
         }
-        .close-btn:hover { transform: scale(1.05); }
-
-        /* 全屏内嵌页面承载器 */
-        .full-embed-container {
-            display: none;
-            position: fixed;
-            top: 0; left: 0;
-            width: 100vw; height: 100vh;
-            background: #fff;
-            z-index: 1000;
-            animation: scaleIn 0.4s ease forwards;
+        .ambient-flare-2 {
+            position: absolute; bottom: -10%; right: -10%; width: 70vw; height: 70vw;
+            background: radial-gradient(circle, rgba(255, 0, 127, 0.1) 0%, transparent 70%);
+            filter: blur(100px); animation: flareFloat 16s ease-in-out infinite alternate-reverse;
         }
-        .full-embed-iframe {
-            width: 100%;
-            height: 100%;
-            border: none;
-            display: block;
+        .ambient-flare-3 {
+            position: absolute; top: 40%; left: 50%; transform: translate(-50%, -50%); width: 50vw; height: 50vw;
+            background: radial-gradient(circle, rgba(121, 40, 202, 0.08) 0%, transparent 60%);
+            filter: blur(90px);
         }
-        /* 内嵌页面的返回按钮 */
-        .embed-back-btn {
-            position: fixed;
-            bottom: 25px;
-            right: 25px;
-            z-index: 1002;
-            padding: 12px 25px;
-            background: rgba(0, 0, 0, 0.75);
-            color: #fff;
-            border: none;
-            border-radius: 50px;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            backdrop-filter: blur(5px);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-            transition: 0.3s;
-        }
-        .embed-back-btn:hover {
-            transform: scale(1.05);
-            background: rgba(0, 0, 0, 0.9);
-        }
-        /* 内嵌网页专用加载动画占位符 */
-        .embed-loader {
-            position: absolute;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            background: #ffffff;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 1001;
+        @keyframes flareFloat {
+            0% { transform: translate3d(0, 0, 0) scale(1); }
+            100% { transform: translate3d(5vw, 5vh, 0) scale(1.15); }
         }
 
-        /* 页脚 */
-        .footer {
-            display: none;
-            font-size: 15px;
-            color: #555;
-            margin-top: 25px;
-            line-height: 2;
-            text-align: center;
-            animation: fadeUp 0.8s ease forwards;
+        /* 赛博网格 */
+        .grid-warp {
+            position: absolute; width: 200%; height: 200%; top: -50%; left: -50%;
+            background-image: 
+                linear-gradient(rgba(0, 240, 255, 0.04) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 240, 255, 0.04) 1px, transparent 1px);
+            background-size: 50px 50px; transform: perspective(600px) rotateX(75deg);
+            animation: gridDrive 10s linear infinite;
         }
-        a {
-            color: #64b5f6;
-            text-decoration: none;
-            font-weight: bold;
+        @keyframes gridDrive {
+            0% { transform: perspective(600px) rotateX(75deg) translateY(0); }
+            100% { transform: perspective(600px) rotateX(75deg) translateY(50px); }
+        }
+
+        /* ================= 弹幕系统 ================= */
+        .danmaku-container { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1; overflow: hidden; }
+        .danmaku-item { position: absolute; white-space: nowrap; font-weight: 700; font-size: 13px; will-change: transform; }
+        .danmaku-sponsor {
+            color: var(--secondary-neon); border: 1px solid rgba(255, 0, 127, 0.3);
+            background: rgba(255, 0, 127, 0.06); padding: 5px 14px; border-radius: 20px;
+            box-shadow: 0 0 20px rgba(255, 0, 127, 0.15);
+            text-shadow: 0 0 5px rgba(255, 0, 127, 0.5);
+        }
+        @keyframes danmakuFly {
+            from { transform: translate3d(100vw, 0, 0); }
+            to { transform: translate3d(-100%, 0, 0); }
+        }
+
+        /* ================= 开屏极速冲击动画 ================= */
+        @keyframes logoImpact {
+            0% { transform: scale3d(2, 2, 2) translateZ(100px); filter: blur(20px); opacity: 0; }
+            100% { transform: scale3d(1, 1, 1) translateZ(0); filter: blur(0); opacity: 1; }
+        }
+        @keyframes charFly {
+            0% { opacity: 0; transform: translate3d(50px, -20px, 50px) rotateX(20deg); filter: blur(4px); }
+            100% { opacity: 1; transform: translate3d(0, 0, 0); filter: blur(0); }
+        }
+        @keyframes lineExpand {
+            0% { width: 0; opacity: 0; }
+            100% { width: 100%; opacity: 0.8; box-shadow: 0 0 15px var(--primary-neon); }
+        }
+
+        /* 开屏结构 */
+        .header {
+            text-align: center; width: 100%; max-width: 600px; z-index: 99; position: absolute;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            transition: transform 0.5s var(--bezier-kinetic), opacity 0.4s ease, filter 0.4s ease;
+        }
+        .main-branding { display: flex; align-items: center; justify-content: center; gap: 24px; width: 100%; }
+        .logo-box {
+            width: 100px; height: 100px; border-radius: 20px; padding: 2px;
+            background: linear-gradient(135deg, var(--primary-neon), var(--secondary-neon));
+            box-shadow: 0 0 30px rgba(0, 240, 255, 0.3); animation: logoImpact 0.6s var(--bezier-kinetic) forwards;
+        }
+        .logo-box img { width: 100%; height: 100%; object-fit: cover; border-radius: 18px; background: #080b11; }
+        
+        .info-text-block { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; }
+        .main-url { font-size: 2.8rem; font-weight: 900; line-height: 0.95; letter-spacing: -1px; }
+        .main-url span { display: inline-block; opacity: 0; animation: charFly 0.4s var(--bezier-kinetic) forwards; color: #fff; text-shadow: 0 0 15px rgba(255,255,255,0.2); }
+        .glowing-line { height: 2px; width: 0; background: linear-gradient(90deg, var(--primary-neon), var(--secondary-neon)); animation: lineExpand 0.5s var(--bezier-kinetic) forwards 0.5s; }
+        .slogan-title { font-size: 1.5rem; font-weight: 800; color: #94a3b8; }
+        .slogan-title span { display: inline-block; opacity: 0; animation: charFly 0.4s var(--bezier-kinetic) forwards; }
+
+        /* ================= 🔥 流体弹性视口（引入炫彩流光边框） ================= */
+        .stage-viewport { 
+            position: relative; width: 100%; max-width: 460px; 
+            display: none; opacity: 0; z-index: 10;
+            background: var(--panel-bg); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
+            border-radius: 24px;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.6), 
+                        inset 0 1px 0px rgba(255,255,255,0.1),
+                        0 0 40px rgba(0, 240, 255, 0.05);
+            transition: height 0.45s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease;
+            overflow: hidden; 
+        }
+
+        /* 炫彩渐变流光外边框效果 */
+        .stage-viewport::after {
+            content: ''; position: absolute; inset: 0; border-radius: 24px;
+            padding: 1px; /* 边框厚度 */
+            background: linear-gradient(135deg, rgba(0,240,255,0.4), rgba(255,0,127,0.1), rgba(121,40,202,0.4), rgba(0,240,255,0.1));
+            background-size: 300% 300%;
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor; mask-composite: exclude;
+            pointer-events: none; animation: borderGlow 8s linear infinite;
+        }
+        @keyframes borderGlow {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* 内部科技感扫描线 */
+        .cyber-scanner {
+            position: absolute; top: 0; left: 0; width: 100%; height: 6px;
+            background: linear-gradient(to bottom, rgba(0, 240, 255, 0.2), transparent);
+            box-shadow: 0 -2px 10px var(--primary-neon);
+            opacity: 0.4; z-index: 5; pointer-events: none;
+            animation: scanMove 4s linear infinite;
+        }
+        @keyframes scanMove {
+            0% { top: -2%; }
+            100% { top: 102%; }
+        }
+        
+        /* 内部内容卡片 */
+        .stage-card {
+            position: absolute; top: 0; left: 0; width: 100%;
+            padding: 32px 24px 28px 24px;
+            text-align: center; display: none; opacity: 0; pointer-events: none;
+            will-change: transform, opacity;
+        }
+        
+        .stage-card.active-stage { 
+            display: block; opacity: 1; pointer-events: auto; position: relative;
+        }
+        
+        /* 平滑平行滑移动效 */
+        .slide-in-right { animation: slideInRight 0.45s var(--bezier-kinetic) forwards; }
+        .slide-in-left { animation: slideInLeft 0.45s var(--bezier-kinetic) forwards; }
+        .slide-out-left { animation: slideOutLeft 0.45s var(--bezier-kinetic) forwards; position: absolute !important; }
+        .slide-out-right { animation: slideOutRight 0.45s var(--bezier-kinetic) forwards; position: absolute !important; }
+
+        @keyframes slideInRight {
+            0% { transform: translate3d(50px, 0, 0); opacity: 0; filter: blur(4px); }
+            100% { transform: translate3d(0, 0, 0); opacity: 1; filter: blur(0); }
+        }
+        @keyframes slideInLeft {
+            0% { transform: translate3d(-50px, 0, 0); opacity: 0; filter: blur(4px); }
+            100% { transform: translate3d(0, 0, 0); opacity: 1; filter: blur(0); }
+        }
+        @keyframes slideOutLeft {
+            0% { transform: translate3d(0, 0, 0); opacity: 1; filter: blur(0); }
+            100% { transform: translate3d(-50px, 0, 0); opacity: 0; filter: blur(4px); }
+        }
+        @keyframes slideOutRight {
+            0% { transform: translate3d(0, 0, 0); opacity: 1; filter: blur(0); }
+            100% { transform: translate3d(50px, 0, 0); opacity: 0; filter: blur(4px); }
+        }
+
+        /* ================= 赛区高能霓虹按键 ================= */
+        .select-title { font-size: 22px; margin-bottom: 26px; color: #fff; font-weight: 800; text-shadow: 0 0 10px rgba(255,255,255,0.1); }
+        .select-title span { font-size: 12px; text-transform: uppercase; color: #64748b; display: block; margin-top: 4px; letter-spacing: 1px; }
+        .btn-group { display: flex; flex-direction: column; gap: 14px; width: 100%; }
+        .row-btns { display: flex; gap: 14px; width: 100%; }
+
+        .btn-region {
+            position: relative; padding: 20px; width: 100%; overflow: hidden;
+            background: linear-gradient(135deg, rgba(8, 20, 38, 0.8) 0%, rgba(4, 11, 22, 0.6) 100%);
+            border: 1px solid rgba(0, 240, 255, 0.25); border-radius: 16px;
+            color: #fff; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.4), inset 0 1px 1px rgba(255,255,255,0.05);
+            transition: all 0.3s var(--bezier-kinetic); touch-action: manipulation;
+        }
+        .btn-region .btn-zh { font-size: 17px; font-weight: 800; letter-spacing: 1px; text-shadow: 0 0 10px rgba(0,240,255,0.2); transition: color 0.3s; }
+        .btn-region .btn-en { font-size: 11px; font-weight: 500; text-transform: uppercase; color: #64748b; margin-top: 2px; letter-spacing: 0.5px; transition: color 0.3s; }
+        
+        /* 按钮光束掠过效果 */
+        .btn-region::before {
+            content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 240, 255, 0.2), transparent);
+        }
+        .btn-region:hover::before { left: 100%; transition: left 0.6s linear; }
+        .btn-region:hover {
+            border-color: var(--primary-neon); transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 240, 255, 0.35), inset 0 1px 1px rgba(255,255,255,0.15);
+        }
+        .btn-region:hover .btn-zh { color: var(--primary-neon); text-shadow: 0 0 15px rgba(0, 240, 255, 0.8); }
+        .btn-region:hover .btn-en { color: #fff; }
+        .btn-region:active { transform: translateY(1px) scale(0.98); }
+
+        /* 通用基础按钮 */
+        .btn {
+            position: relative; padding: 15px 20px; width: 100%;
+            border: 1px solid rgba(255,255,255,0.06); border-radius: 14px;
+            font-size: 16px; font-weight: 700; background: rgba(255,255,255,0.03); color: #fff;
+            cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px;
+            transition: all 0.25s var(--bezier-kinetic); touch-action: manipulation;
+        }
+        .btn:active { transform: scale(0.97); }
+        .btn:hover {
+            border-color: var(--primary-neon); background: rgba(0, 240, 255, 0.08);
+            box-shadow: 0 0 25px rgba(0, 240, 255, 0.25); color: var(--primary-neon);
+        }
+        
+        /* 特殊高亮赞助按钮 */
+        .btn-sponsor { 
+            background: rgba(255, 0, 127, 0.05); border-color: rgba(255, 0, 127, 0.4); border-radius: 16px; padding: 16px 20px; 
+            box-shadow: 0 4px 15px rgba(255, 0, 127, 0.1);
+        }
+        .btn-sponsor:hover { 
+            border-color: var(--secondary-neon); background: rgba(255, 0, 127, 0.12); color: #fff; 
+            box-shadow: 0 0 30px rgba(255, 0, 127, 0.45); 
+            text-shadow: 0 0 10px rgba(255,255,255,0.5);
+        }
+        
+        .btn-back {
+            background: transparent; border: 1px solid rgba(255, 255, 255, 0.08); color: #64748b;
+            padding: 10px 20px; font-size: 13px; max-width: 140px; margin: 24px auto 0 auto; border-radius: 10px;
+        }
+        .btn-back:hover { border-color: #fff; color: #fff; box-shadow: none; }
+
+        .small-btn {
+            padding: 3px 8px; border-radius: 6px; font-size: 11px; border: 1px solid rgba(0, 240, 255, 0.3);
+            background: rgba(0, 240, 255, 0.12); color: var(--primary-neon); cursor: pointer; transition: all 0.2s;
+        }
+        .small-btn:hover { background: var(--primary-neon); color: #000; box-shadow: 0 0 10px var(--primary-neon); }
+
+        /* 文字流光效果 */
+        .highlight { 
+            background: linear-gradient(90deg, var(--primary-neon), #fff, var(--primary-neon)); 
+            background-size: 200% auto;
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; 
+            font-weight: 800; font-size: 22px;
+            animation: textShine 3s linear infinite;
+        }
+        #sponsor .highlight { 
+            background: linear-gradient(90deg, var(--secondary-neon), #fff, var(--secondary-neon)); 
+            background-size: 200% auto;
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            animation: textShine 3s linear infinite;
+        }
+        @keyframes textShine {
+            0% { background-position: 0% center; }
+            100% { background-position: 200% center; }
+        }
+
+        .guide-text { color: var(--text-main); font-weight: 600; font-size: 14px; margin-top: 14px;}
+        .tips {
+            color: #94a3b8; font-size: 13px; background: rgba(255,255,255,0.02);
+            padding: 11px 16px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05);
+            display: flex; align-items: center; gap: 10px; justify-content: center; margin-top: 8px;
+        }
+        .remind-text { color: #94a3b8; font-size: 13px; line-height: 1.6; }
+
+        /* ================= 赞助看板布局 ================= */
+        .hype-container { display: flex; gap: 12px; width: 100%; justify-content: center; margin: 18px 0; }
+        .hype-node {
+            background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255,255,255,0.06);
+            padding: 12px; border-radius: 12px; flex: 1;
+            box-shadow: inset 0 1px 1px rgba(255,255,255,0.02);
+        }
+        .hype-num { font-size: 20px; color: var(--primary-neon); font-weight: 800; text-shadow: 0 0 10px rgba(0,240,255,0.3); }
+        #sponsor .hype-node:nth-child(2) .hype-num { color: var(--secondary-neon); text-shadow: 0 0 10px rgba(255,0,127,0.3); }
+        .hype-text { font-size: 12px; color: var(--text-main); margin-top: 2px; opacity: 0.9; }
+        .watermark { font-size: 11px; color: #4b5563; margin-top: 14px; opacity: 0.8; }
+
+        /* ================= 弹窗与Toast ================= */
+        .modal {
+            display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background: rgba(2, 4, 8, 0.9); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
+            justify-content: center; align-items: center; z-index: 2000; opacity: 0; transition: opacity 0.2s ease;
+        }
+        .modal.show-modal { display: flex; opacity: 1; }
+        .modal-content {
+            background: #050810; border: 1px solid rgba(0, 240, 255, 0.2); padding: 26px; border-radius: 20px;
+            width: 100%; max-width: 310px; display: flex; flex-direction: column; gap: 14px; align-items: center;
+            transform: scale3d(0.9, 0.9, 0.9); transition: transform 0.25s var(--bezier-kinetic);
+            box-shadow: 0 0 40px rgba(0,240,255,0.15);
+        }
+        .modal.show-modal .modal-content { transform: scale3d(1, 1, 1); }
+        .qrcode { width: 170px; height: 170px; border-radius: 12px; background: #fff; padding: 6px; box-shadow: 0 0 20px rgba(255,255,255,0.1); }
+
+        .toast-container {
+            position: fixed; top: 30px; left: 50%; transform: translate3d(-50%, -20px, 0);
+            background: rgba(0, 240, 255, 0.15); border: 1px solid var(--primary-neon); backdrop-filter: blur(8px);
+            padding: 8px 24px; border-radius: 8px; color: #fff; font-weight: 700; font-size: 13px; z-index: 9999;
+            opacity: 0; transition: all 0.25s var(--bezier-kinetic); pointer-events: none;
+            box-shadow: 0 0 15px rgba(0,240,255,0.3);
+        }
+        .toast-container.toast-show { transform: translate3d(-50%, 0, 0); opacity: 1; }
+
+        .footer { 
+            opacity: 0; font-size: 11px; color: #4b5563; margin-top: 26px; line-height: 1.7; text-align: center; transition: opacity 0.4s ease; z-index: 5; 
+        }
+        .footer .schedule-item { color: #8e9196; font-weight: 500; }
+        .footer.show-footer { opacity: 1; }
+        a { color: var(--primary-neon); text-decoration: none; text-shadow: 0 0 5px rgba(0,240,255,0.3); }
+
+        @media (max-width: 480px) {
+            .main-branding { flex-direction: column; gap: 12px; }
+            .logo-box { width: 85px; height: 85px; border-radius: 16px; }
+            .info-text-block { align-items: center; text-align: center; }
+            .main-url { font-size: 2.2rem; }
+            .slogan-title { font-size: 1.3rem; }
+            .row-btns { flex-direction: column; gap: 12px; }
         }
     </style>
 </head>
 <body>
-    <!-- 音频隐藏标签 -->
-    <audio id="bgMusic" loop></audio>
 
-    <!-- 开屏（纯双语） -->
-    <div class="header" id="header">
-        <div class="title">欢迎参加DCT2026线上FPV竞速赛<br>Welcome to DCT2026 Online FPV Racing</div>
-        <div class="support">Flyz远征飞提供技术支持 | Powered by Flyz Expedition</div>
-        <div class="loading"></div>
+    <!-- 🌌 多重炫彩流光粒子环境 -->
+    <div class="cyber-ambient">
+        <div class="ambient-flare-1"></div>
+        <div class="ambient-flare-2"></div>
+        <div class="ambient-flare-3"></div>
+        <div class="grid-warp"></div>
+        <div class="danmaku-container" id="danmakuBox"></div>
     </div>
 
-    <!-- 选择界面（双语优化） -->
-    <div class="select-box" id="selectBox">
-        <div class="select-title">请选择赛区<br>Select Your Region</div>
-        <div class="btn-group">
-            <button class="btn" onclick="showPanel('cn')">中国选手</button>
-            <button class="btn" onclick="showPanel('global')">International</button>
-            <!-- 新增：招赞助商按钮 -->
-            <button class="btn btn-sponsor" onclick="openEmbedPage()">招赛事赞助商 | Sponsor Us</button>
+    <audio id="bgMusic" loop></audio>
+    <div class="toast-container" id="toastBox">Copied!</div>
+
+    <div class="header" id="header">
+        <div class="main-branding">
+            <div class="logo-box">
+                <img src="https://z.wiki/u/R7lNSn61h" alt="Flyz Logo" />
+            </div>
+            <div class="info-text-block">
+                <div class="main-url" id="url">917813.com.cn</div>
+                <div class="glowing-line"></div>
+                <div class="slogan-title" id="slogan">2026DCT线上FPV竞速赛</div>
+            </div>
         </div>
     </div>
 
-    <!-- 中国选手（精简版，仅保留公众号） -->
-    <div id="cn" class="panel">
-        <div class="highlight">🔥 参赛唯一正规渠道</div>
-        <div class="remind-text">请关注官方公众号，按照公众号内指引完成报名与参赛流程</div>
-        <button class="btn" onclick="openWxModal()">查看官方公众号</button>
-        <button class="btn" onclick="backSelect()">返回选择</button>
-    </div>
+    <!-- 🟢 视口外壳（自适应高度 + 流体色彩霓虹边框） -->
+    <div class="stage-viewport" id="viewportBox">
+        <!-- 内部垂直激光扫描线 -->
+        <div class="cyber-scanner"></div>
+        
+        <!-- 卡片1：主选择菜单 -->
+        <div class="stage-card" id="selectBox">
+            <div class="select-title">
+                请选择赛区
+                <span>Select Your Racing Region</span>
+            </div>
+            <div class="btn-group">
+                <div class="row-btns">
+                    <button class="btn-region" onclick="navigateTo('cn')">
+                        <span class="btn-zh">中国选手</span>
+                        <span class="btn-en">China Mainland</span>
+                    </button>
+                    <button class="btn-region" onclick="navigateTo('global')">
+                        <span class="btn-zh">国际选手</span>
+                        <span class="btn-en">International</span>
+                    </button>
+                </div>
+                <button class="btn btn-sponsor" onclick="navigateTo('sponsor')">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                    招赛事赞助商 | Sponsor Us
+                </button>
+            </div>
+        </div>
 
-    <!-- 国际选手 -->
-    <div id="global" class="panel">
-        <div class="highlight">🌍 Official Communication Channel</div>
-        <div class="guide-text">Click to join our Facebook Group</div>
-        <a href="https://www.facebook.com/share/g/18Qqc8zNKL/?mibextid=wwXIfr" target="_blank" class="btn">Facebook Group</a>
-        <div class="tips">Or copy link <button class="small-btn" onclick="copyLink()">Copy</button></div>
-        <div class="guide-text">Contact via Email (Alternative)</div>
-        <div class="tips">lyz201966@gmail.com <button class="small-btn" onclick="copyEmail()">Copy</button></div>
-        <button class="btn" onclick="backSelect()">返回选择</button>
+        <!-- 卡片2：中国选手 -->
+        <div id="cn" class="stage-card">
+            <div class="highlight">🔥 参赛唯一正规渠道</div>
+            <div class="remind-text" style="margin: 18px 0;">请关注官方公众号，按照官方发布的研究与赛事指引，完成选手正规报名与积分赛流程。</div>
+            <button class="btn" onclick="openWxModal('normal')">查看官方公众号</button>
+            <button class="btn btn-back" onclick="navigateTo('selectBox')">返回主界面</button>
+        </div>
+
+        <!-- 卡片3：国际选手 -->
+        <div id="global" class="stage-card">
+            <div class="highlight">🌍 Official Channel</div>
+            <div class="guide-text">Click to join our Facebook Group</div>
+            <a href="https://www.facebook.com/share/g/18Qqc8zNKL/?mibextid=wwXIfr" target="_blank" class="btn" style="margin: 14px 0;">Facebook Group</a>
+            <div class="tips">Or copy link <button class="small-btn" onclick="copyText('https://www.facebook.com/share/g/18Qqc8zNKL/?mibextid=wwXIfr', 'Copy')">Copy</button></div>
+            <div class="guide-text" style="margin-top: 18px;">Contact via Email</div>
+            <div class="tips">lyz201966@gmail.com <button class="small-btn" onclick="copyText('lyz201966@gmail.com', 'Copy')">Copy</button></div>
+            <button class="btn btn-back" onclick="navigateTo('selectBox')">Back to Main</button>
+        </div>
+
+        <!-- 卡片4：赞助商招商看板 -->
+        <div id="sponsor" class="stage-card">
+            <div class="highlight">🏆 DCT2026 赛事招商</div>
+            
+            <div class="hype-container">
+                <div class="hype-node">
+                    <div class="hype-num">100+</div>
+                    <div class="hype-text">顶级飞手同台</div>
+                </div>
+                <div class="hype-node">
+                    <div class="hype-num">多平台</div>
+                    <div class="hype-text">全程高燃直播</div>
+                </div>
+            </div>
+
+            <div class="remind-text" style="text-align: left; background: rgba(255,255,255,0.02); padding: 12px 14px; border-radius: 12px; border-left: 3px solid var(--secondary-neon); margin-bottom: 18px;">
+                🚀 <b>精准曝光，破圈引流！</b><br>
+                本届赛事将深度触达海量穿越机发烧友群体，为您的品牌带来精准的商业引流声量。
+            </div>
+
+            <button class="btn btn-sponsor" onclick="openWxModal('sponsor')">关注公众号回复【赞助】</button>
+            <div class="watermark">数据提供：Flyz远征飞 · 真实可查</div>
+            <button class="btn btn-back" onclick="navigateTo('selectBox')">返回主界面</button>
+        </div>
     </div>
 
     <!-- 公众号弹窗 -->
-    <div class="modal" id="wxModal">
+    <div class="modal" id="wxModal" onclick="closeModal(event)">
         <div class="modal-content">
-            <div class="highlight">远征飞官方公众号</div>
-            <img src="https://z.wiki/u/wVwJ9Dxzo" class="qrcode" id="qrImage" alt="官方公众号">
-            <button class="close-btn" onclick="closeModal()">关闭</button>
+            <div id="modalTitle" class="highlight" style="font-size: 16px;">远征飞官方公众号</div>
+            <div id="modalSub" style="font-size: 12px; color: var(--text-main); text-align: center; display: none;">关注后在后台回复文字：<span style="color: var(--secondary-neon); font-weight:700;">赞助</span></div>
+            <img src="https://z.wiki/u/wVwJ9Dxzo" class="qrcode" alt="官方公众号">
+            <div style="font-size:11px; color:#64748b; margin-top: 4px;">长按或扫码识别二维码</div>
+            <button class="btn btn-back" style="margin-top:8px; padding:8px 20px;" onclick="closeModalForce()">关闭</button>
         </div>
     </div>
 
-    <!-- 全屏内嵌网页层（带加载动画） -->
-    <div class="full-embed-container" id="embedContainer">
-        <div class="embed-loader" id="embedLoader">
-            <div class="loading"></div>
-            <div style="color: #666; font-size: 16px; margin-top: -20px;">正在加载赞助页面...</div>
-        </div>
-        <button class="embed-back-btn" onclick="closeEmbedPage()">返回赛事页 Return</button>
-        <iframe class="full-embed-iframe" id="embedIframe" src=""></iframe>
-    </div>
-
-    <!-- 页脚（已修改为英文技术支持） -->
     <div class="footer" id="footer">
-        📅 比赛时间：2026年7月底 | 奖品丰厚<br>
-        Event Date: Late July 2026 | Great Prizes<br>
+        <div class="schedule-item">📅 比赛时间：2026年7月中旬</div>
+        <div class="schedule-item" style="margin-bottom: 6px;">Event Schedule: Mid-July 2026</div>
         Technical Support: <a href="http://yzbjfpv.top" target="_blank">Flyz远征飞</a>
     </div>
 
     <script>
-        // 音乐地址配置
         const musicUrls = {
             cn: "https://music.163.com/song/media/outer/url?id=3378471678.mp3",
-            global: "https://music.163.com/song/media/outer/url?id=34380473.mp3"
+            global: "https://music.163.com/song/media/outer/url?id=34380473.mp3",
+            sponsor: "https://music.163.com/song/media/outer/url?id=34380473.mp3"
         };
+        const sponsors = ["翼效架构", "PandaRC", "HaoYeRC", "嘟嘟电池", "Extreme极限电池", "大黄狗电池", "BosLi-Po博氏电池", "SharpRace", "UPRN-GPS", "飞阅传媒", "PokRC魄客模型", "GeeGoo", "丰云无刷", "Flyz远征飞"];
+        
         const audio = document.getElementById('bgMusic');
-
-        // 状态锁
         let currentPlayType = null;
+        let currentActiveStageId = 'selectBox';
+        const viewportBox = document.getElementById('viewportBox');
 
-        // 图片预加载
-        const qrPreload = new Image();
-        qrPreload.src = "https://z.wiki/u/wVwJ9Dxzo";
-
-        // 3秒后切换界面
-        setTimeout(() => {
-            document.getElementById('header').style.display = 'none';
-            document.getElementById('selectBox').style.display = 'block';
-            document.getElementById('footer').style.display = 'block';
-        }, 3000);
-
-        // 面板切换 + 智能音乐处理
-        function showPanel(type) {
-            document.getElementById('selectBox').style.display = 'none';
-            document.querySelectorAll('.panel').forEach(item => item.classList.remove('show'));
-            document.getElementById(type).classList.add('show');
-            
-            if (musicUrls[type]) {
-                if (currentPlayType !== type) {
-                    audio.src = musicUrls[type]; 
-                    currentPlayType = type;
+        let sponsorPool = [];
+        function getNextUniqueSponsor() {
+            if (sponsorPool.length === 0) {
+                sponsorPool = [...sponsors];
+                for (let i = sponsorPool.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [sponsorPool[i], sponsorPool[j]] = [sponsorPool[j], sponsorPool[i]];
                 }
-                audio.play().catch(err => {
-                    console.log("播放被拦截:", err);
-                });
+            }
+            return sponsorPool.pop();
+        }
+
+        const TRACK_COUNT = 6;
+        const trackOccupied = new Array(TRACK_COUNT).fill(false);
+        const danmakuBox = document.getElementById('danmakuBox');
+
+        function generateDanmaku() {
+            let freeTracks = [];
+            trackOccupied.forEach((status, idx) => { if (!status) freeTracks.push(idx); });
+            if (freeTracks.length === 0) return;
+
+            const randomTrackIdx = freeTracks[Math.floor(Math.random() * freeTracks.length)];
+            trackOccupied[randomTrackIdx] = true;
+
+            const el = document.createElement('div');
+            el.className = "danmaku-item danmaku-sponsor";
+            el.innerText = "往届赞助商 · " + getNextUniqueSponsor();
+
+            const topPercent = 15 + (randomTrackIdx * (60 / TRACK_COUNT));
+            el.style.top = topPercent + "%";
+
+            const duration = Math.floor(Math.random() * 3) + 8;
+            el.style.animation = `danmakuFly ${duration}s linear forwards`;
+            danmakuBox.appendChild(el);
+
+            setTimeout(() => { trackOccupied[randomTrackIdx] = false; }, duration * 500);
+            setTimeout(() => { el.remove(); }, duration * 1000);
+        }
+
+        function splitLetters(id) {
+            const el = document.getElementById(id);
+            const text = el.textContent.trim();
+            el.innerHTML = text.split('').map((char, i) => {
+                if(char === ' ') return '&nbsp;';
+                return `<span style="animation-delay: ${0.1 + i * 0.03}s;">${char}</span>`;
+            }).join('');
+        }
+
+        function resizeViewportToFit(stageId) {
+            const targetStage = document.getElementById(stageId);
+            targetStage.style.display = 'block';
+            const targetHeight = targetStage.offsetHeight;
+            targetStage.style.display = ''; 
+            viewportBox.style.height = `${targetHeight}px`;
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            splitLetters('url');
+            splitLetters('slogan');
+
+            setTimeout(() => {
+                const header = document.getElementById('header');
+                header.style.transform = 'scale3d(1.1, 1.1, 1.1) translateZ(50px)';
+                header.style.filter = 'blur(10px)';
+                header.style.opacity = '0';
+                
+                setTimeout(() => {
+                    header.style.display = 'none';
+                    
+                    viewportBox.style.display = 'block';
+                    resizeViewportToFit('selectBox');
+                    viewportBox.style.opacity = '1';
+
+                    const selectBox = document.getElementById('selectBox');
+                    selectBox.classList.add('active-stage', 'slide-in-right');
+                    
+                    document.getElementById('footer').classList.add('show-footer');
+                    
+                    for(let i = 0; i < 4; i++) { setTimeout(generateDanmaku, i * 400); }
+                    setInterval(generateDanmaku, 1100);
+                }, 300);
+            }, 2500);
+        });
+
+        function navigateTo(targetStageId) {
+            if (targetStageId === currentActiveStageId) return;
+            
+            const currentStage = document.getElementById(currentActiveStageId);
+            const nextStage = document.getElementById(targetStageId);
+
+            resizeViewportToFit(targetStageId);
+
+            currentStage.classList.remove('active-stage', 'slide-in-right', 'slide-in-left');
+            nextStage.classList.remove('active-stage', 'slide-in-right', 'slide-in-left');
+
+            if (targetStageId === 'selectBox') {
+                currentStage.classList.add('leave-stage', 'slide-out-right');
+                nextStage.style.display = 'block';
+                nextStage.classList.add('active-stage', 'slide-in-left');
+            } else {
+                currentStage.classList.add('leave-stage', 'slide-out-left');
+                nextStage.style.display = 'block';
+                nextStage.classList.add('active-stage', 'slide-in-right');
+            }
+
+            function onAnimationEnd() {
+                if (currentStage.classList.contains('leave-stage')) {
+                    currentStage.style.display = 'none';
+                    currentStage.classList.remove('leave-stage', 'slide-out-left', 'slide-out-right');
+                }
+                currentStage.removeEventListener('animationend', onAnimationEnd);
+            }
+            currentStage.addEventListener('animationend', onAnimationEnd);
+            
+            currentActiveStageId = targetStageId;
+
+            if (targetStageId === 'selectBox') {
+                audio.pause();
+                audio.currentTime = 0;
+                currentPlayType = null;
+            } else if (musicUrls[targetStageId]) {
+                audio.pause(); 
+                audio.src = musicUrls[targetStageId]; 
+                currentPlayType = targetStageId;
+                const playPromise = audio.play();
+                if (playPromise !== undefined) {
+                    playPromise.catch(() => { console.log("Audio play deferred."); });
+                }
             }
         }
+
+        function openWxModal(type) { 
+            const modal = document.getElementById('wxModal');
+            const title = document.getElementById('modalTitle');
+            const sub = document.getElementById('modalSub');
+
+            if (type === 'sponsor') {
+                title.innerText = "官方招商唯一通道";
+                sub.style.display = 'block';
+            } else {
+                title.innerText = "远征飞官方公众号";
+                sub.style.display = 'none';
+            }
+            modal.style.display = 'flex'; modal.getBoundingClientRect();
+            modal.classList.add('show-modal');
+        }
+
+        function closeModalForce() {
+            const modal = document.getElementById('wxModal');
+            modal.classList.remove('show-modal');
+            setTimeout(() => { modal.style.display = 'none'; }, 200);
+        }
+
+        function closeModal(e) { if(e.target.id === 'wxModal') closeModalForce(); }
         
-        function backSelect() {
-            document.querySelectorAll('.panel').forEach(item => item.classList.remove('show'));
-            document.getElementById('selectBox').style.display = 'block';
+        function showToast(text) {
+            const toast = document.getElementById('toastBox'); toast.innerText = text;
+            toast.classList.add('toast-show'); setTimeout(() => { toast.classList.remove('toast-show'); }, 1500);
         }
-
-        // 弹窗控制
-        function openWxModal() { document.getElementById('wxModal').style.display = 'flex'; }
-        function closeModal() { document.querySelectorAll('.modal').forEach(item => item.style.display = 'none'); }
-
-        // 🔥 打开赞助全屏内嵌页
-        function openEmbedPage() {
-            const container = document.getElementById('embedContainer');
-            const iframe = document.getElementById('embedIframe');
-            const loader = document.getElementById('embedLoader');
-            
-            loader.style.display = 'flex'; // 显示加载动画
-            container.style.display = 'block'; // 打开容器
-            iframe.src = "https://917813.com.cn/fpv/2026dctrace/zz.html"; // 开始加载动态网页
-            
-            // 监听 iframe 加载完成事件
-            iframe.onload = function() {
-                loader.style.display = 'none'; // 网页加载完毕后，隐藏加载动画
-            };
-        }
-
-        // 关全屏内嵌页
-        function closeEmbedPage() {
-            document.getElementById('embedContainer').style.display = 'none';
-            document.getElementById('embedIframe').src = ""; // 退出时清空地址，节省流量并停止内嵌页运行
-        }
-
-        // 复制功能
-        function copyLink() {
-            navigator.clipboard.writeText("https://www.facebook.com/share/g/18Qqc8zNKL/?mibextid=wwXIfr")
-            .then(()=>alert("Copied!")).catch(()=>alert("Failed!"));
-        }
-        function copyEmail() {
-            navigator.clipboard.writeText("lyz201966@gmail.com")
-            .then(()=>alert("Copied!")).catch(()=>alert("Failed!"));
-        }
+        function copyText(str, successMsg) { navigator.clipboard.writeText(str).then(() => showToast(successMsg)).catch(() => showToast("Failed")); }
     </script>
 </body>
 </html>
