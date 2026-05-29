@@ -1,0 +1,861 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YZCloud 智能硬盘后台管理系统</title>
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@4/dist/tesseract.min.js"></script>
+    <style>
+        :root {
+            --bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+            --panel-bg: rgba(30, 41, 59, 0.45);
+            --panel-border: rgba(255, 255, 255, 0.08);
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --accent-primary: #3b82f6;
+            --accent-glowing: #6366f1;
+            --accent-success: #10b981;
+            --accent-danger: #ef4444;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: var(--bg-gradient);
+            background-attachment: fixed;
+            color: var(--text-main);
+            padding: 40px 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .main-container {
+            width: 100%;
+            max-width: 1400px;
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border-radius: 24px;
+            padding: 32px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            border: 1px solid var(--panel-border);
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 32px;
+            border-bottom: 1px solid var(--panel-border);
+            padding-bottom: 20px;
+        }
+
+        h1 {
+            font-size: 28px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            background: linear-gradient(to right, #fff, #94a3b8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .system-status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            color: var(--text-muted);
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            background-color: var(--accent-success);
+            border-radius: 50%;
+            box-shadow: 0 0 12px var(--accent-success);
+        }
+
+        .grid-layout {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+
+        .card {
+            background: var(--panel-bg);
+            border: 1px solid var(--panel-border);
+            border-radius: 16px;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            box-shadow: inset 0 1px 1px rgba(255,255,255,0.05);
+        }
+
+        .card h3 {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* 摄像头视窗改进：极客扫描框线条 */
+        .video-wrapper {
+            position: relative;
+            width: 100%;
+            height: 260px;
+            border-radius: 12px;
+            overflow: hidden;
+            background: #020617;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+
+        #video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .scanner-laser {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--accent-primary), transparent);
+            animation: scan 3s linear infinite;
+            display: none;
+        }
+
+        @keyframes scan {
+            0% { top: 0%; }
+            50% { top: 100%; }
+            100% { top: 0%; }
+        }
+
+        #canvas { display: none; }
+
+        /* 表单控件美化 */
+        label {
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-bottom: -8px;
+            font-weight: 500;
+        }
+
+        input[type="text"], input[type="number"], select {
+            width: 100%;
+            padding: 12px 16px;
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: var(--text-main);
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        input:focus, select:focus {
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+            outline: none;
+        }
+
+        .file-upload-wrapper {
+            position: relative;
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        /* 结果显示微盘 */
+        .result-box {
+            background: rgba(15, 23, 42, 0.4);
+            border: 1px dashed rgba(255, 255, 255, 0.1);
+            padding: 14px;
+            border-radius: 8px;
+            font-size: 14px;
+            min-height: 54px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .result-box span {
+            color: var(--accent-primary);
+            font-family: monospace;
+            font-weight: 600;
+        }
+
+        /* 按钮原子设计框架 */
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 11px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-glowing));
+            color: white;
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
+        }
+
+        .btn-danger {
+            background: rgba(239, 68, 68, 0.2);
+            border: 1px solid rgba(239, 68, 68, 0.4);
+            color: #fca5a5;
+        }
+
+        .btn-danger:hover {
+            background: rgba(239, 68, 68, 0.4);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.08);
+            color: var(--text-main);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        /* 现代高级数据表格 */
+        .table-container {
+            background: var(--panel-bg);
+            border: 1px solid var(--panel-border);
+            border-radius: 16px;
+            overflow: hidden;
+            margin-top: 24px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 14px;
+        }
+
+        th {
+            background: rgba(15, 23, 42, 0.6);
+            padding: 16px 20px;
+            color: var(--text-muted);
+            font-weight: 600;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid var(--panel-border);
+        }
+
+        td {
+            padding: 16px 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+            color: var(--text-main);
+            vertical-align: middle;
+        }
+
+        tr.selected-row {
+            background: rgba(59, 130, 246, 0.1) !important;
+            border-left: 4px solid var(--accent-primary);
+        }
+
+        tr:hover {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        /* 高级渐变进度条 */
+        .progress-container {
+            width: 120px;
+        }
+        .progress-wrap {
+            width: 100%;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+            overflow: hidden;
+            margin-bottom: 4px;
+        }
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent-primary), var(--accent-success));
+            border-radius: 3px;
+            width: 0%;
+            transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* 状态微标签 */
+        .badge {
+            display: inline-flex;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        .badge-online { background: rgba(16, 185, 129, 0.15); color: #34d399; }
+        .badge-offline { background: rgba(148, 163, 184, 0.15); color: #cbd5e1; }
+
+        /* 文件微架构树 */
+        .file-cell {
+            max-width: 260px;
+            max-height: 120px;
+            overflow-y: auto;
+        }
+        .file-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(0,0,0,0.15);
+            padding: 4px 8px;
+            border-radius: 4px;
+            margin-bottom: 4px;
+            font-size: 12px;
+            color: #cbd5e1;
+            border: 1px solid rgba(255,255,255,0.02);
+        }
+        .file-item button {
+            background: transparent;
+            border: none;
+            color: var(--accent-danger);
+            cursor: pointer;
+            font-size: 11px;
+        }
+
+        /* 磨砂弹窗中心 */
+        .modal-mask {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(2, 6, 23, 0.7);
+            backdrop-filter: blur(8px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 999;
+            transition: opacity 0.3s;
+        }
+        .modal-box {
+            width: 460px;
+            padding: 28px;
+            background: #1e293b;
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            box-shadow: 0 20px 25px -5px rgba(0,0,0,0.3);
+        }
+        .modal-box h4 { font-size: 18px; font-weight: 600; }
+        .hide { display: none !important; opacity: 0; pointer-events: none; }
+
+        .action-icon {
+            cursor: pointer;
+            transition: opacity 0.2s;
+            opacity: 0.7;
+        }
+        .action-icon:hover { opacity: 1; }
+    </style>
+</head>
+<body>
+    <div class="main-container">
+        <header>
+            <div>
+                <h1>YZCloud 硬盘智能后台管理</h1>
+                <p style="color: var(--text-muted); font-size: 13px; margin-top:4px;">基于光学字符识别 (OCR) 技术的高效边缘盘库系统</p>
+            </div>
+            <div class="system-status">
+                <div class="status-dot"></div>
+                <span>Engine Active</span>
+            </div>
+        </header>
+
+        <div class="grid-layout">
+            <div class="card">
+                <h3>📷 智能视觉扫描分析</h3>
+                <div class="video-wrapper">
+                    <video id="video" autoplay playsinline></video>
+                    <div class="scanner-laser" id="laser"></div>
+                </div>
+                <canvas id="canvas"></canvas>
+                
+                <div class="result-box">
+                    <label>动态流 SN 识别线</label>
+                    <span id="snResult">未开启视觉引擎</span>
+                </div>
+                <div class="btn-group">
+                    <button class="btn btn-primary" id="camToggleBtn">开启视觉扫描</button>
+                    <button class="btn btn-secondary" id="confirmSnBtn">录入新建硬盘</button>
+                </div>
+                
+                <div class="result-box">
+                    <label>文档树 OCR 缓冲提取</label>
+                    <span id="fileOcrResult" style="color: var(--text-muted); font-weight: normal;">暂无捕获内容</span>
+                </div>
+                <div class="btn-group">
+                    <button class="btn btn-secondary" id="ocrFileBtn">抓拍解析根目录</button>
+                    <button class="btn btn-primary" id="appendFileBtn">追加文件到指定盘</button>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>⚙️ 盘符对象特征修改</h3>
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
+                    <div>
+                        <label>重命名别名</label>
+                        <input type="text" id="diskNameInput" placeholder="请先在列表选中硬盘" style="margin-top:8px;">
+                    </div>
+                    <div>
+                        <label>部署状态机</label>
+                        <select id="diskStatusSelect" style="margin-top:8px;">
+                            <option value="在线">在线 (Online)</option>
+                            <option value="离线">离线 (Offline)</option>
+                        </select>
+                    </div>
+                </div>
+                <button class="btn btn-primary" id="saveInfoBtn" style="width: 100%;">同步快照修改</button>
+
+                <div style="border-top:1px solid var(--panel-border); my: 8px;"></div>
+
+                <h3>💾 结构化数据集序列化</h3>
+                <div class="file-upload-wrapper">
+                    <input type="file" id="importFile" accept=".txt">
+                </div>
+                <div class="btn-group">
+                    <button class="btn btn-secondary" id="importDataBtn">导入外部 TXT 数据</button>
+                    <button class="btn btn-secondary" id="exportDataBtn">导出架构 TXT</button>
+                </div>
+
+                <div style="border-top:1px solid var(--panel-border); my: 8px;"></div>
+
+                <h3>🧹 安全擦除底层域</h3>
+                <button class="btn btn-danger" id="clearAllFileBtn">物理清空当前选中盘虚拟文件树</button>
+            </div>
+        </div>
+
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Node</th>
+                        <th>别名标识</th>
+                        <th>SN 序列号</th>
+                        <th>介质映射</th>
+                        <th>存储空间拓扑</th>
+                        <th>状态</th>
+                        <th>根虚拟文件树结构</th>
+                        <th style="text-align: right;">核心控制句柄</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <div id="settingModal" class="modal-mask hide">
+        <div class="modal-box">
+            <h4>🛠️ 物理链路层配置重调</h4>
+            <div>
+                <label>修改映射名称</label>
+                <input type="text" id="setDiskName" style="margin-top:6px;">
+            </div>
+            <div>
+                <label>校准硬件层 SN</label>
+                <input type="text" id="setDiskSn" style="margin-top:6px;">
+            </div>
+            <div>
+                <label>硬件协议标准</label>
+                <select id="setDiskType" style="margin-top:6px;">
+                    <option value="固态硬盘">企业级固态硬盘 (SSD)</option>
+                    <option value="机械硬盘">机械类阵列盘 (HDD)</option>
+                    <option value="TF卡">嵌入式闪存卡 (MicroSD)</option>
+                    <option value="U盘">移动闪存设备 (USB-Drive)</option>
+                </select>
+            </div>
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
+                <div>
+                    <label>设计全容量 (GB)</label>
+                    <input type="number" id="setTotalSize" style="margin-top:6px;">
+                </div>
+                <div>
+                    <label>剩余自由容量 (GB)</label>
+                    <input type="number" id="setFreeSize" style="margin-top:6px;">
+                </div>
+            </div>
+            <div class="btn-group" style="justify-content: flex-end; margin-top: 8px;">
+                <button class="btn btn-secondary" id="cancelSetBtn">回滚配置</button>
+                <button class="btn btn-primary" id="submitSetBtn">核准并下发</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const video = document.getElementById('video');
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        const laser = document.getElementById('laser');
+        const snResult = document.getElementById('snResult');
+        const fileOcrResult = document.getElementById('fileOcrResult');
+        const tableBody = document.getElementById('tableBody');
+        const diskNameInput = document.getElementById('diskNameInput');
+        const diskStatusSelect = document.getElementById('diskStatusSelect');
+        const settingModal = document.getElementById('settingModal');
+        const camToggleBtn = document.getElementById('camToggleBtn');
+
+        let mediaStream = null;
+        let currentSN = '';
+        let currentFileText = '';
+        let snHistory = [];
+        let selectIndex = -1;
+        let settingTargetIndex = -1;
+        let diskList = [];
+        
+        // 核心互斥锁与定时句柄
+        let ocrInterval = null; 
+        let isOcrProcessing = false; 
+
+        function init() {
+            const local = localStorage.getItem('yzCloudDiskData');
+            if (local) diskList = JSON.parse(local);
+            renderTable();
+        }
+
+        async function openCamera() {
+            try {
+                mediaStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
+                video.srcObject = mediaStream;
+                camToggleBtn.textContent = '停止视觉扫描';
+                camToggleBtn.classList.replace('btn-primary', 'btn-danger');
+                laser.style.display = 'block';
+                snHistory = []; // 清空防抖残余队列
+                startAutoOCR();
+            } catch (e) {
+                alert('摄像头拉取指令被拒绝或设备不存在，请核验协议及HTTPS环境。');
+            }
+        }
+
+        function closeCamera() {
+            if (mediaStream) {
+                mediaStream.getTracks().forEach(track => track.stop());
+                mediaStream = null;
+            }
+            video.srcObject = null;
+            camToggleBtn.textContent = '开启视觉扫描';
+            camToggleBtn.classList.replace('btn-danger', 'btn-primary');
+            laser.style.display = 'none';
+            stopAutoOCR();
+        }
+
+        function startAutoOCR() {
+            if (ocrInterval) return;
+            ocrInterval = setInterval(async () => {
+                // 经典互斥锁：如果上一次运算未结束，跳过本轮，防止极端卡顿与内存泄漏
+                if (isOcrProcessing) return; 
+                isOcrProcessing = true;
+                
+                try {
+                    const text = await getOcrText();
+                    if(text) {
+                        const rawSn = extractSN(text);
+                        currentSN = getMidValue(rawSn);
+                        snResult.innerText = currentSN || '扫描线就绪...未检出有效格式 S/N';
+                    }
+                } catch(err) {
+                    console.error("OCR Compute Frame Error:", err);
+                } finally {
+                    isOcrProcessing = false;
+                }
+            }, 3500); 
+        }
+
+        function stopAutoOCR() {
+            clearInterval(ocrInterval);
+            ocrInterval = null;
+        }
+
+        async function getOcrText() {
+            if (!mediaStream || video.readyState !== video.HAVE_ENOUGH_DATA) return '';
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+            const img = canvas.toDataURL('image/png');
+            const res = await Tesseract.recognize(img, 'chi_sim+eng', { logger: () => {} });
+            return res.data.text;
+        }
+
+        function extractSN(text) {
+            const reg = /S\/N[:：]\s*([\w\d_-]+)/i;
+            const match = reg.exec(text);
+            return match ? match[1].trim() : '';
+        }
+
+        function getMidValue(val) {
+            if (!val) return '';
+            snHistory.push(val);
+            if (snHistory.length > 3) snHistory.shift();
+            const arr = [...snHistory].sort();
+            return arr[Math.floor(arr.length / 2)];
+        }
+
+        function getUsedPercent(total, free) {
+            total = Number(total) || 0;
+            free = Number(free) || 0;
+            if (total <= 0) return 0;
+            let percent = ((total - free) / total) * 100;
+            return Math.min(Math.max(percent, 0), 100).toFixed(1);
+        }
+
+        function renderTable() {
+            tableBody.innerHTML = '';
+            diskList.forEach((item, idx) => {
+                const tr = document.createElement('tr');
+                if (idx === selectIndex) tr.classList.add('selected-row');
+
+                let fileHtml = '';
+                if (item.fileList && item.fileList.length > 0) {
+                    item.fileList.forEach((file, fIdx) => {
+                        fileHtml += `
+                        <div class="file-item">
+                            <span>📄 ${file}</span>
+                            <button onclick="delSingleFile(${idx},${fIdx})">✕</button>
+                        </div>`;
+                    });
+                } else {
+                    fileHtml = '<div style="color:var(--text-muted);font-size:12px;">Empty Tree</div>';
+                }
+
+                const percent = getUsedPercent(item.totalSize, item.freeSize);
+                const badgeClass = item.status === '在线' ? 'badge-online' : 'badge-offline';
+
+                tr.innerHTML = `
+                    <td style="font-family: monospace; color:var(--text-muted)">#${String(idx + 1).padStart(2, '0')}</td>
+                    <td style="font-weight:600;">${item.name}</td>
+                    <td style="font-family: monospace; color:var(--accent-primary)">${item.sn}</td>
+                    <td>${item.type || "机械硬盘"}</td>
+                    <td>
+                        <div class="progress-container">
+                            <div class="progress-wrap"><div class="progress-bar" style="width:${percent}%"></div></div>
+                            <small style="color:var(--text-muted); font-size:11px;">${percent}% (${item.totalSize - item.freeSize}/${item.totalSize}G)</small>
+                        </div>
+                    </td>
+                    <td><span class="badge ${badgeClass}">${item.status}</span></td>
+                    <td class="file-cell">${fileHtml}</td>
+                    <td style="text-align: right;">
+                        <span class="action-icon" onclick="openSetting(${idx})" style="margin-right:12px;" title="配置主板层参数">⚙️</span>
+                        <button class="btn btn-secondary" style="padding: 6px 12px; font-size:12px;" onclick="selectDisk(${idx})">选中</button>
+                        <button class="btn btn-danger" style="padding: 6px 12px; font-size:12px; margin-left:4px;" onclick="delDisk(${idx})">注销</button>
+                    </td>
+                `;
+                tableBody.appendChild(tr);
+            });
+            localStorage.setItem('yzCloudDiskData', JSON.stringify(diskList));
+        }
+
+        window.openSetting = function(idx) {
+            settingTargetIndex = idx;
+            const item = diskList[idx];
+            document.getElementById('setDiskName').value = item.name || '';
+            document.getElementById('setDiskSn').value = item.sn || '';
+            document.getElementById('setDiskType').value = item.type || '机械硬盘';
+            document.getElementById('setTotalSize').value = item.totalSize || '';
+            document.getElementById('setFreeSize').value = item.freeSize || '';
+            settingModal.classList.remove('hide');
+        }
+
+        window.selectDisk = function (idx) {
+            selectIndex = idx;
+            const item = diskList[idx];
+            diskNameInput.value = item.name;
+            diskStatusSelect.value = item.status;
+            renderTable();
+        }
+
+        window.delDisk = function (idx) {
+            if (!confirm('确认剥离该磁盘全部总账记录？')) return;
+            diskList.splice(idx, 1);
+            if(selectIndex === idx) {
+                selectIndex = -1;
+                diskNameInput.value = '';
+            }
+            renderTable();
+        }
+
+        window.delSingleFile = function (diskIdx, fileIdx) {
+            diskList[diskIdx].fileList.splice(fileIdx, 1);
+            renderTable();
+        }
+
+        camToggleBtn.addEventListener('click', () => {
+            if (mediaStream) closeCamera(); else openCamera();
+        });
+
+        document.getElementById('confirmSnBtn').addEventListener('click', () => {
+            if (!currentSN || currentSN.includes('等待') || currentSN.includes('未开启')) {
+                alert('底层分析器当前未拦截到有效硬件层 SN 符号');
+                return;
+            }
+            diskList.push({
+                name: `CloudNode_${currentSN.slice(-4)}`,
+                sn: currentSN,
+                type: "固态硬盘",
+                status: '在线',
+                totalSize: 512,
+                freeSize: 512,
+                fileList: []
+            });
+            currentSN = '';
+            snResult.innerText = '录入成功，等待下一链路节点...';
+            renderTable();
+        });
+
+        document.getElementById('ocrFileBtn').addEventListener('click', async () => {
+            if (!mediaStream) { alert('请先启动中央视觉引擎'); return; }
+            fileOcrResult.innerText = '深度光学矩阵分析中...请保持设备平稳';
+            const text = await getOcrText();
+            currentFileText = text;
+            fileOcrResult.innerText = text.substring(0, 100) + (text.length > 100 ? '...' : '');
+        });
+
+        document.getElementById('appendFileBtn').addEventListener('click', () => {
+            if (selectIndex === -1) { alert('调度锁锁闭：请在账目中明确目标盘符'); return; }
+            if (!currentFileText.trim()) { alert('分析缓冲区为空，未捕捉到文本结构'); return; }
+            
+            const lines = currentFileText.split('\n')
+                            .map(l => l.trim())
+                            .filter(l => l.length > 1 && !l.includes('S/N'));
+            
+            diskList[selectIndex].fileList.push(...lines);
+            currentFileText = '';
+            fileOcrResult.innerText = '内容已成功写入总账缓冲区';
+            renderTable();
+        });
+
+        document.getElementById('saveInfoBtn').addEventListener('click', () => {
+            if (selectIndex === -1) { alert('当前未指定更改实体域'); return; }
+            const newName = diskNameInput.value.trim();
+            if (!newName) return;
+            diskList[selectIndex].name = newName;
+            diskList[selectIndex].status = diskStatusSelect.value;
+            renderTable();
+            alert('分布式快照属性同步落盘成功');
+        });
+
+        document.getElementById('clearAllFileBtn').addEventListener('click', () => {
+            if (selectIndex === -1) { alert('未选中操作域'); return; }
+            if (!confirm('此操作将对选中节点的目录树执行全零填充覆盖（不可逆），是否继续？')) return;
+            diskList[selectIndex].fileList = [];
+            renderTable();
+        });
+
+        // 导出架构明文 TXT
+        document.getElementById('exportDataBtn').addEventListener('click', () => {
+            let txt = "YZCloud_DISK_METADATA_STREAM_SNAPSHOT\n=====================================\n";
+            diskList.forEach((item, idx) => {
+                txt += `【序号${idx+1}】\n硬盘名称：${item.name}\nSN编号：${item.sn}\n硬盘类型：${item.type || "机械硬盘"}\n总容量(GB)：${item.totalSize || 0}\n剩余容量(GB)：${item.freeSize || 0}\n运行状态：${item.status}\n文件列表：\n`;
+                if (item.fileList && item.fileList.length > 0) {
+                    item.fileList.forEach(f => txt += f + '\n');
+                } else {
+                    txt += "无\n";
+                }
+                txt += "------------------------------------\n";
+            });
+            const blob = new Blob([txt], { type: 'text/plain;charset=utf-8' });
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = `YZCloud_DataSnapshot_${new Date().toISOString().slice(0,10)}.txt`;
+            a.click();
+        });
+
+        // 完美修复：全面兼容 Unix(\\n) 与 Windows(\\r\\n) 换行符的稳健导入解析内核
+        document.getElementById('importDataBtn').addEventListener('click', () => {
+            const file = document.getElementById('importFile').files[0];
+            if (!file) { alert('请先选择需要读入的明文快照文件'); return; }
+            const reader = new FileReader();
+            reader.onload = e => {
+                let content = e.target.result;
+                if (!confirm('导入外源快照序列将完全覆盖本地 LocalStorage，是否同步？')) return;
+                try {
+                    // 核心修复点：将外源字符串中所有换行标识符统一洗白为标准 \n，防止死锁
+                    content = content.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
+
+                    // 利用弹性正则解构块数据域
+                    const reg = /【序号\d+】\n硬盘名称：(.*?)\nSN编号：(.*?)\n硬盘类型：(.*?)\n总容量\(GB\)：(.*?)\n剩余容量\(GB\)：(.*?)\n运行状态：(.*?)\n文件列表：\n([\s\S]*?)(?=\n------------------------------------|\n$|$)/g;
+                    let res;
+                    const newList = [];
+                    
+                    while ((res = reg.exec(content)) !== null) {
+                        const name = res[1].trim();
+                        const sn = res[2].trim();
+                        const type = res[3].trim();
+                        const total = Number(res[4]) || 0;
+                        const free = Number(res[5]) || 0;
+                        const status = res[6].trim();
+                        const fileStr = res[7].trim();
+                        const fileArr = fileStr === '无' ? [] : fileStr.split('\n').map(s=>s.trim()).filter(s => s.length > 0);
+                        
+                        newList.push({
+                            name, sn, type, totalSize: total, freeSize: free, status, fileList: fileArr
+                        });
+                    }
+                    
+                    if(newList.length === 0) throw new Error("Format parse break");
+                    
+                    diskList = newList;
+                    selectIndex = -1;
+                    diskNameInput.value = '';
+                    renderTable();
+                    alert(`元数据链路对接成功，共载入 ${diskList.length} 组集群节点。`);
+                } catch (err) {
+                    alert('架构解析器错误：请使用本系统生成的标准规范明文快照。');
+                }
+            };
+            reader.readAsText(file);
+        });
+
+        document.getElementById('cancelSetBtn').addEventListener('click', () => {
+            settingModal.classList.add('hide');
+            settingTargetIndex = -1;
+        });
+
+        document.getElementById('submitSetBtn').addEventListener('click', () => {
+            if (settingTargetIndex === -1) return;
+            const item = diskList[settingTargetIndex];
+            item.name = document.getElementById('setDiskName').value.trim();
+            item.sn = document.getElementById('setDiskSn').value.trim();
+            item.type = document.getElementById('setDiskType').value;
+            item.totalSize = Number(document.getElementById('setTotalSize').value) || 0;
+            item.freeSize = Number(document.getElementById('setFreeSize').value) || 0;
+
+            settingModal.classList.add('hide');
+            settingTargetIndex = -1;
+            renderTable();
+        });
+
+        window.onload = init;
+    </script>
+</body>
+</html>
