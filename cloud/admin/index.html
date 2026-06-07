@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>FPV赛事综合存储 & 公网推流服务系统 | 监控大屏</title>
+    <style>
+        :root {
+            --bg-dark: #050914;
+            --panel-bg: rgba(13, 19, 33, 0.65);
+            --panel-border: rgba(30, 58, 138, 0.4);
+            --text-main: #e2e8f0;
+            --text-muted: #64748b;
+            --accent-cyan: #00f3ff;
+            --accent-blue: #3b82f6;
+            --status-green: #10b981;
+            --status-yellow: #f59e0b;
+            --status-red: #ef4444;
+            --glow-cyan: 0 0 15px rgba(0, 243, 255, 0.2);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            background-image: 
+                radial-gradient(circle at 15% 50%, rgba(20, 30, 60, 0.4), transparent 25%),
+                radial-gradient(circle at 85% 30%, rgba(10, 40, 50, 0.4), transparent 25%);
+            color: var(--text-main);
+            min-height: 100vh;
+            padding: 1.5rem;
+        }
+
+        /* 顶部导航控制台 */
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--panel-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--panel-border);
+            border-radius: 12px;
+            padding: 1rem 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .sys-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .sys-title h1 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+            color: var(--text-main);
+            text-transform: uppercase;
+        }
+
+        .version-badge {
+            background: rgba(0, 243, 255, 0.1);
+            color: var(--accent-cyan);
+            border: 1px solid rgba(0, 243, 255, 0.3);
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-family: monospace;
+            box-shadow: var(--glow-cyan);
+        }
+
+        .sys-status {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 0.85rem;
+        }
+
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--text-muted);
+            box-shadow: 0 0 8px currentColor;
+        }
+
+        .dot.active { background: var(--status-green); color: var(--status-green); }
+        .dot.error { background: var(--status-red); color: var(--status-red); }
+
+        /* 模块化布局 */
+        .grid-container {
+            display: grid;
+            gap: 1.5rem;
+            grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+        }
+
+        .panel {
+            background: var(--panel-bg);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--panel-border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.2rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .panel:hover {
+            border-color: rgba(0, 243, 255, 0.3);
+        }
+
+        .panel-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            padding-bottom: 1rem;
+        }
+
+        .panel-header svg {
+            width: 20px;
+            height: 20px;
+            fill: var(--accent-cyan);
+        }
+
+        .panel-header h2 {
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: var(--text-main);
+        }
+
+        /* 基础参数组件 */
+        .specs-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 10px;
+        }
+
+        .spec-item {
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            padding: 12px;
+        }
+
+        .spec-label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-bottom: 4px;
+            text-transform: uppercase;
+        }
+
+        .spec-value {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--accent-blue);
+        }
+
+        /* 硬盘组件 (紧凑型流水线设计) */
+        .disk-group-title {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-top: 0.5rem;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .disk-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 12px;
+        }
+
+        .disk-card {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.03);
+            border-left: 3px solid var(--text-muted);
+            border-radius: 6px;
+            padding: 12px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .disk-card.status-normal { border-left-color: var(--status-green); }
+        .disk-card.status-warning { border-left-color: var(--status-yellow); }
+        .disk-card.status-urgent { border-left-color: var(--status-red); }
+        .disk-card.status-full { border-left-color: var(--accent-cyan); }
+        .disk-card.status-empty { border-left-color: var(--text-muted); }
+
+        .disk-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 8px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .disk-name {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #fff;
+        }
+
+        .disk-usage-text {
+            font-size: 0.75rem;
+            font-family: monospace;
+            font-weight: bold;
+        }
+
+        .disk-desc {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            margin-bottom: 10px;
+            position: relative;
+            z-index: 2;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .progress-track {
+            height: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
+            overflow: hidden;
+            position: relative;
+            z-index: 2;
+        }
+
+        .progress-fill {
+            height: 100%;
+            border-radius: 2px;
+            transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .btn {
+            background: transparent;
+            border: 1px solid var(--accent-cyan);
+            color: var(--accent-cyan);
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            margin-top: 0.5rem;
+        }
+
+        .btn:hover {
+            background: rgba(0, 243, 255, 0.1);
+            box-shadow: var(--glow-cyan);
+        }
+
+        /* 模态框 */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 999;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal-overlay.show {
+            display: flex;
+            opacity: 1;
+        }
+
+        .modal-content {
+            background: var(--bg-dark);
+            border: 1px solid var(--panel-border);
+            border-radius: 12px;
+            width: 90%;
+            max-width: 500px;
+            padding: 2rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            transform: translateY(20px);
+            transition: transform 0.3s ease;
+        }
+
+        .modal-overlay.show .modal-content {
+            transform: translateY(0);
+        }
+
+        .modal-title {
+            color: var(--accent-cyan);
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .close-btn {
+            cursor: pointer;
+            color: var(--text-muted);
+            font-size: 1.5rem;
+            line-height: 1;
+        }
+
+        .close-btn:hover { color: #fff; }
+
+        .modal-body {
+            font-size: 0.9rem;
+            line-height: 1.6;
+            color: var(--text-main);
+        }
+
+        .modal-body ul {
+            margin-left: 1.2rem;
+            margin-top: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .modal-body li { margin-bottom: 0.4rem; }
+        
+        .price-tag {
+            display: inline-block;
+            background: rgba(245, 158, 11, 0.15);
+            color: var(--status-yellow);
+            padding: 4px 10px;
+            border-radius: 4px;
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            font-weight: 600;
+            margin-top: 1rem;
+        }
+
+        /* 响应式调整 */
+        @media (max-width: 768px) {
+            .dashboard-header { flex-direction: column; gap: 15px; align-items: flex-start; }
+            .grid-container { grid-template-columns: 1fr; }
+        }
+        
+        /* 隐藏滚动条但允许滚动 */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: rgba(0, 0, 0, 0.2); }
+        ::-webkit-scrollbar-thumb { background: var(--panel-border); border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--accent-cyan); }
+    </style>
+</head>
+<body>
+
+    <div class="dashboard-header">
+        <div class="sys-title">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--accent-cyan)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect>
+                <rect x="2" y="14" width="20" height="8" rx="2" ry="2"></rect>
+                <line x1="6" y1="6" x2="6.01" y2="6"></line>
+                <line x1="6" y1="18" x2="6.01" y2="18"></line>
+            </svg>
+            <h1>FPV 流媒体控制中枢</h1>
+            <span class="version-badge" id="v-badge">V1.0.2beta</span>
+        </div>
+        <div class="sys-status">
+            <span id="update-time" style="color: var(--text-muted);">等待初始化...</span>
+            <div class="status-indicator">
+                <div class="dot active" id="status-dot"></div>
+                <span id="status-text">LIVE</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="grid-container">
+        <div class="panel">
+            <div class="panel-header">
+                <svg viewBox="0 0 24 24"><path d="M4 4h16v6H4zm0 10h16v6H4zM8 7h1v1H8zm0 10h1v1H8z"/></svg>
+                <h2>内网存储节点机 [Node-1]</h2>
+            </div>
+            <div class="specs-grid" id="node1-specs">
+                </div>
+            
+            <div class="disk-group-title">内置存储矩阵</div>
+            <div class="disk-grid" id="node1-internal">
+                </div>
+            
+            <button class="btn" onclick="openSponsorModal()">+ 我要赞助扩容</button>
+        </div>
+
+        <div class="panel">
+            <div class="panel-header">
+                <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
+                <h2>外部扩展阵列 [USB 2.0 HUB]</h2>
+            </div>
+            
+            <div class="disk-group-title"><span>A/B/C 口 (联想一转二)</span></div>
+            <div class="disk-grid" id="usb-abc"></div>
+
+            <div class="disk-group-title"><span>D/E/F 口 (闪迪转接)</span></div>
+            <div class="disk-grid" id="usb-def"></div>
+
+            <div class="disk-group-title"><span>G/H 口 (鑫创丰备用)</span></div>
+            <div class="disk-grid" id="usb-gh"></div>
+        </div>
+
+        <div class="panel">
+            <div class="panel-header">
+                <svg viewBox="0 0 24 24"><path d="M12 3L2 12h3v8h6v-6h2v6h6v-8h3L12 3zm6 15h-2v-6H8v6H6v-7.81l6-4.5 6 4.5V18z"/></svg>
+                <h2>公网出口主服务器 [Node-2]</h2>
+            </div>
+            <div class="specs-grid" id="node2-specs"></div>
+            
+            <div class="disk-group-title">出口流量盘</div>
+            <div class="disk-grid" id="node2-disks"></div>
+
+            <div class="disk-group-title">运行时核心服务</div>
+            <div class="specs-grid" id="node2-services"></div>
+        </div>
+
+        <div class="panel">
+            <div class="panel-header">
+                <svg viewBox="0 0 24 24"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM14 13v4h-4v-4H7l5-5 5 5h-3z"/></svg>
+                <h2>物理隔离体系 [Cold Backup]</h2>
+            </div>
+            <div class="disk-grid" id="cold-backup"></div>
+            <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 10px; padding: 10px; background: rgba(255,255,255,0.02); border-radius: 6px;">
+                * 数据同步完成后物理断电离线封存，保障 FPV 素材极致安全。
+            </p>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="sponsorModal" onclick="closeModal(event)">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <div class="modal-title">
+                <span>赞助节点扩容计划</span>
+                <span class="close-btn" onclick="document.getElementById('sponsorModal').classList.remove('show')">&times;</span>
+            </div>
+            <div class="modal-body">
+                <p>你可以通过赞助一块实体硬盘的方式支持我们的 FPV 综合存储项目。</p>
+                <div class="price-tag">官方渠道代购价：43.9元 / 块 (西数500G机械盘)</div>
+                <p style="margin-top: 1rem; color: var(--accent-cyan);">投资人专享权益：</p>
+                <ul>
+                    <li>标称500G，实际可用465G，首年完全独立使用权</li>
+                    <li>全平台适配：支持多端移动相册加密备份</li>
+                    <li>无广告纯净下载，单文件无大小限制 (支持400G+超大工程)</li>
+                    <li>7×24小时不断电推流与存储，专人日常维护</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 配置常量
+        const DATA_URL = 'https://yzbjfpv.top/cloud/admin/data.txt';
+        const FETCH_INTERVAL = 20000; // 20秒轮询
+        let cachedData = null; // 兜底缓存区
+
+        // 获取颜色逻辑
+        function getColorByStatus(status, usage) {
+            if (status === 'empty') return 'var(--text-muted)';
+            if (status === 'urgent' || status === 'error') return 'var(--status-red)';
+            if (status === 'warning') return 'var(--status-yellow)';
+            if (status === 'full') return 'var(--accent-cyan)';
+            
+            // 按容量百分比自动计算颜色
+            if (usage >= 90) return 'var(--status-red)';
+            if (usage >= 70) return 'var(--status-yellow)';
+            return 'var(--status-green)';
+        }
+
+        // 渲染单体磁盘卡片
+        function createDiskCard(disk) {
+            const usage = disk.usage !== undefined ? disk.usage : 0;
+            const color = getColorByStatus(disk.status, usage);
+            const usageText = disk.status === 'empty' ? 'IDLE' : `${usage}%`;
+            
+            // 针对冷备份等没有 usage 的特殊卡片处理
+            const progressHtml = disk.target ? 
+                `<div class="disk-usage-text" style="color:var(--accent-cyan)">${disk.target}</div>` : 
+                `
+                <div class="disk-usage-text" style="color: ${color}">${usageText}</div>
+                <div class="progress-track" style="margin-top:8px;">
+                    <div class="progress-fill" style="width: ${usage}%; background: ${color}"></div>
+                </div>
+                `;
+
+            return `
+                <div class="disk-card status-${disk.status || 'normal'}">
+                    <div class="disk-info">
+                        <div class="disk-name">${disk.name}</div>
+                        ${disk.target ? '' : `<div class="disk-usage-text" style="color: ${color}">${usageText}</div>`}
+                    </div>
+                    <div class="disk-desc">${disk.spec || disk.target || '待机中'}</div>
+                    ${disk.target ? progressHtml : `
+                    <div class="progress-track">
+                        <div class="progress-fill" style="width: ${usage}%; background: ${color}"></div>
+                    </div>`}
+                </div>
+            `;
+        }
+
+        // 渲染基础参数卡片
+        function createSpecItem(label, value) {
+            return `
+                <div class="spec-item">
+                    <div class="spec-label">${label}</div>
+                    <div class="spec-value">${value}</div>
+                </div>
+            `;
+        }
+
+        // 核心渲染引擎
+        function renderDashboard(data) {
+            if(data.system && data.system.version) {
+                document.getElementById('v-badge').innerText = data.system.version;
+            }
+
+            // 渲染 Node 1 参数
+            const n1 = data.internalNode;
+            document.getElementById('node1-specs').innerHTML = 
+                createSpecItem('处理器', n1.cpu) +
+                createSpecItem('内存', n1.ram) +
+                createSpecItem('系统盘', n1.systemDisk) +
+                createSpecItem('系统占用', n1.systemUsage);
+            
+            document.getElementById('node1-internal').innerHTML = n1.internalDisks.map(createDiskCard).join('');
+            document.getElementById('usb-abc').innerHTML = n1.usbABC.map(createDiskCard).join('');
+            document.getElementById('usb-def').innerHTML = n1.usbDEF.map(createDiskCard).join('');
+            document.getElementById('usb-gh').innerHTML = n1.usbGH.map(createDiskCard).join('');
+
+            // 渲染 Node 2 参数
+            const n2 = data.publicNode;
+            document.getElementById('node2-specs').innerHTML = 
+                createSpecItem('处理器', n2.cpu) +
+                createSpecItem('内存', n2.ram) +
+                createSpecItem('网关路由', n2.router);
+            
+            document.getElementById('node2-disks').innerHTML = n2.disks.map(createDiskCard).join('');
+            
+            document.getElementById('node2-services').innerHTML = n2.services.map((srv, i) => 
+                createSpecItem(`核心进程 0${i+1}`, srv)
+            ).join('');
+
+            // 渲染冷备
+            document.getElementById('cold-backup').innerHTML = data.coldBackup.map(createDiskCard).join('');
+        }
+
+        // 更新状态栏 UI
+        function updateStatusUI(isSuccess) {
+            const dot = document.getElementById('status-dot');
+            const text = document.getElementById('status-text');
+            const timeEl = document.getElementById('update-time');
+            
+            const now = new Date();
+            const timeStr = now.toLocaleTimeString('zh-CN', {hour12: false});
+
+            if (isSuccess) {
+                dot.className = 'dot active';
+                text.innerText = 'LIVE SYNC';
+                text.style.color = 'var(--status-green)';
+                timeEl.innerText = `最后同步: ${timeStr}`;
+            } else {
+                dot.className = 'dot error';
+                text.innerText = 'CONNECTION LOST';
+                text.style.color = 'var(--status-red)';
+                timeEl.innerText = `更新失败 (停留于: ${timeStr})`;
+            }
+        }
+
+        // 数据抓取与预处理 (支持剥离注释的特殊解析)
+        async function fetchSysData() {
+            try {
+                // 加上时间戳防止缓存
+                const res = await fetch(`${DATA_URL}?t=${new Date().getTime()}`);
+                if (!res.ok) throw new Error(`HTTP Error: ${res.status}`);
+                
+                const rawText = await res.text();
+                
+                // 【核心逻辑】正则过滤掉所有以 # 或 // 开头的注释行
+                const cleanJsonStr = rawText.split('\n')
+                    .map(line => line.trim())
+                    .filter(line => line && !line.startsWith('#') && !line.startsWith('//'))
+                    .join('');
+
+                const jsonData = JSON.parse(cleanJsonStr);
+                
+                cachedData = jsonData; // 写入缓存
+                renderDashboard(jsonData);
+                updateStatusUI(true);
+            } catch (error) {
+                console.warn('拉取数据失败，将保留历史视图:', error);
+                updateStatusUI(false);
+                // 失败时不覆盖 DOM，仅依靠旧数据展示
+            }
+        }
+
+        // 赞助弹窗控制
+        function openSponsorModal() {
+            document.getElementById('sponsorModal').classList.add('show');
+        }
+
+        function closeModal(e) {
+            if (e.target.id === 'sponsorModal') {
+                document.getElementById('sponsorModal').classList.remove('show');
+            }
+        }
+
+        // 启动生命周期
+        window.addEventListener('DOMContentLoaded', () => {
+            fetchSysData(); // 立即执行一次
+            setInterval(fetchSysData, FETCH_INTERVAL); // 开启20秒轮询
+        });
+
+    </script>
+</body>
+</html>
