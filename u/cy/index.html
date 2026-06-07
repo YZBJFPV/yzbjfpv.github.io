@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>沉渊 | 私人领地</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Microsoft Yahei", "PingFang SC", sans-serif;
+        }
+        body {
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+            background: #121214;
+            /* 优化暗纹线条密度与透明度，质感更细腻 */
+            background-image: 
+                repeating-linear-gradient(45deg, rgba(120,120,130,0.05) 0px, rgba(120,120,130,0.05) 1px, transparent 1px, transparent 18px),
+                repeating-linear-gradient(-45deg, rgba(120,120,130,0.05) 0px, rgba(120,120,130,0.05) 1px, transparent 1px, transparent 18px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            padding: clamp(40px, 8vh, 80px) 15px 25px;
+            color: #fff;
+            position: relative;
+        }
+        /* 第三方粒子背景容器 铺满全屏 */
+        #particles-js {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+        }
+        /* 顶部昵称区域 + 文字微动效 */
+        .header {
+            text-align: center;
+            position: relative;
+            animation: floatSlow 7s ease-in-out infinite alternate;
+        }
+        .nickname {
+            font-size: clamp(32px, 8vw, 48px);
+            font-weight: 300;
+            color: #e6e6e8;
+            letter-spacing: clamp(6px, 2vw, 12px);
+            margin-bottom: 12px;
+            /* 文字微光呼吸 */
+            text-shadow: 0 0 8px rgba(180,170,175,0.2);
+            animation: textGlow 6s ease-in-out infinite alternate;
+        }
+        .tip {
+            font-size: 14px;
+            color: #998a8f;
+            letter-spacing: 2px;
+            opacity: 0.85;
+        }
+        /* 中心流动暗红光晕 强化动效 */
+        .glow-wrap {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: clamp(220px, 70vw, 320px);
+            height: clamp(220px, 70vw, 320px);
+            pointer-events: none;
+        }
+        .slow-glow {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(102,26,38,0.28) 0%, transparent 70%);
+            animation: flowGlow 9s ease-in-out infinite alternate;
+            filter: blur(2px);
+        }
+        /* 功能按钮区 */
+        .btn-group {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: clamp(16px, 3vw, 24px);
+            margin-top: 40px;
+        }
+        .func-btn {
+            width: clamp(100px, 22vw, 140px);
+            height: clamp(100px, 22vw, 140px);
+            background: rgba(88,22,35,0.65);
+            border-radius: 18px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            cursor: pointer;
+            transition: all 0.6s cubic-bezier(0.25, 0.8, 0.25, 1);
+            border: 1px solid rgba(160,140,145,0.15);
+            /* 按钮边框呼吸动效 */
+            animation: borderBreath 5s ease-in-out infinite alternate;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .func-btn:hover {
+            background: rgba(102,26,38,0.75);
+            transform: translateY(-6px) scale(1.02);
+            box-shadow: 0 0 26px rgba(102,26,38,0.4);
+        }
+        /* 适配手机触摸反馈 */
+        .func-btn:active {
+            transform: translateY(-2px) scale(0.98);
+            box-shadow: 0 0 12px rgba(102,26,38,0.25);
+        }
+        .icon {
+            font-size: clamp(26px, 6vw, 32px);
+            transition: transform 0.5s ease;
+        }
+        .func-btn:hover .icon{
+            transform: rotate(8deg);
+        }
+        .text {
+            font-size: clamp(13px, 3vw, 15px);
+            color: #d1c8cc;
+            letter-spacing: 1px;
+        }
+        /* 图标配色 */
+        .wechat .icon { color: #b8a8ad; }
+        .music .icon { color: #c2b2b8; }
+        .rose .icon { color: #7a4b79; }
+        /* 底部区域 */
+        .footer {
+            text-align: center;
+            max-width: 520px;
+            width: 100%;
+            padding: 0 10px;
+        }
+        .star-line {
+            display: flex;
+            justify-content: center;
+            gap: clamp(12px, 3vw, 18px);
+            margin-bottom: 20px;
+        }
+        .star {
+            width: 6px;
+            height: 6px;
+            background: rgba(180,170,175,0.25);
+            border-radius: 50%;
+            animation: twinkle 6s ease-in-out infinite alternate;
+        }
+        .intro {
+            font-size: clamp(12px, 3vw, 14px);
+            line-height: 2;
+            color: #b0a8af;
+            letter-spacing: 1px;
+            margin-bottom: 16px;
+        }
+        /* 技术支持链接 跳转根目录 */
+        .support {
+            font-size: 12px;
+            color: rgba(180,170,175,0.45);
+            text-decoration: none;
+            letter-spacing: 1px;
+            transition: color 0.4s ease;
+            display: inline-block;
+        }
+        .support:hover {
+            color: rgba(180,170,175,0.8);
+        }
+        /* 动画定义 */
+        @keyframes flowGlow {
+            0% { transform: scale(0.92); opacity: 0.45; }
+            100% { transform: scale(1.12); opacity: 0.75; }
+        }
+        @keyframes floatSlow {
+            0% { transform: translateY(-4px); }
+            100% { transform: translateY(4px); }
+        }
+        @keyframes textGlow {
+            0% { text-shadow: 0 0 6px rgba(180,170,175,0.15); }
+            100% { text-shadow: 0 0 14px rgba(180,170,175,0.35); }
+        }
+        @keyframes borderBreath {
+            0% { border-color: rgba(160,140,145,0.12); }
+            100% { border-color: rgba(160,140,145,0.28); }
+        }
+        @keyframes twinkle {
+            0% { opacity: 0.2; transform: scale(0.8); }
+            100% { opacity: 0.65; transform: scale(1); }
+        }
+        /* 移动端全面适配 */
+        @media (max-width: 600px) {
+            .btn-group { 
+                grid-template-columns: repeat(3, 1fr); 
+                gap: 12px;
+                width: 100%;
+                padding: 0 5px;
+            }
+            .func-btn { 
+                border-radius: 14px;
+            }
+        }
+        /* 超小屏手机适配 */
+        @media (max-width: 360px) {
+            .btn-group {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 8px;
+            }
+        }
+    </style>
+    <!-- 第三方图标库 CDN -->
+    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- 第三方粒子动态背景容器 -->
+    <div id="particles-js"></div>
+    <!-- 顶部昵称区域 -->
+    <div class="header">
+        <h1 class="nickname">沉渊</h1>
+        <p class="tip">私人领地，非请勿入</p>
+        <!-- 流动暗红光晕 -->
+        <div class="glow-wrap">
+            <div class="slow-glow"></div>
+        </div>
+    </div>
+    <!-- 功能按钮区 -->
+    <div class="btn-group">
+        <div class="func-btn wechat">
+            <i class="fa-solid fa-comment icon"></i>
+            <span class="text">联络通道</span>
+        </div>
+        <div class="func-btn music">
+            <i class="fa-solid fa-music icon"></i>
+            <span class="text">影像记录</span>
+        </div>
+        <div class="func-btn rose">
+            <i class="fa-solid fa-seedling icon"></i>
+            <span class="text">私人收藏</span>
+        </div>
+    </div>
+    <!-- 底部简介 + 星芒 + 技术支持 -->
+    <div class="footer">
+        <div class="star-line">
+            <span class="star"></span>
+            <span class="star"></span>
+            <span class="star"></span>
+            <span class="star"></span>
+            <span class="star"></span>
+        </div>
+        <p class="intro">沉迷小众黑胶与深夜阅读，偏爱冷调美学与独处，偶尔探索胶片摄影与暗黑系穿搭，保持距离，保持神秘</p>
+        <!-- 点击跳转站点根目录 -->
+        <a href="/" class="support">Flyz远征飞 提供技术支持</a>
+    </div>
+    <!-- 第三方粒子特效 JS CDN -->
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <script>
+        // 初始化粒子背景 暗调金属风粒子 低速运动
+        particlesJS("particles-js", {
+            particles: {
+                number: { value: 65, density: { enable: true, value_area: 800 } },
+                color: { value: "#a89fa6" },
+                shape: { type: "circle" },
+                opacity: {
+                    value: 0.2,
+                    random: true,
+                    anim: { enable: true, speed: 1.2, opacity_min: 0.05, sync: false }
+                },
+                size: {
+                    value: 2.8,
+                    random: true,
+                    anim: { enable: true, speed: 2, size_min: 0.8, sync: false }
+                },
+                line_linked: {
+                    enable: true,
+                    distance: 120,
+                    color: "#887c82",
+                    opacity: 0.14,
+                    width: 1
+                },
+                move: {
+                    enable: true,
+                    speed: 0.75,
+                    direction: "none",
+                    random: true,
+                    straight: false,
+                    out_mode: "out",
+                    bounce: false
+                }
+            },
+            interactivity: {
+                detect_on: "canvas",
+                events: {
+                    onhover: { enable: true, mode: "grab" },
+                    onclick: { enable: false },
+                    resize: true
+                },
+                modes: {
+                    grab: { distance: 100, line_linked: { opacity: 0.28 } }
+                }
+            },
+            retina_detect: true
+        });
+    </script>
+</body>
+</html>
