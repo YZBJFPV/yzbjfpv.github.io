@@ -1,0 +1,57 @@
+# 这是一个带注释的数据源文件，供 FPV 数据监控大屏使用。
+# 前端已内置解析器，会自动过滤掉所有以 # 或 // 开头的行。
+# 请确保该文件严格符合 JSON 格式（除了注释行外，末尾不要有多余逗号）。
+
+{
+  "system": {
+    "version": "V1.0.2beta"
+  },
+  # ==== 内网存储节点机配置 ====
+  "internalNode": {
+    "cpu": "服务器级处理器",
+    "ram": "4GB RAM",
+    "systemDisk": "128G 固态硬盘",
+    "systemUsage": "40G",
+    "internalDisks": [
+      { "name": "内置硬盘 1", "spec": "西数3.5寸 500G 机械", "usage": 0, "status": "normal" },
+      { "name": "内置硬盘 2", "spec": "完全空闲 急需增补", "usage": 0, "status": "urgent" }
+    ],
+    "usbABC": [
+      { "name": "USB-A 盘1", "spec": "西数3.5寸 500G", "usage": 100, "status": "full" },
+      { "name": "USB-A 盘2", "spec": "西数3.5寸 500G", "usage": 100, "status": "full" },
+      { "name": "USB-B 盘1", "spec": "西数3.5寸 500G", "usage": 100, "status": "full" },
+      { "name": "USB-B 盘2", "spec": "空闲 低优先级", "usage": 0, "status": "empty" },
+      { "name": "USB-C 盘1", "spec": "空闲 低优先级", "usage": 0, "status": "empty" },
+      { "name": "USB-C 盘2", "spec": "空闲 低优先级", "usage": 0, "status": "empty" }
+    ],
+    # 移动固态挂载区
+    "usbDEF": [
+      { "name": "USB-D 固态", "spec": "1TB 移动固态", "usage": 44, "status": "normal" },
+      { "name": "USB-E 固态", "spec": "1TB 移动固态", "usage": 76, "status": "warning" },
+      { "name": "USB-F 固态", "spec": "1TB 移动固态", "usage": 26, "status": "normal" }
+    ],
+    "usbGH": [
+      { "name": "USB-G", "spec": "空闲 备用", "usage": 0, "status": "empty" },
+      { "name": "USB-H", "spec": "空闲 备用", "usage": 0, "status": "empty" }
+    ]
+  },
+  
+  # ==== 公网出口主服务器 ====
+  "publicNode": {
+    "cpu": "服务器级处理器",
+    "ram": "4GB RAM",
+    "router": "华为 B3 Pro WiFi7",
+    "disks": [
+      { "name": "C盘", "spec": "30G 系统盘", "usage": 75, "status": "warning" },
+      { "name": "D盘", "spec": "30G 数据盘", "usage": 49, "status": "normal" }
+    ],
+    "services": ["Nginx 网站服务", "内网穿透服务", "赛事直播推流"]
+  },
+
+  # ==== 离线冷备份体系 ====
+  "coldBackup": [
+    { "name": "冷备份机械盘 A", "target": "对应 USB-A 盘1" },
+    { "name": "冷备份机械盘 B", "target": "对应 USB-A 盘2" },
+    { "name": "冷备份机械盘 C", "target": "对应 USB-B 盘1" }
+  ]
+}
