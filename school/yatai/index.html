@@ -1,63 +1,236 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>亚太九六毕业纪念站 - 搭建中</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-weight: bold;
-            font-family: "Microsoft Yahei", sans-serif;
-        }
-        body {
-            /* 粉蓝渐变固定背景 */
-            background: linear-gradient(135deg, #ffb6e0, #80bfff);
-            background-attachment: fixed;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-            color: #ffffff;
-            text-shadow: 0 2px 8px rgba(0,0,0,0.2);
-        }
-        .container {
-            text-align: center;
-            max-width: 600px;
-            width: 100%;
-        }
-        h1 {
-            font-size: clamp(28px, 8vw, 48px);
-            margin-bottom: 30px;
-        }
-        .desc {
-            font-size: clamp(16px, 4vw, 22px);
-            line-height: 2;
-            margin-bottom: 25px;
-        }
-        .time {
-            font-size: clamp(18px, 5vw, 26px);
-            color: #fffef0;
-            margin-top: 20px;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>亚太九六毕业纪念网站</title>
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-weight: bold;
+    font-family: "Microsoft Yahei", sans-serif;
+}
+body {
+    background: linear-gradient(135deg, #ffb6e0, #80bfff);
+    background-attachment: fixed;
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+/* 层级1 z-index:10 完整文案 */
+.all-text {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    padding: 40px 10px;
+    z-index: 10;
+    display: none;
+}
+.all-text p {
+    font-size: clamp(16px, 5vw, 26px);
+    color: #fff;
+    text-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    text-align: center;
+    line-height: 2.2;
+    margin: 10px 0;
+}
+
+/* 层级3 z-index:30 文字动画区 */
+.anim-area {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 30;
+    display: none;
+}
+.anim-text {
+    width: 100%;
+    padding: 0 10px;
+    font-size: clamp(18px, 6vw, 32px);
+    color: #fff;
+    text-shadow: 0 2px 8px rgba(0,0,0.3);
+    text-align: center;
+    opacity: 0;
+}
+
+/* 层级5 z-index:50 欢迎首页 */
+.welcome {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 50;
+    cursor: pointer;
+    color: #fff;
+    text-shadow: 0 2px 8px rgba(0,0,0,0.3);
+}
+.welcome h1 {
+    font-size: clamp(24px, 7vw, 40px);
+    padding: 0 10px;
+    margin-bottom: 30px;
+    text-align: center;
+}
+.welcome p {
+    font-size: clamp(18px, 5vw, 28px);
+}
+
+/* 层级7 z-index:70 音频 隐藏后台运行 */
+audio {
+    position: absolute;
+    z-index: 70;
+    display: none;
+}
+
+/* 层级9 z-index:90 全局交互层 */
+.main-wrap {
+    position: relative;
+    width: 100%;
+    min-height: 100vh;
+    z-index: 90;
+}
+
+/* 层级11 z-index:110 顶层弹窗 */
+.tip-modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #ffffff;
+    color: #333;
+    padding: 20px 35px;
+    border-radius: 10px;
+    font-size: 18px;
+    z-index: 110;
+    display: none;
+}
+
+/* 文字动画 总时长2秒 */
+@keyframes slideMove {
+    0% { opacity: 0; transform: translateY(-60px); }
+    25% { opacity: 1; transform: translateY(0); }
+    75% { opacity: 1; transform: translateY(0); }
+    100% { opacity: 0; transform: translateY(60px); }
+}
+</style>
 </head>
 <body>
-    <div class="container">
-        <h1>毕业纪念网站 正在搭建中</h1>
-        <div class="desc">
-            网站功能预告：<br>
-            可共享个人联系方式（支持隐藏设置）、专属管理后台<br>
-            支持照片上传分享<br>
-            全屏弹幕公屏喊话、公共聊天区、好友私人私聊
-        </div>
-        <div class="time">
-            预计正式上线时间：2026年06月20日
-        </div>
+<div class="main-wrap">
+    <!-- 层级1 完整文案 -->
+    <div class="all-text" id="fullBox">
+        <p>亚太九年级六班 2026届毕业纪念网站</p>
+        <p>欢迎访问毕业纪念网站</p>
+        <p>这不仅是一份简单的祝福，更是同学们联络的平台</p>
+        <p>可在弹幕公屏、公共聊天区自由互动喊话</p>
+        <p>你可以共享个人联系方式，也能随时隐藏</p>
+        <p>支持屏蔽指定人员，保护个人隐私</p>
+        <p>在这里留下对同学的美好祝愿，也会为你送上专属祝福</p>
+        <p>请知悉用户协议：需填写真实姓名完成身份验证</p>
+        <p>数据全程加密存储，我们承诺绝不泄露个人信息</p>
+        <p>毕业纪念网站正在搭建中，预计2026年06月18日正式上线</p>
+        <p>本站由我独立搭建，未使用任何建站平台</p>
+        <p>使用个人电脑搭建服务器运行，初期卡顿属于正常现象</p>
+        <p>当前为临时跳转页，后续会自动切换至最新服务器</p>
+        <p>祝大家中考顺利，前程似锦</p>
+        <p>页面搭建仓促，中考假期会持续优化界面与功能</p>
+        <p>欢迎大家分享照片、视频，记录生活点滴</p>
+        <p>本站搭建者：班里的传奇电教委员，大家心知肚明~</p>
     </div>
+
+    <!-- 层级3 动画文字区 -->
+    <div class="anim-area" id="animBox">
+        <div class="anim-text" id="animTxt"></div>
+    </div>
+
+    <!-- 层级5 欢迎页 -->
+    <div class="welcome" id="welcomeBox">
+        <h1>欢迎进入亚太九六毕业纪念网站</h1>
+        <p>点击任意位置进入</p>
+    </div>
+
+    <!-- 层级7 背景音乐 -->
+    <audio id="bgm" loop>
+        <source src="http://music.163.com/song/media/outer/url?id=1960920031.mp3">
+    
+
+    <!-- 层级11 提示弹窗 -->
+    <div class="tip-modal" id="modal">
+        没版权所以背景音乐不是原唱哦～
+    </div>
+</div>
+
+<script>
+const txtArr = [
+    "亚太九年级六班 2026届毕业纪念网站",
+    "欢迎访问毕业纪念网站",
+    "这不仅是一份简单的祝福，更是同学们联络的平台",
+    "可在弹幕公屏、公共聊天区自由互动喊话",
+    "你可以共享个人联系方式，也能随时隐藏",
+    "支持屏蔽指定人员，保护个人隐私",
+    "在这里留下对同学的美好祝愿，也会为你送上专属祝福",
+    "请知悉用户协议：需填写真实姓名完成身份验证",
+    "数据全程加密存储，我们承诺绝不泄露个人信息",
+    "毕业纪念网站正在搭建中，预计2026年06月18日正式上线",
+    "本站由我独立搭建，未使用任何建站平台",
+    "使用个人电脑搭建服务器运行，初期卡顿属于正常现象",
+    "当前为临时跳转页，后续会自动切换至最新服务器",
+    "祝大家中考顺利，前程似锦",
+    "页面搭建仓促，中考假期会持续优化界面与功能",
+    "欢迎大家分享照片、视频，记录生活点滴",
+    "本站搭建者：班里的传奇电教委员，大家心知肚明~"
+];
+
+const welcomeBox = document.getElementById('welcomeBox');
+const modal = document.getElementById('modal');
+const bgm = document.getElementById('bgm');
+const animBox = document.getElementById('animBox');
+const animTxt = document.getElementById('animTxt');
+const fullBox = document.getElementById('fullBox');
+
+let index = 0;
+const animTime = 2000;
+let isRun = false;
+
+function startAnim() {
+    if (index >= txtArr.length) {
+        animBox.style.display = 'none';
+        fullBox.style.display = 'block';
+        return;
+    }
+    animTxt.style.animation = 'none';
+    animTxt.offsetHeight;
+    animTxt.innerText = txtArr[index];
+    animTxt.style.animation = `slideMove ${animTime}ms ease-in-out forwards`;
+    index++;
+    setTimeout(startAnim, animTime);
+}
+
+welcomeBox.addEventListener('click', function(){
+    if(isRun) return;
+    isRun = true;
+
+    // 播放音乐
+    bgm.play().catch(e=>{});
+    // 弹出提示 5秒关闭
+    modal.style.display = 'block';
+    setTimeout(()=>{modal.style.display = 'none'},5000);
+    // 切换页面
+    welcomeBox.style.display = 'none';
+    animBox.style.display = 'flex';
+    startAnim();
+});
+</script>
 </body>
 </html>
