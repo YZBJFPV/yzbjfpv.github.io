@@ -3,176 +3,869 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>九六毕业纪念册</title>
+    <title>北师大亚太实验学校 2026届毕业纪念册官方网站</title>
+    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* 基础重置 */
+        :root {
+            --primary-glow: linear-gradient(135deg, #ff9a9e 0%, #fecfef 99%, #fecfef 100%);
+            --secondary-glow: linear-gradient(to right, #a1c4fd 0%, #c2e9fb 100%);
+            --glass-bg: rgba(255, 255, 255, 0.08);
+            --glass-border: rgba(255, 255, 255, 0.15);
+            --text-main: #ffffff;
+            --text-sub: rgba(255, 255, 255, 0.7);
+        }
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Microsoft YaHei", sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", "Segoe UI", "Microsoft YaHei", sans-serif;
+            -webkit-tap-highlight-color: transparent;
         }
 
         body {
+            background: #0b0f19;
+            color: var(--text-main);
             min-height: 100vh;
-            /* 高端动态柔和渐变背景：融合了朝霞与天空的颜色，象征青春与回忆 */
-            background: linear-gradient(-45deg, #ff9a9e, #fecfef, #a1c4fd, #c2e9fb);
-            background-size: 400% 400%;
-            animation: gradientBG 15s ease infinite;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* 流体动态背景 */
+        .ambient-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 0;
+            overflow: hidden;
+            pointer-events: none;
+            filter: blur(80px);
+            opacity: 0.6;
+        }
+        .blob {
+            position: absolute;
+            border-radius: 50%;
+            mix-blend-mode: screen;
+            animation: move linear infinite;
+        }
+        .blob-1 {
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(255,154,158,0.4) 0%, rgba(0,0,0,0) 70%);
+            top: -10%;
+            left: -10%;
+            animation-duration: 25s;
+        }
+        .blob-2 {
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(161,196,253,0.4) 0%, rgba(0,0,0,0) 70%);
+            bottom: -20%;
+            right: -10%;
+            animation-duration: 30s;
+        }
+        .blob-3 {
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(254,207,239,0.3) 0%, rgba(0,0,0,0) 70%);
+            top: 40%;
+            left: 50%;
+            animation-duration: 20s;
+        }
+        @keyframes move {
+            0% { transform: translate(0, 0) rotate(0deg) scale(1); }
+            50% { transform: translate(80px, 50px) rotate(180deg) scale(1.2); }
+            100% { transform: translate(0, 0) rotate(360deg) scale(1); }
+        }
+
+        /* ========== 开屏动画层 ========== */
+        #intro-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #0d111d;
+            z-index: 9999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.6s;
+        }
+
+        .intro-item {
+            position: absolute;
+            text-align: center;
+            width: 100%;
+            padding: 0 30px;
+            opacity: 0;
+            display: none;
+        }
+
+        /* 欢迎文字组 */
+        .welcome-group.active {
+            display: block;
+            animation: fadeUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        .welcome-title {
+            font-size: clamp(1.4rem, 4vw, 2rem);
+            font-weight: 500;
+            line-height: 1.5;
+            letter-spacing: 2px;
+            white-space: nowrap;
+            background: linear-gradient(135deg, #ffffff 0%, rgba(255,255,255,0.65) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+        .welcome-sub {
+            font-size: clamp(0.95rem, 2.5vw, 1.15rem);
+            color: #a1c4fd;
+            letter-spacing: 1px;
+            font-weight: 300;
+            white-space: nowrap;
+        }
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(25px); filter: blur(8px); }
+            to { opacity: 1; transform: translateY(0); filter: blur(0); }
+        }
+
+        /* 签名扫光动画 */
+        .signature-group.active {
+            display: block;
+            animation: fadeUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        .signature-label {
+            font-size: 0.85rem;
+            color: var(--text-sub);
+            letter-spacing: 3px;
+            margin-bottom: 10px;
+            font-weight: 300;
+        }
+        .signature-name {
+            font-size: clamp(2.2rem, 6.5vw, 3.2rem);
+            font-weight: 800;
+            letter-spacing: 6px;
+            position: relative;
+            display: inline-block;
+            background: linear-gradient(to right, #ff9a9e, #fecfef, #a1c4fd);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .signature-name::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #0d111d;
+            border-left: 2px solid #ff9a9e;
+            animation: writeSweep 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+            animation-delay: 0.2s;
+        }
+        @keyframes writeSweep {
+            to { left: 100%; width: 0%; opacity: 0; }
+        }
+
+        /* 开屏底部进度条 */
+        .intro-progress {
+            position: absolute;
+            bottom: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 180px;
+            height: 2px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 99px;
+            overflow: hidden;
+        }
+        .intro-progress-bar {
+            width: 0%;
+            height: 100%;
+            background: linear-gradient(to right, #ff9a9e, #a1c4fd);
+            border-radius: 99px;
+            animation: progressRun 2.8s linear forwards;
+            animation-delay: 0.1s;
+        }
+        @keyframes progressRun {
+            0% { width: 0%; }
+            90% { width: 100%; }
+            100% { width: 100%; }
+        }
+
+        /* ========== 主内容页 ========== */
+        #main-content {
+            position: relative;
+            z-index: 10;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+            display: none;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 45px;
+        }
+        .badge {
+            display: inline-block;
+            padding: 6px 16px;
+            border-radius: 99px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--glass-border);
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+            color: #c2e9fb;
+            margin-bottom: 16px;
+        }
+        h1 {
+            font-size: clamp(1.8rem, 5vw, 2.8rem);
+            font-weight: 700;
+            letter-spacing: 2px;
+            margin-bottom: 12px;
+            background: linear-gradient(to right, #fff, rgba(255,255,255,0.7));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .subtitle {
+            color: var(--text-sub);
+            font-size: clamp(0.95rem, 2.5vw, 1.15rem);
+            margin-bottom: 28px;
+        }
+
+        /* 主页面立即进入按钮 */
+        .enter-btn-main {
+            display: block;
+            width: fit-content;
+            margin: 0 auto 45px;
+            padding: 14px 55px;
+            font-size: 1.05rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 999px;
+            background: linear-gradient(135deg, #ff9a9e, #a1c4fd);
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 25px rgba(161, 196, 253, 0.3);
+        }
+        .enter-btn-main:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 35px rgba(161, 196, 253, 0.4);
+        }
+        .enter-btn-main:active {
+            transform: translateY(0);
+        }
+
+        /* 通用玻璃态卡片 */
+        .glass-panel {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 28px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+            margin-bottom: 35px;
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), border 0.4s;
+        }
+        .glass-panel:hover {
+            border-color: rgba(255, 255, 255, 0.3);
+            transform: translateY(-4px);
+        }
+
+        .section-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin-bottom: 22px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #fecfef;
+        }
+
+        /* 功能网格 */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 22px;
+            margin-bottom: 35px;
+        }
+        .feature-card {
+            padding: 22px;
+            border-radius: 18px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            transition: all 0.3s ease;
+        }
+        .feature-card:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(161, 196, 253, 0.4);
+        }
+        .feature-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.1);
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 20px;
-            color: #333;
+            font-size: 1.4rem;
+            margin-bottom: 16px;
+            color: #a1c4fd;
+        }
+        .feature-card h3 {
+            font-size: 1.1rem;
+            margin-bottom: 8px;
+            color: #fff;
+        }
+        .feature-card p {
+            font-size: 0.9rem;
+            color: var(--text-sub);
+            line-height: 1.5;
         }
 
-        /* 背景流体动画 */
-        @keyframes gradientBG {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
+        /* 使用教程 */
+        .tutorial-steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+            gap: 18px;
+        }
+        .step {
+            position: relative;
+            padding: 18px;
+            background: rgba(0,0,0,0.15);
+            border-radius: 14px;
+            border-left: 3px solid #ff9a9e;
+        }
+        .step-num {
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: #ff9a9e;
+            text-transform: uppercase;
+            margin-bottom: 6px;
+        }
+        .step h4 {
+            font-size: 1rem;
+            margin-bottom: 6px;
+            color: #fff;
+        }
+        .step p {
+            font-size: 0.85rem;
+            color: var(--text-sub);
+            line-height: 1.4;
         }
 
-        /* 毛玻璃卡片容器 */
-        .glass-card {
-            background: rgba(255, 255, 255, 0.25);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.4);
-            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
-            border-radius: 24px;
-            padding: 50px 30px;
-            width: 100%;
-            max-width: 480px;
-            text-align: center;
-            animation: cardFadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-            opacity: 0;
-            transform: translateY(20px);
-        }
-
-        @keyframes cardFadeIn {
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* 标题排版 */
-        .title {
-            font-size: clamp(1.8rem, 6vw, 2.4rem);
-            font-weight: 600;
-            color: #ffffff;
-            letter-spacing: 2px;
-            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            margin-bottom: 30px;
-        }
-
-        /* 加载状态区 */
-        .loading-section {
+        /* 分享组件 */
+        .share-container {
             display: flex;
             flex-direction: column;
             align-items: center;
-            transition: opacity 0.3s ease;
+            text-align: center;
+            padding: 35px 20px;
+            background: linear-gradient(135deg, rgba(161,196,253,0.1) 0%, rgba(254,207,239,0.1) 100%);
+        }
+        .share-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        .share-desc {
+            font-size: 0.9rem;
+            color: var(--text-sub);
+            margin-bottom: 22px;
+            max-width: 500px;
+        }
+        .link-badge {
+            display: flex;
+            align-items: center;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--glass-border);
+            padding: 7px 7px 7px 18px;
+            border-radius: 99px;
+            max-width: 100%;
+            width: 460px;
+            justify-content: space-between;
+        }
+        .link-text {
+            font-family: "Courier New", monospace;
+            font-size: 0.9rem;
+            color: #c2e9fb;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            padding-right: 10px;
+        }
+        .copy-btn {
+            background: #ffffff;
+            color: #0b0f19;
+            border: none;
+            padding: 9px 22px;
+            border-radius: 99px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 12px rgba(255,255,255,0.1);
+        }
+        .copy-btn:hover {
+            transform: scale(1.05);
+            background: #fecfef;
+        }
+        .copy-btn:active {
+            transform: scale(0.98);
         }
 
-        /* 优雅的环形加载动画 */
-        .spinner {
-            width: 36px;
-            height: 36px;
-            border: 3px solid rgba(255, 255, 255, 0.3);
-            border-top: 3px solid #ffffff;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin-bottom: 16px;
+        /* 公告 */
+        .announcement-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
         }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+        .announcement-item {
+            padding: 18px;
+            border-radius: 14px;
+            background: rgba(255,255,255,0.02);
+            border: 1px solid rgba(255,255,255,0.05);
         }
-
-        .loading-tip {
-            font-size: clamp(0.95rem, 3.5vw, 1.1rem);
-            color: rgba(255, 255, 255, 0.9);
-            font-weight: 300;
-            letter-spacing: 1px;
+        .announce-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 6px;
         }
-
-        /* 失败/跳转重试区 */
-        .error-box {
-            display: none;
-            animation: fadeIn 0.5s ease forwards;
+        .announce-tag {
+            font-size: 0.7rem;
+            padding: 2px 8px;
+            border-radius: 4px;
+            background: rgba(161,196,253,0.2);
+            color: #a1c4fd;
+            font-weight: 600;
         }
-
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
+        .announce-date {
+            font-size: 0.8rem;
+            color: var(--text-sub);
         }
-
-        .error-text {
+        .announcement-item h4 {
+            font-size: 1rem;
             color: #fff;
-            font-size: clamp(1rem, 4vw, 1.2rem);
-            margin-bottom: 24px;
-            text-shadow: 0 1px 4px rgba(0,0,0,0.1);
+            margin-bottom: 6px;
+        }
+        .announcement-item p {
+            font-size: 0.9rem;
+            color: var(--text-sub);
+            line-height: 1.5;
         }
 
-        /* 现代化的按钮设计 */
-        .jump-btn {
-            font-size: 1.1rem;
-            font-weight: 500;
-            padding: 14px 40px;
+        /* 页脚 */
+        footer {
+            text-align: center;
+            padding: 35px 20px;
+            color: rgba(255,255,255,0.4);
+            font-size: 0.8rem;
+            border-top: 1px solid rgba(255,255,255,0.05);
+            margin-top: 35px;
+        }
+
+        /* 连接弹窗 含公告+加载两阶段 */
+        #connect-modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.85);
+            backdrop-filter: blur(8px);
+            z-index: 10000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .modal-box {
+            width: 100%;
+            max-width: 480px;
+            padding: 30px;
+            border-radius: 20px;
+            background: rgba(255,255,255,0.08);
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(20px);
+        }
+        .modal-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #fff;
+            text-align: center;
+        }
+        .notice-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+        .notice-item {
+            padding: 12px 15px;
+            border-radius: 12px;
+            background: rgba(0,0,0,0.2);
+            border-left: 3px solid #ff9a9e;
+        }
+        .notice-item h5 {
+            font-size: 0.95rem;
+            color: #ff9a9e;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+        .notice-item p {
+            font-size: 0.88rem;
+            color: var(--text-sub);
+            line-height: 1.5;
+        }
+        .notice-tip {
+            font-size: 0.85rem;
+            color: #a1c4fd;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .confirm-btn {
+            width: 100%;
+            padding: 13px;
             border: none;
             border-radius: 999px;
-            background: #ffffff;
-            /* 按钮文字使用渐变色 */
-            background: linear-gradient(to right, #ffffff, #f0f0f0);
-            color: #4a90e2;
+            background: linear-gradient(135deg, #ff9a9e, #a1c4fd);
+            color: #fff;
+            font-size: 1rem;
+            font-weight: 600;
             cursor: pointer;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
             transition: all 0.3s ease;
         }
-
-        .jump-btn:hover {
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+        .confirm-btn:hover {
             transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(161, 196, 253, 0.3);
+        }
+        .confirm-btn:active {
+            transform: translateY(0);
         }
 
-        .jump-btn:active {
-            transform: scale(0.96) translateY(0);
+        /* 加载状态面板 */
+        #loading-panel {
+            display: none;
+            text-align: center;
+            padding: 10px 0;
+        }
+        #loading-panel i {
+            font-size: 2.2rem;
+            color: #a1c4fd;
+            animation: rotateLoad 1s linear infinite;
+            margin-bottom: 16px;
+        }
+        .loading-text {
+            font-size: 1rem;
+            color: #fff;
+        }
+        @keyframes rotateLoad {
+            to { transform: rotate(360deg); }
+        }
+
+        /* 吐司 */
+        #toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: rgba(255, 255, 255, 0.95);
+            color: #0b0f19;
+            padding: 11px 28px;
+            border-radius: 99px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            z-index: 10000;
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s;
+            opacity: 0;
+            pointer-events: none;
+        }
+        #toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+
+        /* 移动端适配 */
+        @media (max-width: 768px) {
+            #main-content { padding: 22px 14px; }
+            .glass-panel { padding: 18px; border-radius: 18px; margin-bottom: 28px; }
+            
+            h1 { font-size: 1.6rem; letter-spacing: 1px; }
+            .subtitle { font-size: 0.9rem; margin-bottom: 22px; }
+            .section-title { font-size: 1.15rem; margin-bottom: 18px; }
+            
+            .feature-card { padding: 18px; }
+            .feature-card h3 { font-size: 1rem; }
+            .feature-card p { font-size: 0.85rem; line-height: 1.45; }
+            .feature-icon { width: 38px; height: 38px; font-size: 1.25rem; margin-bottom: 14px; }
+            
+            .step { padding: 16px; }
+            .step h4 { font-size: 0.95rem; }
+            .step p { font-size: 0.82rem; }
+            
+            .share-container { padding: 28px 16px; }
+            .share-title { font-size: 1.15rem; }
+            .share-desc { font-size: 0.85rem; }
+            .link-badge { padding: 5px 5px 5px 12px; }
+            .copy-btn { padding: 7px 16px; font-size: 0.8rem; }
+            .link-text { font-size: 0.82rem; }
+            
+            .announcement-item { padding: 16px; }
+            .announcement-item h4 { font-size: 0.95rem; }
+            .announcement-item p { font-size: 0.85rem; }
+            
+            .enter-btn-main { width: 100%; padding: 13px; font-size: 1rem; margin-bottom: 35px; }
+            
+            .welcome-title, .welcome-sub { white-space: normal; line-height: 1.5; }
+            .welcome-title { font-size: 1.35rem; letter-spacing: 1px; }
+            .welcome-sub { font-size: 0.9rem; }
+            
+            .signature-name { font-size: 2.2rem; letter-spacing: 4px; }
+            .signature-label { font-size: 0.8rem; letter-spacing: 2px; }
+            
+            .intro-progress { width: 140px; bottom: 60px; }
+            
+            .modal-box { padding: 22px; }
+            .modal-title { font-size: 1.1rem; }
+            
+            footer { padding: 28px 15px; font-size: 0.75rem; }
         }
     </style>
 </head>
 <body>
 
-    <div class="glass-card">
-        <div class="title">亚太九六毕业纪念册</div>
-        
-        <div class="loading-section" id="loadingSection">
-            <div class="spinner"></div>
-            <div class="loading-tip">正在安全连接至新版自建服务器...</div>
-        </div>
+    <div class="ambient-bg">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+    </div>
 
-        <div class="error-box" id="errorBox">
-            <div class="error-text">自动跳转似乎遇到了点状况</div>
-            <button class="jump-btn" onclick="goJump()">手动进入纪念册</button>
+    <!-- 连接弹窗：公告+加载两阶段 -->
+    <div id="connect-modal">
+        <div class="modal-box">
+            <!-- 公告面板 默认显示 -->
+            <div id="notice-panel">
+                <div class="modal-title">进入前须知</div>
+                <div class="notice-list">
+                    <div class="notice-item">
+                        <h5>个人信息填写提示</h5>
+                        <p>当前个人信息上传存在bug，可能出现数据丢失。下一版本更新将在此网页通知，更新完毕后可再完整填写，目前建议简略填写。</p>
+                    </div>
+                    <div class="notice-item">
+                        <h5>聊天室已知问题</h5>
+                        <p>聊天室存在信息重复错乱问题，顶部可能出现重复消息，不影响正常使用。相关问题将在中考完毕后陆续修复。</p>
+                    </div>
+                </div>
+                <div class="notice-tip">除上述问题外，其余所有功能均正常可用</div>
+                <button class="confirm-btn" onclick="startConnect()">已知晓，继续进入</button>
+            </div>
+
+            <!-- 加载面板 默认隐藏 -->
+            <div id="loading-panel">
+                <i class="fa-solid fa-arrows-spin"></i>
+                <div class="loading-text">正在连接自建高速服务器…</div>
+            </div>
         </div>
     </div>
 
-    <script>
-        const target = "http://123.56.106.49:8888";
-        
-        // 为了让用户能欣赏一下加载动画，并且感觉确实在“连接中”，这里将时间微调为1.5秒 (1500ms)
-        setTimeout(() => {
-            window.location.href = target;
-            
-            // 触发跳转后如果页面没被销毁，就显示手动跳转按钮
-            document.getElementById('loadingSection').style.display = 'none';
-            document.getElementById('errorBox').style.display = 'block';
-        }, 1500);
+    <!-- 开屏层 -->
+    <div id="intro-overlay">
+        <div class="intro-item welcome-group" id="step1">
+            <div class="welcome-title">欢迎访问亚太毕业纪念册</div>
+            <div class="welcome-sub">定格青春时光 · 珍藏毕业记忆</div>
+        </div>
+        <div class="intro-item signature-group" id="step2">
+            <div class="signature-label">技术搭建</div>
+            <div class="signature-name">李沅臻</div>
+        </div>
+        <div class="intro-progress">
+            <div class="intro-progress-bar"></div>
+        </div>
+    </div>
 
-        function goJump() {
-            // 给按钮加一点点视觉反馈延迟再跳转，手感更好
+    <!-- 主内容页 -->
+    <div id="main-content">
+        <header>
+            <span class="badge">ESTABLISHED 2026</span>
+            <h1>北京师范大学亚太实验学校</h1>
+            <div class="subtitle">2026届毕业纪念册官方平台</div>
+            <button class="enter-btn-main" onclick="openNotice()">立即进入平台</button>
+        </header>
+
+        <main>
+            <section class="glass-panel">
+                <div class="section-title">
+                    <i class="fa-solid fa-star"></i> 平台核心体验
+                </div>
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon"><i class="fa-solid fa-users"></i></div>
+                        <h3>数字同学录</h3>
+                        <p>支持检索姓名，查看个人专属主页与签名，留存毕业阶段所有人的联络信息。</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon"><i class="fa-solid fa-comments"></i></div>
+                        <h3>实时聊天室</h3>
+                        <p>通用互动交流专区，随时线上聊天，记录校园毕业季所有日常闲谈与回忆。</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon"><i class="fa-solid fa-image"></i></div>
+                        <h3>高清朋友圈</h3>
+                        <p>上传照片视频无压缩，永久原生高清存储，完整保存青春影像。</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon"><i class="fa-solid fa-envelope-open-text"></i></div>
+                        <h3>毕业寄语信箱</h3>
+                        <p>定向投递私密寄语，线上永久存档，留存毕业季最真挚的文字祝福。</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="glass-panel">
+                <div class="section-title">
+                    <i class="fa-solid fa-book-open"></i> 新手使用指南
+                </div>
+                <div class="tutorial-steps">
+                    <div class="step">
+                        <div class="step-num">Step 01</div>
+                        <h4>免密安全注册</h4>
+                        <p>输入真实姓名，填写最常用的音乐软件或喜爱的影视剧作为个人独享的免密登录密钥。</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-num">Step 02</div>
+                        <h4>丰富个人主页</h4>
+                        <p>登录后进入“我的”资料管理，补充电话、微信、QQ、抖音以及个性签名等通讯信息。</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-num">Step 03</div>
+                        <h4>展开全能互动</h4>
+                        <p>通过聊天室互动或发布朋友圈，点击头像即可安全获取对方共享的联系方式。</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="glass-panel share-container">
+                <div class="share-title"><i class="fa-solid fa-link"></i> 邀请更多好友加入</div>
+                <div class="share-desc">欢迎将平台链接分享给同学、老师，邀请大家一同入驻互写寄语，永久留存高清青春记忆。</div>
+                <div class="link-badge">
+                    <span class="link-text" id="invite-url">https://yzbjfpv.top/school/yatai</span>
+                    <button class="copy-btn" onclick="copyLink()">一键复制</button>
+                </div>
+            </section>
+
+            <section class="glass-panel">
+                <div class="section-title">
+                    <i class="fa-solid fa-bullhorn"></i> 系统公告
+                </div>
+                <div class="announcement-list">
+                    <div class="announcement-item">
+                        <div class="announce-meta">
+                            <span class="announce-tag" style="background:rgba(254,207,239,0.2); color:#ff9a9e;">性能升级</span>
+                            <span class="announce-date">2026-06-15</span>
+                        </div>
+                        <h4>更换超高速自建服务器，最大上下传8MB/s</h4>
+                        <p>全新服务器硬件上线，全链路传输速度上限8MB/s。平台朋友圈上传照片、短视频全程无压缩，原生画质永久保存，聊天室、同学录加载响应大幅提速。</p>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <p>技术开发与网络支持：李沅臻 | 服务器基础设施：自建高速传输服务</p>
+            <p style="margin-top: 8px; font-size: 0.75rem; color: rgba(255,255,255,0.25);">© 2026 北京师范大学亚太实验学校 毕业纪念册. All Rights Reserved.</p>
+        </footer>
+    </div>
+
+    <div id="toast">链接已成功复制到剪贴板</div>
+
+    <script>
+        // 开屏播放逻辑
+        function playIntro() {
+            const step1 = document.getElementById('step1');
+            const step2 = document.getElementById('step2');
+            const overlay = document.getElementById('intro-overlay');
+            const mainContent = document.getElementById('main-content');
+
             setTimeout(() => {
-                window.location.href = target;
+                step1.classList.add('active');
             }, 100);
+
+            setTimeout(() => {
+                step1.style.display = 'none';
+                step2.classList.add('active');
+            }, 2000);
+
+            setTimeout(() => {
+                overlay.style.opacity = '0';
+                overlay.style.visibility = 'hidden';
+                mainContent.style.display = 'block';
+                setTimeout(() => {
+                    mainContent.style.opacity = '1';
+                    mainContent.style.transform = 'translateY(0)';
+                }, 50);
+            }, 2900);
         }
+
+        // 点击立即进入 弹出公告弹窗
+        function openNotice() {
+            const modal = document.getElementById('connect-modal');
+            const noticePanel = document.getElementById('notice-panel');
+            const loadingPanel = document.getElementById('loading-panel');
+            
+            noticePanel.style.display = 'block';
+            loadingPanel.style.display = 'none';
+            modal.style.display = 'flex';
+        }
+
+        // 点击已知晓 切换加载状态 2秒后跳转
+        function startConnect() {
+            const noticePanel = document.getElementById('notice-panel');
+            const loadingPanel = document.getElementById('loading-panel');
+            const modal = document.getElementById('connect-modal');
+            
+            noticePanel.style.display = 'none';
+            loadingPanel.style.display = 'block';
+            
+            setTimeout(() => {
+                window.open('http://123.56.106.49:8888/', '_blank');
+                modal.style.display = 'none';
+            }, 2000);
+        }
+
+        // 复制链接
+        function copyLink() {
+            const urlText = document.getElementById('invite-url').innerText;
+            const toast = document.getElementById('toast');
+            
+            navigator.clipboard.writeText(urlText).then(() => {
+                toast.classList.add('show');
+                setTimeout(() => {
+                    toast.classList.remove('show');
+                }, 2500);
+            }).catch(err => {
+                const textArea = document.createElement("textarea");
+                textArea.value = urlText;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                
+                toast.classList.add('show');
+                setTimeout(() => {
+                    toast.classList.remove('show');
+                }, 2500);
+            });
+        }
+
+        window.onload = playIntro;
     </script>
 </body>
 </html>
