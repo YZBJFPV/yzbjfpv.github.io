@@ -653,7 +653,7 @@
         <div class="modal-box">
             <!-- 公告面板 默认显示 -->
             <div id="notice-panel">
-                <div class="modal-title">进入前须知 等下马上修好卡了</div>
+                <div class="modal-title">进入前须知</div>
                 <div class="notice-list">
                     <div class="notice-item">
                         <h5>个人信息填写提示</h5>
@@ -665,7 +665,7 @@
                     </div>
                 </div>
                 <div class="notice-tip">除上述问题外，其余所有功能均正常可用</div>
-                <button class="confirm-btn" onclick="startConnect()">已知晓，继续进入</button>
+                <button class="confirm-btn" id="agree-btn">已知晓，继续进入</button>
             </div>
 
             <!-- 加载面板 默认隐藏 -->
@@ -697,7 +697,7 @@
             <span class="badge">ESTABLISHED 2026</span>
             <h1>北京师范大学亚太实验学校</h1>
             <div class="subtitle">2026届毕业纪念册官方平台</div>
-            <button class="enter-btn-main" onclick="openNotice()">立即进入平台</button>
+            <button class="enter-btn-main" id="open-modal-btn">立即进入平台</button>
         </header>
 
         <main>
@@ -757,7 +757,7 @@
                 <div class="share-desc">欢迎将平台链接分享给同学、老师，邀请大家一同入驻互写寄语，永久留存高清青春记忆。</div>
                 <div class="link-badge">
                     <span class="link-text" id="invite-url">https://yzbjfpv.top/school/yatai</span>
-                    <button class="copy-btn" onclick="copyLink()">一键复制</button>
+                    <button class="copy-btn" id="copy-link-btn">一键复制</button>
                 </div>
             </section>
 
@@ -786,86 +786,103 @@
 
     <div id="toast">链接已成功复制到剪贴板</div>
 
-    <script>
-        // 开屏播放逻辑
-        function playIntro() {
-            const step1 = document.getElementById('step1');
-            const step2 = document.getElementById('step2');
-            const overlay = document.getElementById('intro-overlay');
-            const mainContent = document.getElementById('main-content');
+<script>
+// 全局DOM元素预获取，杜绝找不到元素报错
+const dom = {
+    introOverlay: document.getElementById('intro-overlay'),
+    step1: document.getElementById('step1'),
+    step2: document.getElementById('step2'),
+    mainContent: document.getElementById('main-content'),
+    openModalBtn: document.getElementById('open-modal-btn'),
+    connectModal: document.getElementById('connect-modal'),
+    noticePanel: document.getElementById('notice-panel'),
+    loadingPanel: document.getElementById('loading-panel'),
+    agreeBtn: document.getElementById('agree-btn'),
+    copyLinkBtn: document.getElementById('copy-link-btn'),
+    inviteUrl: document.getElementById('invite-url'),
+    toast: document.getElementById('toast')
+};
 
-            setTimeout(() => {
-                step1.classList.add('active');
-            }, 100);
+// 吐司提示封装
+function showToast(text) {
+    dom.toast.innerText = text;
+    dom.toast.classList.add('show');
+    setTimeout(() => dom.toast.classList.remove('show'), 2500);
+}
 
-            setTimeout(() => {
-                step1.style.display = 'none';
-                step2.classList.add('active');
-            }, 2000);
+// 开屏动画流程
+function runIntroAnim() {
+    setTimeout(() => dom.step1.classList.add('active'), 100);
+    setTimeout(() => {
+        dom.step1.style.display = 'none';
+        dom.step2.classList.add('active');
+    }, 2000);
+    setTimeout(() => {
+        dom.introOverlay.style.opacity = '0';
+        dom.introOverlay.style.visibility = 'hidden';
+        dom.mainContent.style.display = 'block';
+        setTimeout(() => {
+            dom.mainContent.style.opacity = '1';
+            dom.mainContent.style.transform = 'translateY(0)';
+        }, 50);
+    }, 2900);
+}
 
-            setTimeout(() => {
-                overlay.style.opacity = '0';
-                overlay.style.visibility = 'hidden';
-                mainContent.style.display = 'block';
-                setTimeout(() => {
-                    mainContent.style.opacity = '1';
-                    mainContent.style.transform = 'translateY(0)';
-                }, 50);
-            }, 2900);
+// 打开公告弹窗
+function openConnectModal() {
+    dom.noticePanel.style.display = 'block';
+    dom.loadingPanel.style.display = 'none';
+    dom.connectModal.style.display = 'flex';
+}
+
+// 确认同意，加载+跳转逻辑（修复延时失效、不跳转问题）
+function handleAgree() {
+    // 切换加载视图
+    dom.noticePanel.style.display = 'none';
+    dom.loadingPanel.style.display = 'block';
+
+    // 2秒后执行跳转，完全容错
+    setTimeout(() => {
+        try {
+            // 新标签打开相册服务
+            window.open('http://123.56.106.49:8888/', '_blank');
+            showToast('正在跳转相册页面');
+        } catch (e) {
+            showToast('跳转失败，请手动访问地址');
         }
+        // 关闭弹窗
+        dom.connectModal.style.display = 'none';
+    }, 2000);
+}
 
-        // 点击立即进入 弹出公告弹窗
-        function openNotice() {
-            const modal = document.getElementById('connect-modal');
-            const noticePanel = document.getElementById('notice-panel');
-            const loadingPanel = document.getElementById('loading-panel');
-            
-            noticePanel.style.display = 'block';
-            loadingPanel.style.display = 'none';
-            modal.style.display = 'flex';
-        }
+// 复制链接功能
+function copyInviteLink() {
+    const text = dom.inviteUrl.innerText;
+    if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(text).then(() => showToast('链接复制成功'));
+    } else {
+        // 兼容老旧浏览器复制方案
+        const tempTextarea = document.createElement('textarea');
+        tempTextarea.value = text;
+        document.body.appendChild(tempTextarea);
+        tempTextarea.select();
+        document.execCommand('copy');
+        document.body.removeChild(tempTextarea);
+        showToast('链接复制成功');
+    }
+}
 
-        // 点击已知晓 切换加载状态 2秒后跳转
-        function startConnect() {
-            const noticePanel = document.getElementById('notice-panel');
-            const loadingPanel = document.getElementById('loading-panel');
-            const modal = document.getElementById('connect-modal');
-            
-            noticePanel.style.display = 'none';
-            loadingPanel.style.display = 'block';
-            
-            setTimeout(() => {
-                window.open('http://123.56.106.49:8888/', '_blank');
-                modal.style.display = 'none';
-            }, 2000);
-        }
-
-        // 复制链接
-        function copyLink() {
-            const urlText = document.getElementById('invite-url').innerText;
-            const toast = document.getElementById('toast');
-            
-            navigator.clipboard.writeText(urlText).then(() => {
-                toast.classList.add('show');
-                setTimeout(() => {
-                    toast.classList.remove('show');
-                }, 2500);
-            }).catch(err => {
-                const textArea = document.createElement("textarea");
-                textArea.value = urlText;
-                document.body.appendChild(textArea);
-                textArea.select();
-                document.execCommand('copy');
-                document.body.removeChild(textArea);
-                
-                toast.classList.add('show');
-                setTimeout(() => {
-                    toast.classList.remove('show');
-                }, 2500);
-            });
-        }
-
-        window.onload = playIntro;
-    </script>
+// 页面全部加载完成后统一绑定所有点击事件，杜绝DOM未渲染绑定失效
+window.addEventListener('DOMContentLoaded', () => {
+    // 绑定打开弹窗按钮
+    dom.openModalBtn.addEventListener('click', openConnectModal);
+    // 绑定同意进入按钮
+    dom.agreeBtn.addEventListener('click', handleAgree);
+    // 绑定复制链接按钮
+    dom.copyLinkBtn.addEventListener('click', copyInviteLink);
+    // 执行开屏动画
+    runIntroAnim();
+});
+</script>
 </body>
 </html>
