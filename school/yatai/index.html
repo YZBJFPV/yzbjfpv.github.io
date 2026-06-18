@@ -541,6 +541,7 @@
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
+            margin-bottom: 12px;
         }
         .confirm-btn:hover {
             transform: translateY(-2px);
@@ -548,6 +549,19 @@
         }
         .confirm-btn:active {
             transform: translateY(0);
+        }
+        .backup-jump-btn {
+            width: 100%;
+            padding: 11px;
+            border-radius: 999px;
+            border: 1px solid rgba(255,255,255,0.2);
+            background: transparent;
+            color: var(--text-sub);
+            font-size: 0.9rem;
+            cursor: pointer;
+        }
+        .backup-jump-btn:hover {
+            background: rgba(255,255,255,0.08);
         }
 
         /* 加载状态面板 */
@@ -565,6 +579,7 @@
         .loading-text {
             font-size: 1rem;
             color: #fff;
+            margin-bottom:20px;
         }
         @keyframes rotateLoad {
             to { transform: rotate(360deg); }
@@ -665,13 +680,15 @@
                     </div>
                 </div>
                 <div class="notice-tip">除上述问题外，其余所有功能均正常可用</div>
-                <button class="confirm-btn" id="agree-btn">已知晓，继续进入</button>
+                <button class="confirm-btn" id="agree-btn">已知晓，立即跳转相册</button>
+                <button class="backup-jump-btn" id="backup-jump-btn">跳转被拦截？点击此处手动打开</button>
             </div>
 
             <!-- 加载面板 默认隐藏 -->
             <div id="loading-panel">
                 <i class="fa-solid fa-arrows-spin"></i>
-                <div class="loading-text">正在连接自建高速服务器…</div>
+                <div class="loading-text">正在打开相册页面</div>
+                <button class="backup-jump-btn" id="loading-backup-jump">仍无法跳转？点这里</button>
             </div>
         </div>
     </div>
@@ -787,7 +804,7 @@
     <div id="toast">链接已成功复制到剪贴板</div>
 
 <script>
-// 全局DOM元素预获取，杜绝找不到元素报错
+// 全局DOM缓存，避免重复查询
 const dom = {
     introOverlay: document.getElementById('intro-overlay'),
     step1: document.getElementById('step1'),
@@ -798,19 +815,68 @@ const dom = {
     noticePanel: document.getElementById('notice-panel'),
     loadingPanel: document.getElementById('loading-panel'),
     agreeBtn: document.getElementById('agree-btn'),
+    backupJumpBtn: document.getElementById('backup-jump-btn'),
+    loadingBackupJump: document.getElementById('loading-backup-jump'),
     copyLinkBtn: document.getElementById('copy-link-btn'),
     inviteUrl: document.getElementById('invite-url'),
     toast: document.getElementById('toast')
 };
+// 相册固定地址
+const ALBUM_URL = 'http://123.56.106.49:8888/';
 
-// 吐司提示封装
+// 吐司提示
 function showToast(text) {
     dom.toast.innerText = text;
     dom.toast.classList.add('show');
     setTimeout(() => dom.toast.classList.remove('show'), 2500);
 }
 
-// 开屏动画流程
+// 直接跳转核心函数（无任何延时）
+function jumpAlbum() {
+    try {
+        const newWin = window.open(ALBUM_URL, '_blank');
+        if (!newWin || newWin.closed || typeof newWin.closed === 'undefined') {
+            showToast('浏览器拦截了弹窗，请点击下方备用按钮打开');
+        } else {
+            showToast('相册页面已在新标签打开');
+        }
+    } catch (err) {
+        showToast('跳转失败，请使用备用按钮');
+    }
+}
+
+// 打开公告弹窗
+function openConnectModal() {
+    dom.noticePanel.style.display = 'block';
+    dom.loadingPanel.style.display = 'none';
+    dom.connectModal.style.display = 'flex';
+}
+
+// 确认按钮点击逻辑：切换加载视图+立刻跳转，无延时
+function handleAgreeClick() {
+    dom.noticePanel.style.display = 'none';
+    dom.loadingPanel.style.display = 'block';
+    // 无延迟，立即执行跳转
+    jumpAlbum();
+}
+
+// 复制链接
+function copyInviteLink() {
+    const text = dom.inviteUrl.innerText;
+    if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(text).then(() => showToast('链接复制成功'));
+    } else {
+        const tempTextarea = document.createElement('textarea');
+        tempTextarea.value = text;
+        document.body.appendChild(tempTextarea);
+        tempTextarea.select();
+        document.execCommand('copy');
+        document.body.removeChild(tempTextarea);
+        showToast('链接复制成功');
+    }
+}
+
+// 开屏动画
 function runIntroAnim() {
     setTimeout(() => dom.step1.classList.add('active'), 100);
     setTimeout(() => {
@@ -828,59 +894,14 @@ function runIntroAnim() {
     }, 2900);
 }
 
-// 打开公告弹窗
-function openConnectModal() {
-    dom.noticePanel.style.display = 'block';
-    dom.loadingPanel.style.display = 'none';
-    dom.connectModal.style.display = 'flex';
-}
-
-// 确认同意，加载+跳转逻辑（修复延时失效、不跳转问题）
-function handleAgree() {
-    // 切换加载视图
-    dom.noticePanel.style.display = 'none';
-    dom.loadingPanel.style.display = 'block';
-
-    // 2秒后执行跳转，完全容错
-    setTimeout(() => {
-        try {
-            // 新标签打开相册服务
-            window.open('http://123.56.106.49:8888/', '_blank');
-            showToast('正在跳转相册页面');
-        } catch (e) {
-            showToast('跳转失败，请手动访问地址');
-        }
-        // 关闭弹窗
-        dom.connectModal.style.display = 'none';
-    }, 2000);
-}
-
-// 复制链接功能
-function copyInviteLink() {
-    const text = dom.inviteUrl.innerText;
-    if (navigator.clipboard && window.isSecureContext) {
-        navigator.clipboard.writeText(text).then(() => showToast('链接复制成功'));
-    } else {
-        // 兼容老旧浏览器复制方案
-        const tempTextarea = document.createElement('textarea');
-        tempTextarea.value = text;
-        document.body.appendChild(tempTextarea);
-        tempTextarea.select();
-        document.execCommand('copy');
-        document.body.removeChild(tempTextarea);
-        showToast('链接复制成功');
-    }
-}
-
-// 页面全部加载完成后统一绑定所有点击事件，杜绝DOM未渲染绑定失效
+// DOM渲染完成后绑定全部事件
 window.addEventListener('DOMContentLoaded', () => {
-    // 绑定打开弹窗按钮
     dom.openModalBtn.addEventListener('click', openConnectModal);
-    // 绑定同意进入按钮
-    dom.agreeBtn.addEventListener('click', handleAgree);
-    // 绑定复制链接按钮
+    dom.agreeBtn.addEventListener('click', handleAgreeClick);
+    // 两处备用跳转按钮统一绑定跳转函数
+    dom.backupJumpBtn.addEventListener('click', jumpAlbum);
+    dom.loadingBackupJump.addEventListener('click', jumpAlbum);
     dom.copyLinkBtn.addEventListener('click', copyInviteLink);
-    // 执行开屏动画
     runIntroAnim();
 });
 </script>
