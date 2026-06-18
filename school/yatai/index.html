@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>北师大亚太实验学校 2026届毕业纪念册官方网站</title>
+    <title>北师大亚太实验学校 2026届毕业纪念网</title>
     <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
@@ -104,14 +104,14 @@
             display: none;
         }
 
-        /* 欢迎文字组 */
+        /* 欢迎文字组 全部加粗 */
         .welcome-group.active {
             display: block;
             animation: fadeUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
         .welcome-title {
             font-size: clamp(1.4rem, 4vw, 2rem);
-            font-weight: 500;
+            font-weight: 900;
             line-height: 1.5;
             letter-spacing: 2px;
             white-space: nowrap;
@@ -124,7 +124,7 @@
             font-size: clamp(0.95rem, 2.5vw, 1.15rem);
             color: #a1c4fd;
             letter-spacing: 1px;
-            font-weight: 300;
+            font-weight: bold;
             white-space: nowrap;
         }
         @keyframes fadeUp {
@@ -226,7 +226,7 @@
         }
         h1 {
             font-size: clamp(1.8rem, 5vw, 2.8rem);
-            font-weight: 700;
+            font-weight: 900;
             letter-spacing: 2px;
             margin-bottom: 12px;
             background: linear-gradient(to right, #fff, rgba(255,255,255,0.7));
@@ -239,127 +239,94 @@
             margin-bottom: 28px;
         }
 
-        /* 主页面立即进入按钮 */
-        .enter-btn-main {
-            display: block;
-            width: fit-content;
-            margin: 0 auto 45px;
-            padding: 14px 55px;
-            font-size: 1.05rem;
-            font-weight: 600;
-            border: none;
-            border-radius: 999px;
-            background: linear-gradient(135deg, #ff9a9e, #a1c4fd);
-            color: #fff;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 8px 25px rgba(161, 196, 253, 0.3);
+        /* 项目选择网格 */
+        .project-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
         }
-        .enter-btn-main:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 12px 35px rgba(161, 196, 253, 0.4);
-        }
-        .enter-btn-main:active {
-            transform: translateY(0);
-        }
-
-        /* 通用玻璃态卡片 */
-        .glass-panel {
+        .project-card {
             background: var(--glass-bg);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
             border: 1px solid var(--glass-border);
             border-radius: 24px;
-            padding: 28px;
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
-            margin-bottom: 35px;
+            padding: 32px;
             transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), border 0.4s;
+            text-align: center;
         }
-        .glass-panel:hover {
+        .project-card:hover {
             border-color: rgba(255, 255, 255, 0.3);
-            transform: translateY(-4px);
+            transform: translateY(-6px);
         }
-
-        .section-title {
-            font-size: 1.4rem;
-            font-weight: 600;
-            margin-bottom: 22px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            color: #fecfef;
-        }
-
-        /* 功能网格 */
-        .features-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-            gap: 22px;
-            margin-bottom: 35px;
-        }
-        .feature-card {
-            padding: 22px;
-            border-radius: 18px;
-            background: rgba(255, 255, 255, 0.04);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            transition: all 0.3s ease;
-        }
-        .feature-card:hover {
-            background: rgba(255, 255, 255, 0.08);
-            border-color: rgba(161, 196, 253, 0.4);
-        }
-        .feature-icon {
-            width: 42px;
-            height: 42px;
-            border-radius: 12px;
+        .project-icon {
+            width: 64px;
+            height: 64px;
+            border-radius: 16px;
             background: rgba(255, 255, 255, 0.1);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.4rem;
-            margin-bottom: 16px;
+            font-size: 2rem;
+            margin: 0 auto 20px;
             color: #a1c4fd;
         }
-        .feature-card h3 {
-            font-size: 1.1rem;
-            margin-bottom: 8px;
-            color: #fff;
+        .project-card h2 {
+            font-size: 1.5rem;
+            margin-bottom: 16px;
+            background: var(--primary-glow);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
-        .feature-card p {
-            font-size: 0.9rem;
+        .project-desc {
             color: var(--text-sub);
-            line-height: 1.5;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin-bottom: 24px;
+            text-align: left;
+        }
+        .project-jump-btn {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 999px;
+            background: linear-gradient(135deg, #ff9a9e, #a1c4fd);
+            color: #fff;
+            font-size: 1.05rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 25px rgba(161, 196, 253, 0.3);
+        }
+        .project-jump-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 35px rgba(161, 196, 253, 0.4);
+        }
+        .project-jump-btn:active {
+            transform: translateY(0);
         }
 
-        /* 使用教程 */
-        .tutorial-steps {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
-            gap: 18px;
+        /* 全局温馨提示面板 */
+        .tip-panel {
+            background: rgba(255, 154, 158, 0.08);
+            border: 1px solid rgba(255, 154, 158, 0.2);
+            border-radius: 20px;
+            padding: 24px;
+            margin-bottom: 40px;
         }
-        .step {
-            position: relative;
-            padding: 18px;
-            background: rgba(0,0,0,0.15);
-            border-radius: 14px;
-            border-left: 3px solid #ff9a9e;
-        }
-        .step-num {
-            font-size: 0.75rem;
-            font-weight: 700;
+        .tip-panel h3 {
             color: #ff9a9e;
-            text-transform: uppercase;
-            margin-bottom: 6px;
+            font-size: 1.1rem;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
-        .step h4 {
-            font-size: 1rem;
-            margin-bottom: 6px;
-            color: #fff;
-        }
-        .step p {
-            font-size: 0.85rem;
+        .tip-panel p {
             color: var(--text-sub);
-            line-height: 1.4;
+            font-size: 0.9rem;
+            line-height: 1.6;
         }
 
         /* 分享组件 */
@@ -388,7 +355,7 @@
             background: rgba(0, 0, 0, 0.3);
             border: 1px solid var(--glass-border);
             padding: 7px 7px 7px 18px;
-            border-radius: 99px;
+            border-radius: 999px;
             max-width: 100%;
             width: 460px;
             justify-content: space-between;
@@ -407,7 +374,7 @@
             color: #0b0f19;
             border: none;
             padding: 9px 22px;
-            border-radius: 99px;
+            border-radius: 999px;
             font-weight: 600;
             font-size: 0.85rem;
             cursor: pointer;
@@ -420,47 +387,6 @@
         }
         .copy-btn:active {
             transform: scale(0.98);
-        }
-
-        /* 公告 */
-        .announcement-list {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-        .announcement-item {
-            padding: 18px;
-            border-radius: 14px;
-            background: rgba(255,255,255,0.02);
-            border: 1px solid rgba(255,255,255,0.05);
-        }
-        .announce-meta {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 6px;
-        }
-        .announce-tag {
-            font-size: 0.7rem;
-            padding: 2px 8px;
-            border-radius: 4px;
-            background: rgba(161,196,253,0.2);
-            color: #a1c4fd;
-            font-weight: 600;
-        }
-        .announce-date {
-            font-size: 0.8rem;
-            color: var(--text-sub);
-        }
-        .announcement-item h4 {
-            font-size: 1rem;
-            color: #fff;
-            margin-bottom: 6px;
-        }
-        .announcement-item p {
-            font-size: 0.9rem;
-            color: var(--text-sub);
-            line-height: 1.5;
         }
 
         /* 页脚 */
@@ -612,19 +538,15 @@
         @media (max-width: 768px) {
             #main-content { padding: 22px 14px; }
             .glass-panel { padding: 18px; border-radius: 18px; margin-bottom: 28px; }
+            .project-grid {
+                grid-template-columns: 1fr;
+            }
+            .project-card {
+                padding: 24px;
+            }
             
             h1 { font-size: 1.6rem; letter-spacing: 1px; }
             .subtitle { font-size: 0.9rem; margin-bottom: 22px; }
-            .section-title { font-size: 1.15rem; margin-bottom: 18px; }
-            
-            .feature-card { padding: 18px; }
-            .feature-card h3 { font-size: 1rem; }
-            .feature-card p { font-size: 0.85rem; line-height: 1.45; }
-            .feature-icon { width: 38px; height: 38px; font-size: 1.25rem; margin-bottom: 14px; }
-            
-            .step { padding: 16px; }
-            .step h4 { font-size: 0.95rem; }
-            .step p { font-size: 0.82rem; }
             
             .share-container { padding: 28px 16px; }
             .share-title { font-size: 1.15rem; }
@@ -632,10 +554,6 @@
             .link-badge { padding: 5px 5px 5px 12px; }
             .copy-btn { padding: 7px 16px; font-size: 0.8rem; }
             .link-text { font-size: 0.82rem; }
-            
-            .announcement-item { padding: 16px; }
-            .announcement-item h4 { font-size: 0.95rem; }
-            .announcement-item p { font-size: 0.85rem; }
             
             .enter-btn-main { width: 100%; padding: 13px; font-size: 1rem; margin-bottom: 35px; }
             
@@ -671,23 +589,24 @@
                 <div class="modal-title">进入前须知</div>
                 <div class="notice-list">
                     <div class="notice-item">
-                        <h5>个人信息填写提示</h5>
-                        <p>当前个人信息上传存在bug，可能出现数据丢失。下一版本更新将在此网页通知，更新完毕后可再完整填写，目前建议简略填写。</p>
+                        <h5>公共相册说明</h5>
+                        <p>无限制上传初中相关照片、短视频，原始画质永不压缩，文件永久保存，无需注册登录即可使用。陌生人也可上传素材。</p>
                     </div>
                     <div class="notice-item">
-                        <h5>聊天室已知问题</h5>
-                        <p>聊天室存在信息重复错乱问题，顶部可能出现重复消息，不影响正常使用。相关问题将在中考完毕后陆续修复。</p>
+                        <h5>带宽温馨提醒</h5>
+                        <p>服务器带宽资源有限，强烈建议不要上传超大体积视频，过大视频会造成所有访问用户加载卡顿。</p>
                     </div>
                 </div>
-                <div class="notice-tip">除上述问题外，其余所有功能均正常可用</div>
-                <button class="confirm-btn" id="agree-btn">已知晓，立即跳转相册</button>
+                <div class="notice-tip">确认已知悉规则后点击跳转对应项目</div>
+                <button class="confirm-btn" id="agree-public-btn">进入【2026届公共回忆相册】</button>
+                <button class="confirm-btn" id="agree-class-btn">进入【九年级六班专属毕业纪念册】</button>
                 <button class="backup-jump-btn" id="backup-jump-btn">跳转被拦截？点击此处手动打开</button>
             </div>
 
             <!-- 加载面板 默认隐藏 -->
             <div id="loading-panel">
                 <i class="fa-solid fa-arrows-spin"></i>
-                <div class="loading-text">正在打开相册页面</div>
+                <div class="loading-text">正在打开对应相册页面</div>
                 <button class="backup-jump-btn" id="loading-backup-jump">仍无法跳转？点这里</button>
             </div>
         </div>
@@ -696,8 +615,8 @@
     <!-- 开屏层 -->
     <div id="intro-overlay">
         <div class="intro-item welcome-group" id="step1">
-            <div class="welcome-title">欢迎访问亚太毕业纪念册</div>
-            <div class="welcome-sub">定格青春时光 · 珍藏毕业记忆</div>
+            <div class="welcome-title">欢迎来到亚太毕业纪念网</div>
+            <div class="welcome-sub">您可以上传所有关于初中的回忆，我们不会压缩您的照片与视频，永久保留原始画质</div>
         </div>
         <div class="intro-item signature-group" id="step2">
             <div class="signature-label">技术搭建</div>
@@ -712,92 +631,52 @@
     <div id="main-content">
         <header>
             <span class="badge">ESTABLISHED 2026</span>
-            <h1>北京师范大学亚太实验学校</h1>
-            <div class="subtitle">2026届毕业纪念册官方平台</div>
-            <button class="enter-btn-main" id="open-modal-btn">立即进入平台</button>
+            <h1>亚太毕业纪念网</h1>
+            <div class="subtitle">请选择您要访问的平台</div>
         </header>
 
         <main>
-            <section class="glass-panel">
-                <div class="section-title">
-                    <i class="fa-solid fa-star"></i> 平台核心体验
+            <!-- 双项目选择卡片 -->
+            <div class="project-grid">
+                <div class="project-card">
+                    <div class="project-icon"><i class="fa-solid fa-cloud-arrow-up"></i></div>
+                    <h2>2026届九年级公共回忆相册</h2>
+                    <div class="project-desc">
+                        <p>✅ 无限制上传照片、短视频，原始画质永不压缩，文件永久保存，无需登录即可使用</p>
+                        <p>✅ 陌生人也可在此上传所有初中相关回忆素材</p>
+                        <p>⚠️ 温馨提示：服务器带宽有限，请勿上传超大体积视频，会占用大量访问带宽</p>
+                    </div>
+                    <button class="project-jump-btn" id="open-public-modal">前往公共相册</button>
                 </div>
-                <div class="features-grid">
-                    <div class="feature-card">
-                        <div class="feature-icon"><i class="fa-solid fa-users"></i></div>
-                        <h3>数字同学录</h3>
-                        <p>支持检索姓名，查看个人专属主页与签名，留存毕业阶段所有人的联络信息。</p>
+                <div class="project-card">
+                    <div class="project-icon"><i class="fa-solid fa-graduation-cap"></i></div>
+                    <h2>九年级六班专属毕业纪念册</h2>
+                    <div class="project-desc">
+                        <p>专为九年级六班打造的班级专属毕业纪念平台，存档班级专属青春回忆，仅限本班同学使用。</p>
                     </div>
-                    <div class="feature-card">
-                        <div class="feature-icon"><i class="fa-solid fa-comments"></i></div>
-                        <h3>实时聊天室</h3>
-                        <p>通用互动交流专区，随时线上聊天，记录校园毕业季所有日常闲谈与回忆。</p>
-                    </div>
-                    <div class="feature-card">
-                        <div class="feature-icon"><i class="fa-solid fa-image"></i></div>
-                        <h3>高清朋友圈</h3>
-                        <p>上传照片视频无压缩，永久原生高清存储，完整保存青春影像。</p>
-                    </div>
-                    <div class="feature-card">
-                        <div class="feature-icon"><i class="fa-solid fa-envelope-open-text"></i></div>
-                        <h3>毕业寄语信箱</h3>
-                        <p>定向投递私密寄语，线上永久存档，留存毕业季最真挚的文字祝福。</p>
-                    </div>
+                    <button class="project-jump-btn" id="open-class-modal">前往六班毕业册</button>
                 </div>
-            </section>
+            </div>
 
-            <section class="glass-panel">
-                <div class="section-title">
-                    <i class="fa-solid fa-book-open"></i> 新手使用指南
-                </div>
-                <div class="tutorial-steps">
-                    <div class="step">
-                        <div class="step-num">Step 01</div>
-                        <h4>免密安全注册</h4>
-                        <p>输入真实姓名，填写最常用的音乐软件或喜爱的影视剧作为个人独享的免密登录密钥。</p>
-                    </div>
-                    <div class="step">
-                        <div class="step-num">Step 02</div>
-                        <h4>丰富个人主页</h4>
-                        <p>登录后进入“我的”资料管理，补充电话、微信、QQ、抖音以及个性签名等通讯信息。</p>
-                    </div>
-                    <div class="step">
-                        <div class="step-num">Step 03</div>
-                        <h4>展开全能互动</h4>
-                        <p>通过聊天室互动或发布朋友圈，点击头像即可安全获取对方共享的联系方式。</p>
-                    </div>
-                </div>
-            </section>
+            <!-- 全局温馨提示 -->
+            <div class="tip-panel">
+                <h3><i class="fa-solid fa-circle-exclamation"></i> 全局温馨提示</h3>
+                <p>公共相册面向所有人开放上传，但服务器带宽资源有限，过大视频会造成页面加载卡顿，建议控制视频文件体积；九年级六班专属毕业纪念册仅本班同学推荐访问。</p>
+            </div>
 
-            <section class="glass-panel share-container">
-                <div class="share-title"><i class="fa-solid fa-link"></i> 邀请更多好友加入</div>
-                <div class="share-desc">欢迎将平台链接分享给同学、老师，邀请大家一同入驻互写寄语，永久留存高清青春记忆。</div>
+            <section class="share-container">
+                <div class="share-title"><i class="fa-solid fa-link"></i> 分享本纪念网</div>
+                <div class="share-desc">欢迎将亚太毕业纪念网分享给同班同学，按需进入对应相册平台</div>
                 <div class="link-badge">
-                    <span class="link-text" id="invite-url">https://yzbjfpv.top/school/yatai</span>
+                    <span class="link-text" id="invite-url">http://123.56.106.49:9696</span>
                     <button class="copy-btn" id="copy-link-btn">一键复制</button>
-                </div>
-            </section>
-
-            <section class="glass-panel">
-                <div class="section-title">
-                    <i class="fa-solid fa-bullhorn"></i> 系统公告
-                </div>
-                <div class="announcement-list">
-                    <div class="announcement-item">
-                        <div class="announce-meta">
-                            <span class="announce-tag" style="background:rgba(254,207,239,0.2); color:#ff9a9e;">性能升级</span>
-                            <span class="announce-date">2026-06-15</span>
-                        </div>
-                        <h4>更换超高速自建服务器，最大上下传8MB/s</h4>
-                        <p>全新服务器硬件上线，全链路传输速度上限8MB/s。平台朋友圈上传照片、短视频全程无压缩，原生画质永久保存，聊天室、同学录加载响应大幅提速。</p>
-                    </div>
                 </div>
             </section>
         </main>
 
         <footer>
             <p>技术开发与网络支持：李沅臻 | 服务器基础设施：自建高速传输服务</p>
-            <p style="margin-top: 8px; font-size: 0.75rem; color: rgba(255,255,255,0.25);">© 2026 北京师范大学亚太实验学校 毕业纪念册. All Rights Reserved.</p>
+            <p style="margin-top: 8px; font-size: 0.75rem; color: rgba(255,255,255,0.25);">© 2026 北京师范大学亚太实验学校 亚太毕业纪念网. All Rights Reserved.</p>
         </footer>
     </div>
 
@@ -810,19 +689,25 @@ const dom = {
     step1: document.getElementById('step1'),
     step2: document.getElementById('step2'),
     mainContent: document.getElementById('main-content'),
-    openModalBtn: document.getElementById('open-modal-btn'),
+    // 两个入口按钮
+    openPublicModal: document.getElementById('open-public-modal'),
+    openClassModal: document.getElementById('open-class-modal'),
     connectModal: document.getElementById('connect-modal'),
     noticePanel: document.getElementById('notice-panel'),
     loadingPanel: document.getElementById('loading-panel'),
-    agreeBtn: document.getElementById('agree-btn'),
+    // 弹窗内两个确认跳转按钮
+    agreePublicBtn: document.getElementById('agree-public-btn'),
+    agreeClassBtn: document.getElementById('agree-class-btn'),
     backupJumpBtn: document.getElementById('backup-jump-btn'),
     loadingBackupJump: document.getElementById('loading-backup-jump'),
     copyLinkBtn: document.getElementById('copy-link-btn'),
     inviteUrl: document.getElementById('invite-url'),
     toast: document.getElementById('toast')
 };
-// 相册固定地址
-const ALBUM_URL = 'http://123.56.106.49:8888/';
+// 两个项目地址
+const URL_PUBLIC = 'http://123.56.106.49:9696';
+const URL_CLASS = 'http://123.56.106.49:8888/';
+let targetJumpUrl = '';
 
 // 吐司提示
 function showToast(text) {
@@ -832,21 +717,22 @@ function showToast(text) {
 }
 
 // 直接跳转核心函数（无任何延时）
-function jumpAlbum() {
+function jumpTarget() {
     try {
-        const newWin = window.open(ALBUM_URL, '_blank');
+        const newWin = window.open(targetJumpUrl, '_blank');
         if (!newWin || newWin.closed || typeof newWin.closed === 'undefined') {
             showToast('浏览器拦截了弹窗，请点击下方备用按钮打开');
         } else {
-            showToast('相册页面已在新标签打开');
+            showToast('目标相册页面已在新标签打开');
         }
     } catch (err) {
         showToast('跳转失败，请使用备用按钮');
     }
 }
 
-// 打开公告弹窗
-function openConnectModal() {
+// 打开公告弹窗，区分目标地址
+function openModal(url) {
+    targetJumpUrl = url;
     dom.noticePanel.style.display = 'block';
     dom.loadingPanel.style.display = 'none';
     dom.connectModal.style.display = 'flex';
@@ -856,8 +742,7 @@ function openConnectModal() {
 function handleAgreeClick() {
     dom.noticePanel.style.display = 'none';
     dom.loadingPanel.style.display = 'block';
-    // 无延迟，立即执行跳转
-    jumpAlbum();
+    jumpTarget();
 }
 
 // 复制链接
@@ -896,11 +781,15 @@ function runIntroAnim() {
 
 // DOM渲染完成后绑定全部事件
 window.addEventListener('DOMContentLoaded', () => {
-    dom.openModalBtn.addEventListener('click', openConnectModal);
-    dom.agreeBtn.addEventListener('click', handleAgreeClick);
+    // 卡片按钮打开弹窗，传入对应地址
+    dom.openPublicModal.addEventListener('click', () => openModal(URL_PUBLIC));
+    dom.openClassModal.addEventListener('click', () => openModal(URL_CLASS));
+    // 弹窗内两个确认按钮共用跳转逻辑
+    dom.agreePublicBtn.addEventListener('click', handleAgreeClick);
+    dom.agreeClassBtn.addEventListener('click', handleAgreeClick);
     // 两处备用跳转按钮统一绑定跳转函数
-    dom.backupJumpBtn.addEventListener('click', jumpAlbum);
-    dom.loadingBackupJump.addEventListener('click', jumpAlbum);
+    dom.backupJumpBtn.addEventListener('click', jumpTarget);
+    dom.loadingBackupJump.addEventListener('click', jumpTarget);
     dom.copyLinkBtn.addEventListener('click', copyInviteLink);
     runIntroAnim();
 });
