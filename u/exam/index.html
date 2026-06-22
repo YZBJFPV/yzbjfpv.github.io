@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2026北京中考（学考）古诗词核心预测与易错点梳理</title>
+    <style>
+        :root {
+            --bg-color: #f4f6f9;
+            --card-bg: #ffffff;
+            --text-color: #2c3e50;
+            --text-muted: #7f8c8d;
+            --primary-color: #3498db;
+            --predict-color: #e74c3c;
+            --predict-bg: #fdf2f2;
+            --tested-bg: #f8f9fa;
+            --tested-border: #bdc3c7;
+            --border-color: #e2e8f0;
+            --underline-color: #e67e22;
+            --badge-predicted: #e74c3c;
+            --badge-tested: #95a5a6;
+            --shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
+        }
+
+        [data-theme="dark"] {
+            --bg-color: #1a1a1a;
+            --card-bg: #2d2d2d;
+            --text-color: #e2e8f0;
+            --text-muted: #a0aec0;
+            --primary-color: #2980b9;
+            --predict-color: #ff6b6b;
+            --predict-bg: #3d2727;
+            --tested-bg: #242424;
+            --tested-border: #4a5568;
+            --border-color: #4a5568;
+            --underline-color: #f39c12;
+            --badge-predicted: #ff6b6b;
+            --badge-tested: #4a5568;
+            --shadow: 0 4px 6px -1px rgba(0,0,0,0.5);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+            transition: all 0.3s ease;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        .theme-btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: opacity 0.2s;
+            box-shadow: var(--shadow);
+        }
+
+        .theme-btn:hover {
+            opacity: 0.9;
+        }
+
+        /* 心理指南/图例说明 */
+        .legend-card {
+            background: var(--card-bg);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 30px;
+            box-shadow: var(--shadow);
+        }
+        .legend-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 15px;
+            margin-top: 10px;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            font-size: 14px;
+        }
+
+        /* 核心标记样式 */
+        .predict-tag { color: var(--predict-color); font-weight: bold; }
+        .key-line { text-decoration: underline; text-decoration-color: var(--primary-color); text-decoration-thickness: 2px; }
+        .typo { border-bottom: 2px dotted var(--underline-color); font-weight: bold; cursor: help; position: relative; }
+
+        /* 分册导航 */
+        .section-title {
+            font-size: 20px;
+            color: var(--primary-color);
+            border-left: 5px solid var(--primary-color);
+            padding-left: 10px;
+            margin: 40px 0 20px 0;
+        }
+
+        /* 诗词卡片矩阵 */
+        .poem-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(480px, 1fr));
+            gap: 20px;
+        }
+
+        @media(max-width: 600px) {
+            .poem-grid { grid-template-columns: 1fr; }
+        }
+
+        .poem-card {
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            padding: 24px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border-color);
+            transition: transform 0.2s;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .poem-card:hover {
+            transform: translateY(-2px);
+        }
+
+        .poem-card.predicted {
+            border-top: 4px solid var(--predict-color);
+            background-color: var(--predict-bg);
+        }
+
+        .poem-card.tested {
+            border-top: 4px solid var(--tested-border);
+            opacity: 0.8;
+        }
+
+        .poem-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 15px;
+        }
+
+        .poem-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin: 0;
+        }
+        .poem-card.predicted .poem-title {
+            color: var(--predict-color);
+        }
+
+        .poem-author {
+            font-size: 13px;
+            color: var(--text-muted);
+            margin: 4px 0 0 0;
+        }
+
+        .badge {
+            font-size: 12px;
+            padding: 4px 8px;
+            border-radius: 4px;
+            color: white;
+            font-weight: bold;
+            white-space: nowrap;
+        }
+        .badge.predict { background-color: var(--badge-predicted); }
+        .badge.tested { background-color: var(--badge-tested); }
+
+        .poem-content {
+            font-size: 16px;
+            letter-spacing: 1px;
+            margin: 15px 0;
+            white-space: pre-line;
+            text-align: left;
+        }
+
+        .poem-footer {
+            font-size: 12px;
+            color: var(--text-muted);
+            border-top: 1px dashed var(--border-color);
+            padding-top: 10px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <div>
+            <h1>2026北京中考（学考）古诗词冲刺看板</h1>
+            <p style="color: var(--text-muted); margin: 5px 0 0 0;">基于2025真题与2026年15大区一二模大数据的核心规避与反向预测</p>
+        </div>
+        <button class="theme-btn" id="theme-toggle">🌓 切换主题</button>
+    </header>
+
+    <div class="legend-card">
+        <h3 style="margin-top: 0;">💡 备考图例说明与指南</h3>
+        <div class="legend-grid">
+            <div class="legend-item"><span class="badge predict" style="margin-right: 8px;">2026核心预测</span> 模考大面积规避，中考高危反扑区</div>
+            <div class="legend-item"><span class="badge tested" style="margin-right: 8px;">近期已考篇目</span> 模考重合率极高，真题概率较低</div>
+            <div class="legend-item"><span class="key-line" style="margin-right: 8px;">画线诗句</span> 理解性默写极高频核心考查句</div>
+            <div class="legend-item"><span class="typo" style="margin-right: 8px;">点状字</span> 极易写错或含有通假字的重点扣分字</div>
+        </div>
+    </div>
+
+    <div class="section-title">七年级上册 (5篇)</div>
+    <div class="poem-grid">
+        <div class="poem-card tested">
+            <div class="poem-header">
+                <div>
+                    <div class="poem-title">1. 观沧海</div>
+                    <div class="poem-author">东汉 · 曹操</div>
+                </div>
+                <span class="badge tested">近期考查：2025学考真题</span>
+            </div>
+            <div class="poem-content">东临<span class="typo" title="易错字：注意石字旁">碣</span>石，以观沧海。
+            水何<span class="typo" title="易错字：三点水">澹澹</span>，山岛<span class="typo" title="易错字：立字头+正">竦峙</span>。
+            树木丛生，百草丰茂。
+            秋风萧瑟，洪波涌起。
+            <span class="key-line">日月之行，若出其中；</span>
+            <span class="key-line">星汉灿烂，若出其里。</span>
+            幸甚至哉，歌以咏志。</div>
+            <div class="poem-footer">考点：互文与借景抒情，展现吞吐日月之志。</div>
+        </div>
+        <div class="poem-card predicted">
+            <div class="poem-header">
+                <div>
+                    <div class="poem-title">2. 闻王昌龄左迁龙标遥有此寄</div>
+                    <div class="poem-author">唐 · 李白</div>
+                </div>
+                <span class="badge predict">🔴 2026核心预测</span>
+            </div>
+            <div class="poem-content">杨花落尽<span class="typo" title="易错字：鸟类，不能写错">子规</span>啼，闻道龙标过五溪。
+            <span class="key-line">我寄愁心与明月，<span class="typo" title="易错字：注意走之底">随</span>君直到夜郎西。</span></div>
+            <div class="poem-footer">考点：完全未考。拟人手法、托物言志（明月）经典。</div>
+        </div>
+        <div class="poem-card predicted">
+            <div class="poem-header">
+                <div>
+                    <div class="poem-title">3. 次北固山下</div>
+                    <div class="poem-author">唐 · 王湾</div>
+                </div>
+                <span class="badge predict">🔴 2026核心预测</span>
+            </div>
+            <div class="poem-content">客路青山外，行舟绿水前。
+            <span class="key-line">潮平两岸阔，风正一帆悬。</span>
+            <span class="key-line"><span class="typo" title="易错字：生字不可写错">海日生残夜</span>，江春入旧年。</span>
+            乡书何处达？归雁洛阳边。</div>
+            <div class="poem-footer">考点：完全未考。颈联时序交替，蕴含新旧更替哲理。</div>
+        </div>
+        <div class="poem-card predicted">
+            <div class="poem-header">
+                <div>
+                    <div class="poem-title">4. 天净沙 · 秋思</div>
+                    <div class="poem-author">元 · 马致远</div>
+                </div>
+                <span class="badge predict">🔴 2026核心预测</span>
+            </div>
+            <div class="poem-content">枯<span class="typo" title="易错字：草字头+腾">藤</span>老树昏鸦，小桥流水人家，古道西风瘦马。
+            夕阳西下，断肠人在<span class="typo" title="易错字：天涯，不可写作天崖">天涯</span>。</div>
+            <div class="poem-footer">考点：完全未考。白描聚景，秋思之祖。</div>
+        </div>
+        <div class="poem-card predicted">
+            <div class="poem-header">
+                <div>
+                    <div class="poem-title">5. 夜雨寄北</div>
+                    <div class="poem-author">唐 · 李商隐</div>
+                </div>
+                <span class="badge predict">🔴 2026核心预测</span>
+            </div>
+            <div class="poem-content">君问归期未有期，巴山夜雨<span class="typo" title="易错字：三点水">涨</span>秋池。
+            <span class="key-line">何当共<span class="typo" title="易错字：前字头下两点">剪</span>西窗烛，却话巴山夜雨时。</span></div>
+            <div class="poem-footer">考点：完全未考。时空穿越的虚实结合，期盼相聚。</div>
+        </div>
+    </div>
+
+    <div class="section-title">七年级下册 (7篇)</div>
+    <div class="poem-grid">
+        <div class="poem-card predicted">
+            <div class="poem-header">
+                <div>
+                    <div class="poem-title">1. 木兰诗</div>
+                    <div class="poem-author">北朝民歌</div>
+                </div>
+                <span class="badge predict">🔴 2026核心预测</span>
+            </div>
+            <div class="poem-content" style="font-size:14px;">唧唧复唧唧，木兰当户织。不闻机<span class="typo" title="易错字：木字旁杼">杼</span>声，惟闻女叹息。
+            ...
+            万里赴<span class="typo" title="易错字：戈字旁，别写成兵">戎</span>机，关山度若飞。
+            <span class="key-line"><span class="typo" title="易错字：日字旁">朔</span>气传金<span class="typo" title="易错字：木字旁柝">柝</span>，寒光照铁衣。</span>
+            将军百战死，壮士十年归。
+            ...
+            <span class="key-line">当窗理云<span class="typo" title="易错字：鬓角之鬓">鬓</span>，对镜<span class="typo" title="通假字：同贴">帖</span>花黄。</span>
+            <span class="key-line">雄兔脚扑朔，雌兔眼迷离；双兔<span class="typo" title="易错字：人字旁傍">傍</span>地走，安能辨我是雄雌？</span></div>
+            <div class="poem-footer">考点：长篇叙事诗。模考全避，中考极易考查对仗与细节字。</div>
+        </div>
+        <div class="poem-card tested">
+            <div class="poem-header">
+                <div>
+                    <div class="poem-title">2. 登幽州台歌</div>
+                    <div class="poem-author">唐 · 陈子昂</div>
+                </div>
+                <span class="badge tested">已考：平谷、昌平二模</span>
+            </div>
+            <div class="poem-content">前不见古人，后不见来者。
+            <span class="key-line">念天地之悠悠，独<span class="typo" title="易错字：竖心旁怆">怆</span>然而涕下！</span></div>
+            <div class="poem-footer">考点：生不逢时的孤独悲壮感。</div>
+        </div>
+        <div class="poem-card tested">
+            <div class="poem-header">
+                <div>
+                    <div class="poem-title">3. 望岳</div>
+                    <div class="poem-author">唐 · 杜甫</div>
+                </div>
+                <span class="badge tested">已考：门头沟一模</span>
+            </div>
+            <div class="poem-content">岱宗夫如何？齐鲁青未了。
+            造化钟神秀，阴阳割昏晓。
+            荡胸生<span class="typo" title="易错字：同层">曾</span>云，决<span class="typo" title="易错字：目字旁眦">眦</span>入归鸟。
+            <span class="key-line">会当凌绝顶，一览众山小。</span></div>
+            <div class="poem-footer">考点：极高频攀登哲理句，青年杜甫的豪情。</div>
+        </div>
+        <div class="poem-card predicted">
+            <div class="poem-header">
+                <div>
+                    <div class="poem-title">4. 登飞来峰</div>
+                    <div class="poem-author">北宋 · 王安石</div>
+                </div>
+                <span class="badge predict">🔴 2026核心预测</span>
+            </div>
+            <div class="poem-content">飞来山上千寻塔，闻说鸡鸣见日升。
+            <span class="key-line">不畏浮云遮望眼，自缘身在最高层。</span></div>
+            <div class="poem-footer">考点：完全未考。对王安石政治抱负与高瞻远瞩哲理的全面考查。</div>
+        </div>
+        <div class="poem-card tested">
+            <div class="poem-header">
+                <div>
+                    <div class="poem-title">5. 游山西村</div>
+                    <div class="poem-author">南宋 · 陆游</div>
+                </div>
+                <span class="badge tested">危险已考：东城/朝阳/丰台/顺义二模</span>
+            </div>
+            <div class="poem-content">莫笑农家腊酒浑，丰年留客足鸡<span class="typo" title="易错字：月字旁豚，指猪">豚</span>。
+            <span class="key-line">山重水复疑无路，柳暗花明又一村。</span>
+            箫鼓追随春社近，衣冠简朴古风存。
+            从今若许闲乘月，拄杖无时夜叩门。</div>
+            <div class="poem-footer">考点：二模4区叠考，大热必死，真题再现概率极低。</div>
+        </div>
+        <div class="poem-card predicted">
+            <div class="poem-header">
+                <div>
+                    <div class="poem-title">6. 己亥杂诗(其五)</div>
+                    <div class="poem-author">清 · 龚自珍</div>
+                </div>
+                <span class="badge predict">🔴 2026核心预测</span>
+            </div>
+            <div class="poem-content">浩荡离愁白日斜，<span class="typo" title="易错字：口字旁吟">吟</span>鞭东指即天涯。
+            <span class="key-line">落红不是无情物，化作春泥更护花。</span></div>
+            <div class="poem-footer">考点：完全未考。千古奉献精神名句，理解默写核心。</div>
+        </div>
+        <div class="poem-card predicted">
+            <div class="poem-header">
+                <div>
+                    <div class="poem-title">7. 泊秦淮</div>
+                    <div class="poem-author">唐 · 杜牧</div>
+                </div>
+                <span class="badge predict">🔴 2026核心预测</span>
+            </div>
+            <div class="poem-content"><span class="key-line"><span class="typo" title="修辞互文：烟与月交织">烟笼寒水月笼沙</span>，夜泊秦淮近酒家。</span>
+            <span class="key-line">商女不知亡国恨，隔江犹唱后庭花。</span></div>
+            <div class="poem-footer">考点：完全未考。忧国忧民、讽刺晚唐统治者荒淫。</div>
+        </div>
+    </div>
+
+    <div class="section-title">八年级上册 (9篇)</div>
+    <div class="poem-grid">
+        <div class="poem-card predicted">
+            <div class="poem-header">
+                <div>
+                    <div class="poem-title">1. 饮酒(其五)</div>
+                    <div class="poem-author">东晋 · 陶渊明</div>
+                </div>
+                <span class="badge predict">🔴 2026核心预测</span>
+            </div>
+            <div class="poem-content">结庐在人境，而无车马喧。问君何能尔？心远地自偏。
+            <span class="key-line">采菊东篱下，悠然见南山。</span>
+            山气日夕佳，飞鸟相与还。
+            此中有真意，<span class="key-line">欲<span class="typo" title="绝度易错：言字旁辩是辩论，中间是瓜的辨是辨别。这里是辨别。">辨</span>已忘言。</span></div>
+            <div class="poem-footer">考点：“欲辨已忘言”的“辨”是历年中考错字重灾区！</div>
+        </div>
+        <div class="poem-card predicted">
+            <div class="poem-header">
+                <div>
+                    <div class="poem-title">2. 黄鹤楼</div>
+                    <div class="poem-author">唐 · 崔颢</div>
+                </div>
+                <span class="badge predict">🔴 2026核心预测</span>
+            </div>
+            <div class="poem-content">昔人已乘黄鹤去，此地空余黄鹤楼。黄鹤一去不复返，白云千载空悠悠。
+            <span class="key-line">晴川历历汉阳树，芳草<span class="typo" title="易错字：草字头萋萋">萋萋</span><span class="typo" title="易错字：鸟类边鹦鹉">鹦鹉</span>洲。</span>
+            日暮乡关何处是？烟波江上使人愁。</div>
+            <div class="poem-footer">考点：完全未考。鹦鹉洲字型复杂，常作为错字扣分项。</div>
+        </div>
+        <div class="poem-card predicted">
+            <div class="poem-header">
+                <div>
+                    <div class="poem-title">3. 使至塞上</div>
+                    <div class="poem-author">唐 · 王维</div>
+                </div>
+                <span class="badge predict">🔴 2026核心预测</span>
+            </div>
+            <div class="poem-content">单车欲问边，<span class="typo" title="易错字：常错考注音和写法">属</span>国过居延。征<span class="typo" title="易错字：草字头蓬">蓬</span>出汉塞，归雁入胡天。
+            <span class="key-line">大漠孤烟直，长河落日圆。</span>
+            萧关逢候<span class="typo" title="易错字：马字旁骑">骑</span>，都护在燕然。</div>
+            <div class="poem-footer">考点：塞外雄浑风光的白描名句，模考漏网之鱼。</div>
+        </div>
+        <div class="poem-card predicted">
+            <div class="poem-header">
+                <div>
+                    <div class="poem-title">4. 钱塘湖春行</div>
+                    <div class="poem-author">唐 · 白居易</div>
+                </div>
+                <span class="badge predict">🔴 2026核心预测</span>
+            </div>
+            <div class="poem-content">孤山寺北贾亭西，水面初平云脚低。
+            <span class="key-line">几处早莺争暖树，谁家新燕<span class="typo" title="易错字：口字旁啄">啄</span>春泥。</span>
+            乱花渐欲迷人眼，浅草才能没马蹄。
+            最爱湖东行不足，绿杨阴里白沙堤。</div>
+            <div class="poem-footer">考点：完全未考。莺争燕啄的早春生机。</div>
+        </div>
+        <div class="poem-card predicted">
+            <div class="poem-header">
+                <div>
+                    <div class="poem-title">5. 春望</div>
+                    <div class="poem-author">唐 · 杜甫</div>
+                </div>
+                <span class="badge predict">🔴 2026核心预测</span>
+            </div>
+            <div class="poem-content">国破山河在，城春草木深。
+            <span class="key-line">感时花溅泪，恨别鸟惊心。</span>
+            <span class="key-line">烽火连三月，家书抵万金。</span>
+            白头<span class="typo" title="易错字：提手旁搔">搔</span>更短，浑欲不胜<span class="typo" title="高频错字：竹字头簪">簪</span>。</div>
+            <div class="poem-footer">考点：家国之痛。“簪”字结构复杂极易出错。</div>
+        </div>
+        <div class="poem-card tested">
+            <div class="poem-header">
+                <div>
+                    <div class="poem-title">6. 雁门太守行</div>
+                    <div class="poem-author">唐 · 李贺</div>
+                </div>
+                <span class="badge tested">已考：通州一模、房山二模</span>
+            </div>
+            <div class="poem-content">黑云压城城欲摧，甲光向日金鳞开。
+            角声满天秋色里，塞上<span class="typo" title="课本标准：燕脂">燕脂</span>凝夜紫。
+            半卷红旗临易水，霜重鼓寒声不起。
+            <span class="key-line">报君黄金台上意，提携玉龙为君死。</span></div>
+            <div class="poem-footer">考点：色彩斑斓的战争场面与誓死报国之志。</div>
+        </div>
+        <div class="poem-card predicted">
+            <div class="poem-header">
+                <div>
+                    <div class="poem-title">7. 赤壁</div>
+                    <div class="poem-author">唐 · 杜牧</div>
+                </div>
+                <span class="badge predict">🔴 2026核心预测</span>
+            </div>
+            <div class="poem-content"><span class="typo" title="易错字：戈字旁戟">折戟</span>沉沙铁未销，自将磨洗认前朝。
+            <span class="key-line">东风不与周郎便，铜雀春深锁二乔。</span></div>
+            <div class="poem-footer">考点：完全未考。独特的反向假设历史评价。</div>
+        </div>
+        <div class="poem-card tested">
+            <div class="poem-header">
+                <div>
+                    <div class="poem-title">8. 渔家傲(天接云涛连晓雾)</div>
+                    <div class="poem-author">南宋 · 李清照</div>
+                </div>
+                <span class="badge tested">已考：西城一模、海淀二模</span>
+            </div>
+            <div class="poem-content">天接云涛连晓雾，星河欲转千帆舞。仿佛梦魂归帝所。闻天语，殷勤问我归何处。
+            我报路长<span class="typo" title="易错字：口字旁嗟">嗟</span>日暮，学诗<span class="typo" title="易错字：言字旁谩">谩</span>有惊人句。
+            <span class="key-line">九万里风鹏正举。</span>风休住，蓬舟吹取三山去！</div>
+            <div class="poem-footer">考点：浪漫主义豪放派词作。</div>
+        </div>
+        <div class="poem-card predicted">
+            <div class="poem-header">
+                <div>
+                    <div class="poem-title">9. 浣溪沙(一曲新词酒一杯)</div>
+                    <div class="poem-author">北宋 · 晏殊</div>
+                </div>
+                <span class="badge predict">🔴 2026核心预测</span>
+            </div>
+            <div class="poem-content">一曲新词酒一杯，去年天气旧亭台。夕阳西下几时回？
+            <span class="key-line">无可奈何花落去，似曾相识燕归来。</span>小园香径独徘徊。</div>
+            <div class="poem-footer">考点：完全未考。天然对仗的伤春哲理句。</div>
+        </div>
+    </div>
+
+    <div class="section-title">八年级下册 (5篇)</div>
+    <div class="poem-grid">
+        <div class="poem-card predicted">
+            <div class="poem-header">
+                <div>
+                    <div class="poem-title">1. 关雎</div>
+                    <div class="poem-author">先秦 · 《诗经》</div>
+                </div>
+                <span class="badge predict">🔴 2026核心预测</span>
+            </div>
+            <div class="poem-content">关关<span class="typo" title="易错字：雎鸠">雎鸠</span>，在河之洲。<span class="typo" title="易错字：窈窕">窈窕</span>淑女，君子好<span class="typo" title="易错字：求之匹配逑">逑</span>。
+            参差<span class="typo" title="易错字：草字头荇">荇</span>菜，左右流之。窈窕淑女，<span class="typo" title="易错字：寤寐">寤寐</span>求之。
+            求之不得，寤寐思服。悠哉悠哉，<span class="typo" title="易错字：足字旁加展">辗转反侧</span>。
+            ...</div>
+            <div class="poem-footer">考点：西城考了《蒹葭》，同为诗经《关雎》反扑几率极大。生僻字极多。</div>
+        </div>
+        <div class="poem-card tested">
+            <div class="poem-header">
+                <div>
+                    <div class="poem-title">2. 蒹葭</div>
+                    <div class="poem-author">先秦 · 《诗经》</div>
+                </div>
+                <span class="badge tested">已考：西城二模</span>
+            </div>
+            <div class="poem-content"><span class="typo" title="易错字：蒹葭">蒹葭</span>苍苍，白露为霜。所谓伊人，在水一方。
+            <span class="typo" title="易错字：走之底溯洄">溯洄</span>从之，道阻且长。溯游从之，宛在水中央。
+            ...</div>
+            <div class="poem-footer">考点：重章叠句、可望不可即的意境。</div>
+        </div>
+        <div class="poem-card predicted">
+            <div class="poem-header">
+                <div>
+                    <div class="poem-title">3. 茅屋为秋风所破歌</div>
+                    <div class="poem-author">唐 · 杜甫</div>
+                </div>
+                <span class="badge predict">🔴 2026核心预测</span>
+            </div>
+            <div class="poem-content" style="font-size:14px;">... 高者挂<span class="typo" title="易错字：罥">罥</span>长林梢，下者飘转沉塘<span class="typo" title="易错字：土字旁坳">坳</span>。
+            俄顷风定云墨色，秋天漠漠向昏黑。布<span class="typo" title="易错字：衣字底衾">衾</span>多年冷似铁...
+            <span class="key-line">安得广厦千万间，大<span class="typo" title="易错字：庇护之庇">庇</span>天下寒士俱欢颜！风雨不动安如山。</span>
+            呜呼！何时眼前突兀见此屋，吾庐独破受冻死亦足！</div>
+            <div class="poem-footer">考点：完全未考。杜甫最核心的推己及人、济世情怀长篇。</div>
+        </div>
+        <div class="poem-card predicted">
+            <div class="poem-header">
+                <div>
+                    <div class="poem-title">4. 卖炭翁</div>
+                    <div class="poem-author">唐 · 白居易</div>
+                </div>
+                <span class="badge predict">🔴 2026核心预测</span>
+            </div>
+            <div class="poem-content">卖炭翁，伐薪烧炭南山中。满面尘灰烟火色，两<span class="typo" title="易错字：鬓角鬓">鬓</span>苍苍十指黑。
+            <span class="key-line">可怜身上衣正单，心忧炭贱愿天寒。</span>
+            夜来城外一尺雪，晓驾炭车碾冰<span class="typo" title="易错字：车字旁辙">辙</span>... 半匹红纱一丈绫，系向牛头充炭<span class="typo" title="通假字：同值">直</span>。</div>
+            <div class="poem-footer">考点：完全未考。底层的复杂矛盾心理，“直”字是通假字。</div>
+        </div>
+        <div class="poem-card predicted">
+            <div class="poem-header">
+                <div>
+                    <div class="poem-title">5. 送杜少府之任蜀州</div>
+                    <div class="poem-author">唐 · 王勃</div>
+                </div>
+                <span class="badge predict">🔴 2026核心预测</span>
+            </div>
+            <div class="poem-content">城<span class="typo" title="易错字：门字框阙">阙</span>辅三秦，风烟望五津。与君离别意，同是<span class="typo" title="易错字：官宦之宦">宦</span>游人。
+            <span class="key-line">海内存知己，天涯若比邻。</span>
+            无为在歧路，儿女共沾巾。</div>
+            <div class="poem-footer">考点：完全未考。旷达的送别诗经典，中考必背名篇。</div>
+        </div>
+    </div>
+
+    <div class="section-title">九年级上册 (4篇)</div>
+    <div class="poem-grid">
+        <div class="poem-card predicted">
+            <div class="poem-header">
+                <div>
+                    <div class="poem-title">1. 行路难(其一)</div>
+                    <div class="poem-author">唐 · 李白</div>
+                </div>
+                <span class="badge predict">🔴 2026核心预测</span>
+            </div>
+            <div class="poem-content">金<span class="typo" title="易错字：木字旁樽">樽</span>清酒斗十千，玉盘珍<span class="typo" title="通假字：同馐">羞</span>直万钱。停杯投<span class="typo" title="易错字：竹字头箸，指筷子">箸</span>不能食，拔剑四顾心茫然。
+            欲渡黄河冰塞川，将登太行雪满山。闲来垂钓碧溪上，忽复乘舟梦日边。
+            <span class="key-line">长风破浪会有时，直挂云帆济沧海。</span></div>
+            <div class="poem-footer">考点：模考真空篇目！全诗大开大合，尾联极高频考查乐观豁达态度。</div>
+        </div>
+        <div class="poem-card predicted">
+            <div class="poem-header">
+                <div>
+                    <div class="poem-title">2. 酬乐天扬州初逢席上见赠</div>
+                    <div class="poem-author">唐 · 刘禹锡</div>
+                </div>
+                <span class="badge predict">🔴 2026核心预测</span>
+            </div>
+            <div class="poem-content">巴山楚水凄凉地，二十三年弃置身。
+            怀旧空吟闻笛赋，到乡翻似烂<span class="typo" title="易错字：木字旁柯">柯</span>人。
+            <span class="key-line">沉舟侧畔千帆过，病树前头万木春。</span>
+            今日听君歌一曲，暂凭杯酒长精神。</div>
+            <div class="poem-footer">考点：完全未考。颈联饱含新旧更替的新生哲学，必考！</div>
+        </div>
+        <div class="poem-card predicted">
+            <div class="poem-header">
+                <div>
+                    <div class="poem-title">3. 水调歌头(明月几时有)</div>
+                    <div class="poem-author">北宋 · 苏轼</div>
+                </div>
+                <span class="badge predict">🔴 2026核心预测</span>
+            </div>
+            <div class="poem-content">... 不知天上宫<span class="typo" title="易错字：阙">阙</span>，今夕是何年。我欲乘风归去，又恐琼楼玉宇，高处不胜寒。
+            转朱阁，低<span class="typo" title="易错字：纟旁绮">绮</span>户，照无眠。
+            <span class="key-line">人有悲欢离合，月有阴晴圆缺，此事古难全。</span>
+            <span class="key-line">但愿人长久，千里共<span class="typo" title="易错字：女字旁婵娟">婵娟</span>。</span></div>
+            <div class="poem-footer">考点：完全未考。词作巅峰，考查对离别的旷达情怀与美好祝愿。</div>
+        </div>
+        <div class="poem-card predicted">
+            <div class="poem-header">
+                <div>
+                    <div class="poem-title">4. 无题</div>
+                    <div class="poem-author">唐 · 李商隐</div>
+                </div>
+                <span class="badge predict">🔴 2026核心预测</span>
+            </div>
+            <div class="poem-content">相见时难别亦难，东风无力百花残。
+            <span class="key-line">春蚕到死丝方尽，蜡<span class="typo" title="易错字：火字旁炬">炬</span>成灰泪始干。</span>
+            晓镜但愁云鬓改，夜吟应觉月光寒。
+            蓬山此去无多路，青鸟殷勤为探看。</div>
+            <div class="poem-footer">考点：完全未考。春蚕蜡炬常被用于情境化写作或奉献赞美理解。</div>
+        </div>
+    </div>
+
+    <div class="section-title">九年级下册 (9篇)</div>
+    <div class="poem-grid">
+        <div class="poem-card tested">
+            <div class="poem-header">
+                <div>
+                    <div class="poem-title">1. 渔家傲 · 秋思</div>
+                    <div class="poem-author">北宋 · 范仲淹</div>
+                </div>
+                <span class="badge tested">已考：通州一模</span>
+            </div>
+            <div class="poem-content">塞下秋来风景异，衡阳雁去无留意。四面边声连角起，千<span class="typo" title="易错字：山字旁嶂">嶂</span>里，长烟落日孤城闭。
+            <span class="key-line">浊酒一杯家万里，燕然未勒归无计。</span>
+            羌管悠悠霜满地，人不<span class="typo" title="易错字：寐，睡觉">寐</span>，将军白发征夫泪。</div>
+            <div class="poem-footer">考点：爱国与思乡的沉重矛盾。</div>
+        </div>
+        <div class="poem-card tested">
+            <div class="poem-header">
+                <div>
+                    <div class="poem-title">2. 江城子 · 密州出猎</div>
+                    <div class="poem-author">北宋 · 苏轼</div>
+                </div>
+                <span class="badge tested">危险已考：平谷、昌平、大兴一模</span>
+            </div>
+            <div class="poem-content">老夫聊发少年狂，左牵黄，右<span class="typo" title="易错字：手字底擎">擎</span>苍，锦帽貂裘，千骑卷平冈。
+            持节云中，何日遣冯唐？
+            <span class="key-line">会挽雕弓如满月，西北望，射天狼。</span></div>
+            <div class="poem-footer">考点：一模多区联考，近期大热，应规避。</div>
+        </div>
+        <div class="poem-card tested">
+            <div class="poem-header">
+                <div>
+                    <div class="poem-title">3. 破阵子 · 为陈同甫赋壮词以寄之</div>
+                    <div class="poem-author">南宋 · 辛弃疾</div>
+                </div>
+                <span class="badge tested">已考：燕山二模</span>
+            </div>
+            <div class="poem-content">八百里分<span class="typo" title="易错字：广字头麾">麾</span>下<span class="typo" title="易错字：炙，烤肉">炙</span>，五十弦翻塞外声。
+            了却君王天下事，赢得生前身后名。
+            <span class="key-line">可怜白发生！</span></div>
+            <div class="poem-footer">考点：理想与现实的悲壮交织，梦境与现实。</div>
+        </div>
+        <div class="poem-card tested">
+            <div class="poem-header">
+                <div>
+                    <div class="poem-title">4. 满江红(小住京华)</div>
+                    <div class="poem-author">近代 · 秋瑾</div>
+                </div>
+                <span class="badge tested">已考：大兴二模</span>
+            </div>
+            <div class="poem-content">为篱下黄花开遍，秋容如<span class="typo" title="易错字：拭">拭</span>。
+            身不得，男儿列；心却比，男儿烈！
+            算平生肝胆，因人常热。俗流知不知？</div>
+            <div class="poem-footer">考点：女性英雄气概与不流于俗的豪情。</div>
+        </div>
+        <div class="poem-card predicted">
+            <div class="poem-header">
+                <div>
+                    <div class="poem-title">5. 十五从军征</div>
+                    <div class="poem-author">汉乐府</div>
+                </div>
+                <span class="badge predict">🔴 2026核心预测</span>
+            </div>
+            <div class="poem-content">十五从军征，八十始得归。
+            遥看是君家，松柏<span class="typo" title="易错字：冢，坟墓">冢</span>累累。兔从狗<span class="typo" title="易错字：穴字头窦">窦</span>入，<span class="typo" title="易错字：雉，野鸡">雉</span>从梁上飞。
+            中庭生旅谷，井上生旅葵。舂谷持作饭，采葵持作<span class="typo" title="易错字：羹汤之羹">羹</span>。
+            羹饭一时熟，不知<span class="typo" title="易错字：贻，送给">贻</span>阿谁。</div>
+            <div class="poem-footer">考点：完全未考。老兵回乡的荒凉悲剧，乐府诗叙事代表。</div>
+        </div>
+        <div class="poem-card tested">
+            <div class="poem-header">
+                <div>
+                    <div class="poem-title">6. 白雪歌送武判官归京</div>
+                    <div class="poem-author">唐 · 岑参</div>
+                </div>
+                <span class="badge tested">严重超标：海淀/朝阳/东城/丰台一模、石景山二模</span>
+            </div>
+            <div class="poem-content"><span class="key-line">忽如一夜春风来，千树万树梨花开。</span>
+            瀚海阑干百丈冰，愁云惨淡万里凝。
+            风<span class="typo" title="易错字：提手旁掣">掣</span>红旗冻不翻。
+            <span class="key-line">山回路转不见君，雪上空留马行处。</span></div>
+            <div class="poem-footer">考点：5个核心大区轮番轰炸！中考真题必然完美规避此篇。</div>
+        </div>
+        <div class="poem-card tested">
+            <div class="poem-header">
+                <div>
+                    <div class="poem-title">7. 南乡子 · 登京口北固亭有怀</div>
+                    <div class="poem-author">南宋 · 辛弃疾</div>
+                </div>
+                <span class="badge tested">过度考查：房山/延庆/燕山/大兴模考</span>
+            </div>
+            <div class="poem-content">千古兴亡多少事？悠悠。不尽长江滚滚流。
+            年少万<span class="typo" title="高频极易错字：兜鍪，指头盔">兜鍪</span>，坐断东南战未休。
+            天下英雄谁敌手？曹刘。生子当如孙仲谋。</div>
+            <div class="poem-footer">考点：模考轰炸篇目，中考复现几率极低，“兜鍪”需注意写法。</div>
+        </div>
+        <div class="poem-card tested">
+            <div class="poem-header">
+                <div>
+                    <div class="poem-title">8. 过零丁洋</div>
+                    <div class="poem-author">南宋 · 文天祥</div>
+                </div>
+                <span class="badge tested">已考：石景山、燕山、顺义一模</span>
+            </div>
+            <div class="poem-content">辛苦遭逢起一经，干戈寥落四周星。
+            山河破碎风飘絮，身世浮沉雨打萍。
+            惶恐滩头说惶恐，零丁洋里叹零丁。
+            <span class="key-line">人生自古谁无死？留取丹心照汗青。</span></div>
+            <div class="poem-footer">考点：模考已消化。核心爱国舍生取义绝句。</div>
+        </div>
+        <div class="poem-card tested">
+            <div class="poem-header">
+                <div>
+                    <div class="poem-title">9. 山坡羊 · 潼关怀古</div>
+                    <div class="poem-author">元 · 张养浩</div>
+                </div>
+                <span class="badge tested">已考：房山一模</span>
+            </div>
+            <div class="poem-content">峰峦如聚，波涛如怒，山河表里潼关路。
+            望西都，意<span class="typo" title="易错字：踌躇">踌躇</span>。
+            伤心秦汉经行处，宫阙万间都做了土。
+            <span class="key-line">兴，百姓苦；亡，百姓苦。</span></div>
+            <div class="poem-footer">考点：极深刻的底层同情，兴亡皆苦的批判。</div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const toggleBtn = document.getElementById('theme-toggle');
+    const htmlEl = document.documentElement;
+
+    toggleBtn.addEventListener('click', () => {
+        const currentTheme = htmlEl.getAttribute('data-theme');
+        if (currentTheme === 'light') {
+            htmlEl.setAttribute('data-theme', 'dark');
+            toggleBtn.innerHTML = '☀️ 白天模式';
+        } else {
+            htmlEl.setAttribute('data-theme', 'light');
+            toggleBtn.innerHTML = '🌙 夜间模式';
+        }
+    });
+</script>
+
+</body>
+</html>
