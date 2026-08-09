@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <title>公网 5678 API 连通性测试</title>
+  <style>
+    :root{--bg:#09111f;--card:#101b2e;--line:#24324b;--text:#eaf2ff;--muted:#8ea3c4;--ok:#22c55e;--bad:#ef4444;--warn:#f59e0b;--blue:#38bdf8;--violet:#a78bfa}
+    *{box-sizing:border-box}body{margin:0;min-height:100vh;background:radial-gradient(circle at 18% 10%,rgba(56,189,248,.24),transparent 28%),radial-gradient(circle at 88% 16%,rgba(167,139,250,.22),transparent 30%),linear-gradient(135deg,#060b14,#0a1221 58%,#101827);color:var(--text);font-family:"Microsoft YaHei",ui-sans-serif,system-ui,sans-serif;padding:24px}
+    .wrap{max-width:980px;margin:0 auto}.hero{display:flex;justify-content:space-between;gap:18px;align-items:flex-end;margin:10px 0 20px}.title{font-size:clamp(26px,4vw,42px);font-weight:900;letter-spacing:-.04em;margin:0}.sub{color:var(--muted);line-height:1.7;margin:8px 0 0}.badge{border:1px solid rgba(56,189,248,.45);color:#b6ecff;background:rgba(56,189,248,.1);border-radius:999px;padding:8px 12px;font-weight:800;white-space:nowrap}.card{background:rgba(16,27,46,.82);border:1px solid rgba(148,163,184,.18);box-shadow:0 24px 80px rgba(0,0,0,.32);backdrop-filter:blur(16px);border-radius:24px;padding:18px;margin:14px 0}.grid{display:grid;grid-template-columns:1.4fr .7fr .7fr;gap:10px}.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}label{display:block;color:#c8d7ee;font-size:13px;font-weight:800;margin:0 0 7px}input,select,textarea{width:100%;border:1px solid var(--line);background:#0b1424;color:var(--text);border-radius:14px;padding:12px 13px;font:inherit;outline:none}textarea{min-height:92px;resize:vertical}input:focus,select:focus,textarea:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(56,189,248,.14)}.actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}button{border:0;border-radius:14px;padding:12px 15px;color:#06101f;font-weight:900;cursor:pointer;background:linear-gradient(135deg,var(--blue),#7dd3fc);box-shadow:0 10px 28px rgba(56,189,248,.22)}button.secondary{background:#18243a;color:#dbeafe;border:1px solid var(--line);box-shadow:none}button.danger{background:linear-gradient(135deg,#fb7185,#ef4444);color:#fff}.status{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.tile{border:1px solid var(--line);border-radius:18px;padding:13px;background:#0b1424}.tile b{display:block;font-size:13px;color:var(--muted);margin-bottom:6px}.tile span{font-size:18px;font-weight:900}.ok{color:var(--ok)}.bad{color:var(--bad)}.warn{color:var(--warn)}.log{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;background:#050913;color:#dbeafe;border-radius:18px;border:1px solid #1d2a40;padding:14px;white-space:pre-wrap;word-break:break-word;max-height:460px;overflow:auto}.hint{color:var(--muted);font-size:13px;line-height:1.7}.pill{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:999px;padding:5px 9px;color:#bad2f5;background:#0b1424;margin:4px 4px 0 0;font-size:12px;font-weight:800}@media(max-width:760px){body{padding:14px}.hero{display:block}.badge{display:inline-block;margin-top:10px}.grid,.grid2,.status{grid-template-columns:1fr}.card{border-radius:18px;padding:14px}}
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <section class="hero">
+      <div>
+        <h1 class="title">公网 5678 API 连通性测试</h1>
+        <p class="sub">上传到 GitHub Pages 后运行。若页面是 HTTPS，而接口是 HTTP，浏览器可能直接拦截 mixed content；日志里会标出来。</p>
+      </div>
+      <div class="badge">GitHub Pages Ready</div>
+    </section>
+
+    <section class="card">
+      <div class="grid">
+        <div>
+          <label>接口基础地址</label>
+          <input id="baseUrl" value="http://你的域名或公网IP:5678" placeholder="例如 http://example.com:5678 或 https://api.example.com">
+        </div>
+        <div>
+          <label>路径</label>
+          <input id="path" value="/" placeholder="例如 /api/health">
+        </div>
+        <div>
+          <label>超时</label>
+          <select id="timeout">
+            <option value="3000">3 秒</option>
+            <option value="8000" selected>8 秒</option>
+            <option value="15000">15 秒</option>
+            <option value="30000">30 秒</option>
+          </select>
+        </div>
+      </div>
+      <div class="grid2" style="margin-top:12px">
+        <div>
+          <label>请求方法</label>
+          <select id="method">
+            <option>GET</option>
+            <option>POST</option>
+            <option>OPTIONS</option>
+            <option>HEAD</option>
+          </select>
+        </div>
+        <div>
+          <label>请求模式</label>
+          <select id="mode">
+            <option value="cors" selected>cors，可读响应，需要服务端允许跨域</option>
+            <option value="no-cors">no-cors，只能判断是否被浏览器发出，不能读内容</option>
+          </select>
+        </div>
+      </div>
+      <div style="margin-top:12px">
+        <label>POST JSON Body</label>
+        <textarea id="body">{"ping":"github-pages","time":"auto"}</textarea>
+      </div>
+      <div class="actions">
+        <button onclick="runOne()">测试当前接口</button>
+        <button class="secondary" onclick="runBatch()">批量测试常见路径</button>
+        <button class="secondary" onclick="fillHttps()">切换 HTTPS</button>
+        <button class="secondary" onclick="copyLog()">复制日志</button>
+        <button class="danger" onclick="clearLog()">清空</button>
+      </div>
+      <p class="hint">
+        常见判断：<span class="pill">Failed to fetch 多半是 CORS/协议/端口</span><span class="pill">Mixed Content 是 HTTPS 页面请求 HTTP 被拦</span><span class="pill">no-cors opaque 只能说明浏览器发出请求</span>
+      </p>
+    </section>
+
+    <section class="card status">
+      <div class="tile"><b>最后状态</b><span id="sStatus">未测试</span></div>
+      <div class="tile"><b>耗时</b><span id="sTime">-</span></div>
+      <div class="tile"><b>CORS</b><span id="sCors">-</span></div>
+      <div class="tile"><b>协议风险</b><span id="sProto">-</span></div>
+    </section>
+
+    <section class="card">
+      <label>测试日志</label>
+      <div id="log" class="log">等待测试...</div>
+    </section>
+  </main>
+
+  <script>
+    const $ = id => document.getElementById(id);
+    function now(){ return new Date().toLocaleString(); }
+    function joinUrl(base, path){
+      base = String(base || '').trim().replace(/\/+$/, '');
+      path = String(path || '/').trim();
+      if (!path.startsWith('/')) path = '/' + path;
+      return base + path;
+    }
+    function log(line, obj){
+      const el = $('log');
+      if (el.textContent === '等待测试...') el.textContent = '';
+      el.textContent += `[${now()}] ${line}` + (obj !== undefined ? '\n' + safeStringify(obj) : '') + '\n\n';
+      el.scrollTop = el.scrollHeight;
+    }
+    function safeStringify(obj){
+      try { return typeof obj === 'string' ? obj : JSON.stringify(obj, null, 2); } catch(e){ return String(obj); }
+    }
+    function setStatus(status, cls, ms, cors, proto){
+      $('sStatus').textContent = status || '-'; $('sStatus').className = cls || '';
+      $('sTime').textContent = ms ? `${ms} ms` : '-';
+      $('sCors').textContent = cors || '-'; $('sCors').className = cors && cors.includes('失败') ? 'bad' : (cors && cors.includes('可读') ? 'ok' : 'warn');
+      $('sProto').textContent = proto || '-'; $('sProto').className = proto && proto.includes('Mixed') ? 'bad' : '';
+    }
+    function protoRisk(url){
+      if (location.protocol === 'https:' && /^http:\/\//i.test(url)) return 'Mixed Content 风险';
+      return '无明显风险';
+    }
+    async function testUrl(url, method, mode, timeoutMs, bodyText){
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort('timeout'), timeoutMs);
+      const start = performance.now();
+      const headers = {};
+      const options = { method, mode, signal: controller.signal, cache: 'no-store' };
+      if (method !== 'GET' && method !== 'HEAD' && method !== 'OPTIONS') {
+        headers['Content-Type'] = 'application/json';
+        let payload = bodyText || '{}';
+        if (payload.includes('"time":"auto"')) payload = payload.replace('"time":"auto"', '"time":"' + new Date().toISOString() + '"');
+        options.body = payload;
+      }
+      if (Object.keys(headers).length) options.headers = headers;
+      try {
+        const res = await fetch(url, options);
+        const ms = Math.round(performance.now() - start);
+        clearTimeout(timer);
+        const out = { url, method, mode, status: res.status, ok: res.ok, type: res.type, redirected: res.redirected, timeMs: ms, headers: {} };
+        ['content-type','access-control-allow-origin','access-control-allow-methods','access-control-allow-headers','server'].forEach(k=>{ try{ out.headers[k] = res.headers.get(k); }catch(e){} });
+        if (method !== 'HEAD' && mode !== 'no-cors') {
+          try { out.bodyPreview = (await res.text()).slice(0, 1200); } catch(e){ out.bodyReadError = String(e); }
+        }
+        const corsText = mode === 'no-cors' ? 'opaque，不能读响应' : (res.type === 'cors' || res.type === 'basic' ? '响应可读' : '未知');
+        setStatus(String(res.status || res.type), res.ok || res.type === 'opaque' ? 'ok' : 'warn', ms, corsText, protoRisk(url));
+        log('请求完成', out);
+        return out;
+      } catch (err) {
+        const ms = Math.round(performance.now() - start);
+        clearTimeout(timer);
+        const msg = String(err && (err.message || err.name) || err);
+        const reason = msg.toLowerCase().includes('abort') ? '超时' : '失败';
+        setStatus(reason, 'bad', ms, '失败或被浏览器拦截', protoRisk(url));
+        log('请求失败：' + msg, { url, method, mode, timeMs: ms, hint: explainError(msg, url) });
+        return null;
+      }
+    }
+    function explainError(msg, url){
+      const hints = [];
+      if (location.protocol === 'https:' && /^http:\/\//i.test(url)) hints.push('GitHub Pages 是 HTTPS，浏览器可能禁止请求 HTTP 接口。建议给 5678 配 HTTPS 或用反向代理。');
+      hints.push('如果端口公网未开放、防火墙阻断、服务没监听 0.0.0.0，也会 Failed to fetch。');
+      hints.push('如果服务能访问但没有 CORS 响应头，也会 Failed to fetch。需要 Access-Control-Allow-Origin 允许你的 Pages 域名。');
+      return hints;
+    }
+    async function runOne(){
+      const url = joinUrl($('baseUrl').value, $('path').value);
+      log('开始测试 ' + url);
+      await testUrl(url, $('method').value, $('mode').value, parseInt($('timeout').value,10), $('body').value);
+    }
+    async function runBatch(){
+      const base = $('baseUrl').value;
+      const timeout = parseInt($('timeout').value,10);
+      const paths = ['/', '/health', '/api/health', '/ping', '/api/ping', '/status', '/api/status'];
+      log('开始批量测试常见路径');
+      for (const p of paths) await testUrl(joinUrl(base,p), 'GET', 'cors', timeout, '');
+      log('批量测试完成');
+    }
+    function fillHttps(){
+      const input = $('baseUrl');
+      input.value = input.value.replace(/^http:\/\//i, 'https://');
+      log('已切换为 HTTPS 地址，请确认 5678 是否真的支持 TLS');
+    }
+    async function copyLog(){
+      try { await navigator.clipboard.writeText($('log').textContent); alert('日志已复制'); } catch(e){ alert('复制失败，请手动选择日志'); }
+    }
+    function clearLog(){ $('log').textContent = '等待测试...'; setStatus('未测试','','','',''); }
+  </script>
+</body>
+</html>
