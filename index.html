@@ -2,85 +2,36 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no,viewport-fit=cover">
-    <title>Flyz远征飞｜综合工具箱</title>
-    <meta name="description" content="全国综合性航模公益服务平台 下载站支持高速免费免登录直接下载飞行模拟 3D打印等各类航模文件 欢迎加入我们 微信号:YGWFK2024" />
-    <meta name="keywords" content="航模,飞行模拟,3D打印,免费下载,公益服务,五一劳动节" />
-    <meta name="robots" content="index,follow">
+    <!-- 移动端适配，禁止缩放 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>超高速服务器连接中</title>
     <style>
-        *{margin:0;padding:0;box-sizing:border-box;font-family:"Microsoft YaHei",sans-serif;}
-        body{
-            width:100vw;
-            height:100vh;
-            background: linear-gradient(145deg,#ff99cc,#66b3ff);
+        * {
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            width: 100vw;
+            height: 100vh;
+            background-color: #000;
             display: flex;
             align-items: center;
             justify-content: center;
-            overflow: hidden;
-        }
-        .wrap{
-            text-align: center;
-        }
-        .main-title{
-            font-size: 32px;
-            color: #fff;
-            letter-spacing: 1px;
-            margin-bottom: 22px;
-            text-shadow: 0 2px 6px rgba(0,0,0,0.15);
-        }
-        .desc-text{
-            font-size: 17px;
+            font-size: 18px;
             color: #ffffff;
-            margin: 12px 0;
-        }
-        .jump-link{
-            font-size: 24px;
-            color: #ffffff;
-            font-weight: bold;
-            margin: 28px 0;
-        }
-        .count{
-            color: #fff;
-            font-size: 16px;
-            margin-bottom: 40px;
-        }
-        .reserve-btn{
-            display: inline-block;
-            padding: 14px 42px;
-            background: #ffffff;
-            color: #ff66aa;
-            text-decoration: none;
-            border-radius: 999px;
-            font-size: 16px;
-            font-weight: 600;
-            transition: all 0.3s ease;
-        }
-        .reserve-btn:hover{
-            background: #f0f0f0;
+            font-family: sans-serif;
         }
     </style>
 </head>
 <body>
-    <div class="wrap">
-        <h2 class="main-title">学业繁忙 本站暂停更新</h2>
-        <p class="desc-text">页面即将自动跳转至目标站点</p>
-        <p class="jump-link">917813.com.cn</p>
-        <p class="count">3秒后自动跳转</p>
-        <a href="https://917813.com.cn" class="reserve-btn">跳转失败 · 点击备用访问</a>
-    </div>
-
-<script>
-let time = 3;
-const dom = document.querySelector('.count');
-dom.innerText = `${time}秒后自动跳转`;
-let timer = setInterval(()=>{
-    time--;
-    dom.innerText = `${time}秒后自动跳转`;
-    if(time <= 0){
-        clearInterval(timer);
-        location.href = "https://917813.com.cn";
-    }
-},1000)
-</script>
+    正在连接超高速服务器中
+    <script>
+        // 跳转地址
+        const targetUrl = "http://123.56.106.49:5678/dct";
+        // 0.8秒跳转 单位：毫秒 0.8s = 800ms
+        setTimeout(() => {
+            window.location.href = targetUrl;
+        }, 800);
+    </script>
 </body>
 </html>
