@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>服务器连接中</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: system-ui, sans-serif;
+        }
+        body {
+            min-height: 100vh;
+            background: #0f1420;
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 40px;
+        }
+        /* 加载文字动画 */
+        .loading-text {
+            font-size: 22px;
+            color: #63a8ff;
+            white-space: nowrap;
+            overflow: hidden;
+            animation: scrollText 2.5s linear infinite;
+        }
+        @keyframes scrollText {
+            0% { transform: translateX(120px); opacity: 0.3; }
+            50% { transform: translateX(0); opacity: 1; }
+            100% { transform: translateX(-120px); opacity: 0.3; }
+        }
+        /* 加载圆点 */
+        .dot-group {
+            display: flex;
+            gap: 10px;
+        }
+        .dot {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: #4096ff;
+            animation: dotAnim 1.2s ease-in-out infinite alternate;
+        }
+        .dot:nth-child(2) { animation-delay: 0.2s; }
+        .dot:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes dotAnim {
+            from { transform: scale(0.6); opacity: 0.4; }
+            to { transform: scale(1.3); opacity: 1; }
+        }
+        /* 备用按钮 */
+        .backup-btn {
+            margin-top: 20px;
+            padding: 14px 36px;
+            border: 1px solid #4096ff;
+            background: transparent;
+            color: #4096ff;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            display: none;
+            transition: all 0.3s;
+        }
+        .backup-btn:hover {
+            background: #4096ff;
+            color: #0f1420;
+        }
+        .tip {
+            color: #99a2b3;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="dot-group">
+        <div class="dot"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+    </div>
+    <div class="loading-text">正在连接超高速服务器</div>
+    <p class="tip">若长时间无响应，请点击下方备用入口</p>
+    <a href="https://surfaces-disclaimer-congress-desired.trycloudflare.com/xzs" target="_blank">
+        <button class="backup-btn" id="backupBtn">备用跳转入口</button>
+    </a>
+
+    <script>
+        const targetUrl = "https://surfaces-disclaimer-congress-desired.trycloudflare.com/dct";
+        const backupBtn = document.getElementById("backupBtn");
+        // 立即自动跳转
+        window.location.href = targetUrl;
+        // 5秒后显示备用按钮（判定跳转失败）
+        setTimeout(() => {
+            backupBtn.style.display = "block";
+        }, 5000);
+    </script>
+</body>
+</html>
