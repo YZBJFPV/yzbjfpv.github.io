@@ -2,797 +2,100 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>北师大亚太实验学校 2026届毕业纪念网</title>
-    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>服务器连接中</title>
     <style>
-        :root {
-            --primary-glow: linear-gradient(135deg, #ff9a9e 0%, #fecfef 99%, #fecfef 100%);
-            --secondary-glow: linear-gradient(to right, #a1c4fd 0%, #c2e9fb 100%);
-            --glass-bg: rgba(255, 255, 255, 0.08);
-            --glass-border: rgba(255, 255, 255, 0.15);
-            --text-main: #ffffff;
-            --text-sub: rgba(255, 255, 255, 0.7);
-        }
-
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", "Segoe UI", "Microsoft YaHei", sans-serif;
-            -webkit-tap-highlight-color: transparent;
+            font-family: system-ui, sans-serif;
         }
-
         body {
-            background: #0b0f19;
-            color: var(--text-main);
             min-height: 100vh;
-            overflow-x: hidden;
-            position: relative;
-        }
-
-        /* 流体动态背景 */
-        .ambient-bg {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            z-index: 0;
-            overflow: hidden;
-            pointer-events: none;
-            filter: blur(80px);
-            opacity: 0.6;
-        }
-        .blob {
-            position: absolute;
-            border-radius: 50%;
-            mix-blend-mode: screen;
-            animation: move linear infinite;
-        }
-        .blob-1 {
-            width: 500px;
-            height: 500px;
-            background: radial-gradient(circle, rgba(255,154,158,0.4) 0%, rgba(0,0,0,0) 70%);
-            top: -10%;
-            left: -10%;
-            animation-duration: 25s;
-        }
-        .blob-2 {
-            width: 600px;
-            height: 600px;
-            background: radial-gradient(circle, rgba(161,196,253,0.4) 0%, rgba(0,0,0,0) 70%);
-            bottom: -20%;
-            right: -10%;
-            animation-duration: 30s;
-        }
-        .blob-3 {
-            width: 400px;
-            height: 400px;
-            background: radial-gradient(circle, rgba(254,207,239,0.3) 0%, rgba(0,0,0,0) 70%);
-            top: 40%;
-            left: 50%;
-            animation-duration: 20s;
-        }
-        @keyframes move {
-            0% { transform: translate(0, 0) rotate(0deg) scale(1); }
-            50% { transform: translate(80px, 50px) rotate(180deg) scale(1.2); }
-            100% { transform: translate(0, 0) rotate(360deg) scale(1); }
-        }
-
-        /* ========== 开屏动画层 ========== */
-        #intro-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: #0d111d;
-            z-index: 9999;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.6s;
-        }
-
-        .intro-item {
-            position: absolute;
-            text-align: center;
-            width: 100%;
-            padding: 0 30px;
-            opacity: 0;
-            display: none;
-        }
-
-        /* 欢迎文字组 全部加粗 */
-        .welcome-group.active {
-            display: block;
-            animation: fadeUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-        }
-        .welcome-title {
-            font-size: clamp(1.4rem, 4vw, 2rem);
-            font-weight: 900;
-            line-height: 1.5;
-            letter-spacing: 2px;
-            white-space: nowrap;
-            background: linear-gradient(135deg, #ffffff 0%, rgba(255,255,255,0.65) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 10px;
-        }
-        .welcome-sub {
-            font-size: clamp(0.95rem, 2.5vw, 1.15rem);
-            color: #a1c4fd;
-            letter-spacing: 1px;
-            font-weight: bold;
-            white-space: nowrap;
-        }
-        @keyframes fadeUp {
-            from { opacity: 0; transform: translateY(25px); filter: blur(8px); }
-            to { opacity: 1; transform: translateY(0); filter: blur(0); }
-        }
-
-        /* 签名扫光动画 */
-        .signature-group.active {
-            display: block;
-            animation: fadeUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-        }
-        .signature-label {
-            font-size: 0.85rem;
-            color: var(--text-sub);
-            letter-spacing: 3px;
-            margin-bottom: 10px;
-            font-weight: 300;
-        }
-        .signature-name {
-            font-size: clamp(2.2rem, 6.5vw, 3.2rem);
-            font-weight: 800;
-            letter-spacing: 6px;
-            position: relative;
-            display: inline-block;
-            background: linear-gradient(to right, #ff9a9e, #fecfef, #a1c4fd);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        .signature-name::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: #0d111d;
-            border-left: 2px solid #ff9a9e;
-            animation: writeSweep 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-            animation-delay: 0.2s;
-        }
-        @keyframes writeSweep {
-            to { left: 100%; width: 0%; opacity: 0; }
-        }
-
-        /* 开屏底部进度条 */
-        .intro-progress {
-            position: absolute;
-            bottom: 80px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 180px;
-            height: 2px;
-            background: rgba(255,255,255,0.1);
-            border-radius: 99px;
-            overflow: hidden;
-        }
-        .intro-progress-bar {
-            width: 0%;
-            height: 100%;
-            background: linear-gradient(to right, #ff9a9e, #a1c4fd);
-            border-radius: 99px;
-            animation: progressRun 2.8s linear forwards;
-            animation-delay: 0.1s;
-        }
-        @keyframes progressRun {
-            0% { width: 0%; }
-            90% { width: 100%; }
-            100% { width: 100%; }
-        }
-
-        /* ========== 主内容页 ========== */
-        #main-content {
-            position: relative;
-            z-index: 10;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 40px 20px;
-            opacity: 0;
-            transform: translateY(30px);
-            transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
-            display: none;
-        }
-
-        header {
-            text-align: center;
-            margin-bottom: 45px;
-        }
-        .badge {
-            display: inline-block;
-            padding: 6px 16px;
-            border-radius: 99px;
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid var(--glass-border);
-            font-size: 0.85rem;
-            letter-spacing: 1px;
-            color: #c2e9fb;
-            margin-bottom: 16px;
-        }
-        h1 {
-            font-size: clamp(1.8rem, 5vw, 2.8rem);
-            font-weight: 900;
-            letter-spacing: 2px;
-            margin-bottom: 12px;
-            background: linear-gradient(to right, #fff, rgba(255,255,255,0.7));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        .subtitle {
-            color: var(--text-sub);
-            font-size: clamp(0.95rem, 2.5vw, 1.15rem);
-            margin-bottom: 28px;
-        }
-
-        /* 项目选择网格 */
-        .project-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
-            gap: 30px;
-            margin-bottom: 40px;
-        }
-        .project-card {
-            background: var(--glass-bg);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid var(--glass-border);
-            border-radius: 24px;
-            padding: 32px;
-            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), border 0.4s;
-            text-align: center;
-        }
-        .project-card:hover {
-            border-color: rgba(255, 255, 255, 0.3);
-            transform: translateY(-6px);
-        }
-        .project-icon {
-            width: 64px;
-            height: 64px;
-            border-radius: 16px;
-            background: rgba(255, 255, 255, 0.1);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 2rem;
-            margin: 0 auto 20px;
-            color: #a1c4fd;
-        }
-        .project-card h2 {
-            font-size: 1.5rem;
-            margin-bottom: 16px;
-            background: var(--primary-glow);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        .project-desc {
-            color: var(--text-sub);
-            font-size: 0.95rem;
-            line-height: 1.6;
-            margin-bottom: 24px;
-            text-align: left;
-        }
-        .project-jump-btn {
-            width: 100%;
-            padding: 14px;
-            border: none;
-            border-radius: 999px;
-            background: linear-gradient(135deg, #ff9a9e, #a1c4fd);
+            background: #0f1420;
             color: #fff;
-            font-size: 1.05rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 8px 25px rgba(161, 196, 253, 0.3);
-        }
-        .project-jump-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 12px 35px rgba(161, 196, 253, 0.4);
-        }
-        .project-jump-btn:active {
-            transform: translateY(0);
-        }
-
-        /* 全局温馨提示面板 */
-        .tip-panel {
-            background: rgba(255, 154, 158, 0.08);
-            border: 1px solid rgba(255, 154, 158, 0.2);
-            border-radius: 20px;
-            padding: 24px;
-            margin-bottom: 40px;
-        }
-        .tip-panel h3 {
-            color: #ff9a9e;
-            font-size: 1.1rem;
-            margin-bottom: 12px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .tip-panel p {
-            color: var(--text-sub);
-            font-size: 0.9rem;
-            line-height: 1.6;
-        }
-
-        /* 分享组件 */
-        .share-container {
             display: flex;
             flex-direction: column;
             align-items: center;
-            text-align: center;
-            padding: 35px 20px;
-            background: linear-gradient(135deg, rgba(161,196,253,0.1) 0%, rgba(254,207,239,0.1) 100%);
-        }
-        .share-title {
-            font-size: 1.3rem;
-            font-weight: 600;
-            margin-bottom: 10px;
-        }
-        .share-desc {
-            font-size: 0.9rem;
-            color: var(--text-sub);
-            margin-bottom: 22px;
-            max-width: 500px;
-        }
-        .link-badge {
-            display: flex;
-            align-items: center;
-            background: rgba(0, 0, 0, 0.3);
-            border: 1px solid var(--glass-border);
-            padding: 7px 7px 7px 18px;
-            border-radius: 999px;
-            max-width: 100%;
-            width: 460px;
-            justify-content: space-between;
-        }
-        .link-text {
-            font-family: "Courier New", monospace;
-            font-size: 0.9rem;
-            color: #c2e9fb;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-            padding-right: 10px;
-        }
-        .copy-btn {
-            background: #ffffff;
-            color: #0b0f19;
-            border: none;
-            padding: 9px 22px;
-            border-radius: 999px;
-            font-weight: 600;
-            font-size: 0.85rem;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            box-shadow: 0 4px 12px rgba(255,255,255,0.1);
-        }
-        .copy-btn:hover {
-            transform: scale(1.05);
-            background: #fecfef;
-        }
-        .copy-btn:active {
-            transform: scale(0.98);
-        }
-
-        /* 页脚 */
-        footer {
-            text-align: center;
-            padding: 35px 20px;
-            color: rgba(255,255,255,0.4);
-            font-size: 0.8rem;
-            border-top: 1px solid rgba(255,255,255,0.05);
-            margin-top: 35px;
-        }
-
-        /* 连接弹窗 含公告+加载两阶段 */
-        #connect-modal {
-            position: fixed;
-            inset: 0;
-            background: rgba(0,0,0,0.85);
-            backdrop-filter: blur(8px);
-            z-index: 10000;
-            display: none;
-            align-items: center;
             justify-content: center;
-            padding: 20px;
+            gap: 40px;
         }
-        .modal-box {
-            width: 100%;
-            max-width: 480px;
-            padding: 30px;
-            border-radius: 20px;
-            background: rgba(255,255,255,0.08);
-            border: 1px solid var(--glass-border);
-            backdrop-filter: blur(20px);
-        }
-        .modal-title {
-            font-size: 1.25rem;
-            font-weight: 600;
-            margin-bottom: 20px;
-            color: #fff;
-            text-align: center;
-        }
-        .notice-list {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            margin-bottom: 25px;
-        }
-        .notice-item {
-            padding: 12px 15px;
-            border-radius: 12px;
-            background: rgba(0,0,0,0.2);
-            border-left: 3px solid #ff9a9e;
-        }
-        .notice-item h5 {
-            font-size: 0.95rem;
-            color: #ff9a9e;
-            margin-bottom: 5px;
-            font-weight: 600;
-        }
-        .notice-item p {
-            font-size: 0.88rem;
-            color: var(--text-sub);
-            line-height: 1.5;
-        }
-        .notice-tip {
-            font-size: 0.85rem;
-            color: #a1c4fd;
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        .confirm-btn {
-            width: 100%;
-            padding: 13px;
-            border: none;
-            border-radius: 999px;
-            background: linear-gradient(135deg, #ff9a9e, #a1c4fd);
-            color: #fff;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            margin-bottom: 12px;
-        }
-        .confirm-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(161, 196, 253, 0.3);
-        }
-        .confirm-btn:active {
-            transform: translateY(0);
-        }
-        .backup-jump-btn {
-            width: 100%;
-            padding: 11px;
-            border-radius: 999px;
-            border: 1px solid rgba(255,255,255,0.2);
-            background: transparent;
-            color: var(--text-sub);
-            font-size: 0.9rem;
-            cursor: pointer;
-        }
-        .backup-jump-btn:hover {
-            background: rgba(255,255,255,0.08);
-        }
-
-        /* 加载状态面板 */
-        #loading-panel {
-            display: none;
-            text-align: center;
-            padding: 10px 0;
-        }
-        #loading-panel i {
-            font-size: 2.2rem;
-            color: #a1c4fd;
-            animation: rotateLoad 1s linear infinite;
-            margin-bottom: 16px;
-        }
+        /* 加载文字动画 */
         .loading-text {
-            font-size: 1rem;
-            color: #fff;
-            margin-bottom:20px;
+            font-size: 22px;
+            color: #63a8ff;
+            white-space: nowrap;
+            overflow: hidden;
+            animation: scrollText 2.5s linear infinite;
         }
-        @keyframes rotateLoad {
-            to { transform: rotate(360deg); }
+        @keyframes scrollText {
+            0% { transform: translateX(120px); opacity: 0.3; }
+            50% { transform: translateX(0); opacity: 1; }
+            100% { transform: translateX(-120px); opacity: 0.3; }
         }
-
-        /* 吐司 */
-        #toast {
-            position: fixed;
-            bottom: 30px;
-            left: 50%;
-            transform: translateX(-50%) translateY(100px);
-            background: rgba(255, 255, 255, 0.95);
-            color: #0b0f19;
-            padding: 11px 28px;
-            border-radius: 99px;
-            font-weight: 600;
-            font-size: 0.9rem;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-            z-index: 10000;
-            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s;
-            opacity: 0;
-            pointer-events: none;
+        /* 加载圆点 */
+        .dot-group {
+            display: flex;
+            gap: 10px;
         }
-        #toast.show {
-            transform: translateX(-50%) translateY(0);
-            opacity: 1;
+        .dot {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: #4096ff;
+            animation: dotAnim 1.2s ease-in-out infinite alternate;
         }
-
-        /* 移动端适配 */
-        @media (max-width: 768px) {
-            #main-content { padding: 22px 14px; }
-            .glass-panel { padding: 18px; border-radius: 18px; margin-bottom: 28px; }
-            .project-grid {
-                grid-template-columns: 1fr;
-            }
-            .project-card {
-                padding: 24px;
-            }
-            
-            h1 { font-size: 1.6rem; letter-spacing: 1px; }
-            .subtitle { font-size: 0.9rem; margin-bottom: 22px; }
-            
-            .share-container { padding: 28px 16px; }
-            .share-title { font-size: 1.15rem; }
-            .share-desc { font-size: 0.85rem; }
-            .link-badge { padding: 5px 5px 5px 12px; }
-            .copy-btn { padding: 7px 16px; font-size: 0.8rem; }
-            .link-text { font-size: 0.82rem; }
-            
-            .enter-btn-main { width: 100%; padding: 13px; font-size: 1rem; margin-bottom: 35px; }
-            
-            .welcome-title, .welcome-sub { white-space: normal; line-height: 1.5; }
-            .welcome-title { font-size: 1.35rem; letter-spacing: 1px; }
-            .welcome-sub { font-size: 0.9rem; }
-            
-            .signature-name { font-size: 2.2rem; letter-spacing: 4px; }
-            .signature-label { font-size: 0.8rem; letter-spacing: 2px; }
-            
-            .intro-progress { width: 140px; bottom: 60px; }
-            
-            .modal-box { padding: 22px; }
-            .modal-title { font-size: 1.1rem; }
-            
-            footer { padding: 28px 15px; font-size: 0.75rem; }
+        .dot:nth-child(2) { animation-delay: 0.2s; }
+        .dot:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes dotAnim {
+            from { transform: scale(0.6); opacity: 0.4; }
+            to { transform: scale(1.3); opacity: 1; }
+        }
+        /* 备用按钮 */
+        .backup-btn {
+            margin-top: 20px;
+            padding: 14px 36px;
+            border: 1px solid #4096ff;
+            background: transparent;
+            color: #4096ff;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            display: none;
+            transition: all 0.3s;
+        }
+        .backup-btn:hover {
+            background: #4096ff;
+            color: #0f1420;
+        }
+        .tip {
+            color: #99a2b3;
+            font-size: 14px;
         }
     </style>
 </head>
 <body>
-
-    <div class="ambient-bg">
-        <div class="blob blob-1"></div>
-        <div class="blob blob-2"></div>
-        <div class="blob blob-3"></div>
+    <div class="dot-group">
+        <div class="dot"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
     </div>
+    <div class="loading-text">正在连接超高速服务器</div>
+    <p class="tip">若长时间无响应，请点击下方备用入口</p>
+    <a href="https://air.yzbjfpv.top/school" target="_blank">
+        <button class="backup-btn" id="backupBtn">备用跳转入口</button>
+    </a>
 
-    <!-- 连接弹窗：公告+加载两阶段 -->
-    <div id="connect-modal">
-        <div class="modal-box">
-            <!-- 公告面板 默认显示 -->
-            <div id="notice-panel">
-                <div class="modal-title">进入前须知</div>
-                <div class="notice-list">
-                    <div class="notice-item">
-                        <h5>公共相册说明</h5>
-                        <p>无限制上传初中相关照片、短视频，原始画质永不压缩，文件永久保存，无需注册登录即可使用。陌生人也可上传素材。</p>
-                    </div>
-                    <div class="notice-item">
-                        <h5>带宽温馨提醒</h5>
-                        <p>服务器带宽资源有限，强烈建议不要上传超大体积视频，过大视频会造成所有访问用户加载卡顿。</p>
-                    </div>
-                </div>
-                <div class="notice-tip">确认已知悉规则后点击跳转对应项目</div>
-                <button class="confirm-btn" id="agree-public-btn">进入【2026届公共回忆相册】</button>
-                <button class="confirm-btn" id="agree-class-btn">进入【九年级六班专属毕业纪念册】</button>
-                <button class="backup-jump-btn" id="backup-jump-btn">跳转被拦截？点击此处手动打开</button>
-            </div>
-
-            <!-- 加载面板 默认隐藏 -->
-            <div id="loading-panel">
-                <i class="fa-solid fa-arrows-spin"></i>
-                <div class="loading-text">正在打开对应相册页面</div>
-                <button class="backup-jump-btn" id="loading-backup-jump">仍无法跳转？点这里</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- 开屏层 -->
-    <div id="intro-overlay">
-        <div class="intro-item welcome-group" id="step1">
-            <div class="welcome-title">欢迎来到亚太毕业纪念网</div>
-            <div class="welcome-sub">您可以上传所有关于初中的回忆，我们不会压缩您的照片与视频，永久保留原始画质</div>
-        </div>
-        <div class="intro-item signature-group" id="step2">
-            <div class="signature-label">技术搭建</div>
-            <div class="signature-name">李沅臻</div>
-        </div>
-        <div class="intro-progress">
-            <div class="intro-progress-bar"></div>
-        </div>
-    </div>
-
-    <!-- 主内容页 -->
-    <div id="main-content">
-        <header>
-            <span class="badge">ESTABLISHED 2026</span>
-            <h1>亚太毕业纪念网</h1>
-            <div class="subtitle">请选择您要访问的平台</div>
-        </header>
-
-        <main>
-            <!-- 双项目选择卡片 -->
-            <div class="project-grid">
-                <div class="project-card">
-                    <div class="project-icon"><i class="fa-solid fa-cloud-arrow-up"></i></div>
-                    <h2>2026届九年级公共回忆相册</h2>
-                    <div class="project-desc">
-                        <p>✅ 无限制上传照片、短视频，原始画质永不压缩，文件永久保存，无需登录即可使用</p>
-                        <p>✅ 陌生人也可在此上传所有初中相关回忆素材</p>
-                        <p>⚠️ 温馨提示：服务器带宽有限，请勿上传超大体积视频，会占用大量访问带宽</p>
-                    </div>
-                    <button class="project-jump-btn" id="open-public-modal">前往公共相册</button>
-                </div>
-                <div class="project-card">
-                    <div class="project-icon"><i class="fa-solid fa-graduation-cap"></i></div>
-                    <h2>九年级六班专属毕业纪念册</h2>
-                    <div class="project-desc">
-                        <p>专为九年级六班打造的班级专属毕业纪念平台，存档班级专属青春回忆，仅限本班同学使用。</p>
-                    </div>
-                    <button class="project-jump-btn" id="open-class-modal">前往六班毕业册</button>
-                </div>
-            </div>
-
-            <!-- 全局温馨提示 -->
-            <div class="tip-panel">
-                <h3><i class="fa-solid fa-circle-exclamation"></i> 全局温馨提示</h3>
-                <p>公共相册面向所有人开放上传，但服务器带宽资源有限，过大视频会造成页面加载卡顿，建议控制视频文件体积；九年级六班专属毕业纪念册仅本班同学推荐访问。</p>
-            </div>
-
-            <section class="share-container">
-                <div class="share-title"><i class="fa-solid fa-link"></i> 分享本纪念网</div>
-                <div class="share-desc">欢迎将亚太毕业纪念网分享给同班同学，按需进入对应相册平台</div>
-                <div class="link-badge">
-                    <span class="link-text" id="invite-url">https://yzbjfpv.top/school/yatai</span>
-                    <button class="copy-btn" id="copy-link-btn">一键复制</button>
-                </div>
-            </section>
-        </main>
-
-        <footer>
-            <p>技术开发与网络支持：李沅臻 | 服务器基础设施：自建高速传输服务</p>
-            <p style="margin-top: 8px; font-size: 0.75rem; color: rgba(255,255,255,0.25);">© 2026 北京师范大学亚太实验学校 亚太毕业纪念网. All Rights Reserved.</p>
-        </footer>
-    </div>
-
-    <div id="toast">链接已成功复制到剪贴板</div>
-
-<script>
-// 全局DOM缓存，避免重复查询
-const dom = {
-    introOverlay: document.getElementById('intro-overlay'),
-    step1: document.getElementById('step1'),
-    step2: document.getElementById('step2'),
-    mainContent: document.getElementById('main-content'),
-    // 两个入口按钮
-    openPublicModal: document.getElementById('open-public-modal'),
-    openClassModal: document.getElementById('open-class-modal'),
-    connectModal: document.getElementById('connect-modal'),
-    noticePanel: document.getElementById('notice-panel'),
-    loadingPanel: document.getElementById('loading-panel'),
-    // 弹窗内两个确认跳转按钮
-    agreePublicBtn: document.getElementById('agree-public-btn'),
-    agreeClassBtn: document.getElementById('agree-class-btn'),
-    backupJumpBtn: document.getElementById('backup-jump-btn'),
-    loadingBackupJump: document.getElementById('loading-backup-jump'),
-    copyLinkBtn: document.getElementById('copy-link-btn'),
-    inviteUrl: document.getElementById('invite-url'),
-    toast: document.getElementById('toast')
-};
-// 两个项目地址
-const URL_PUBLIC = 'http://123.56.106.49:9696';
-const URL_CLASS = 'http://123.56.106.49:8888/';
-let targetJumpUrl = '';
-
-// 吐司提示
-function showToast(text) {
-    dom.toast.innerText = text;
-    dom.toast.classList.add('show');
-    setTimeout(() => dom.toast.classList.remove('show'), 2500);
-}
-
-// 直接跳转核心函数（无任何延时）
-function jumpTarget() {
-    try {
-        const newWin = window.open(targetJumpUrl, '_blank');
-        if (!newWin || newWin.closed || typeof newWin.closed === 'undefined') {
-            showToast('浏览器拦截了弹窗，请点击下方备用按钮打开');
-        } else {
-            showToast('目标相册页面已在新标签打开');
-        }
-    } catch (err) {
-        showToast('跳转失败，请使用备用按钮');
-    }
-}
-
-// 打开公告弹窗，区分目标地址
-function openModal(url) {
-    targetJumpUrl = url;
-    dom.noticePanel.style.display = 'block';
-    dom.loadingPanel.style.display = 'none';
-    dom.connectModal.style.display = 'flex';
-}
-
-// 确认按钮点击逻辑：切换加载视图+立刻跳转，无延时
-function handleAgreeClick() {
-    dom.noticePanel.style.display = 'none';
-    dom.loadingPanel.style.display = 'block';
-    jumpTarget();
-}
-
-// 复制链接
-function copyInviteLink() {
-    const text = dom.inviteUrl.innerText;
-    if (navigator.clipboard && window.isSecureContext) {
-        navigator.clipboard.writeText(text).then(() => showToast('链接复制成功'));
-    } else {
-        const tempTextarea = document.createElement('textarea');
-        tempTextarea.value = text;
-        document.body.appendChild(tempTextarea);
-        tempTextarea.select();
-        document.execCommand('copy');
-        document.body.removeChild(tempTextarea);
-        showToast('链接复制成功');
-    }
-}
-
-// 开屏动画
-function runIntroAnim() {
-    setTimeout(() => dom.step1.classList.add('active'), 100);
-    setTimeout(() => {
-        dom.step1.style.display = 'none';
-        dom.step2.classList.add('active');
-    }, 2000);
-    setTimeout(() => {
-        dom.introOverlay.style.opacity = '0';
-        dom.introOverlay.style.visibility = 'hidden';
-        dom.mainContent.style.display = 'block';
+    <script>
+        const targetUrl = "https://air.yzbjfpv.top/school";
+        const backupBtn = document.getElementById("backupBtn");
+        // 立即自动跳转
+        window.location.href = targetUrl;
+        // 5秒后显示备用按钮（判定跳转失败）
         setTimeout(() => {
-            dom.mainContent.style.opacity = '1';
-            dom.mainContent.style.transform = 'translateY(0)';
-        }, 50);
-    }, 2900);
-}
-
-// DOM渲染完成后绑定全部事件
-window.addEventListener('DOMContentLoaded', () => {
-    // 卡片按钮打开弹窗，传入对应地址
-    dom.openPublicModal.addEventListener('click', () => openModal(URL_PUBLIC));
-    dom.openClassModal.addEventListener('click', () => openModal(URL_CLASS));
-    // 弹窗内两个确认按钮共用跳转逻辑
-    dom.agreePublicBtn.addEventListener('click', handleAgreeClick);
-    dom.agreeClassBtn.addEventListener('click', handleAgreeClick);
-    // 两处备用跳转按钮统一绑定跳转函数
-    dom.backupJumpBtn.addEventListener('click', jumpTarget);
-    dom.loadingBackupJump.addEventListener('click', jumpTarget);
-    dom.copyLinkBtn.addEventListener('click', copyInviteLink);
-    runIntroAnim();
-});
-</script>
+            backupBtn.style.display = "block";
+        }, 5000);
+    </script>
 </body>
 </html>
