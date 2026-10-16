@@ -1,37 +1,304 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <!-- 移动端适配，禁止缩放 -->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>超高速服务器连接中</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-        }
-        body {
-            width: 100vw;
-            height: 100vh;
-            background-color: #000;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 18px;
-            color: #ffffff;
-            font-family: sans-serif;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#f4f5f9">
+<meta name="format-detection" content="telephone=no">
+
+<!-- ══════════════════════════════════════════════════════════════════════
+     SEO。目标：让搜索引擎尽量收录，并且收录的是"描述这个产品"的内容。
+
+       1. title / description 是人话，不是关键词堆砌（堆砌会被降权）
+       2. canonical 指主域名，避免 .top 和 .com 被当成两个重复站点
+       3. OG + Twitter Card —— 分享时有卡片
+       4. JSON-LD 结构化数据 —— 让搜索引擎"理解"这是什么站，
+          比 meta keywords 有用得多
+       5. 语义化标签 + 真实可见文字（爬虫不执行 CSS，只看 DOM 文本）
+     ══════════════════════════════════════════════════════════════════════ -->
+<title>YZBJFPV —— 全球公益航模穿越机社区</title>
+<meta name="description" content="YZBJFPV 是全球公益航模穿越机社区。发布航拍作品、参加飞行活动、逛二手装备市场、找同城飞友、看飞行教程。手机浏览器打开就能用，无需下载。">
+<meta name="keywords" content="YZBJFPV,穿越机,航模,无人机,航拍,FPV,飞友社区,二手无人机,飞行活动">
+<meta name="author" content="YZBJFPV">
+<meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1">
+<link rel="canonical" href="https://yzbjfpv.top/">
+
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="YZBJFPV">
+<meta property="og:title" content="YZBJFPV —— 全球公益航模穿越机社区">
+<meta property="og:description" content="发布航拍作品、参加飞行活动、逛二手装备市场、找同城飞友。手机打开就能用，无需下载。">
+<meta property="og:url" content="https://yzbjfpv.top/">
+<meta property="og:locale" content="zh_CN">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="YZBJFPV —— 全球公益航模穿越机社区">
+<meta name="twitter:description" content="发布航拍作品、参加飞行活动、逛二手装备市场、找同城飞友。">
+
+<script type="application/ld+json">
+{
+  "@context":"https://schema.org",
+  "@graph":[
+    {
+      "@type":"WebSite",
+      "@id":"https://yzbjfpv.top/#website",
+      "url":"https://yzbjfpv.top/",
+      "name":"YZBJFPV",
+      "description":"全球公益航模穿越机社区，提供航拍作品分享、飞行活动、二手交易、飞友社交。",
+      "inLanguage":"zh-CN"
+    },
+    {
+      "@type":"Organization",
+      "@id":"https://yzbjfpv.top/#org",
+      "name":"YZBJFPV",
+      "url":"https://yzbjfpv.top/",
+      "description":"全球公益航模穿越机社区"
+    },
+    {
+      "@type":"ItemList",
+      "name":"访问入口",
+      "itemListElement":[
+        {"@type":"ListItem","position":1,"name":"YZBJFPV 线路一（.top）","url":"https://air.yzbjfpv.top/"},
+        {"@type":"ListItem","position":2,"name":"YZBJFPV 线路二（.com）","url":"https://air.yzbjfpv.com/"}
+      ]
+    }
+  ]
+}
+</script>
+
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%233f3f46'/%3E%3Ctext x='16' y='22' font-family='sans-serif' font-size='15' font-weight='700' fill='%23fff' text-anchor='middle'%3EY%3C/text%3E%3C/svg%3E">
+<style>
+/* ══════════════════════════════════════════════════════════════════════════
+   设计令牌抄自 App 的 public/css/00-base.css，保证风格一致。
+   只取这页用得到的 —— 页面要短、要快。
+   ══════════════════════════════════════════════════════════════════════════ */
+:root{
+  --bg:#f4f5f9; --card:#fff; --line:#e8eaf1;
+  --ink:#12131a; --ink-2:#3b3f4d; --sub:#767c8c; --muted:#a6acbb;
+  --accent:#3f3f46;
+  --r:16px;
+  --sh-2:0 2px 6px rgba(18,19,26,.05),0 8px 22px -12px rgba(18,19,26,.14);
+  --sh-3:0 10px 34px -12px rgba(18,19,26,.20),0 2px 8px rgba(18,19,26,.05);
+  --sh-accent:0 8px 22px -10px rgba(24,24,27,.55);
+  --ease-out:cubic-bezier(.16,1,.3,1);
+  --sans:-apple-system,BlinkMacSystemFont,"SF Pro Text","PingFang SC","Noto Sans CJK SC","Microsoft YaHei",sans-serif;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0}
+body{
+  background:var(--bg); color:var(--ink); font-family:var(--sans);
+  -webkit-font-smoothing:antialiased; line-height:1.5;
+  /* 手机一屏：用 dvh 不用 vh —— 前者跟着地址栏收起而变，后者不会，
+     用 vh 手机上底部经常被切掉一截 */
+  min-height:100dvh; display:flex; flex-direction:column;
+  padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+}
+.wrap{
+  width:100%; max-width:430px; margin:0 auto; flex:1;
+  display:flex; flex-direction:column; justify-content:center;
+  padding:18px 20px calc(16px + env(safe-area-inset-bottom));
+}
+
+/* ── 标题区。不要 LOGO，就写 YZBJFPV ── */
+.hd{text-align:center; margin-bottom:16px}
+h1{
+  font-size:27px; font-weight:700; margin:0; letter-spacing:.01em;
+  line-height:1.15; color:var(--ink)
+}
+.hd-s{
+  font-size:12.5px; color:var(--sub); margin-top:7px; letter-spacing:.03em
+}
+
+/* ── 服务器选择：两条线路并排一行 ── */
+.pick{display:flex; gap:9px; margin-bottom:16px}
+.srv{
+  flex:1; min-width:0;
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  gap:5px; padding:14px 8px; border-radius:var(--r);
+  background:var(--card); border:1px solid var(--line);
+  box-shadow:var(--sh-2); text-decoration:none; color:inherit;
+  transition:transform .2s var(--ease-out),box-shadow .2s var(--ease-out),border-color .2s;
+  position:relative; overflow:hidden;
+}
+.srv:active{transform:scale(.972)}
+@media (hover:hover){.srv:hover{transform:translateY(-2px);box-shadow:var(--sh-3);border-color:#d9dce6}}
+/* 线路一做实心深色，一眼区分主/备 */
+.srv.main{background:linear-gradient(180deg,#4a4a52,#33333a);border-color:#33333a;box-shadow:var(--sh-accent)}
+.srv.main .srv-n,.srv.main .srv-u{color:#fff}
+.srv.main .srv-u{opacity:.62}
+.srv-n{font-size:14px;font-weight:600;display:flex;align-items:center;gap:5px;letter-spacing:-.005em}
+.dot{width:6px;height:6px;border-radius:50%;background:#12b76a;flex:none}
+.srv.main .dot{box-shadow:0 0 0 3px rgba(18,183,106,.22)}
+.srv-u{
+  font-size:10.5px; color:var(--sub); white-space:nowrap;
+  overflow:hidden; text-overflow:ellipsis; max-width:100%
+}
+
+/* ── 演示动画：一台手机，循环播 4 个界面 ──
+   纯 CSS keyframes，零 JS。首屏不用等任何脚本，也不会因为 JS 报错
+   整块不显示（这个项目在别处栽过：闲鸟商品列表因为一行 $().forEach
+   写错就整块"加载失败"）。
+   原理：4 个屏叠在一起，各在 12 秒周期的不同时段淡入/上移。 */
+.demo{display:flex; justify-content:center; margin-bottom:4px}
+.phone{
+  /* ★ 尺寸调大过一轮。第一版是 200×290，在 844 高的屏上下面空了 360px，
+     用户要的正是"给演示动画留空间"。现在按屏高自适应（见下面的断点），
+     让手机模型尽量占满剩余空间，但绝不挤到标题和按钮。 */
+  width:236px; height:344px; border-radius:30px; position:relative;
+  background:var(--card); border:1px solid var(--line);
+  box-shadow:var(--sh-3); overflow:hidden;
+}
+.phone::before{
+  content:''; position:absolute; top:0; left:0; right:0; height:30px;
+  background:linear-gradient(180deg,#fff,rgba(255,255,255,0)); z-index:2; pointer-events:none
+}
+.screen{position:absolute; inset:0; padding:34px 17px 17px; opacity:0; animation:scr 12s infinite var(--ease-out)}
+.screen:nth-child(1){animation-delay:0s}
+.screen:nth-child(2){animation-delay:3s}
+.screen:nth-child(3){animation-delay:6s}
+.screen:nth-child(4){animation-delay:9s}
+@keyframes scr{
+  0%{opacity:0;transform:translateY(9px)}
+  3.3%{opacity:1;transform:translateY(0)}
+  20%{opacity:1;transform:translateY(0)}
+  25%{opacity:0;transform:translateY(-8px)}
+  100%{opacity:0;transform:translateY(-8px)}
+}
+.s-title{font-size:12px;font-weight:700;color:var(--ink);margin-bottom:10px;letter-spacing:-.01em}
+.s-title span{font-size:10px;font-weight:500;color:var(--muted);margin-left:5px}
+.c{border-radius:9px;background:#f7f8fb;margin-bottom:6px}
+.c-row{display:flex;gap:6px}
+.c-row .c{flex:1;margin-bottom:0}
+.bar{height:6px;border-radius:3px;background:#eceef5;margin-bottom:5px}
+.bar.d{background:#e2e4ec}
+.tag{display:inline-block;font-size:9px;font-weight:600;color:#3f3f46;background:#eceef5;
+  border-radius:5px;padding:2px 7px;margin-bottom:7px}
+/* 迷你封面块用渐变假装图片 —— 不加载任何真实图片，首屏才快 */
+.ph{border-radius:9px;background:linear-gradient(135deg,#dfe3ee,#c9cfdd);margin-bottom:6px}
+.ph.g1{background:linear-gradient(135deg,#e7ddf7,#cdb8ee)}
+.ph.g2{background:linear-gradient(135deg,#d7e6f7,#b6cfea)}
+.ph.g3{background:linear-gradient(135deg,#f7e0e6,#eec2ce)}
+.ph.g4{background:linear-gradient(135deg,#d9f0e6,#b7e0cf)}
+.dots{display:flex;gap:6px;justify-content:center;margin-top:12px}
+.dots i{width:5px;height:5px;border-radius:50%;background:#d9dce6;display:block;animation:dt 12s infinite}
+.dots i:nth-child(1){animation-delay:0s}
+.dots i:nth-child(2){animation-delay:3s}
+.dots i:nth-child(3){animation-delay:6s}
+.dots i:nth-child(4){animation-delay:9s}
+@keyframes dt{0%,3%{background:#3f3f46}22%{background:#3f3f46}27%,100%{background:#d9dce6}}
+
+/* ── 无障碍：尊重系统"减少动态效果" ──
+   前庭敏感的人看不停移动的东西会难受。开了就只显示第一屏、停掉动画。
+   这是必须尊重的系统设置，不是可选项。 */
+@media (prefers-reduced-motion:reduce){
+  *{animation:none !important;transition:none !important}
+  .screen:nth-child(1){opacity:1}
+  .dots{display:none}
+}
+
+/* ── 矮屏压缩 ──
+   实测：iPhone SE (375×667) 和 360×600 按原尺寸一屏放不下。
+   逐级收紧，先牺牲最不影响的（进度点 → 动画尺寸 → 间距），
+   标题、副标题、两个服务器按钮一律不动 —— 那些是这页的全部意义。 */
+@media (max-height:760px){
+  .wrap{padding-top:14px;padding-bottom:12px}
+  .hd{margin-bottom:13px}
+  h1{font-size:24px}
+  .phone{width:206px;height:296px;border-radius:26px}
+  .screen{padding:30px 15px 15px}
+  .dots{margin-top:10px}
+}
+@media (max-height:660px){
+  .wrap{padding-top:10px;padding-bottom:10px}
+  .hd{margin-bottom:11px}
+  h1{font-size:22px}
+  .hd-s{font-size:11.5px;margin-top:5px}
+  .phone{width:178px;height:256px;border-radius:24px}
+  .screen{padding:26px 13px 13px}
+  .s-title{font-size:10.5px;margin-bottom:8px}
+  .pick{margin-bottom:12px}
+  .dots{margin-top:8px}
+}
+@media (min-width:480px) and (min-height:700px){
+  .wrap{max-width:452px;padding-top:28px;padding-bottom:28px}
+  .phone{width:266px;height:388px}
+}
+</style>
 </head>
 <body>
-    正在连接超高速服务器中
-    <script>
-        // 跳转地址
-        const targetUrl = "https://air.yzbjfpv.top";
-        // 0.8秒跳转 单位：毫秒 0.8s = 800ms
-        setTimeout(() => {
-            window.location.href = targetUrl;
-        }, 800);
-    </script>
+<main class="wrap">
+
+  <!-- 标题：不要 LOGO，就写 YZBJFPV -->
+  <header class="hd">
+    <h1>YZBJFPV</h1>
+    <p class="hd-s">全球公益航模穿越机社区</p>
+  </header>
+
+  <!-- 两条线路并排一行 -->
+  <nav class="pick" aria-label="选择访问线路">
+    <a class="srv main" href="https://air.yzbjfpv.top/" rel="noopener">
+      <span class="srv-n">线路一<span class="dot"></span></span>
+      <span class="srv-u">air.yzbjfpv.top</span>
+    </a>
+    <a class="srv" href="https://air.yzbjfpv.com/" rel="noopener">
+      <span class="srv-n">线路二</span>
+      <span class="srv-u">air.yzbjfpv.com</span>
+    </a>
+  </nav>
+
+  <!-- 演示动画：一台手机循环播 4 个界面。纯 CSS。 -->
+  <div class="demo" role="img" aria-label="YZBJFPV 应用界面演示：发现、社区动态、二手装备、音乐四个页面循环展示">
+    <div>
+      <div class="phone">
+
+        <div class="screen">
+          <div class="s-title">发现<span>探索玩法</span></div>
+          <div class="ph g1" style="height:62px"></div>
+          <div class="bar d" style="width:70%"></div>
+          <div class="c-row" style="margin-top:9px">
+            <div class="ph g2" style="height:44px;margin:0"></div>
+            <div class="ph g4" style="height:44px;margin:0"></div>
+          </div>
+          <div class="bar" style="width:50%;margin-top:10px"></div>
+          <div class="bar" style="width:85%"></div>
+        </div>
+
+        <div class="screen">
+          <div class="s-title">社区<span>飞友动态</span></div>
+          <div class="c-row" style="margin-bottom:6px">
+            <div class="ph g3" style="height:72px;margin:0"></div>
+            <div class="ph g1" style="height:72px;margin:0"></div>
+          </div>
+          <div class="bar d" style="width:85%"></div>
+          <div class="bar" style="width:50%"></div>
+          <div class="c-row" style="margin-top:8px">
+            <div class="ph g2" style="height:56px;margin:0"></div>
+            <div class="ph g4" style="height:56px;margin:0"></div>
+          </div>
+        </div>
+
+        <div class="screen">
+          <div class="s-title">闲置<span>同城交易</span></div>
+          <span class="tag">穿越机 · 9成新</span>
+          <div class="ph g4" style="height:64px"></div>
+          <div class="bar d" style="width:70%"></div>
+          <span class="tag" style="margin-top:9px">图传 · 全新</span>
+          <div class="ph g2" style="height:52px"></div>
+        </div>
+
+        <div class="screen">
+          <div class="s-title">音乐<span>飞行 BGM</span></div>
+          <div class="ph g1" style="height:82px"></div>
+          <div class="bar d" style="width:85%"></div>
+          <div class="bar" style="width:50%"></div>
+          <div class="bar" style="width:70%;margin-top:11px"></div>
+          <div class="bar" style="width:50%"></div>
+          <div class="bar" style="width:85%"></div>
+        </div>
+
+      </div>
+      <div class="dots" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+    </div>
+  </div>
+
+</main>
 </body>
 </html>
